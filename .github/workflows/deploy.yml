@@ -41,3 +41,4 @@ jobs:
           remote_path: 'bga'
           port: 22
           sftp_only: true
+          sftpArgs: '-o StrictHostKeyChecking=no'
