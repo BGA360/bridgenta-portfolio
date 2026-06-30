@@ -1,0 +1,26 @@
+{
+  "name": "BridGenta Portfolio",
+  "short_name": "BridGenta",
+  "description": "Portfolio von Frank Duru – Web Development, AI-assisted Development & SEO/AEO/GEO.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FAFAFB",
+  "theme_color": "#C2185B",
+  "lang": "de",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

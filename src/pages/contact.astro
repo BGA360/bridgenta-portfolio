@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Kontakt">
+  <section class="page-hero">
+    <div class="page-hero__inner">
+      <span class="eyebrow">Kontakt</span>
+      <h1 style="margin-top:0.9rem;">Kontakt für berufliche Möglichkeiten</h1>
+      <p class="lede">Ich freue mich über passende Stellenangebote, Gespräche mit Recruitern und Unternehmen sowie Möglichkeiten im Bereich Webdesign, Junior Frontend Development, SEO/AEO/GEO und AI-assisted Development.</p>
+    </div>
+  </section>
+
+  <div class="floating-card-overlap">
+    <div class="breadcrumb-card">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Startseite</a><span class="sep">/</span><span>Kontakt</span>
+      </nav>
+    </div>
+  </div>
+
+  <section class="section" data-reveal>
+    <div class="container detail-grid">
+      <div class="card" style="padding:var(--space-4);">
+        <h2 style="font-size:1.4rem; margin-bottom:1.2rem;">Nachricht senden</h2>
+        <form id="contact-form" class="form-grid" novalidate>
+          <div class="field">
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="email">E-Mail *</label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="subject">Betreff</label>
+            <select id="subject" name="subject">
+              <option>Stellenangebot</option>
+              <option>Bewerbungsgespräch</option>
+              <option>Portfolio-Rückfrage</option>
+              <option>Zusammenarbeit / Sonstiges</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Nachricht *</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Nachricht senden</button>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          <p class="form-note">* Pflichtfelder. Dieses Formular ist aktuell nicht an einen E-Mail-Versand angebunden – bitte schreib mir bis dahin direkt an hello@bridgenta.de.</p>
+        </form>
+      </div>
+
+      <aside class="card contact-info-card" style="padding:var(--space-4); height:fit-content;">
+        <div style="display:flex; flex-direction:column; gap:0.7rem; margin-bottom:1.6rem;">
+          <a class="btn btn-primary btn-block" href="mailto:hello@bridgenta.de?subject=Lebenslauf%20anfragen">Lebenslauf anfragen</a>
+          <a class="btn btn-secondary btn-block" href="/projects">Portfolio ansehen</a>
+        </div>
+        <div class="contact-info-row">
+          <div class="icon-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div>
+            <h4>E-Mail</h4>
+            <p>hello@bridgenta.de</p>
+          </div>
+        </div>
+        <div class="contact-info-row">
+          <div class="icon-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          </div>
+          <div>
+            <h4>Standort</h4>
+            <p>Deutschland · remote-freundlich</p>
+          </div>
+        </div>
+        <div class="contact-info-row">
+          <div class="icon-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div>
+            <h4>Antwortzeit</h4>
+            <p>In der Regel innerhalb von 2 Werktagen</p>
+          </div>
+        </div>
+        <div class="contact-info-row">
+          <div class="icon-tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          </div>
+          <div>
+            <h4>Offen für</h4>
+            <p>Festanstellung, Teilzeit, Junior Frontend, Webdesign, SEO/AEO/GEO und AI-assisted Development</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>
