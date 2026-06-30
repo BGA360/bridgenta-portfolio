@@ -38,6 +38,6 @@ jobs:
           username: ${{ secrets.STRATO_FTP_USERNAME }}
           password: ${{ secrets.STRATO_FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: ./
+          server-dir: ./bga/
           protocol: sftp  # Use secure SFTP protocol (SSH)
           port: 22        # Standard SSH port
