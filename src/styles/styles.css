@@ -1122,38 +1122,6 @@ p { line-height: 1.65; color: var(--text-muted); margin: 0; }
 }
 
 /* ---------- Forms ---------- */
-.form-grid { display: grid; gap: var(--space-3); }
-.field label {
-  display: block;
-  font-size: 0.86rem;
-  font-weight: 600;
-  margin-bottom: 0.45rem;
-}
-.field input,
-.field textarea,
-.field select {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-s);
-  padding: 0.8rem 1rem;
-  font-family: inherit;
-  font-size: 0.95rem;
-  background: #fff;
-  color: var(--text-dark);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.field input:focus,
-.field textarea:focus,
-.field select:focus {
-  border-color: var(--magenta);
-  box-shadow: 0 0 0 3px var(--magenta-soft);
-  outline: none;
-}
-.field textarea { resize: vertical; min-height: 130px; }
-.form-note { font-size: 0.82rem; margin-top: 0.5rem; }
-.form-status { font-size: 0.9rem; margin-top: 0.8rem; min-height: 1.2em; }
-.form-status.is-success { color: #047857; }
-.form-status.is-error { color: #B91C1C; }
 
 .contact-info-card { display: flex; flex-direction: column; gap: var(--space-3); }
 .contact-info-row { display: flex; gap: 0.9rem; align-items: flex-start; }
