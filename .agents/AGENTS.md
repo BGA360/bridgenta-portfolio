@@ -8,13 +8,15 @@ All code changes and development tasks must adhere to a professional GitHub bran
 
 ## 2. Pull Requests
 - All changes must be pushed inside the feature branch.
-- Once changes are complete, open a Pull Request (PR) from the feature branch to `main`.
+- Once changes are complete, attempt to create the GitHub Pull Request automatically (e.g., using `gh pr create` CLI) if permissions and auth allow it.
+- If automatic PR creation is not possible due to lack of CLI or credentials, clearly state it and provide the direct GitHub URL so the user can create/review it.
 - Each PR must include:
   - A clear title
   - A summary of changes
   - Context/rationale for the changes
   - Verification steps/testing performed
   - Any known limitations
+- After PR creation/notification, monitor the GitHub Actions workflow run. If checks fail, investigate logs, commit fixes to the same feature branch, and push updates. Do not merge.
 
 ## 3. Review and Approval Cycle
 - **Wait for explicit approval**. Do not merge the Pull Request automatically.
