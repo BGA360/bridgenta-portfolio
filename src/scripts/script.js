@@ -54,36 +54,6 @@
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // ---------- Contact form (front-end only, no backend wired up) ----------
-  const contactForm = document.getElementById("contact-form");
-  if (contactForm) {
-    contactForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const status = document.getElementById("form-status");
-      const required = contactForm.querySelectorAll("[required]");
-      let valid = true;
-
-      required.forEach((field) => {
-        if (!field.value.trim()) {
-          valid = false;
-          field.setAttribute("aria-invalid", "true");
-        } else {
-          field.removeAttribute("aria-invalid");
-        }
-      });
-
-      if (!valid) {
-        status.textContent = "Bitte fülle alle Pflichtfelder aus.";
-        status.className = "form-status is-error";
-        return;
-      }
-
-      status.textContent = "Danke für deine Nachricht! Ich melde mich so schnell wie möglich zurück.";
-      status.className = "form-status is-success";
-      contactForm.reset();
-    });
-  }
-
   // ---------- Back-to-top button ----------
   let backToTopBtn = document.querySelector(".back-to-top");
   if (!backToTopBtn) {

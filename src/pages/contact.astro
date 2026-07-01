@@ -21,39 +21,33 @@ import Layout from '../layouts/Layout.astro';
 
   <section class="section" data-reveal>
     <div class="container detail-grid">
-      <div class="card" style="padding:var(--space-4);">
-        <h2 style="font-size:1.4rem; margin-bottom:1.2rem;">Nachricht senden</h2>
-        <form id="contact-form" class="form-grid" novalidate>
-          <div class="field">
-            <label for="name">Name *</label>
-            <input type="text" id="name" name="name" required autocomplete="name">
+      <div class="card" style="padding:var(--space-4); display: flex; flex-direction: column; justify-content: center;">
+        <h2 style="font-size:1.8rem; margin-bottom:1rem; font-family: var(--font-display); color: var(--text-dark);">Get in Touch</h2>
+        <p style="color: var(--text-muted); line-height: 1.7; font-size: 1.05rem; margin-bottom: 1.5rem;">
+          Schreib mir einfach eine E-Mail. Ich freue mich über deine Nachricht, Anfragen für Kooperationen oder berufliche Möglichkeiten und antworte dir in der Regel innerhalb von 1–2 Werktagen.
+        </p>
+
+        <div style="margin-top: 0.5rem;">
+          <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-bottom: 0.5rem;">E-Mail-Adresse</h3>
+          <div class="email-copy-box">
+            <a class="email-display" href="mailto:ref@bridgenta.de" aria-label="E-Mail senden an ref@bridgenta.de">
+              ref@bridgenta.de
+            </a>
+            <button class="btn-copy" id="btn-copy-email" aria-label="E-Mail-Adresse kopieren">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Kopieren</span>
+            </button>
           </div>
-          <div class="field">
-            <label for="email">E-Mail *</label>
-            <input type="email" id="email" name="email" required autocomplete="email">
-          </div>
-          <div class="field">
-            <label for="subject">Betreff</label>
-            <select id="subject" name="subject">
-              <option>Stellenangebot</option>
-              <option>Bewerbungsgespräch</option>
-              <option>Portfolio-Rückfrage</option>
-              <option>Zusammenarbeit / Sonstiges</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="message">Nachricht *</label>
-            <textarea id="message" name="message" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">Nachricht senden</button>
-          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-          <p class="form-note">* Pflichtfelder. Dieses Formular ist aktuell nicht an einen E-Mail-Versand angebunden – bitte schreib mir bis dahin direkt an hello@bridgenta.de.</p>
-        </form>
+          <div class="copy-status-msg" id="copy-status" role="status" aria-live="polite" aria-hidden="true"></div>
+        </div>
       </div>
 
       <aside class="card contact-info-card" style="padding:var(--space-4); height:fit-content;">
         <div style="display:flex; flex-direction:column; gap:0.7rem; margin-bottom:1.6rem;">
-          <a class="btn btn-primary btn-block" href="mailto:hello@bridgenta.de?subject=Lebenslauf%20anfragen">Lebenslauf anfragen</a>
+          <a class="btn btn-primary btn-block" href="mailto:ref@bridgenta.de?subject=Lebenslauf%20anfragen">Lebenslauf anfragen</a>
           <a class="btn btn-secondary btn-block" href="/projects">Portfolio ansehen</a>
         </div>
         <div class="contact-info-row">
@@ -62,7 +56,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div>
             <h4>E-Mail</h4>
-            <p>hello@bridgenta.de</p>
+            <p>ref@bridgenta.de</p>
           </div>
         </div>
         <div class="contact-info-row">
@@ -95,4 +89,97 @@ import Layout from '../layouts/Layout.astro';
       </aside>
     </div>
   </section>
+
+  <style>
+    .email-copy-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-s);
+      margin-top: var(--space-2);
+      gap: var(--space-2);
+    }
+    .email-display {
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--magenta);
+      text-decoration: none;
+      word-break: break-all;
+      transition: color 0.2s ease;
+    }
+    .email-display:hover {
+      color: var(--magenta-deep);
+    }
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border-radius: var(--radius-s);
+      cursor: pointer;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-dark);
+      transition: all 0.2s ease;
+    }
+    .btn-copy:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .btn-copy:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+    .copy-status-msg {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      min-height: 1.25rem;
+      margin-top: 0.25rem;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .copy-status-msg.is-visible {
+      opacity: 1;
+    }
+  </style>
+
+  <script>
+    const copyBtn = document.getElementById('btn-copy-email');
+    const statusMsg = document.getElementById('copy-status');
+    const emailText = 'ref@bridgenta.de';
+
+    if (copyBtn && statusMsg) {
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(emailText);
+          statusMsg.textContent = '✓ E-Mail in die Zwischenablage kopiert!';
+          statusMsg.classList.add('is-visible');
+          statusMsg.setAttribute('aria-hidden', 'false');
+
+          setTimeout(() => {
+            statusMsg.classList.remove('is-visible');
+            setTimeout(() => {
+              statusMsg.textContent = '';
+              statusMsg.setAttribute('aria-hidden', 'true');
+            }, 250);
+          }, 3000);
+        } catch (err) {
+          statusMsg.textContent = 'Fehler beim Kopieren.';
+          statusMsg.style.color = '#DC2626';
+          statusMsg.classList.add('is-visible');
+          statusMsg.setAttribute('aria-hidden', 'false');
+        }
+      });
+    }
+  </script>
 </Layout>
