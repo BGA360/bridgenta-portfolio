@@ -87,17 +87,24 @@
     backToTopBtn = document.createElement("button");
     backToTopBtn.className = "back-to-top";
     backToTopBtn.setAttribute("aria-label", "Nach oben scrollen");
-    backToTopBtn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>`;
+    backToTopBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16"><polyline points="18 15 12 9 6 15"></polyline></svg>`;
     document.body.appendChild(backToTopBtn);
   }
 
+  let scrollPending = false;
   window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      backToTopBtn.classList.add("is-visible");
-    } else {
-      backToTopBtn.classList.remove("is-visible");
+    if (!scrollPending) {
+      requestAnimationFrame(() => {
+        if (window.scrollY > 300) {
+          backToTopBtn.classList.add("is-visible");
+        } else {
+          backToTopBtn.classList.remove("is-visible");
+        }
+        scrollPending = false;
+      });
+      scrollPending = true;
     }
-  });
+  }, { passive: true });
 
   backToTopBtn.addEventListener("click", () => {
     window.scrollTo({
@@ -109,12 +116,7 @@
   // ---------- Service worker registration ----------
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.registration ||
-        navigator.serviceWorker
-          .register("/service-worker.js")
-          .catch(() => {
-            /* PWA registration failed silently — site still works */
-          });
-    });
+      navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+    }, { passive: true });
   }
 })();
