@@ -12,6 +12,7 @@ export const ProjectPartsFragmentDoc = gql`
   category
   status
   technologies
+  description
   notice
   body
 }

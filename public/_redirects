@@ -1,0 +1,2 @@
+# Redirect index.html to the root for clean URLs
+/index.html / 301

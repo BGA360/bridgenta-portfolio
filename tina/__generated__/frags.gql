@@ -4,6 +4,7 @@ fragment ProjectParts on Project {
   category
   status
   technologies
+  description
   notice
   body
 }

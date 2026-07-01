@@ -52,6 +52,15 @@ var config_default = defineConfig({
           },
           {
             type: "string",
+            name: "description",
+            label: "Kurzbeschreibung (f\xFCr Katalog)",
+            required: true,
+            ui: {
+              component: "textarea"
+            }
+          },
+          {
+            type: "string",
             name: "notice",
             label: "Sonderhinweis (z.B. Beta-Notice)",
             ui: {
