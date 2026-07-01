@@ -1,5 +1,6 @@
 ---
 import Schema from '../components/Schema.astro';
+import { getCollection } from 'astro:content';
 
 interface Props {
   title: string;
@@ -14,6 +15,13 @@ interface Props {
 }
 
 const { title, description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.", project } = Astro.props;
+
+// Fetch projects dynamically for footer listing
+const allProjects = await getCollection('projects');
+
+// Determine current path for navigation active states
+const pathname = Astro.url.pathname;
+const cleanPath = pathname.replace(/\/$/, ""); // Normalize path (remove trailing slash)
 
 import '../styles/styles.css';
 ---
@@ -81,11 +89,11 @@ import '../styles/styles.css';
         Brid<span>Genta</span>.de
       </a>
       <ul class="nav__links">
-        <li><a href="/">Startseite</a></li>
-        <li><a href="/projects">Projekte</a></li>
-        <li><a href="/#faehigkeiten">Fähigkeiten</a></li>
-        <li><a href="/about">Über mich</a></li>
-        <li><a href="/contact">Kontakt</a></li>
+        <li><a href="/" aria-current={cleanPath === "" || cleanPath === "/index.html" ? "page" : undefined}>Startseite</a></li>
+        <li><a href="/projects" aria-current={cleanPath.startsWith("/projects") || cleanPath.startsWith("/project-") ? "page" : undefined}>Projekte</a></li>
+        <li><a href="/#faehigkeiten" id="nav-link-faehigkeiten">Fähigkeiten</a></li>
+        <li><a href="/about" aria-current={cleanPath === "/about" ? "page" : undefined}>Über mich</a></li>
+        <li><a href="/contact" aria-current={cleanPath === "/contact" ? "page" : undefined}>Kontakt</a></li>
       </ul>
       <div class="nav__cta">
         <a class="btn-nav-cta" href="/contact">
@@ -169,6 +177,7 @@ import '../styles/styles.css';
           <ul>
             <li><a href="/">Startseite</a></li>
             <li><a href="/projects">Projekte</a></li>
+            <li><a href="/#faehigkeiten">Fähigkeiten</a></li>
             <li><a href="/about">Über mich</a></li>
             <li><a href="/contact">Kontakt</a></li>
             <li><a href="/impressum">Impressum</a></li>
@@ -178,10 +187,9 @@ import '../styles/styles.css';
         <div class="footer-col">
           <h4>Projekte</h4>
           <ul>
-            <li><a href="/project-aeocortex">AEOcortex</a></li>
-            <li><a href="/project-bridgenta">BridGenta</a></li>
-            <li><a href="/project-builddaddy">BuildDaddy</a></li>
-            <li><a href="/project-fdess">FD-ESS</a></li>
+            {allProjects.map((proj) => (
+              <li><a href={`/project-${proj.slug}`}>{proj.data.title}</a></li>
+            ))}
           </ul>
         </div>
         <div class="footer-col">

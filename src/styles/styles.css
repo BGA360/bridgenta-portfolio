@@ -171,6 +171,7 @@ p { line-height: 1.65; color: var(--text-muted); margin: 0; }
 
 .section { padding: var(--space-6) 0; }
 .section--tight { padding: var(--space-5) 0; }
+section[id] { scroll-margin-top: 100px; }
 
 .section-head {
   max-width: 640px;

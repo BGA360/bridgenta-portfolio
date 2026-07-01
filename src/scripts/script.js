@@ -54,6 +54,33 @@
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  // ---------- Navigation active anchor highlighting (Scroll Spy) ----------
+  const skillsSection = document.getElementById("faehigkeiten");
+  const navFaehigkeiten = document.getElementById("nav-link-faehigkeiten");
+  const navStartseite = document.querySelector('.nav__links a[href="/"]');
+
+  if (skillsSection && navFaehigkeiten && window.location.pathname === "/") {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navFaehigkeiten.setAttribute("aria-current", "page");
+            if (navStartseite) navStartseite.removeAttribute("aria-current");
+          } else {
+            navFaehigkeiten.removeAttribute("aria-current");
+            if (window.location.hash !== "#faehigkeiten" && navStartseite) {
+              navStartseite.setAttribute("aria-current", "page");
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "-20% 0px -60% 0px"
+      }
+    );
+    observer.observe(skillsSection);
+  }
+
   // ---------- Back-to-top button ----------
   let backToTopBtn = document.querySelector(".back-to-top");
   if (!backToTopBtn) {
