@@ -23,6 +23,19 @@ const allProjects = await getCollection('projects');
 const pathname = Astro.url.pathname;
 const cleanPath = pathname.replace(/\/$/, ""); // Normalize path (remove trailing slash)
 
+// Normalize URL for production canonical representation
+const siteUrl = 'https://bridgenta.de';
+let cleanPathname = pathname.replace(/\/$/, "").replace(/\/index\.html$/, "");
+if (cleanPathname === "/index") {
+  cleanPathname = "";
+}
+const canonical = `${siteUrl}${cleanPathname}`;
+
+// Format title consistently for SEO
+const displayTitle = title === "Startseite" 
+  ? "Frank Duru – Web Developer & AI Software Engineer | BridGenta.de"
+  : `${title} – BridGenta.de | Frank Duru`;
+
 import '../styles/styles.css';
 ---
 
@@ -30,29 +43,29 @@ import '../styles/styles.css';
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>{title} – BridGenta.de | Frank Duru</title>
+  <title>{displayTitle}</title>
   <meta name="description" content={description}>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#C2185B">
   
   <!-- Canonical Link Tag -->
-  <link rel="canonical" href={Astro.url.href} />
+  <link rel="canonical" href={canonical} />
 
   <!-- Crawler Indexing Directives -->
   <meta name="robots" content="index, follow" />
 
   <!-- Regional & Language Targeting (hreflang) -->
-  <link rel="alternate" hreflang="de" href={Astro.url.href} />
-  <link rel="alternate" hreflang="x-default" href={Astro.url.href} />
+  <link rel="alternate" hreflang="de" href={canonical} />
+  <link rel="alternate" hreflang="x-default" href={canonical} />
 
   <!-- Open Graph & Twitter Cards -->
-  <meta property="og:title" content={`${title} – BridGenta.de`} />
+  <meta property="og:title" content={displayTitle} />
   <meta property="og:description" content={description} />
-  <meta property="og:url" content={Astro.url.href} />
+  <meta property="og:url" content={canonical} />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://bridgenta.de/images/og-featured.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={`${title} – BridGenta.de`} />
+  <meta name="twitter:title" content={displayTitle} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content="https://bridgenta.de/images/og-featured.jpg" />
 

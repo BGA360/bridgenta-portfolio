@@ -14,8 +14,14 @@ interface Props {
 const { title, description, project } = Astro.props;
 
 const siteUrl = 'https://bridgenta.de';
-const currentUrl = Astro.url.href;
 const pathname = Astro.url.pathname;
+
+// Normalize path for canonical representation to avoid duplicate entities
+let cleanPathname = pathname.replace(/\/$/, "").replace(/\/index\.html$/, "");
+if (cleanPathname === "/index") {
+  cleanPathname = "";
+}
+const canonical = `${siteUrl}${cleanPathname}`;
 
 // Define base Person entity
 const personId = `${siteUrl}/#person`;
@@ -41,7 +47,7 @@ const organizationSchema = {
   '@id': orgId,
   'name': 'BridGenta',
   'url': siteUrl,
-  'logo': `${siteUrl}/favicon.ico`,
+  'logo': `${siteUrl}/favicon.svg`,
   'founder': { '@id': personId },
   'address': {
     '@type': 'PostalAddress',
@@ -114,7 +120,7 @@ pathSegments.forEach((segment, index) => {
 
 const breadcrumbListSchema = {
   '@type': 'BreadcrumbList',
-  '@id': `${currentUrl}#breadcrumb`,
+  '@id': `${canonical}#breadcrumb`,
   'itemListElement': breadcrumbItems
 };
 
@@ -124,7 +130,7 @@ const speakableSchema = {
   'cssSelector': ['h1', '.lede', '.tina-content p']
 };
 
-// Compile final graph
+// Compile base graph
 const graph = [
   personSchema,
   organizationSchema,
@@ -132,16 +138,16 @@ const graph = [
   breadcrumbListSchema
 ];
 
-// If on a project page, inject project schema
+// If on a project page, inject software application schema
 if (project) {
   const projectSchema = {
     '@type': 'SoftwareApplication',
-    '@id': `${currentUrl}#project`,
+    '@id': `${canonical}#project`,
     'name': project.title,
     'applicationCategory': project.category,
     'softwareRequirements': project.technologies,
     'description': project.description || description,
-    'url': currentUrl,
+    'url': canonical,
     'creator': { '@id': personId },
     'publisher': { '@id': orgId },
     'developmentStatus': project.status === 'In Entwicklung' ? 'https://schema.org/ActiveActionStatus' : 'https://schema.org/PotentialActionStatus'
@@ -149,11 +155,26 @@ if (project) {
   graph.push(projectSchema);
 }
 
-// Wrap the main WebPage context
+// Define the primary WebPage entity to link the graph nodes together
+const webpageEntity = {
+  '@type': 'WebPage',
+  '@id': `${canonical}#webpage`,
+  'url': canonical,
+  'name': title,
+  'description': description,
+  'isPartOf': { '@id': `${siteUrl}/#website` },
+  'breadcrumb': { '@id': `${canonical}#breadcrumb` },
+  'publisher': { '@id': orgId },
+  'author': { '@id': personId },
+  'speakable': speakableSchema
+};
+
+graph.push(webpageEntity);
+
+// Wrap in standard JSON-LD Schema wrapper
 const webpageSchema = {
   '@context': 'https://schema.org',
-  '@graph': graph,
-  'speakable': speakableSchema
+  '@graph': graph
 };
 ---
 
