@@ -48,6 +48,10 @@ import '../styles/styles.css';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#C2185B">
   
+  <!-- Preload Critical Fonts to prevent layout shifts -->
+  <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  
   <!-- Canonical Link Tag -->
   <link rel="canonical" href={canonical} />
 
@@ -112,7 +116,7 @@ import '../styles/styles.css';
         <a class="btn-nav-cta" href="/contact">
           Kontakt aufnehmen
           <span class="icon-circle">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" width="12" height="12">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </span>
@@ -211,7 +215,7 @@ import '../styles/styles.css';
           <form class="newsletter-form" aria-label="Newsletter-Anmeldung (Demo)">
             <input type="email" placeholder="deine@email.de" required>
             <button type="submit" aria-label="Senden">
-              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              <svg viewBox="0 0 24 24" width="12" height="12"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </button>
           </form>
         </div>
