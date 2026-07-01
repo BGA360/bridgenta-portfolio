@@ -1,44 +1,48 @@
-name: Build and Deploy to Strato
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Triggers the deployment only when you push to the main branch
+      - main  # Triggers deployment when you push to the main branch
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout the source code
       - name: 📂 Checkout Code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js environment
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      # Step 3: Install dependencies
       - name: 📦 Install Dependencies
         run: npm ci
 
-      # Step 4: Build Astro static assets
       - name: 🚀 Build Website
         run: npm run build
 
-      # Step 5: Upload the compiled static files to Strato
-      # We use SamKirkland's action because it only uploads changed files (incremental sync)
-      - name: 📤 Sync Files to Strato Webspace
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+      - name: 📤 Upload Artifacts for Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          server: ${{ secrets.STRATO_FTP_SERVER }}
-          username: ${{ secrets.STRATO_FTP_USERNAME }}
-          password: ${{ secrets.STRATO_FTP_PASSWORD }}
-          local_path: './dist/*'
-          remote_path: 'bga'
-          port: 22
-          sftp_only: true
-          sftpArgs: '-o StrictHostKeyChecking=no'
+          path: ./dist
+
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
