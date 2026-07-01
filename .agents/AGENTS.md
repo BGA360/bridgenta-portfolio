@@ -2,27 +2,44 @@
 
 All code changes and development tasks must adhere to a professional GitHub branching and review workflow:
 
-## 1. Branching Strategy
+## 1. Environment Capability Check (Mandatory)
+Before starting any development task, verify that the environment is fully operational:
+- Git is installed and working.
+- GitHub CLI (`gh`) is installed and authenticated (`gh auth status`).
+- Node.js and npm are installed.
+- Astro dependencies are available.
+- The repository is a valid Git repository and the working tree is clean.
+- If anything is missing, **stop immediately**, report the issue, and wait for confirmation.
+
+## 2. Branching Strategy
 - **Never push directly to `main`**. All direct pushes to the main branch are forbidden.
-- Always create a new descriptive feature/fix/docs branch from the latest `main` before starting any coding task (e.g., `feature/github-pages-workflow`, `fix/favicon-dimensions`).
+- Always synchronize from the latest `main` before branching.
+- Create a descriptive feature/fix/docs branch (e.g., `feature/seo-improvements`, `fix/github-pages`).
 
-## 2. Pull Requests
-- All changes must be pushed inside the feature branch.
-- Once changes are complete, attempt to create the GitHub Pull Request automatically (e.g., using `gh pr create` CLI) if permissions and auth allow it.
-- If automatic PR creation is not possible due to lack of CLI or credentials, clearly state it and provide the direct GitHub URL so the user can create/review it.
-- Each PR must include:
-  - A clear title
-  - A summary of changes
-  - Context/rationale for the changes
-  - Verification steps/testing performed
-  - Any known limitations
-- After PR creation/notification, monitor the GitHub Actions workflow run. If checks fail, investigate logs, commit fixes to the same feature branch, and push updates. Do not merge.
+## 3. Development & Validation
+- Make all changes inside the feature branch.
+- Before committing, run standard validation checks:
+  - `npm install` (if required)
+  - `npm run build`
+  - `npm run lint` / `npm run test` (if available)
+- Resolve all build/compilation errors before committing.
 
-## 3. Review and Approval Cycle
-- **Wait for explicit approval**. Do not merge the Pull Request automatically.
-- Wait for user feedback and review approvals.
-- If changes are requested during review, make the edits and push them directly to the active feature branch.
+## 4. Commits & Pull Requests
+- Use clear, professional commit messages (e.g., `feat: add dynamic sitemap generation`).
+- Push only the feature branch to GitHub.
+- Automatically create a Pull Request (PR) from the feature branch to `main` using GitHub CLI (`gh pr create`).
+- The PR must include:
+  - A meaningful title
+  - A complete description (summary, rationale, testing performed, known limitations, screenshots).
+
+## 5. CI/CD & Review Cycle
+- Monitor the GitHub Actions run. If CI fails, investigate, push fixes, and repeat until green. Do not bypass checks.
+- After CI passes, **STOP** and wait for explicit code review and approval.
+- If changes are requested, implement and push them to the same feature branch, then wait again.
+
+## 6. Merge
 - Only merge the Pull Request after:
-  1. GitHub Actions/CI runs pass successfully.
-  2. The Pull Request is approved.
+  1. The Pull Request is approved.
+  2. GitHub Actions/CI runs pass successfully.
   3. The user explicitly instructs to merge.
+- Never merge automatically.
