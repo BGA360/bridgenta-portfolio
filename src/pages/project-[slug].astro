@@ -1,0 +1,128 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// Generate the 2-letter initials for the hero banner
+const getInitials = (title) => {
+  if (title === 'FD-ESS') return 'FD';
+  const clean = title.replace(/[^a-zA-Z]/g, '');
+  if (clean.length >= 2) {
+    const uppers = clean.split('').filter(c => c === c.toUpperCase() && c !== c.toLowerCase());
+    if (uppers.length >= 2) return uppers.slice(0, 2).join('');
+    return clean.slice(0, 2).toUpperCase();
+  }
+  return title.slice(0, 2).toUpperCase();
+};
+
+const initials = getInitials(entry.data.title);
+
+// Get the corresponding badge class based on status
+const getBadgeClass = (status) => {
+  if (status === 'In Entwicklung') return 'badge--dev';
+  if (status === 'Private Beta') return 'badge--beta';
+  if (status === 'Konzept / Aufbau') return 'badge--concept';
+  return 'badge--dev';
+};
+
+const badgeClass = getBadgeClass(entry.data.status);
+---
+
+<Layout title={entry.data.title}>
+  <section class="section section--tight">
+    <div class="container">
+      <div class="breadcrumb-card" style="margin-bottom: var(--space-3);">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Startseite</a><span class="sep">/</span>
+          <a href="/projects">Projekte</a><span class="sep">/</span>
+          <span>{entry.data.title}</span>
+        </nav>
+      </div>
+
+      <div class="hero-banner"><span>{initials}</span></div>
+
+      <span class={`badge ${badgeClass}`}>{entry.data.status}</span>
+      <h1 style="margin-top:0.9rem; font-size:clamp(2rem,4vw,2.8rem);">{entry.data.title}</h1>
+      <p class="lede" style="margin-top:0.6rem;">{entry.data.category}</p>
+
+      {entry.data.notice && (
+        <div class="notice">
+          <h4>Hinweis zur privaten Beta</h4>
+          <p>{entry.data.notice}</p>
+        </div>
+      )}
+
+      <div class="detail-grid" style="margin-top:var(--space-5);">
+        <div class="tina-content">
+          <Content />
+
+          <a class="btn btn-secondary" href="/projects" style="margin-top: 2.5rem; display: inline-block;">← Zurück zu allen Projekten</a>
+        </div>
+
+        <aside>
+          <div class="card sidebar-card">
+            <h3 style="font-size:1.05rem; margin-bottom:1rem;">Projektdetails</h3>
+            <div class="meta-list">
+              <div class="meta-row"><span class="k">Kategorie</span><span class="v">{entry.data.category}</span></div>
+              <div class="meta-row"><span class="k">Status</span><span class="v">{entry.data.status}</span></div>
+              <div class="meta-row"><span class="k">Technologien</span><span class="v">{entry.data.technologies}</span></div>
+            </div>
+            <a class="btn btn-primary btn-block" style="margin-top:1.4rem;" href="/contact">Über dieses Projekt sprechen</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="cta-band">
+      <h2>Mehr Projekte entdecken</h2>
+      <p>Schau dir weitere Case Studies an oder nimm direkt Kontakt auf.</p>
+      <div class="hero__ctas">
+        <a class="btn btn-primary" href="/projects">Alle Projekte</a>
+        <a class="btn btn-outline" href="/contact">Kontakt aufnehmen</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style is:global>
+  /* Format compiled Markdown body to match legacy detail-block styles */
+  .tina-content h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-dark);
+  }
+  .tina-content h2:first-of-type {
+    margin-top: 0;
+  }
+  .tina-content p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+  }
+  .tina-content ul {
+    margin-bottom: 1.5rem;
+    padding-left: 1.2rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    list-style-type: disc;
+  }
+  .tina-content li {
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+  }
+</style>

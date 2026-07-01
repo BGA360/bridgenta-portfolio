@@ -1,5 +1,29 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+
+// Fetch all project markdown files
+const projects = await getCollection('projects');
+
+// Generate 2-letter initials for each project card
+const getInitials = (title) => {
+  if (title === 'FD-ESS') return 'FD';
+  const clean = title.replace(/[^a-zA-Z]/g, '');
+  if (clean.length >= 2) {
+    const uppers = clean.split('').filter(c => c === c.toUpperCase() && c !== c.toLowerCase());
+    if (uppers.length >= 2) return uppers.slice(0, 2).join('');
+    return clean.slice(0, 2).toUpperCase();
+  }
+  return title.slice(0, 2).toUpperCase();
+};
+
+// Generate badge class matching status
+const getBadgeClass = (status) => {
+  if (status === 'In Entwicklung') return 'badge--dev';
+  if (status === 'Private Beta') return 'badge--beta';
+  if (status === 'Konzept / Aufbau') return 'badge--concept';
+  return 'badge--dev';
+};
 ---
 
 <Layout title="Projekte">
@@ -23,69 +47,31 @@ import Layout from '../layouts/Layout.astro';
     <div class="container">
       <div class="grid grid--2">
 
-        <article class="project-card">
-          <div class="project-card__media"><span>AC</span></div>
-          <div class="project-card__top">
-            <span class="project-card__cat">AI Search / AEO / GEO</span>
-            <span class="badge badge--dev">In Entwicklung</span>
-          </div>
-          <h3>AEOcortex</h3>
-          <p>Persönliches Entwicklungsprojekt zur praktischen Erprobung von AI Search, moderner Webentwicklung und KI-gestützter Softwareentwicklung.</p>
-          <div class="project-card__tech">
-            <span class="tag">AEO</span><span class="tag">GEO</span><span class="tag">JavaScript</span><span class="tag">AI Search</span>
-          </div>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-aeocortex">Case Study ansehen</a>
-          </div>
-        </article>
+        {projects.map((project) => {
+          const initials = getInitials(project.data.title);
+          const badgeClass = getBadgeClass(project.data.status);
+          const techList = project.data.technologies.split(',').map(t => t.trim());
 
-        <article class="project-card">
-          <div class="project-card__media"><span>BG</span></div>
-          <div class="project-card__top">
-            <span class="project-card__cat">Private Beta / AI-assisted Platform</span>
-            <span class="badge badge--beta">Private Beta</span>
-          </div>
-          <h3>BridGenta</h3>
-          <p>AI-gestützte Plattform in privater Entwicklung. Die öffentliche Portfolio-Seite zeigt nur den Engineering-Ansatz, nicht das unveröffentlichte Produkt.</p>
-          <div class="project-card__tech">
-            <span class="tag">Lovable</span><span class="tag">AI Builder</span><span class="tag">Produktarchitektur</span>
-          </div>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-bridgenta">Case Study ansehen</a>
-          </div>
-        </article>
-
-        <article class="project-card">
-          <div class="project-card__media"><span>BD</span></div>
-          <div class="project-card__top">
-            <span class="project-card__cat">Learning Platform</span>
-            <span class="badge badge--concept">Konzept / Aufbau</span>
-          </div>
-          <h3>BuildDaddy</h3>
-          <p>Konzept für eine Lernplattform, die Erwachsenen den Einstieg in AI-gestützte Softwareentwicklung erleichtert.</p>
-          <div class="project-card__tech">
-            <span class="tag">EdTech</span><span class="tag">Curriculum-Design</span><span class="tag">UX</span>
-          </div>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-builddaddy">Case Study ansehen</a>
-          </div>
-        </article>
-
-        <article class="project-card">
-          <div class="project-card__media"><span>FD</span></div>
-          <div class="project-card__top">
-            <span class="project-card__cat">Explainability System</span>
-            <span class="badge badge--dev">In Entwicklung</span>
-          </div>
-          <h3>FD-ESS</h3>
-          <p>Human Explainability &amp; Storytelling System zur verständlichen Erklärung komplexer Technologien.</p>
-          <div class="project-card__tech">
-            <span class="tag">Storytelling</span><span class="tag">UX Writing</span><span class="tag">Systemdesign</span>
-          </div>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-fdess">Case Study ansehen</a>
-          </div>
-        </article>
+          return (
+            <article class="project-card">
+              <div class="project-card__media"><span>{initials}</span></div>
+              <div class="project-card__top">
+                <span class="project-card__cat">{project.data.category}</span>
+                <span class={`badge ${badgeClass}`}>{project.data.status}</span>
+              </div>
+              <h3>{project.data.title}</h3>
+              <p>{project.data.description}</p>
+              <div class="project-card__tech">
+                {techList.map((tech) => (
+                  <span class="tag">{tech}</span>
+                ))}
+              </div>
+              <div class="project-card__footer">
+                <a class="btn btn-secondary btn-block" href={`/project-${project.slug}`}>Case Study ansehen</a>
+              </div>
+            </article>
+          );
+        })}
 
         <article class="project-card">
           <div class="project-card__media"><span>WM</span></div>

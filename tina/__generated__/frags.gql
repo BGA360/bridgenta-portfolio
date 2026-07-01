@@ -1,0 +1,9 @@
+fragment ProjectParts on Project {
+  __typename
+  title
+  category
+  status
+  technologies
+  notice
+  body
+}
