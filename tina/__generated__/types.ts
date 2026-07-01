@@ -171,6 +171,7 @@ export type Project = Node & Document & {
   category: Scalars['String']['output'];
   status: Scalars['String']['output'];
   technologies: Scalars['String']['output'];
+  description: Scalars['String']['output'];
   notice?: Maybe<Scalars['String']['output']>;
   body?: Maybe<Scalars['JSON']['output']>;
   id: Scalars['ID']['output'];
@@ -196,6 +197,7 @@ export type ProjectFilter = {
   category?: InputMaybe<StringFilter>;
   status?: InputMaybe<StringFilter>;
   technologies?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
   notice?: InputMaybe<StringFilter>;
   body?: InputMaybe<RichTextFilter>;
 };
@@ -283,18 +285,19 @@ export type ProjectMutation = {
   category?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
   technologies?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
   notice?: InputMaybe<Scalars['String']['input']>;
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
-export type ProjectPartsFragment = { __typename: 'Project', title: string, category: string, status: string, technologies: string, notice?: string | null, body?: any | null };
+export type ProjectPartsFragment = { __typename: 'Project', title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null };
 
 export type ProjectQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project: { __typename: 'Project', id: string, title: string, category: string, status: string, technologies: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+export type ProjectQuery = { __typename?: 'Query', project: { __typename: 'Project', id: string, title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
 
 export type ProjectConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -306,7 +309,7 @@ export type ProjectConnectionQueryVariables = Exact<{
 }>;
 
 
-export type ProjectConnectionQuery = { __typename?: 'Query', projectConnection: { __typename?: 'ProjectConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'ProjectConnectionEdges', cursor: string, node?: { __typename: 'Project', id: string, title: string, category: string, status: string, technologies: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type ProjectConnectionQuery = { __typename?: 'Query', projectConnection: { __typename?: 'ProjectConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'ProjectConnectionEdges', cursor: string, node?: { __typename: 'Project', id: string, title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
 export const ProjectPartsFragmentDoc = gql`
     fragment ProjectParts on Project {
@@ -315,6 +318,7 @@ export const ProjectPartsFragmentDoc = gql`
   category
   status
   technologies
+  description
   notice
   body
 }

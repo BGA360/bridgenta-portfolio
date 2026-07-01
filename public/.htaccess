@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Redirect index.html to root
+  RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
+  RewriteRule ^index\.html$ https://bridgenta.de/ [R=301,L]
+
+  # Redirect www to non-www (optional but recommended for canonical URLs)
+  RewriteCond %{HTTP_HOST} ^www\.bridgenta\.de [NC]
+  RewriteRule ^(.*)$ https://bridgenta.de/$1 [R=301,L]
+</IfModule>

@@ -92,6 +92,7 @@ type Project implements Node & Document {
   category: String!
   status: String!
   technologies: String!
+  description: String!
   notice: String
   body: JSON
   id: ID!
@@ -117,6 +118,7 @@ input ProjectFilter {
   category: StringFilter
   status: StringFilter
   technologies: StringFilter
+  description: StringFilter
   notice: StringFilter
   body: RichTextFilter
 }
@@ -156,6 +158,7 @@ input ProjectMutation {
   category: String
   status: String
   technologies: String
+  description: String
   notice: String
   body: JSON
 }

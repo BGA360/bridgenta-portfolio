@@ -1,10 +1,19 @@
 ---
+import Schema from '../components/Schema.astro';
+
 interface Props {
   title: string;
   description?: string;
+  project?: {
+    title: string;
+    category: string;
+    status: string;
+    technologies: string;
+    description: string;
+  };
 }
 
-const { title, description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO." } = Astro.props;
+const { title, description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.", project } = Astro.props;
 
 import '../styles/styles.css';
 ---
@@ -17,8 +26,39 @@ import '../styles/styles.css';
   <meta name="description" content={description}>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#C2185B">
+  
+  <!-- Canonical Link Tag -->
+  <link rel="canonical" href={Astro.url.href} />
+
+  <!-- Crawler Indexing Directives -->
+  <meta name="robots" content="index, follow" />
+
+  <!-- Regional & Language Targeting (hreflang) -->
+  <link rel="alternate" hreflang="de" href={Astro.url.href} />
+  <link rel="alternate" hreflang="x-default" href={Astro.url.href} />
+
+  <!-- Open Graph & Twitter Cards -->
+  <meta property="og:title" content={`${title} – BridGenta.de`} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={Astro.url.href} />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://bridgenta.de/images/og-featured.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={`${title} – BridGenta.de`} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content="https://bridgenta.de/images/og-featured.jpg" />
+
+  <!-- GEO Metadata Tags -->
+  <meta name="geo.region" content="DE-HE" />
+  <meta name="geo.position" content="50.1109;8.6821" />
+  <meta name="ICBM" content="50.1109, 8.6821" />
+  <meta name="geo.placename" content="Frankfurt am Main, Hessen, Deutschland" />
+
+  <!-- JSON-LD Schema Graph -->
+  <Schema title={title} description={description} project={project} />
+
   <link rel="manifest" href="/manifest.json">
-  <link rel="icon" href="data:,">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>

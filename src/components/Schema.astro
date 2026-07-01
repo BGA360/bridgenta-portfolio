@@ -1,0 +1,160 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  project?: {
+    title: string;
+    category: string;
+    status: string;
+    technologies: string;
+    description: string;
+  };
+}
+
+const { title, description, project } = Astro.props;
+
+const siteUrl = 'https://bridgenta.de';
+const currentUrl = Astro.url.href;
+const pathname = Astro.url.pathname;
+
+// Define base Person entity
+const personId = `${siteUrl}/#person`;
+const personSchema = {
+  '@type': 'Person',
+  '@id': personId,
+  'name': 'Frank Duru',
+  'jobTitle': 'Web Developer & AI-Assisted Builder',
+  'email': 'hello@bridgenta.de',
+  'url': siteUrl,
+  'image': `${siteUrl}/images/portrait.jpg`, // Placeholder/future asset
+  'description': 'Webmaster seit 2009, auf dem Weg zum AI Software Engineer und AI Automation Engineer.',
+  'sameAs': [
+    'https://www.linkedin.com/in/frank-duru/',
+    'https://x.com/frankdurux'
+  ]
+};
+
+// Define base Organization entity (BridGenta)
+const orgId = `${siteUrl}/#organization`;
+const organizationSchema = {
+  '@type': 'Organization',
+  '@id': orgId,
+  'name': 'BridGenta',
+  'url': siteUrl,
+  'logo': `${siteUrl}/favicon.ico`,
+  'founder': { '@id': personId },
+  'address': {
+    '@type': 'PostalAddress',
+    'addressLocality': 'Frankfurt am Main',
+    'addressRegion': 'Hessen',
+    'addressCountry': 'DE'
+  },
+  'geo': {
+    '@type': 'GeoCoordinates',
+    'latitude': '50.1109',
+    'longitude': '8.6821'
+  },
+  'serviceArea': [
+    { '@type': 'AdministrativeArea', 'name': 'Frankfurt am Main' },
+    { '@type': 'AdministrativeArea', 'name': 'Hessen' },
+    { '@type': 'AdministrativeArea', 'name': 'Deutschland' },
+    { '@type': 'AdministrativeArea', 'name': 'Remote' }
+  ]
+};
+
+// Define Website Entity
+const websiteSchema = {
+  '@type': 'WebSite',
+  '@id': `${siteUrl}/#website`,
+  'url': siteUrl,
+  'name': 'BridGenta.de',
+  'publisher': { '@id': orgId },
+  'description': 'Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.'
+};
+
+// Define dynamic Breadcrumbs
+const pathSegments = pathname.split('/').filter(Boolean);
+const breadcrumbItems = [
+  {
+    '@type': 'ListItem',
+    'position': 1,
+    'item': {
+      '@id': siteUrl,
+      'name': 'Startseite'
+    }
+  }
+];
+
+let accumulatedPath = '';
+pathSegments.forEach((segment, index) => {
+  accumulatedPath += `/${segment}`;
+  
+  // Format the name nicely based on the path
+  let name = segment;
+  if (segment === 'projects') name = 'Projekte';
+  else if (segment === 'about') name = 'Über mich';
+  else if (segment === 'contact') name = 'Kontakt';
+  else if (segment === 'impressum') name = 'Impressum';
+  else if (segment === 'datenschutz') name = 'Datenschutz';
+  else if (project && segment.startsWith('project-')) name = project.title;
+  else {
+    // Capitalize first letter as fallback
+    name = segment.charAt(0).toUpperCase() + segment.slice(1);
+  }
+
+  breadcrumbItems.push({
+    '@type': 'ListItem',
+    'position': index + 2,
+    'item': {
+      '@id': `${siteUrl}${accumulatedPath}`,
+      'name': name
+    }
+  });
+});
+
+const breadcrumbListSchema = {
+  '@type': 'BreadcrumbList',
+  '@id': `${currentUrl}#breadcrumb`,
+  'itemListElement': breadcrumbItems
+};
+
+// Define voice search / speakable specification
+const speakableSchema = {
+  '@type': 'SpeakableSpecification',
+  'cssSelector': ['h1', '.lede', '.tina-content p']
+};
+
+// Compile final graph
+const graph = [
+  personSchema,
+  organizationSchema,
+  websiteSchema,
+  breadcrumbListSchema
+];
+
+// If on a project page, inject project schema
+if (project) {
+  const projectSchema = {
+    '@type': 'SoftwareApplication',
+    '@id': `${currentUrl}#project`,
+    'name': project.title,
+    'applicationCategory': project.category,
+    'softwareRequirements': project.technologies,
+    'description': project.description || description,
+    'url': currentUrl,
+    'creator': { '@id': personId },
+    'publisher': { '@id': orgId },
+    'developmentStatus': project.status === 'In Entwicklung' ? 'https://schema.org/ActiveActionStatus' : 'https://schema.org/PotentialActionStatus'
+  };
+  graph.push(projectSchema);
+}
+
+// Wrap the main WebPage context
+const webpageSchema = {
+  '@context': 'https://schema.org',
+  '@graph': graph,
+  'speakable': speakableSchema
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(webpageSchema)}></script>
