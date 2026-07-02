@@ -774,28 +774,65 @@ section[id] { scroll-margin-top: 100px; }
 .portrait-card {
   border-radius: var(--radius-l);
   aspect-ratio: 4/5;
-  background: 
-    linear-gradient(rgba(194, 24, 91, 0.1), rgba(123, 30, 87, 0.2)),
-    url('/images/FDPP-001.webp') no-repeat center center / cover;
+  background: url('/images/FDPP-001.webp') no-repeat center center / cover;
   position: relative;
   display: flex;
   align-items: flex-end;
   padding: var(--space-3);
   box-shadow: var(--shadow-lift);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s ease;
 }
-.portrait-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: var(--shadow-lift);
+.portrait-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(155deg, rgba(252, 228, 236, 0.25) 0%, rgba(248, 187, 208, 0.4) 100%);
+  transition: opacity 0.35s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.portrait-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(155deg, rgba(194, 24, 91, 0.15) 0%, rgba(123, 30, 87, 0.35) 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+.portrait-card:hover,
+.portrait-card:focus-within {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12), 0 8px 10px rgba(0, 0, 0, 0.06);
+}
+.portrait-card:hover::after,
+.portrait-card:focus-within::after {
+  opacity: 1;
 }
 .portrait-card .tag-overlay {
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.95);
   border-radius: var(--radius-m);
   padding: 0.9rem 1.1rem;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-dark);
   box-shadow: var(--shadow-card);
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  width: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait-card {
+    transform: none !important;
+    transition: none !important;
+  }
+  .portrait-card::before,
+  .portrait-card::after {
+    transition: none !important;
+  }
 }
 
 .timeline { display: flex; flex-direction: column; gap: var(--space-3); }
