@@ -782,7 +782,6 @@ section[id] { scroll-margin-top: 100px; }
   align-items: flex-end;
   padding: var(--space-3);
   box-shadow: var(--shadow-lift);
-  clip-path: polygon(0 0, 68% 0, 68% 18%, 100% 18%, 100% 100%, 0 100%);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .portrait-card:hover {
