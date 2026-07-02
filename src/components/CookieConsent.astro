@@ -1,0 +1,123 @@
+---
+---
+<div id="cookie-consent-banner" class="cookie-banner" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-desc" aria-hidden="true" style="display: none;">
+  <div class="cookie-banner__content">
+    <h3 id="cookie-title">Datenschutzeinstellungen</h3>
+    <p id="cookie-desc">
+      Wir verwenden nur notwendige Cookies für den Betrieb dieser Website. Optionale Dienste werden nur nach Ihrer Zustimmung aktiviert. Sie können Ihre Auswahl jederzeit ändern.
+    </p>
+    
+    <div id="cookie-details" class="cookie-banner__details" style="display: none;">
+      <div class="cookie-option">
+        <label>
+          <input type="checkbox" id="cookie-opt-necessary" checked disabled aria-disabled="true">
+          <span><strong>Notwendig</strong> (Immer aktiv) – Erforderlich für den technischen Betrieb der Webseite.</span>
+        </label>
+      </div>
+      <div class="cookie-option">
+        <label>
+          <input type="checkbox" id="cookie-opt-optional">
+          <span><strong>Optionale Dienste</strong> – Ermöglicht zukünftige erweiterte Komfortfunktionen.</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="cookie-banner__links">
+      <a href="/datenschutz">Datenschutzerklärung</a>
+      <span class="sep">·</span>
+      <a href="/impressum">Impressum</a>
+    </div>
+    
+    <div class="cookie-banner__actions">
+      <button class="btn btn-outline btn-sm" id="btn-cookie-necessary">Nur notwendige</button>
+      <button class="btn btn-outline btn-sm" id="btn-cookie-settings">Einstellungen</button>
+      <button class="btn btn-primary btn-sm" id="btn-cookie-all">Alle akzeptieren</button>
+      <button class="btn btn-primary btn-sm" id="btn-cookie-save" style="display: none;">Auswahl speichern</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const banner = document.getElementById("cookie-consent-banner");
+    const btnNecessary = document.getElementById("btn-cookie-necessary");
+    const btnAll = document.getElementById("btn-cookie-all");
+    const btnSettings = document.getElementById("btn-cookie-settings");
+    const btnSave = document.getElementById("btn-cookie-save");
+    const details = document.getElementById("cookie-details");
+    const optOptional = document.getElementById("cookie-opt-optional");
+    
+    const btnReopen = document.getElementById("btn-reopen-cookies");
+
+    const CONSENT_KEY = "cookie-consent-status";
+
+    const showBanner = () => {
+      banner.style.display = "block";
+      banner.setAttribute("aria-hidden", "false");
+    };
+
+    const hideBanner = () => {
+      banner.style.display = "none";
+      banner.setAttribute("aria-hidden", "true");
+    };
+
+    const loadConsent = () => {
+      const saved = localStorage.getItem(CONSENT_KEY);
+      if (!saved) {
+        showBanner();
+      } else {
+        const config = JSON.parse(saved);
+        if (config.optional) {
+          window.dispatchEvent(new CustomEvent("cookie-consent-updated", { detail: config }));
+        }
+      }
+    };
+
+    const saveConsent = (necessary, optional) => {
+      const config = { necessary, optional };
+      localStorage.setItem(CONSENT_KEY, JSON.stringify(config));
+      window.dispatchEvent(new CustomEvent("cookie-consent-updated", { detail: config }));
+      hideBanner();
+    };
+
+    btnNecessary.addEventListener("click", () => {
+      saveConsent(true, false);
+    });
+
+    btnAll.addEventListener("click", () => {
+      saveConsent(true, true);
+    });
+
+    btnSettings.addEventListener("click", () => {
+      details.style.display = "flex";
+      btnNecessary.style.display = "none";
+      btnSettings.style.display = "none";
+      btnAll.style.display = "none";
+      btnSave.style.display = "inline-block";
+      
+      const saved = localStorage.getItem(CONSENT_KEY);
+      if (saved) {
+        const config = JSON.parse(saved);
+        optOptional.checked = !!config.optional;
+      }
+    });
+
+    btnSave.addEventListener("click", () => {
+      saveConsent(true, optOptional.checked);
+    });
+
+    if (btnReopen) {
+      btnReopen.addEventListener("click", (e) => {
+        e.preventDefault();
+        details.style.display = "none";
+        btnNecessary.style.display = "inline-block";
+        btnSettings.style.display = "inline-block";
+        btnAll.style.display = "inline-block";
+        btnSave.style.display = "none";
+        showBanner();
+      });
+    }
+
+    loadConsent();
+  });
+</script>
