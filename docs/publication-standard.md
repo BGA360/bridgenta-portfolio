@@ -2,6 +2,9 @@
 
 Dieses Dokument definiert den permanenten Publikationsstandard für alle Fallstudien und Praxisprojekte auf BridGenta.de. Ziel ist es, fachliche Exzellenz und Arbeitsweise überzeugend nachzuweisen, während gleichzeitig geistiges Eigentum, sensible Kundendaten und persönliche Informationen geschützt bleiben.
 
+> [!NOTE]
+> Dieses Dokument ist Teil der allgemeinen [BridGenta Publikations-Governance & Asset-Klassifizierung](file:///c:/antigravity/statichtmlpro/fdrefs/docs/publication-governance.md). Alle Veröffentlichungen müssen deren Sicherheitsklassen (PICS) und Bildrechte (FDPP-Standard) einhalten.
+
 ---
 
 ## 1. Das PEPA-Prinzip (Public Evidence, Protected Assets)

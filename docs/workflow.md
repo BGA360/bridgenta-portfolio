@@ -65,3 +65,14 @@ Our GitHub Actions pipeline [.github/workflows/deploy.yml](file:///c:/antigravit
 2. **Review requirement**: All PRs require at least **1 approving review** from a designated owner before they can be merged.
 3. **Conversation Resolution**: All review threads and comments must be marked as "Resolved" before merging.
 4. **Explicit Instruction**: Even if approved and CI passes, **never merge automatically**. Merges should only be triggered after the owner explicitly instructs to merge.
+
+---
+
+## 6. Publication Governance & Content Security
+All public contributions, content revisions, screenshots, diagrams, and assets must comply with the [BridGenta Publication Governance](file:///c:/antigravity/statichtmlpro/fdrefs/docs/publication-governance.md).
+
+Prior to merging any PR containing content changes, the reviewer must check that:
+* It conforms to the **PEPA (Public Evidence, Protected Assets)** principle.
+* It follows the **Three Artifact Rule** for project case studies.
+* All portraits follow the **FDPP-###** standard.
+* The PR passes the **Social Media** and **Evidence** tests as outlined in the governance checklist.
