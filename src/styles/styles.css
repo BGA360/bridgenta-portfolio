@@ -774,9 +774,9 @@ section[id] { scroll-margin-top: 100px; }
 .portrait-card {
   border-radius: var(--radius-l);
   aspect-ratio: 4/5;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.25), transparent 50%),
-    linear-gradient(155deg, var(--magenta) 0%, var(--magenta-deep) 100%);
+  background: 
+    linear-gradient(rgba(194, 24, 91, 0.1), rgba(123, 30, 87, 0.2)),
+    url('/images/FDPP-001.webp') no-repeat center center / cover;
   position: relative;
   display: flex;
   align-items: flex-end;
