@@ -1,5 +1,6 @@
 ---
 import Schema from '../components/Schema.astro';
+import CookieConsent from '../components/CookieConsent.astro';
 import { getCollection } from 'astro:content';
 
 interface Props {
@@ -199,6 +200,7 @@ import '../styles/styles.css';
             <li><a href="/contact">Kontakt</a></li>
             <li><a href="/impressum">Impressum</a></li>
             <li><a href="/datenschutz">Datenschutz</a></li>
+            <li><button id="btn-reopen-cookies" class="footer-btn-link">Cookie-Einstellungen</button></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -228,6 +230,8 @@ import '../styles/styles.css';
       </div>
     </div>
   </footer>
+
+  <CookieConsent />
 
   <script src="../scripts/script.js"></script>
 </body>
