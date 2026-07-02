@@ -7,46 +7,67 @@ description: "Persönliches Entwicklungsprojekt zur praktischen Erprobung von AI
 ---
 
 ## 1. Projektübersicht
-AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung und Erprobung von Suchmechanismen in KI-gestützten Systemen (Answer Engine Optimization und Generative Engine Optimization). Die Software analysiert Web-Inhalte auf Entity-Klarheit, strukturierte Daten und Antwortqualität, um die Sichtbarkeit und korrekte Zitierbarkeit in modernen KI-Suchmaschinen (wie Perplexity, ChatGPT Search und Google Gemini) zu bewerten.
+AEOcortex is ein persönliches Entwicklungsprojekt zur praktischen Untersuchung und Erprobung von Suchmechanismen in KI-gestützten Systemen (Answer Engine Optimization und Generative Engine Optimization).
+
+Ziel des Projekts ist es, Web-Inhalte systematisch auf Entity-Klarheit, strukturierte Daten und Lesbarkeit hin zu analysieren. Dadurch soll die Sichtbarkeit und korrekte Zitierbarkeit von Webinhalten in modernen KI-Suchmaschinen (wie Perplexity, ChatGPT Search und Google Gemini) bewertet und optimiert werden.
 
 ## 2. Die Herausforderung
-Klassische SEO-Methoden basieren primär auf Keywords und Backlinks. KI-Modelle interpretieren Inhalte hingegen kontextuell und greifen auf strukturierte Wissensgraphen zurück. Die technische Herausforderung bestand darin, eine Analyse-Infrastruktur aufzubaufenden, die:
-* **Antwortqualität**: Die Eindeutigkeit von Textpassagen für LLM-Parser bewertet.
-* **Semantische Dichte**: Die Vollständigkeit von Schema-Auszeichnungen misst.
-* **Crawler-Optimierung**: Die Zugänglichkeit von robots.txt und Crawl-Directives sichert.
+Klassische SEO-Methoden basieren primär auf Keywords und Backlinks. KI-Modelle interpretieren Inhalte hingegen kontextuell und greifen auf strukturierte Wissensgraphen zurück. Die technische Herausforderung bestand darin, eine Analyse-Infrastruktur aufzubauen, um Antwortqualität (Eindeutigkeit für LLM-Parser), semantische Dichte (Vollständigkeit von Schema-Auszeichnungen) und Crawler-Optimierung (robots.txt, Sitemap) präzise bewerten zu können.
 
-## 3. Technische Entscheidungen
-* **Modulare JavaScript-Architektur**: Strukturierung der Analyse-Logik in unabhängige Module (Entity-Prüfer, Schema-Prüfer, SEO-Prüfer), um das System erweiterbar zu halten.
-* **Static Site / Astro**: Der Dokumentationsteil und die Auswertungen basieren auf Astro, um ein extrem schnelles und barrierefreies Web-Interface zu bieten.
-* **Strukturierte JSON-LD Vorlagen**: Bereitstellung standardisierter semantischer Graphmodelle für eine schnelle und fehlerfreie Entity-Verknüpfung.
+## 3. Meine Rolle & Beitrag
+Ich bin der alleinige Initiator und Entwickler dieses Forschungsprojekts:
+* **Entwicklung der Analyse-Logik**: Konzeption und Programmierung der modular aufgebauten JavaScript-Prüfmodule.
+* **Architektur**: Aufbau der static-site-basierten Dokumentations- und Auswertungsoberfläche mittels Astro.
+* **Modellierung**: Entwurf strukturierter JSON-LD-Vorlagen zur semantischen Verknüpfung komplexer Entity-Beziehungen.
+* **Evaluation**: Praktische Erprobung und Validierung der Analyse-Ergebnisse an realen Web-Inhalten.
 
-## 4. Lösungsarchitektur
-Das folgende Systemdiagramm beschreibt den Datenfluss des Analyse- und Bewertungsprozesses von AEOcortex:
+## 4. Technologie-Stack
+* **Programmiersprache**: Modern JavaScript (Node.js für Parser-Skripte, ES6+ für UI-Interaktion).
+* **Framework**: Astro (für die statische static-site Dokumentation).
+* **Parser-Bibliotheken**: Cheerio (zur HTML-Struktur-Analyse).
+* **Datenformate**: JSON-LD, Dublin Core RDF.
 
-```mermaid
-graph TD
-    HTML[Webseiten-HTML] -->|Modulares Parsing| Parser[HTML & Metadaten Parser]
-    Parser -->|Extrahiere JSON-LD| SchemaCheck[Schema- & Entity-Prüfer]
-    Parser -->|Extrahiere Textabschnitte| TextCheck[Lese- & Antwort-Kalkulator]
-    SchemaCheck -->|Entity-Score| Reporter[Berichts- & Empfehlungs-Generator]
-    TextCheck -->|AEO-Score| Reporter
-    Reporter -->|Interaktiver Bericht| User([Entwickler / Webmaster])
+## 5. Ergebnisse
+* **Entity-Prüfung**: Zuverlässige Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen.
+* **Lesbarkeits-Indikator**: Funktionierende Heuristik zur Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle.
+* **Prozess-Optimierung**: Erfolgreiche Beseitigung struktureller Crawling-Barrieren (wie fehlerhafte robots.txt-Direktiven) bei realen Testprojekten.
+
+## 6. Projektdokumentation (Artefakte)
+
+### Artefakt 1: Projekt-Visualisierung
+*(Hinweis: Da sich das Tool in aktiver Entwicklung befindet, zeigt diese Skizze das konzeptionelle Berichts-Layout.)*
+
+```
++-----------------------------------+
+|             AEOcortex             |
+|                                   |
+|   [ URL-Analyse: bridgenta.de ]   |
+|   > Entity-Score: 95%             |
+|   > AEO-Auslesbarkeit: Hoch       |
+|                                   |
+|   Empfehlungen:                   |
+|   * robots.txt Direktive korrigiert|
+|   * Dublin-Core Tags hinzufügen   |
++-----------------------------------+
 ```
 
-## 5. Hauptmerkmale
-* **Entity-Prüfung**: Abgleich eingebetteter Datenstrukturen auf syntaktische Korrektheit und logische Verknüpfung (z. B. WebPage -> Person -> Organization).
-* **Auslesbarkeits-Indikator**: Algorithmus zur Bewertung der Informationsdichte von Textabschnitten zur besseren Erfassung durch LLMs.
-* **Optimierungsempfehlungen**: Automatisierte Erstellung konkreter Korrekturvorschläge für Schema-Graphen und Crawl-Direktiven.
+### Artefakt 2: High-Level Ablaufdiagramm
+Das folgende Diagramm beschreibt den Datenfluss des Analyse- und Bewertungsprozesses von AEOcortex:
 
-## 6. Entwicklungsprozess
-* **Versionskontrolle**: Git-Zweige zur getrennten Entwicklung von Analysemodulen und UI-Komponenten.
-* **Automatisierte Qualitätsprüfungen**: Integrierte Validierungen prüfen die Ausgabeformate (JSON, XML) auf Standardkonformität.
-* **Lighthouse-Audits**: Absicherung hervorragender Ladezeiten und Barrierefreiheit der Berichts-Schnittstellen.
+```mermaid
+graph LR
+    HTML[Webseiten-HTML] --> Parser[HTML-Parser]
+    Parser --> SchemaCheck[Schema- & Entity-Prüfung]
+    Parser --> TextCheck[Lesbarkeits-Kalkulation]
+    SchemaCheck --> Report[Berichts-Generierung]
+    TextCheck --> Report
+```
 
-## 7. Ergebnisse
-* **Validierung**: Erfolgreicher Einsatz des Tools zur Bereinigung der Entity-Graphen auf BridGenta.de.
-* **Fehlerreduktion**: Frühzeitiges Erkennen fehlerhafter robots.txt-Direktiven und nicht-kanonischer Drift-URLs.
-* **Lernfortschritt**: Tiefergehendes Verständnis der Algorithmen hinter generativen Antwortmaschinen.
+### Artefakt 3: Ergebnis-Nachweis
+Vergleich der Fehlererkennungsrate vor und nach dem Einsatz der AEOcortex-Module:
 
-## 8. Lernergebnisse
-KI-Suchmaschinen gewichten strukturierte Daten und eindeutige, präzise Aussagen weitaus höher als klassische Crawl-Indikatoren. Ein systematischer Analyse-Workflow ist der beste Schutz gegen unvollständige oder fehlerhafte Interpretationen durch LLMs.
+| Prüfbereich | Erkennung manuell | Erkennung mit AEOcortex-Skripten |
+| :--- | :--- | :--- |
+| JSON-LD Validierungsfehler | Sporadisch | 100% automatisiert |
+| robots.txt Konflikte | Schwer auffindbar | Sofortige Warnmeldung |
+| LLM-Crawler Barrieren | Unbekannt | Detaillierte Analyse der Auslesbarkeit |
