@@ -213,3 +213,30 @@ const badgeClass = getBadgeClass(entry.data.status);
     text-align: right;
   }
 </style>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const mermaidBlocks = document.querySelectorAll(".language-mermaid");
+    if (mermaidBlocks.length > 0) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js";
+      script.onload = () => {
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+        
+        mermaidBlocks.forEach((block, index) => {
+          const rawCode = block.textContent;
+          const diagramContainer = document.createElement("div");
+          diagramContainer.className = "mermaid";
+          diagramContainer.id = `mermaid-${index}`;
+          diagramContainer.textContent = rawCode;
+          
+          const preElement = block.closest("pre") || block;
+          preElement.parentNode.replaceChild(diagramContainer, preElement);
+        });
+        
+        mermaid.init(undefined, document.querySelectorAll(".mermaid"));
+      };
+      document.head.appendChild(script);
+    }
+  });
+</script>
