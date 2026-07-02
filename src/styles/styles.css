@@ -1183,3 +1183,15 @@ section[id] { scroll-margin-top: 100px; }
   .container { padding: 0 var(--space-3); }
   .nav-wrap { padding: 0 var(--space-2); }
 }
+
+/* Mermaid Diagrams Container Styling */
+.mermaid {
+  margin: var(--space-4) 0;
+  text-align: center;
+  overflow-x: auto;
+  background: var(--card-bg);
+  border-radius: var(--radius-m);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
