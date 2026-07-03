@@ -24,44 +24,20 @@ In meiner Rolle als technischer Webmaster verantworte ich die Konzeption, das Wo
 
 ## 4. Public Artifacts
 
-### Artefakt 1: Projekt-Visualisierung
-*(Hinweis: Zum Schutz des unveröffentlichten Beta-Produkts zeigt diese Skizze die Handoff-Pipeline.)*
+### Artefakt 1: Projekt-Visualisierung (Hero)
+Das Einstiegsportal zur Visualisierung des rekonstruierten Systems:
 
-```
-+-----------------------------------+
-|        BridGenta Pipeline         |
-|                                   |
-|   [ Lovable UI ]                  |
-|         |                         |
-|         v                         |
-|   [ Handoff Branch ]              |
-|         |  (Review)               |
-|         v                         |
-|   [ Feature Branch ]              |
-|         |  (CI-Build Pass)        |
-|         v                         |
-|   [ Production ]                  |
-+-----------------------------------+
-```
+![BridGenta Hero-Ansatz](/images/bga-portfolio/BG-PA01-Hero.webp)
 
 ### Artefakt 2: High-Level Ablaufdiagramm
-Das folgende Diagramm veranschaulicht die strikte Systemgrenze zwischen dem KI-gestützten Frontend-Generator und dem qualitätsgesicherten Feature-Repository:
+Das Ablaufdiagramm zur Entkopplung der Handoff-Pipeline und automatisierten CI-Prüfungen:
 
-```mermaid
-graph LR
-    AI[AI Builder / Lovable] -->|UI-Code generieren| Handoff[Handoff Commit]
-    Handoff -->|Manuelles Review| Git[Feature Branch]
-    Git -->|Automatischer Build| Deploy[Bereitstellung]
-```
+![BridGenta Handoff Workflow](/images/bga-portfolio/BG-PA02-Workflow.webp)
 
-### Artefakt 3: Ergebnis-Nachweis
-Vergleich der Fehlerprävention bei unstrukturiertem vs. strukturiertem KI-Einsatz:
+### Artefakt 3: Ergebnis-Nachweis (Audit)
+Der nachweisbare Audit-Bericht der Plattform-Analytik und des Qualitätsprüfungs-Systems:
 
-| Risiko | Unstrukturierter KI-Einsatz | Strukturierter KI-Einsatz (BPS) |
-| :--- | :--- | :--- |
-| Code-Duplikate | Sehr hoch (Code Bloat) | Gering (Manuelles Review & Refactoring) |
-| Geheimnis-Leaks | Hoch (Schlüssel im Code) | Ausgeschlossen (Isolierte Kontexte) |
-| Systemstabilität | Unvorhersehbar | Garantiert durch automatisierte Build-Prüfung |
+![BridGenta Audit Ergebnis](/images/bga-portfolio/BG-PA03-Audit.webp)
 
 ## 5. Results
 * **Handoff-Stabilität**: Erfolgreiche Vermeidung unkontrollierter Code-Überschreibungen durch klar definierte Git-Handoff-Zweige.
