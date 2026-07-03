@@ -24,20 +24,28 @@ In meiner Rolle als technischer Webmaster verantworte ich die Konzeption, das Wo
 
 ## 4. Public Artifacts
 
-### Artefakt 1: Projekt-Visualisierung (Hero)
-Das Einstiegsportal zur Visualisierung des rekonstruierten Systems:
+### Hero
+<figure>
+  <img src="/images/bga-portfolio/BG-PA01-Hero.webp" alt="BridGenta Reconstruction Platform illustrating structured modernization of legacy web applications while preserving architecture, experience, and business intent." width="1672" height="941" />
+</figure>
 
-![BridGenta Hero-Ansatz](/images/bga-portfolio/BG-PA01-Hero.webp)
+### Workspace
+<figure>
+  <img src="/images/bga-portfolio/BG-PA02-Workspace.webp" alt="BridGenta workspace interface used for structured reconstruction, project analysis, and privacy-first processing." loading="lazy" width="1600" height="900" />
+  <figcaption>Workspace for project reconstruction and structured analysis.</figcaption>
+</figure>
 
-### Artefakt 2: High-Level Ablaufdiagramm
-Das Ablaufdiagramm zur Entkopplung der Handoff-Pipeline und automatisierten CI-Prüfungen:
+### Workflow
+<figure>
+  <img src="/images/bga-portfolio/BG-PA03-Workflow.webp" alt="BridGenta reconstruction workflow illustrating analysis, preservation, validation, and modernization stages." loading="lazy" width="1600" height="900" />
+  <figcaption>Structured reconstruction workflow demonstrating project analysis and modernization.</figcaption>
+</figure>
 
-![BridGenta Handoff Workflow](/images/bga-portfolio/BG-PA02-Workflow.webp)
-
-### Artefakt 3: Ergebnis-Nachweis (Audit)
-Der nachweisbare Audit-Bericht der Plattform-Analytik und des Qualitätsprüfungs-Systems:
-
-![BridGenta Audit Ergebnis](/images/bga-portfolio/BG-PA03-Audit.webp)
+### Governance
+<figure>
+  <img src="/images/bga-portfolio/BG-PA04-Governance.webp" alt="BridGenta governance interface demonstrating audit, validation, and reconstruction quality controls." loading="lazy" width="1600" height="900" />
+  <figcaption>Governance and validation layer supporting transparent reconstruction decisions.</figcaption>
+</figure>
 
 ## 5. Results
 * **Handoff-Stabilität**: Erfolgreiche Vermeidung unkontrollierter Code-Überschreibungen durch klar definierte Git-Handoff-Zweige.

@@ -66,7 +66,13 @@ const getBadgeClass = (status) => {
 
           return (
             <article class="project-card">
-              <div class="project-card__media"><span>{initials}</span></div>
+              <div class="project-card__media">
+                {project.slug === 'bridgenta' ? (
+                  <img src="/images/bga-portfolio/BG-PA00-Card.webp" alt="BridGenta project overview showing the public presentation of the legacy application reconstruction platform." loading="lazy" width="1672" height="941" style="width: 100%; height: 100%; object-fit: cover;" />
+                ) : (
+                  <span>{initials}</span>
+                )}
+              </div>
               <div class="project-card__top">
                 <span class="project-card__cat">{project.data.category}</span>
                 <span class={`badge ${badgeClass}`}>{project.data.status}</span>

@@ -65,7 +65,13 @@ const badgeClass = getBadgeClass(entry.data.status);
         </nav>
       </div>
 
-      <div class="hero-banner"><span>{initials}</span></div>
+      {entry.slug === 'bridgenta' ? (
+        <div class="hero-banner hero-banner--image">
+          <img src="/images/bga-portfolio/BG-PA01-Hero.webp" alt="BridGenta Reconstruction Platform illustrating structured modernization of legacy web applications while preserving architecture, experience, and business intent." width="1672" height="941" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;" />
+        </div>
+      ) : (
+        <div class="hero-banner"><span>{initials}</span></div>
+      )}
 
       <span class={`badge ${badgeClass}`}>{entry.data.status}</span>
       <h1 style="margin-top:0.9rem; font-size:clamp(2rem,4vw,2.8rem);">{entry.data.title}</h1>
@@ -164,6 +170,21 @@ const badgeClass = getBadgeClass(entry.data.status);
     margin: 1.5rem 0;
     box-shadow: var(--shadow-soft);
     display: block;
+  }
+  .hero-banner--image {
+    background: none !important;
+  }
+  .hero-banner--image::after {
+    display: none !important;
+  }
+  .tina-content figure {
+    margin: 2rem 0;
+  }
+  .tina-content figcaption {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 0.6rem;
   }
 
   /* Related Projects Styles */
