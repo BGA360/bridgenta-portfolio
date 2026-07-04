@@ -113,57 +113,7 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
       <!-- Main content and Sidebar Grid -->
       <div class="detail-grid" style="margin-top: var(--space-5);">
         <div class="tina-content">
-          {entry.data.overview ? (
-            /* Structured Golden Template Layout */
-            <>
-              <PortfolioSection id="overview" title={sectionTitles.overview}>
-                <p style="white-space: pre-line;">{entry.data.overview}</p>
-              </PortfolioSection>
-
-              <PortfolioSection id="problem" title={sectionTitles.problem}>
-                <p style="white-space: pre-line;">{entry.data.problem}</p>
-              </PortfolioSection>
-
-              <PortfolioSection id="approach" title={sectionTitles.approach}>
-                {entry.data.approach?.principles && (
-                  <ul class="principles-list">
-                    {entry.data.approach.principles.map((p) => (
-                      <li>
-                        <strong>{p.title}</strong> — {p.description}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </PortfolioSection>
-
-              {entry.data.artifacts && (
-                <PortfolioSection id="action" title={sectionTitles.action}>
-                  <div class="artifacts-wrapper">
-                    {entry.data.artifacts.map((a) => (
-                      <EngineeringPhaseCard 
-                        image={a.image}
-                        title={a.title}
-                        description={a.description}
-                      />
-                    ))}
-                  </div>
-                </PortfolioSection>
-              )}
-
-              {entry.data.resultsGrid && (
-                <PortfolioSection id="results" title={sectionTitles.results}>
-                  <ResultsGrid results={entry.data.resultsGrid} />
-                </PortfolioSection>
-              )}
-
-              <PortfolioSection id="takeaways" title={sectionTitles.takeaways}>
-                <p style="white-space: pre-line;">{entry.data.takeaways}</p>
-              </PortfolioSection>
-            </>
-          ) : (
-            /* Fallback Markdown Body Rendering (Backward Compatibility) */
-            <Content />
-          )}
+          <Content />
 
           <a class="btn btn-secondary" href="/projects" style="margin-top: 2.5rem; display: inline-block;">
             ← Zurück zu allen Projekten
