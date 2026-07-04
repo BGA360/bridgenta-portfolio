@@ -1,11 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import PortfolioHero from '../components/portfolio/PortfolioHero.astro';
 import PortfolioSidebar from '../components/portfolio/PortfolioSidebar.astro';
-import PortfolioSection from '../components/portfolio/PortfolioSection.astro';
-import EngineeringPhaseCard from '../components/portfolio/EngineeringPhaseCard.astro';
-import ResultsGrid from '../components/portfolio/ResultsGrid.astro';
 import RelatedProjects from '../components/portfolio/RelatedProjects.astro';
 import ProjectCTA from '../components/portfolio/ProjectCTA.astro';
 
@@ -31,20 +27,6 @@ const currentIndex = projects.findIndex((p) => p.slug === entry.slug);
 const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length];
 const nextProject = projects[(currentIndex + 1) % projects.length];
 
-// Generate the 2-letter initials for the fallback banner
-const getInitials = (title) => {
-  if (title === 'FD-ESS') return 'FD';
-  const clean = title.replace(/[^a-zA-Z]/g, '');
-  if (clean.length >= 2) {
-    const uppers = clean.split('').filter(c => c === c.toUpperCase() && c !== c.toLowerCase());
-    if (uppers.length >= 2) return uppers.slice(0, 2).join('');
-    return clean.slice(0, 2).toUpperCase();
-  }
-  return title.slice(0, 2).toUpperCase();
-};
-
-const initials = getInitials(entry.data.title);
-
 // Get the corresponding badge class based on status
 const getBadgeClass = (status) => {
   if (status === 'In Entwicklung') return 'badge--dev';
@@ -55,16 +37,6 @@ const getBadgeClass = (status) => {
 };
 
 const badgeClass = getBadgeClass(entry.data.status);
-
-// Set section titles with frontmatter overrides
-const sectionTitles = {
-  overview: entry.data.sectionTitles?.overview || "Project Overview",
-  problem: entry.data.sectionTitles?.problem || "Problem to Solve",
-  approach: entry.data.sectionTitles?.approach || "Engineering Approach",
-  action: entry.data.sectionTitles?.action || "Reconstruction in Action",
-  results: entry.data.sectionTitles?.results || "Results",
-  takeaways: entry.data.sectionTitles?.takeaways || "Key Takeaways",
-};
 
 // Set hero image for BridGenta
 const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-Hero.webp' : undefined;
@@ -81,27 +53,55 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
     description: entry.data.description
   }}
 >
-  <section class="section section--tight">
+  <!-- Premium Dark Hero Section -->
+  <header class="project-hero">
     <div class="container">
-      <!-- Breadcrumb navigation -->
-      <div class="breadcrumb-card" style="margin-bottom: var(--space-4);">
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="/">Startseite</a><span class="sep">/</span>
-          <a href="/projects">Projekte</a><span class="sep">/</span>
-          <span>{entry.data.title}</span>
-        </nav>
+      <!-- Breadcrumb navigation inside hero -->
+      <nav class="breadcrumb breadcrumb--light" aria-label="Breadcrumb">
+        <a href="/">Startseite</a><span class="sep">/</span>
+        <a href="/projects">Projekte</a><span class="sep">/</span>
+        <span class="current">{entry.data.title}</span>
+      </nav>
+
+      <div class="project-hero__content" data-reveal>
+        <span class={`badge ${badgeClass} project-hero__badge`}>{entry.data.status}</span>
+        <h1 class="project-hero__title">{entry.data.title}</h1>
+        <p class="project-hero__subtitle">{entry.data.subtitle || entry.data.category}</p>
+        <p class="project-hero__description">{entry.data.description}</p>
       </div>
+    </div>
 
-      <!-- Hero Header -->
-      <PortfolioHero 
-        title={entry.data.title}
-        subtitle={entry.data.subtitle || entry.data.category}
-        status={entry.data.status}
-        heroImage={heroImage}
-        initials={initials}
-        badgeClass={badgeClass}
-      />
+    <!-- Symmetrical Centered Platform / Bridge Transition -->
+    <div class="hero-bridge">
+      <div class="hero-bridge__left" aria-hidden="true">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M 0,100 L 65,100 C 80,100 100,60 100,20 L 100,100 Z" fill="white" />
+        </svg>
+      </div>
+      <div class="hero-bridge__center">
+        <div class="bridge-card">
+          <div class="bridge-avatar-group">
+            <div class="avatar-circle c-git">Git</div>
+            <div class="avatar-circle c-ci">CI</div>
+            <div class="avatar-circle c-sec">Sec</div>
+          </div>
+          <div class="bridge-rating">
+            <div class="bridge-row">Strukturierte Softwareentwicklung</div>
+            <div class="bridge-label">Versionierung, automatisierte Qualitätsprüfungen und nachvollziehbare Prozesse.</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-bridge__right" aria-hidden="true">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M 100,100 L 35,100 C 20,100 0,60 0,20 L 0,100 Z" fill="white" />
+        </svg>
+      </div>
+    </div>
+  </header>
 
+  <!-- Continuous Canvas Content Area -->
+  <section class="project-content-section">
+    <div class="container">
       <!-- Notice for private beta / test phases -->
       {entry.data.notice && (
         <div class="notice">
@@ -110,15 +110,36 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
         </div>
       )}
 
+      <!-- Framed Product Hero Image / Showcase Dashboard -->
+      {heroImage && (
+        <div class="project-showcase-frame" data-reveal>
+          <div class="browser-header">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="project-showcase-image-wrapper">
+            <img 
+              src={heroImage} 
+              alt={`${entry.data.title} Product Showcase Dashboard`} 
+              class="project-showcase-image"
+              loading="eager"
+              width="1672"
+              height="941"
+            />
+          </div>
+        </div>
+      )}
+
       <!-- Main content and Sidebar Grid -->
-      <div class="detail-grid" style="margin-top: var(--space-5);">
-        <div class="tina-content">
+      <div class="detail-grid">
+        <article class="tina-content" data-reveal>
           <Content />
 
-          <a class="btn btn-secondary" href="/projects" style="margin-top: 2.5rem; display: inline-block;">
+          <a class="btn btn-secondary" href="/projects" style="margin-top: 3.5rem; display: inline-block;">
             ← Zurück zu allen Projekten
           </a>
-        </div>
+        </article>
 
         <!-- Sticky Sidebar -->
         <PortfolioSidebar 
@@ -155,106 +176,356 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
   )}
 </Layout>
 
+<style>
+  /* Local styling for project template layout */
+  .project-hero {
+    position: relative;
+    background: var(--tech-gradient);
+    padding: 8.5rem var(--space-2) 7.5rem;
+    color: #ffffff;
+    overflow: hidden;
+  }
+  
+  /* Background grid pattern inside hero */
+  .project-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(rgba(255, 255, 255, 0.05) 1.5px, transparent 1.5px),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpath d='M20,20 L60,20 L80,40 L160,40' stroke='rgba(255, 255, 255, 0.02)' stroke-width='1.5' fill='none'/%3E%3Ccircle cx='160' cy='40' r='3' fill='rgba(194, 24, 91, 0.2)'/%3E%3C/svg%3E");
+    background-size: 24px 24px, 200px 200px;
+    background-position: center;
+    opacity: 0.85;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .breadcrumb--light {
+    margin-bottom: var(--space-3);
+    font-size: 0.88rem;
+    position: relative;
+    z-index: 5;
+  }
+  .breadcrumb--light a {
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .breadcrumb--light a:hover {
+    color: #ffffff;
+  }
+  .breadcrumb--light .sep {
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0 var(--space-1);
+  }
+  .breadcrumb--light .current {
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  .project-hero__content {
+    max-width: 820px;
+    position: relative;
+    z-index: 5;
+  }
+  .project-hero__badge {
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+  .project-hero__title {
+    font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.12;
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+    font-family: var(--font-display);
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+  .project-hero__subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--magenta-soft);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+  }
+  .project-hero__description {
+    font-size: clamp(1rem, 1.8vw, 1.18rem);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .project-content-section {
+    background-color: #ffffff;
+    padding: var(--space-5) 0;
+    position: relative;
+    z-index: 15;
+  }
+
+  /* Premium framed showcase style for hero image */
+  .project-showcase-frame {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+    margin-bottom: var(--space-5);
+    background: #ffffff;
+  }
+  .browser-header {
+    height: 38px;
+    background: #f4f4f6;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 16px;
+  }
+  .browser-header .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #e4e4e7;
+  }
+  .browser-header .dot:nth-child(1) { background: #fca5a5; }
+  .browser-header .dot:nth-child(2) { background: #fef08a; }
+  .browser-header .dot:nth-child(3) { background: #bbf7d0; }
+  
+  .project-showcase-image-wrapper {
+    position: relative;
+    max-height: 520px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+  .project-showcase-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  @media (max-width: 768px) {
+    .project-hero {
+      padding: 7rem var(--space-2) 6rem;
+    }
+    .project-showcase-frame {
+      border-radius: var(--radius-m);
+      margin-bottom: var(--space-4);
+    }
+    .browser-header {
+      height: 28px;
+      padding-left: 10px;
+      gap: 4px;
+    }
+    .browser-header .dot {
+      width: 7px;
+      height: 7px;
+    }
+    .project-showcase-image-wrapper {
+      max-height: 300px;
+    }
+  }
+
+  /* Force clean global page transitions */
+  :global(body) {
+    background-color: #ffffff !important;
+  }
+  :global(.section) {
+    background-color: #ffffff !important;
+  }
+</style>
+
 <style is:global>
-  /* Format compiled Markdown body to match legacy detail-block styles */
+  /* Format compiled Markdown body to match premium case study details */
   .tina-content h2 {
     font-size: 1.45rem;
     font-weight: 700;
-    margin-top: 2rem;
-    margin-bottom: 0.8rem;
+    margin-top: 3.5rem;
+    margin-bottom: 1rem;
     color: var(--text-dark);
     font-family: var(--font-display);
     position: relative;
-    padding-bottom: 0.4rem;
-  }
-  .tina-content h2::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 32px;
-    height: 2px;
-    background: var(--magenta);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
   }
   .tina-content h2:first-of-type {
     margin-top: 0;
   }
+  
+  .tina-content h3 {
+    font-size: 1.18rem;
+    font-weight: 700;
+    margin-top: 2.2rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-dark);
+    font-family: var(--font-display);
+  }
+  
   .tina-content p {
     color: var(--text-muted);
-    line-height: 1.6;
+    line-height: 1.65;
     margin-bottom: 1.5rem;
     font-size: 1.05rem;
   }
+  
   .tina-content ul {
-    margin-bottom: 1.5rem;
-    padding-left: 1.2rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-    list-style-type: disc;
-  }
-  .tina-content li {
-    margin-bottom: 0.5rem;
-    font-size: 1.05rem;
-  }
-  .tina-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: var(--radius-m);
-    border: 1px solid var(--border);
-    margin: 1.5rem 0;
-    box-shadow: var(--shadow-soft);
-    display: block;
-  }
-  .tina-content figure {
-    margin: 2rem 0;
-  }
-  .tina-content figcaption {
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    text-align: center;
-    margin-top: 0.6rem;
-  }
-  .tina-content table {
-    width: 100%;
-    margin-bottom: 1.5rem;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-  }
-  .tina-content th,
-  .tina-content td {
-    padding: 0.75rem;
-    border: 1px solid var(--border);
-    text-align: left;
-  }
-  .tina-content th {
-    background: rgba(0, 0, 0, 0.02);
-    font-weight: 600;
-  }
-
-  .principles-list {
     margin-bottom: 1.5rem;
     padding-left: 0;
     list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
   }
-  .principles-list li {
-    margin-bottom: 0.8rem;
+  
+  .tina-content li {
     font-size: 1.05rem;
     line-height: 1.6;
     position: relative;
     padding-left: 1.5rem;
     color: var(--text-muted);
   }
-  .principles-list li::before {
+  .tina-content li::before {
     content: "→";
     position: absolute;
     left: 0;
     color: var(--magenta);
     font-weight: 700;
   }
-  .artifacts-wrapper {
+
+  /* Style figures as custom premium phase cards */
+  .tina-content figure {
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    margin: 2.5rem 0;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+  }
+  .tina-content figure:hover {
+    transform: translateY(-2px);
+    border-color: rgba(194, 24, 91, 0.25);
+  }
+  .tina-content figure img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+    margin: 0;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    box-shadow: none;
+    border-radius: 0;
+    transition: transform 0.5s ease;
+  }
+  .tina-content figure:hover img {
+    transform: scale(1.01);
+  }
+  .tina-content figcaption {
+    font-size: 0.94rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    margin: 0;
+    background: #ffffff;
+  }
+
+  /* Style markdown tables professionally */
+  .tina-content table {
+    width: 100%;
+    margin: 2rem 0;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    box-shadow: var(--shadow-soft);
+    border-radius: var(--radius-s);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .tina-content th,
+  .tina-content td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .tina-content th {
+    background: #f9fafb;
+    font-weight: 600;
+    color: var(--text-dark);
+    border-bottom: 2px solid var(--border);
+  }
+  .tina-content tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* HTML Results Grid Presentation Inside Markdown */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-3);
+    margin: 2rem 0;
+  }
+  .result-card {
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    padding: 1.5rem;
+    display: flex;
+    gap: 1.25rem;
+    box-shadow: var(--shadow-soft);
+    height: 100%; /* identical height */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .result-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(194, 24, 91, 0.25);
+    box-shadow: var(--shadow-lift);
+  }
+  .result-card__icon-wrapper {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(194, 24, 91, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--magenta);
+  }
+  .result-card__icon-wrapper svg {
+    width: 20px;
+    height: 20px;
+  }
+  .result-card__content {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    justify-content: flex-start;
+  }
+  .result-card__content h3 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 0.4rem 0;
+    font-family: var(--font-display);
+    line-height: 1.3;
+  }
+  .result-card__content p {
+    font-size: 0.94rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
