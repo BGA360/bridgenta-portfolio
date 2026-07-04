@@ -8,6 +8,44 @@ const projectCollection = defineCollection({
     status: z.string(),
     technologies: z.string(),
     description: z.string(),
+    
+    // Golden Template additions
+    subtitle: z.string().optional(),
+    timeline: z.string().optional(),
+    devStack: z.array(z.string()).optional(),
+    aiBuilders: z.array(z.string()).optional(),
+    role: z.string().optional(),
+    notice: z.string().optional(),
+    
+    // Section Title overrides
+    sectionTitles: z.object({
+      overview: z.string().optional(),
+      problem: z.string().optional(),
+      approach: z.string().optional(),
+      action: z.string().optional(),
+      results: z.string().optional(),
+      takeaways: z.string().optional(),
+    }).optional(),
+
+    // Structured items
+    artifacts: z.array(z.object({
+      image: z.string(),
+      title: z.string(),
+      description: z.string()
+    })).optional(),
+    resultsGrid: z.array(z.object({
+      icon: z.string().optional(),
+      title: z.string(),
+      description: z.string()
+    })).optional(),
+    cta: z.object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+      primaryText: z.string().optional(),
+      primaryLink: z.string().optional(),
+      secondaryText: z.string().optional(),
+      secondaryLink: z.string().optional()
+    }).optional()
   }),
 });
 
