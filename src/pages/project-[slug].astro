@@ -1,6 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import PortfolioHero from '../components/portfolio/PortfolioHero.astro';
+import PortfolioSidebar from '../components/portfolio/PortfolioSidebar.astro';
+import PortfolioSection from '../components/portfolio/PortfolioSection.astro';
+import EngineeringPhaseCard from '../components/portfolio/EngineeringPhaseCard.astro';
+import ResultsGrid from '../components/portfolio/ResultsGrid.astro';
+import RelatedProjects from '../components/portfolio/RelatedProjects.astro';
+import ProjectCTA from '../components/portfolio/ProjectCTA.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -24,7 +31,7 @@ const currentIndex = projects.findIndex((p) => p.slug === entry.slug);
 const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length];
 const nextProject = projects[(currentIndex + 1) % projects.length];
 
-// Generate the 2-letter initials for the hero banner
+// Generate the 2-letter initials for the fallback banner
 const getInitials = (title) => {
   if (title === 'FD-ESS') return 'FD';
   const clean = title.replace(/[^a-zA-Z]/g, '');
@@ -48,6 +55,19 @@ const getBadgeClass = (status) => {
 };
 
 const badgeClass = getBadgeClass(entry.data.status);
+
+// Set section titles with frontmatter overrides
+const sectionTitles = {
+  overview: entry.data.sectionTitles?.overview || "Project Overview",
+  problem: entry.data.sectionTitles?.problem || "Problem to Solve",
+  approach: entry.data.sectionTitles?.approach || "Engineering Approach",
+  action: entry.data.sectionTitles?.action || "Reconstruction in Action",
+  results: entry.data.sectionTitles?.results || "Results",
+  takeaways: entry.data.sectionTitles?.takeaways || "Key Takeaways",
+};
+
+// Set hero image for BridGenta
+const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-Hero.webp' : undefined;
 ---
 
 <Layout 
@@ -63,7 +83,8 @@ const badgeClass = getBadgeClass(entry.data.status);
 >
   <section class="section section--tight">
     <div class="container">
-      <div class="breadcrumb-card" style="margin-bottom: var(--space-3);">
+      <!-- Breadcrumb navigation -->
+      <div class="breadcrumb-card" style="margin-bottom: var(--space-4);">
         <nav class="breadcrumb" aria-label="Breadcrumb">
           <a href="/">Startseite</a><span class="sep">/</span>
           <a href="/projects">Projekte</a><span class="sep">/</span>
@@ -71,18 +92,17 @@ const badgeClass = getBadgeClass(entry.data.status);
         </nav>
       </div>
 
-      {entry.slug === 'bridgenta' ? (
-        <div class="hero-banner hero-banner--image">
-          <img src="/images/bga-portfolio/BG-PA01-Hero.webp" alt="BridGenta Reconstruction Platform illustrating structured modernization of legacy web applications while preserving architecture, experience, and business intent." width="1672" height="941" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;" />
-        </div>
-      ) : (
-        <div class="hero-banner"><span>{initials}</span></div>
-      )}
+      <!-- Hero Header -->
+      <PortfolioHero 
+        title={entry.data.title}
+        subtitle={entry.data.subtitle || entry.data.category}
+        status={entry.data.status}
+        heroImage={heroImage}
+        initials={initials}
+        badgeClass={badgeClass}
+      />
 
-      <span class={`badge ${badgeClass}`}>{entry.data.status}</span>
-      <h1 style="margin-top:0.9rem; font-size:clamp(2rem,4vw,2.8rem);">{entry.data.title}</h1>
-      <p class="lede" style="margin-top:0.6rem;">{entry.data.category}</p>
-
+      <!-- Notice for private beta / test phases -->
       {entry.data.notice && (
         <div class="notice">
           <h4>Hinweis zur privaten Beta</h4>
@@ -90,63 +110,121 @@ const badgeClass = getBadgeClass(entry.data.status);
         </div>
       )}
 
-      <div class="detail-grid" style="margin-top:var(--space-5);">
+      <!-- Main content and Sidebar Grid -->
+      <div class="detail-grid" style="margin-top: var(--space-5);">
         <div class="tina-content">
-          <Content />
+          {entry.data.overview ? (
+            /* Structured Golden Template Layout */
+            <>
+              <PortfolioSection id="overview" title={sectionTitles.overview}>
+                <p style="white-space: pre-line;">{entry.data.overview}</p>
+              </PortfolioSection>
 
-          <a class="btn btn-secondary" href="/projects" style="margin-top: 2.5rem; display: inline-block;">← Zurück zu allen Projekten</a>
+              <PortfolioSection id="problem" title={sectionTitles.problem}>
+                <p style="white-space: pre-line;">{entry.data.problem}</p>
+              </PortfolioSection>
+
+              <PortfolioSection id="approach" title={sectionTitles.approach}>
+                {entry.data.approach?.principles && (
+                  <ul class="principles-list">
+                    {entry.data.approach.principles.map((p) => (
+                      <li>
+                        <strong>{p.title}</strong> — {p.description}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </PortfolioSection>
+
+              {entry.data.artifacts && (
+                <PortfolioSection id="action" title={sectionTitles.action}>
+                  <div class="artifacts-wrapper">
+                    {entry.data.artifacts.map((a) => (
+                      <EngineeringPhaseCard 
+                        image={a.image}
+                        title={a.title}
+                        description={a.description}
+                      />
+                    ))}
+                  </div>
+                </PortfolioSection>
+              )}
+
+              {entry.data.resultsGrid && (
+                <PortfolioSection id="results" title={sectionTitles.results}>
+                  <ResultsGrid results={entry.data.resultsGrid} />
+                </PortfolioSection>
+              )}
+
+              <PortfolioSection id="takeaways" title={sectionTitles.takeaways}>
+                <p style="white-space: pre-line;">{entry.data.takeaways}</p>
+              </PortfolioSection>
+            </>
+          ) : (
+            /* Fallback Markdown Body Rendering (Backward Compatibility) */
+            <Content />
+          )}
+
+          <a class="btn btn-secondary" href="/projects" style="margin-top: 2.5rem; display: inline-block;">
+            ← Zurück zu allen Projekten
+          </a>
         </div>
 
-        <aside>
-          <div class="card sidebar-card">
-            <h3 style="font-size:1.05rem; margin-bottom:1rem;">Projektdetails</h3>
-            <div class="meta-list">
-              <div class="meta-row"><span class="k">Kategorie</span><span class="v">{entry.data.category}</span></div>
-              <div class="meta-row"><span class="k">Status</span><span class="v">{entry.data.status}</span></div>
-              <div class="meta-row"><span class="k">Technologien</span><span class="v">{entry.data.technologies}</span></div>
-            </div>
-            <a class="btn btn-primary btn-block" style="margin-top:1.4rem;" href="/contact">Über dieses Projekt sprechen</a>
-          </div>
-        </aside>
+        <!-- Sticky Sidebar -->
+        <PortfolioSidebar 
+          category={entry.data.category}
+          status={entry.data.status}
+          timeline={entry.data.timeline}
+          technologies={entry.data.technologies}
+          devStack={entry.data.devStack}
+          aiBuilders={entry.data.aiBuilders}
+          role={entry.data.role}
+        />
       </div>
 
-      <!-- Projekt-Navigation (Vorheriges / Nächstes Projekt) -->
-      <div class="project-navigation-wrap" data-reveal>
-        <h3 class="nav-title">Weitere Case Studies</h3>
-        <div class="project-nav-grid">
-          <a href={`/project-${prevProject.slug}`} class="project-nav-link prev-link" aria-label={`Vorheriges Projekt: ${prevProject.data.title}`}>
-            <span class="label">← Vorheriges Projekt</span>
-            <span class="title">{prevProject.data.title}</span>
-          </a>
-          <a href={`/project-${nextProject.slug}`} class="project-nav-link next-link" aria-label={`Nächstes Projekt: ${nextProject.data.title}`}>
-            <span class="label">Nächstes Projekt →</span>
-            <span class="title">{nextProject.data.title}</span>
-          </a>
-        </div>
-      </div>
+      <!-- Prev/Next Navigation -->
+      <RelatedProjects 
+        prevProject={prevProject}
+        nextProject={nextProject}
+      />
     </div>
   </section>
 
-  <section class="section--tight">
-    <div class="cta-band">
-      <h2>Mehr Projekte entdecken</h2>
-      <p>Schau dir weitere Case Studies an oder nimm direkt Kontakt auf.</p>
-      <div class="hero__ctas">
-        <a class="btn btn-primary" href="/projects">Alle Projekte</a>
-        <a class="btn btn-outline" href="/contact">Kontakt aufnehmen</a>
-      </div>
-    </div>
-  </section>
+  <!-- CTA section -->
+  {entry.data.cta ? (
+    <ProjectCTA 
+      title={entry.data.cta.title}
+      description={entry.data.cta.description}
+      primaryText={entry.data.cta.primaryText}
+      primaryLink={entry.data.cta.primaryLink}
+      secondaryText={entry.data.cta.secondaryText}
+      secondaryLink={entry.data.cta.secondaryLink}
+    />
+  ) : (
+    <ProjectCTA />
+  )}
 </Layout>
 
 <style is:global>
   /* Format compiled Markdown body to match legacy detail-block styles */
   .tina-content h2 {
-    font-size: 1.4rem;
-    font-weight: 600;
+    font-size: 1.45rem;
+    font-weight: 700;
     margin-top: 2rem;
     margin-bottom: 0.8rem;
     color: var(--text-dark);
+    font-family: var(--font-display);
+    position: relative;
+    padding-bottom: 0.4rem;
+  }
+  .tina-content h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 2px;
+    background: var(--magenta);
   }
   .tina-content h2:first-of-type {
     margin-top: 0;
@@ -171,17 +249,11 @@ const badgeClass = getBadgeClass(entry.data.status);
   .tina-content img {
     max-width: 100%;
     height: auto;
-    border-radius: var(--radius-s);
+    border-radius: var(--radius-m);
     border: 1px solid var(--border);
     margin: 1.5rem 0;
     box-shadow: var(--shadow-soft);
     display: block;
-  }
-  .hero-banner--image {
-    background: none !important;
-  }
-  .hero-banner--image::after {
-    display: none !important;
   }
   .tina-content figure {
     margin: 2rem 0;
@@ -192,61 +264,47 @@ const badgeClass = getBadgeClass(entry.data.status);
     text-align: center;
     margin-top: 0.6rem;
   }
+  .tina-content table {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .tina-content th,
+  .tina-content td {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .tina-content th {
+    background: rgba(0, 0, 0, 0.02);
+    font-weight: 600;
+  }
 
-  /* Related Projects Styles */
-  .project-navigation-wrap {
-    margin-top: var(--space-5);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--border);
+  .principles-list {
+    margin-bottom: 1.5rem;
+    padding-left: 0;
+    list-style-type: none;
   }
-  .project-navigation-wrap .nav-title {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  .principles-list li {
+    margin-bottom: 0.8rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    position: relative;
+    padding-left: 1.5rem;
     color: var(--text-muted);
+  }
+  .principles-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--magenta);
     font-weight: 700;
-    margin-bottom: 1.25rem;
   }
-  .project-nav-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-3);
-  }
-  @media (max-width: 600px) {
-    .project-nav-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  .project-nav-link {
+  .artifacts-wrapper {
     display: flex;
     flex-direction: column;
-    padding: var(--space-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-s);
-    text-decoration: none;
-    background: var(--card-bg);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .project-nav-link:hover {
-    border-color: var(--magenta);
-    box-shadow: var(--shadow-soft);
-    transform: translateY(-2px);
-  }
-  .project-nav-link .label {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  .project-nav-link .title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    font-family: var(--font-display);
-  }
-  .project-nav-link.next-link {
-    text-align: right;
+    gap: 1rem;
   }
 </style>
 

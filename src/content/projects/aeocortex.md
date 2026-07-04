@@ -1,9 +1,23 @@
 ---
 title: "AEOcortex"
+subtitle: "AI-Suchmaschinen / AEO / GEO"
 category: "AI-Suchmaschinen / AEO / GEO"
 status: "In Entwicklung"
+timeline: "Januar 2026"
 technologies: "JavaScript, AEO, GEO, Entity SEO, AI Search APIs"
 description: "Persönliches Entwicklungsprojekt zur praktischen Erprobung von AI Search, moderner Webentwicklung und KI-gestützter Softwareentwicklung."
+role: "AI Search Researcher & Developer"
+devStack:
+  - JavaScript
+  - Node.js
+  - Cheerio
+  - Astro
+  - JSON-LD
+  - Schema.org
+aiBuilders:
+  - Claude
+  - ChatGPT Search
+  - Antigravity
 ---
 
 ## 1. Executive Summary
