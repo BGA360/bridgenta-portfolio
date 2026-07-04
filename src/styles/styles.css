@@ -696,6 +696,11 @@ section[id] { scroll-margin-top: 100px; }
   height: 100%;
 }
 .project-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+@media (min-width: 641px) {
+  .project-card--featured {
+    grid-column: span 2;
+  }
+}
 .project-card__media {
   border-radius: var(--radius-s);
   aspect-ratio: 16/10;
@@ -740,6 +745,7 @@ section[id] { scroll-margin-top: 100px; }
 .badge--dev { background: #FFF7E6; color: #B45309; }
 .badge--beta { background: #EEF2FF; color: #4338CA; }
 .badge--concept { background: #ECFDF5; color: #047857; }
+.badge--done { background: #E6F4EA; color: #137333; }
 .badge--exp { background: var(--magenta-soft); color: var(--magenta-deep); }
 .project-card__footer { margin-top: auto; padding-top: 0.4rem; }
 

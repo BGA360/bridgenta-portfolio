@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 export async function GET() {
   const projects = await getCollection('projects');
   const siteUrl = 'https://bridgenta.de';
+  const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
 
   const staticPages = [
     '',
@@ -13,7 +14,9 @@ export async function GET() {
     '/datenschutz'
   ];
 
-  const projectPages = projects.map(project => `/project-${project.slug}`);
+  const projectPages = projects
+    .filter(project => activeProjectSlugs.includes(project.slug))
+    .map(project => `/project-${project.slug}`);
   const allPages = [...staticPages, ...projectPages];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

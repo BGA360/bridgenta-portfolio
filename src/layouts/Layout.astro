@@ -17,8 +17,11 @@ interface Props {
 
 const { title, description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.", project } = Astro.props;
 
-// Fetch projects dynamically for footer listing
-const allProjects = await getCollection('projects');
+// Fetch projects dynamically for footer listing (only active projects)
+const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+const allProjects = (await getCollection('projects'))
+  .filter((proj) => activeProjectSlugs.includes(proj.slug))
+  .sort((a, b) => activeProjectSlugs.indexOf(a.slug) - activeProjectSlugs.indexOf(b.slug));
 
 // Determine current path for navigation active states
 const pathname = Astro.url.pathname;
