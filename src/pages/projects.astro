@@ -6,16 +6,10 @@ import Layout from '../layouts/Layout.astro';
 const projects = await getCollection('projects');
 const primarySlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
 
-// Sort projects: primary defendable ones first, in specified order
-const sortedProjects = [...projects].sort((a, b) => {
-  const aIndex = primarySlugs.indexOf(a.slug);
-  const bIndex = primarySlugs.indexOf(b.slug);
-  
-  if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-  if (aIndex !== -1) return -1;
-  if (bIndex !== -1) return 1;
-  return 0;
-});
+// Only show active portfolio projects, sorted in specified order
+const sortedProjects = projects
+  .filter((p) => primarySlugs.includes(p.slug))
+  .sort((a, b) => primarySlugs.indexOf(a.slug) - primarySlugs.indexOf(b.slug));
 
 // Generate 2-letter initials for each project card
 const getInitials = (title) => {
@@ -34,6 +28,7 @@ const getBadgeClass = (status) => {
   if (status === 'In Entwicklung') return 'badge--dev';
   if (status === 'Private Beta') return 'badge--beta';
   if (status === 'Konzept / Aufbau') return 'badge--concept';
+  if (status === 'Abgeschlossen') return 'badge--done';
   return 'badge--dev';
 };
 ---

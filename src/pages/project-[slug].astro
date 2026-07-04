@@ -4,7 +4,9 @@ import Layout from '../layouts/Layout.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  return projects.map((entry) => ({
+  const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+  const activeProjects = projects.filter((entry) => activeProjectSlugs.includes(entry.slug));
+  return activeProjects.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
   }));
@@ -14,7 +16,10 @@ const { entry } = Astro.props;
 const { Content } = await entry.render();
 
 // Query projects collection to compute prev/next navigation links
-const projects = await getCollection('projects');
+const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+const projects = (await getCollection('projects'))
+  .filter((p) => activeProjectSlugs.includes(p.slug))
+  .sort((a, b) => activeProjectSlugs.indexOf(a.slug) - activeProjectSlugs.indexOf(b.slug));
 const currentIndex = projects.findIndex((p) => p.slug === entry.slug);
 const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length];
 const nextProject = projects[(currentIndex + 1) % projects.length];
@@ -38,6 +43,7 @@ const getBadgeClass = (status) => {
   if (status === 'In Entwicklung') return 'badge--dev';
   if (status === 'Private Beta') return 'badge--beta';
   if (status === 'Konzept / Aufbau') return 'badge--concept';
+  if (status === 'Abgeschlossen') return 'badge--done';
   return 'badge--dev';
 };
 
