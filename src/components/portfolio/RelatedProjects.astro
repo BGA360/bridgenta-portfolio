@@ -1,0 +1,87 @@
+---
+interface ProjectEntry {
+  slug: string;
+  data: {
+    title: string;
+  };
+}
+
+interface Props {
+  prevProject: ProjectEntry;
+  nextProject: ProjectEntry;
+}
+
+const { prevProject, nextProject } = Astro.props;
+---
+
+<div class="project-navigation-wrap" data-reveal>
+  <h3 class="nav-title">Weitere Case Studies</h3>
+  <div class="project-nav-grid">
+    <a href={`/project-${prevProject.slug}`} class="project-nav-link prev-link" aria-label={`Vorheriges Projekt: ${prevProject.data.title}`}>
+      <span class="label">← Vorheriges Projekt</span>
+      <span class="title">{prevProject.data.title}</span>
+    </a>
+    <a href={`/project-${nextProject.slug}`} class="project-nav-link next-link" aria-label={`Nächstes Projekt: ${nextProject.data.title}`}>
+      <span class="label">Nächstes Projekt →</span>
+      <span class="title">{nextProject.data.title}</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .project-navigation-wrap {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+  }
+  .nav-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    margin-top: 0;
+  }
+  .project-nav-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+  @media (max-width: 600px) {
+    .project-nav-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .project-nav-link {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-s);
+    text-decoration: none;
+    background: var(--card-bg);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .project-nav-link:hover {
+    border-color: var(--magenta);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+  }
+  .label {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-family: var(--font-display);
+  }
+  .next-link {
+    text-align: right;
+  }
+</style>

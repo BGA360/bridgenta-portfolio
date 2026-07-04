@@ -1,0 +1,134 @@
+---
+interface Props {
+  category: string;
+  status: string;
+  timeline?: string;
+  technologies?: string;
+  devStack?: string[];
+  aiBuilders?: string[];
+  role?: string;
+  primaryCtaText?: string;
+  primaryCtaLink?: string;
+}
+
+const { 
+  category, 
+  status, 
+  timeline, 
+  technologies, 
+  devStack, 
+  aiBuilders, 
+  role,
+  primaryCtaText = "Über dieses Projekt sprechen",
+  primaryCtaLink = "/contact"
+} = Astro.props;
+
+// For backward compatibility, if devStack is not provided but technologies is, split technologies by comma
+const tags = devStack || (technologies ? technologies.split(',').map(t => t.trim()) : []);
+---
+
+<aside class="portfolio-aside">
+  <div class="card sidebar-card">
+    <div class="sidebar-section-top">
+      <h3 class="sidebar-title">Projektübersicht</h3>
+      <div class="meta-list">
+        <div class="meta-row">
+          <span class="k">Kategorie</span>
+          <span class="v">{category}</span>
+        </div>
+        <div class="meta-row">
+          <span class="k">Status</span>
+          <span class="v">{status}</span>
+        </div>
+        {timeline && (
+          <div class="meta-row">
+            <span class="k">Zeitraum</span>
+            <span class="v">{timeline}</span>
+          </div>
+        )}
+      </div>
+    </div>
+
+    {tags.length > 0 && (
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Development Stack</h3>
+        <div class="tag-list">
+          {tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {aiBuilders && aiBuilders.length > 0 && (
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">AI Builders</h3>
+        <div class="tag-list">
+          {aiBuilders.map((builder) => (
+            <span class="tag tag--ai">{builder}</span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {role && (
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Meine Rolle</h3>
+        <p class="role-text">{role}</p>
+      </div>
+    )}
+
+    <a class="btn btn-primary btn-block sidebar-cta" href={primaryCtaLink}>
+      {primaryCtaText}
+    </a>
+  </div>
+</aside>
+
+<style>
+  .portfolio-aside {
+    width: 100%;
+  }
+  .sidebar-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .sidebar-title {
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dark);
+    margin-bottom: 0.9rem !important;
+    margin-top: 0 !important;
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tag {
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    background: rgba(194, 24, 91, 0.04);
+    color: var(--magenta);
+    border: 1px solid rgba(194, 24, 91, 0.1);
+    border-radius: 4px;
+  }
+  .tag--ai {
+    background: rgba(123, 30, 87, 0.04);
+    color: #7B1E57;
+    border-color: rgba(123, 30, 87, 0.1);
+  }
+  .role-text {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .sidebar-cta {
+    margin-top: 1.5rem;
+    display: block;
+    text-align: center;
+  }
+</style>
