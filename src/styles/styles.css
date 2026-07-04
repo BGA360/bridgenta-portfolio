@@ -615,10 +615,15 @@ section[id] { scroll-margin-top: 100px; }
   z-index: 10;
   pointer-events: none;
 }
-.hero-bridge__left,
+.hero-bridge__left {
+  flex: 1;
+  height: 100%;
+  margin-right: -2.5px; /* overlap center card to eliminate 1px rendering gap */
+}
 .hero-bridge__right {
   flex: 1;
   height: 100%;
+  margin-left: -2.5px; /* overlap center card to eliminate 1px rendering gap */
 }
 .hero-bridge__left svg,
 .hero-bridge__right svg {
@@ -631,7 +636,7 @@ section[id] { scroll-margin-top: 100px; }
   flex-shrink: 0;
   height: 100%;
   background: #fff;
-  border-radius: var(--radius-m) var(--radius-m) 0 0;
+  border-radius: 0; /* flat corners; rounded top corners are drawn by the SVGs to prevent notches */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -700,7 +705,7 @@ section[id] { scroll-margin-top: 100px; }
     width: 70%;
     min-width: 280px;
     padding: 0 var(--space-2);
-    border-radius: 16px 16px 0 0;
+    border-radius: 0;
   }
   .hero-bridge__left,
   .hero-bridge__right {
