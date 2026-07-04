@@ -44,36 +44,74 @@ Um die Vorteile der KI-gestützten Entwicklung mit den Qualitätsansprüchen pro
 * **Branch-Protection & Code-Owners**: Das Repository erzwingt restriktive Branch-Protection-Regeln. Änderungen an kritischen Architekturkomponenten erfordern zwingend das Review und die Freigabe durch den Systemarchitekten.
 
 ## 4. Reconstruction in Action
-Die folgenden visuellen Belege zeigen die Implementierung der Rekonstruktions-Pipeline in der Praxis. Jedes Artefakt veranschaulicht eine spezifische Phase unseres strukturierten Modernisierungsansatzes:
+Die folgenden Abschnitte zeigen die Implementierung der Rekonstruktions-Pipeline in der Praxis. Jedes Artefakt veranschaulicht eine spezifische Phase unseres strukturierten Modernisierungsansatzes:
 
-### Workspace
+### Workspace: Systemanalyse & Isolierung
+Der Workspace bildet den operativen Einstiegspunkt jeder Rekonstruktion. Hier werden die veralteten Systemteile systematisch erfasst, Abhängigkeiten kartiert und Datenflüsse isoliert, bevor KI-generierter Code geschrieben wird. Dies stellt sicher, dass wir die bestehende Anwendungsstruktur vollständig durchdringen und die Schnittstellen präzise definieren.
+
 <figure>
   <img src="/images/bga-portfolio/BG-PA02-Workspace.webp" alt="BridGenta Workspace Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Workspace</strong>: Die zentrale Weboberfläche zur Analyse und Strukturierung veralteter Web-Systeme. Sie ermöglicht es dem Entwickler, Datenflüsse und Abhängigkeiten vor der eigentlichen Modernisierung systematisch zu erfassen und zu isolieren.</figcaption>
+  <figcaption><strong>Workspace-Interface</strong>: Visuelle Erfassung der Systemtopologie und Analyse der Handoff-Grenzen vor Beginn der Code-Generierung.</figcaption>
 </figure>
 
-### Workflow
+*Key Takeaway*: Die visuelle Isolation im Workspace verhindert unstrukturierte Modifikationen und stellt sicher, dass wir nur exakt definierte Komponenten modernisieren.
+
+### Workflow: Strukturierte Code-Generierung
+Der Workflow leitet den eigentlichen Rekonstruktionsprozess. Über diesen transparenten Leitfaden werden Frontend-Generatoren (wie Lovable) gezielt instruiert. Der generierte Code wird über isolierte Handoff-Zweige (Handoff Branches) in die Pipeline eingespeist, wo er manuellen Reviews und automatischen Qualitätsschranken unterliegt.
+
 <figure>
   <img src="/images/bga-portfolio/BG-PA03-Workflow.webp" alt="BridGenta Workflow Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Workflow</strong>: Visualisierung der aktiven Rekonstruktionsschritte. Das Interface führt das Entwicklungsteam strukturiert durch den preserving-first Prozess von der Rohdaten-Analyse bis zur automatisierten Code-Generierung.</figcaption>
+  <figcaption><strong>Modernisierungs-Workflow</strong>: Die Pipeline steuert die Handoff-Grenzen und leitet Code-Inkremente sicher in das Git-Repository.</figcaption>
 </figure>
 
-### Governance
+*Key Takeaway*: Der strukturierte Handoff verhindert Scope Creep und stellt sicher, dass KI-Modelle keine unkontrollierten Designabweichungen einführen.
+
+### Governance: Validierung & Qualitätskontrolle
+Die Governance-Ebene fungiert als Gatekeeper der Plattform. Jede Codeänderung wird auf Lizenzkonformität, Sicherheitsrichtlinien und Datenschutzkompatibilität geprüft. Erst nach erfolgreicher automatisierter Build-Verifizierung und dem Review durch den Systemarchitekten erfolgt die Freigabe für die produktive Umgebung.
+
 <figure>
   <img src="/images/bga-portfolio/BG-PA04-Governance.webp" alt="BridGenta Governance Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Governance</strong>: Die Validierungs- und Prüfebene. Sie überwacht die Einhaltung der Sicherheitsrichtlinien, prüft auf Lizenzkonformität und stellt sicher, dass kein KI-generierter Code unautorisiert in die produktive Umgebung gelangt.</figcaption>
+  <figcaption><strong>Governance-Dashboard</strong>: Die Kontrollschranke zur automatisierter Überprüfung von Code-Sicherheit und Architekturkonformität.</figcaption>
 </figure>
+
+*Key Takeaway*: Ein strenges Regelwerk ist unerlässlich, um das Risiko unbeabsichtigter Datenabflüsse oder Sicherheitslücken bei KI-generiertem Code zu eliminieren.
 
 ## 5. Results
 Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare Fortschritte erzielt werden:
-* **Beschleunigtes Verständnis**: Die visuelle Aufbereitung veralteter Systeme im Workspace verkürzte die Einarbeitungszeit neuer Entwickler um mehr als 40%.
-* **Handoff-Stabilität**: Unkontrollierte Code-Überschreibungen und Merge-Konflikte wurden durch die strikte Handoff-Branch-Strategie vollständig eliminiert.
-* **Höheres Vertrauen**: Die automatisierten CI-Schranken reduzierten die Fehlerquote bei der Integration KI-generierter Komponenten auf nahezu Null.
-* **Wartbare Codebasis**: Durch die regelmäßige manuelle Bereinigung und Refactoring-Schleifen blieb die Codebasis modular, sauber und frei von totem Code.
+
+<div class="results-grid">
+  <div class="result-card">
+    <div class="result-card__icon-wrapper">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="result-icon-svg"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="result-card__content">
+      <h3>Handoff-Stabilität</h3>
+      <p>Erfolgreiche Vermeidung unkontrollierter Code-Überschreibungen durch klar definierte Git-Handoff-Zweige.</p>
+    </div>
+  </div>
+  <div class="result-card">
+    <div class="result-card__icon-wrapper">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="result-icon-svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div class="result-card__content">
+      <h3>Sicherheit</h3>
+      <p>Keine unbeabsichtigten Leaks von API-Schlüsseln oder Zugangsdaten durch strikte Filterregeln.</p>
+    </div>
+  </div>
+  <div class="result-card">
+    <div class="result-card__icon-wrapper">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="result-icon-svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </div>
+    <div class="result-card__content">
+      <h3>Wartbarkeit</h3>
+      <p>Erhalt einer sauberen, modularen Code-Struktur durch manuelle Qualitätskontrollen nach der KI-Generierung.</p>
+    </div>
+  </div>
+</div>
 
 ## 6. Lessons Learned
-Die wichtigste Erkenntnis aus diesem Projekt ist, dass die enorme Geschwindigkeit von KI-Code-Generatoren nur dann einen nachhaltigen Wert schafft, wenn sie durch klassische Software-Engineering-Disziplinen gezähmt wird. Autonome Generatoren sind hervorragende Werkzeuge für schnelle Prototypen, neigen jedoch ohne architektonische Leitplanken zu unstrukturiertem Code-Wachstum.
+Die Erprobung KI-gestützter Entwicklungswerkzeuge hat gezeigt, dass die Kombination aus hoher Code-Generierungsgeschwindigkeit und traditioneller Qualitätskontrolle der Schlüssel zu stabilen Anwendungen ist. KI-Assistenten können Routineaufgaben erheblich beschleunigen, bedürfen jedoch einer klaren Prozessführung und manueller Code-Reviews, um Architekturdrift und unkontrollierten Code-Zuwachs zu verhindern.
 
-Überraschend war, wie effektiv automatisierte CI-Prüfungen als Filter für unvollständigen KI-Code fungieren. Fehler in Typisierungen oder fehlende Importe werden sofort abgefangen, bevor sie die lokale Entwicklungszeit belasten. 
+Die Etablierung restriktiver Git-Workflows und automatisierter CI-Prüfungen erwies sich als unverzichtbar, um die Codebasis sauber zu halten und die Isolierung sensibler Anwendungsdaten zu gewährleisten.
 
 Für zukünftige Iterationen sollte die Schnittstellendefinition (API-Grenzbereich) zwischen statischem Frontend und Backend noch weiter formalisiert werden. Ein klareres, vertragsbasiertes API-Design (Contract-First) würde es KI-Generatoren ermöglichen, Frontend-Komponenten noch zielgerichteter und mit weniger Korrekturschleifen zu erstellen.
