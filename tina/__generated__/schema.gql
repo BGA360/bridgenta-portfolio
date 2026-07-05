@@ -56,10 +56,13 @@ type Query {
   document(collection: String, relativePath: String): DocumentNode!
   project(relativePath: String): Project!
   projectConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: ProjectFilter): ProjectConnection!
+  pages(relativePath: String): Pages!
+  pagesConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: PagesFilter): PagesConnection!
 }
 
 input DocumentFilter {
   project: ProjectFilter
+  pages: PagesFilter
 }
 
 type DocumentConnectionEdges {
@@ -85,7 +88,7 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Project | Folder
+union DocumentNode = Project | Pages | Folder
 
 type Project implements Node & Document {
   title: String!
@@ -134,6 +137,140 @@ type ProjectConnection implements Connection {
   edges: [ProjectConnectionEdges]
 }
 
+type PagesHero {
+  badge: String
+  title: String
+  lede: String
+  primaryCtaText: String
+  primaryCtaLink: String
+  secondaryCtaText: String
+  secondaryCtaLink: String
+  trustIndicator: String
+}
+
+type PagesBridge {
+  row: String
+  label: String
+}
+
+type PagesAbout {
+  badge: String
+  title: String
+  text1: String
+  text2: String
+  ctaText: String
+  ctaLink: String
+  portraitBadge: String
+}
+
+type PagesProjectsHeader {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+type PagesQualificationsHeader {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+type PagesPrinciplesHeader {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+type PagesSkillsHeader {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+type Pages implements Node & Document {
+  hero: PagesHero
+  bridge: PagesBridge
+  about: PagesAbout
+  projectsHeader: PagesProjectsHeader
+  qualificationsHeader: PagesQualificationsHeader
+  principlesHeader: PagesPrinciplesHeader
+  skillsHeader: PagesSkillsHeader
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+input PagesHeroFilter {
+  badge: StringFilter
+  title: StringFilter
+  lede: StringFilter
+  primaryCtaText: StringFilter
+  primaryCtaLink: StringFilter
+  secondaryCtaText: StringFilter
+  secondaryCtaLink: StringFilter
+  trustIndicator: StringFilter
+}
+
+input PagesBridgeFilter {
+  row: StringFilter
+  label: StringFilter
+}
+
+input PagesAboutFilter {
+  badge: StringFilter
+  title: StringFilter
+  text1: StringFilter
+  text2: StringFilter
+  ctaText: StringFilter
+  ctaLink: StringFilter
+  portraitBadge: StringFilter
+}
+
+input PagesProjectsHeaderFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  description: StringFilter
+}
+
+input PagesQualificationsHeaderFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  description: StringFilter
+}
+
+input PagesPrinciplesHeaderFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  description: StringFilter
+}
+
+input PagesSkillsHeaderFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  description: StringFilter
+}
+
+input PagesFilter {
+  hero: PagesHeroFilter
+  bridge: PagesBridgeFilter
+  about: PagesAboutFilter
+  projectsHeader: PagesProjectsHeaderFilter
+  qualificationsHeader: PagesQualificationsHeaderFilter
+  principlesHeader: PagesPrinciplesHeaderFilter
+  skillsHeader: PagesSkillsHeaderFilter
+}
+
+type PagesConnectionEdges {
+  cursor: String!
+  node: Pages
+}
+
+type PagesConnection implements Connection {
+  pageInfo: PageInfo!
+  totalCount: Float!
+  edges: [PagesConnectionEdges]
+}
+
 type Mutation {
   addPendingDocument(collection: String!, relativePath: String!, template: String): DocumentNode!
   updateDocument(collection: String, relativePath: String!, params: DocumentUpdateMutation!): DocumentNode!
@@ -142,15 +279,19 @@ type Mutation {
   createFolder(collection: String, relativePath: String!): DocumentNode!
   updateProject(relativePath: String!, params: ProjectMutation!): Project!
   createProject(relativePath: String!, params: ProjectMutation!): Project!
+  updatePages(relativePath: String!, params: PagesMutation!): Pages!
+  createPages(relativePath: String!, params: PagesMutation!): Pages!
 }
 
 input DocumentUpdateMutation {
   project: ProjectMutation
+  pages: PagesMutation
   relativePath: String
 }
 
 input DocumentMutation {
   project: ProjectMutation
+  pages: PagesMutation
 }
 
 input ProjectMutation {
@@ -161,6 +302,66 @@ input ProjectMutation {
   description: String
   notice: String
   body: JSON
+}
+
+input PagesHeroMutation {
+  badge: String
+  title: String
+  lede: String
+  primaryCtaText: String
+  primaryCtaLink: String
+  secondaryCtaText: String
+  secondaryCtaLink: String
+  trustIndicator: String
+}
+
+input PagesBridgeMutation {
+  row: String
+  label: String
+}
+
+input PagesAboutMutation {
+  badge: String
+  title: String
+  text1: String
+  text2: String
+  ctaText: String
+  ctaLink: String
+  portraitBadge: String
+}
+
+input PagesProjectsHeaderMutation {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+input PagesQualificationsHeaderMutation {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+input PagesPrinciplesHeaderMutation {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+input PagesSkillsHeaderMutation {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+input PagesMutation {
+  hero: PagesHeroMutation
+  bridge: PagesBridgeMutation
+  about: PagesAboutMutation
+  projectsHeader: PagesProjectsHeaderMutation
+  qualificationsHeader: PagesQualificationsHeaderMutation
+  principlesHeader: PagesPrinciplesHeaderMutation
+  skillsHeader: PagesSkillsHeaderMutation
 }
 
 schema {

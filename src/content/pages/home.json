@@ -1,0 +1,45 @@
+{
+  "hero": {
+    "badge": "PORTFOLIO",
+    "title": "Frank Duru — Webmaster mit<br class=\"hero__br\" />\nFokus auf KI-gestützte<br class=\"hero__br\" />\nSoftwareentwicklung",
+    "lede": "Entwicklung zuverlässiger Web-Systeme durch strukturierte Prozesse. Mein Fokus liegt auf nachvollziehbaren Lösungen, Datensicherheit und der verständlichen Aufbereitung moderner Web-Technologien.",
+    "primaryCtaText": "Projekte ansehen",
+    "primaryCtaLink": "/projects",
+    "secondaryCtaText": "Kontakt aufnehmen",
+    "secondaryCtaLink": "/contact",
+    "trustIndicator": "Web-Entwicklung · Strukturierte Vorgehensweise · Suchmaschinenpräsenz · Webmaster seit 2009"
+  },
+  "bridge": {
+    "row": "Strukturierte Softwareentwicklung",
+    "label": "Versionierung, automatisierte Qualitätsprüfungen und nachvollziehbare Prozesse."
+  },
+  "about": {
+    "badge": "ÜBER MICH",
+    "title": "Langjährige Webmaster-Praxis mit modernem Fokus",
+    "text1": "Seit 2009 verwalte und optimiere ich Web-Infrastrukturen und Suchmaschinenpräsenzen für verschiedene Projekte. Um den wachsenden Anforderungen an IT-Sicherheit und moderne Web-Systeme gerecht zu werden, verbinde ich diese Erfahrung heute mit strukturierter Softwareentwicklung.",
+    "text2": "Mein Schwerpunkt liegt auf dem Aufbau transparenter Systeme, die sowohl für menschliche Nutzer als auch für automatisierte Suchsysteme optimal strukturiert sind.",
+    "ctaText": "Mehr über meinen Ansatz →",
+    "ctaLink": "/about",
+    "portraitBadge": "Strategisch · Lösungsorientiert · Zuverlässig"
+  },
+  "projectsHeader": {
+    "eyebrow": "Ausgewählte Projekte",
+    "title": "Aktuelle Fallstudien",
+    "description": "Praxisnahe Nachweise meiner Qualifikationen – von datenschutzkonformen Architekturen bis hin zu moderner Answer Engine Optimization."
+  },
+  "qualificationsHeader": {
+    "eyebrow": "Qualifikationen",
+    "title": "Zertifikate & Qualifikationen",
+    "description": "Nachweise und Abschlüsse in den Bereichen IT-Sicherheit, Systemadministration und Web-Technologien."
+  },
+  "principlesHeader": {
+    "eyebrow": "Arbeitsweise",
+    "title": "So arbeite ich",
+    "description": "Jedes Projekt ist anders. Deshalb stehen für mich nicht nur technische Lösungen im Mittelpunkt, sondern auch eine strukturierte und nachvollziehbare Arbeitsweise."
+  },
+  "skillsHeader": {
+    "eyebrow": "Fähigkeiten",
+    "title": "Nachweisbare Kompetenzen",
+    "description": "Eine Kombination aus langjähriger Webmaster-Praxis und formal nachgewiesenen IT-Kompetenzen."
+  }
+}

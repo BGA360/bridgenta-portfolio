@@ -8,3 +8,57 @@ fragment ProjectParts on Project {
   notice
   body
 }
+
+fragment PagesParts on Pages {
+  __typename
+  hero {
+    __typename
+    badge
+    title
+    lede
+    primaryCtaText
+    primaryCtaLink
+    secondaryCtaText
+    secondaryCtaLink
+    trustIndicator
+  }
+  bridge {
+    __typename
+    row
+    label
+  }
+  about {
+    __typename
+    badge
+    title
+    text1
+    text2
+    ctaText
+    ctaLink
+    portraitBadge
+  }
+  projectsHeader {
+    __typename
+    eyebrow
+    title
+    description
+  }
+  qualificationsHeader {
+    __typename
+    eyebrow
+    title
+    description
+  }
+  principlesHeader {
+    __typename
+    eyebrow
+    title
+    description
+  }
+  skillsHeader {
+    __typename
+    eyebrow
+    title
+    description
+  }
+}
