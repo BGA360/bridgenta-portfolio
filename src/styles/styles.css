@@ -636,7 +636,7 @@ section[id] { scroll-margin-top: 100px; }
   flex-shrink: 0;
   height: 100%;
   background: #fff;
-  border-radius: 24px 24px 0 0; /* rounded top corners matching the SVG tangent y=20 */
+  border-radius: 50px 50px 0 0; /* rounded top corners matching the SVG tangent y=20 */
   display: flex;
   align-items: center;
   justify-content: center;
