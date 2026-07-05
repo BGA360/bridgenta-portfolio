@@ -9,6 +9,7 @@ interface Props {
   role?: string;
   primaryCtaText?: string;
   primaryCtaLink?: string;
+  notice?: string;
 }
 
 const { 
@@ -20,7 +21,8 @@ const {
   aiBuilders, 
   role,
   primaryCtaText = "Über dieses Projekt sprechen",
-  primaryCtaLink = "/contact"
+  primaryCtaLink = "/contact",
+  notice
 } = Astro.props;
 
 // For backward compatibility, if devStack is not provided but technologies is, split technologies by comma
@@ -82,6 +84,13 @@ const tags = devStack || (technologies ? technologies.split(',').map(t => t.trim
       {primaryCtaText}
     </a>
   </div>
+
+  {notice && (
+    <div class="notice" style="margin-top: 1.5rem; margin-bottom: 0;">
+      <h4>Hinweis zur privaten Beta</h4>
+      <p>{notice}</p>
+    </div>
+  )}
 </aside>
 
 <style>
