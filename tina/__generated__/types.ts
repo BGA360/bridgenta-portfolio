@@ -84,6 +84,8 @@ export type Query = {
   document: DocumentNode;
   project: Project;
   projectConnection: ProjectConnection;
+  pages: Pages;
+  pagesConnection: PagesConnection;
 };
 
 
@@ -122,8 +124,24 @@ export type QueryProjectConnectionArgs = {
   filter?: InputMaybe<ProjectFilter>;
 };
 
+
+export type QueryPagesArgs = {
+  relativePath?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryPagesConnectionArgs = {
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<PagesFilter>;
+};
+
 export type DocumentFilter = {
   project?: InputMaybe<ProjectFilter>;
+  pages?: InputMaybe<PagesFilter>;
 };
 
 export type DocumentConnectionEdges = {
@@ -163,7 +181,7 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Project | Folder;
+export type DocumentNode = Project | Pages | Folder;
 
 export type Project = Node & Document & {
   __typename?: 'Project';
@@ -215,6 +233,150 @@ export type ProjectConnection = Connection & {
   edges?: Maybe<Array<Maybe<ProjectConnectionEdges>>>;
 };
 
+export type PagesHero = {
+  __typename?: 'PagesHero';
+  badge?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  lede?: Maybe<Scalars['String']['output']>;
+  primaryCtaText?: Maybe<Scalars['String']['output']>;
+  primaryCtaLink?: Maybe<Scalars['String']['output']>;
+  secondaryCtaText?: Maybe<Scalars['String']['output']>;
+  secondaryCtaLink?: Maybe<Scalars['String']['output']>;
+  trustIndicator?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesBridge = {
+  __typename?: 'PagesBridge';
+  row?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesAbout = {
+  __typename?: 'PagesAbout';
+  badge?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  text1?: Maybe<Scalars['String']['output']>;
+  text2?: Maybe<Scalars['String']['output']>;
+  ctaText?: Maybe<Scalars['String']['output']>;
+  ctaLink?: Maybe<Scalars['String']['output']>;
+  portraitBadge?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesProjectsHeader = {
+  __typename?: 'PagesProjectsHeader';
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesQualificationsHeader = {
+  __typename?: 'PagesQualificationsHeader';
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesPrinciplesHeader = {
+  __typename?: 'PagesPrinciplesHeader';
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesSkillsHeader = {
+  __typename?: 'PagesSkillsHeader';
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+};
+
+export type Pages = Node & Document & {
+  __typename?: 'Pages';
+  hero?: Maybe<PagesHero>;
+  bridge?: Maybe<PagesBridge>;
+  about?: Maybe<PagesAbout>;
+  projectsHeader?: Maybe<PagesProjectsHeader>;
+  qualificationsHeader?: Maybe<PagesQualificationsHeader>;
+  principlesHeader?: Maybe<PagesPrinciplesHeader>;
+  skillsHeader?: Maybe<PagesSkillsHeader>;
+  id: Scalars['ID']['output'];
+  _sys: SystemInfo;
+  _values: Scalars['JSON']['output'];
+};
+
+export type PagesHeroFilter = {
+  badge?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  lede?: InputMaybe<StringFilter>;
+  primaryCtaText?: InputMaybe<StringFilter>;
+  primaryCtaLink?: InputMaybe<StringFilter>;
+  secondaryCtaText?: InputMaybe<StringFilter>;
+  secondaryCtaLink?: InputMaybe<StringFilter>;
+  trustIndicator?: InputMaybe<StringFilter>;
+};
+
+export type PagesBridgeFilter = {
+  row?: InputMaybe<StringFilter>;
+  label?: InputMaybe<StringFilter>;
+};
+
+export type PagesAboutFilter = {
+  badge?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  text1?: InputMaybe<StringFilter>;
+  text2?: InputMaybe<StringFilter>;
+  ctaText?: InputMaybe<StringFilter>;
+  ctaLink?: InputMaybe<StringFilter>;
+  portraitBadge?: InputMaybe<StringFilter>;
+};
+
+export type PagesProjectsHeaderFilter = {
+  eyebrow?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesQualificationsHeaderFilter = {
+  eyebrow?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesPrinciplesHeaderFilter = {
+  eyebrow?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesSkillsHeaderFilter = {
+  eyebrow?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesFilter = {
+  hero?: InputMaybe<PagesHeroFilter>;
+  bridge?: InputMaybe<PagesBridgeFilter>;
+  about?: InputMaybe<PagesAboutFilter>;
+  projectsHeader?: InputMaybe<PagesProjectsHeaderFilter>;
+  qualificationsHeader?: InputMaybe<PagesQualificationsHeaderFilter>;
+  principlesHeader?: InputMaybe<PagesPrinciplesHeaderFilter>;
+  skillsHeader?: InputMaybe<PagesSkillsHeaderFilter>;
+};
+
+export type PagesConnectionEdges = {
+  __typename?: 'PagesConnectionEdges';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<Pages>;
+};
+
+export type PagesConnection = Connection & {
+  __typename?: 'PagesConnection';
+  pageInfo: PageInfo;
+  totalCount: Scalars['Float']['output'];
+  edges?: Maybe<Array<Maybe<PagesConnectionEdges>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addPendingDocument: DocumentNode;
@@ -224,6 +386,8 @@ export type Mutation = {
   createFolder: DocumentNode;
   updateProject: Project;
   createProject: Project;
+  updatePages: Pages;
+  createPages: Pages;
 };
 
 
@@ -271,13 +435,27 @@ export type MutationCreateProjectArgs = {
   params: ProjectMutation;
 };
 
+
+export type MutationUpdatePagesArgs = {
+  relativePath: Scalars['String']['input'];
+  params: PagesMutation;
+};
+
+
+export type MutationCreatePagesArgs = {
+  relativePath: Scalars['String']['input'];
+  params: PagesMutation;
+};
+
 export type DocumentUpdateMutation = {
   project?: InputMaybe<ProjectMutation>;
+  pages?: InputMaybe<PagesMutation>;
   relativePath?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DocumentMutation = {
   project?: InputMaybe<ProjectMutation>;
+  pages?: InputMaybe<PagesMutation>;
 };
 
 export type ProjectMutation = {
@@ -290,7 +468,69 @@ export type ProjectMutation = {
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
+export type PagesHeroMutation = {
+  badge?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  lede?: InputMaybe<Scalars['String']['input']>;
+  primaryCtaText?: InputMaybe<Scalars['String']['input']>;
+  primaryCtaLink?: InputMaybe<Scalars['String']['input']>;
+  secondaryCtaText?: InputMaybe<Scalars['String']['input']>;
+  secondaryCtaLink?: InputMaybe<Scalars['String']['input']>;
+  trustIndicator?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesBridgeMutation = {
+  row?: InputMaybe<Scalars['String']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesAboutMutation = {
+  badge?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  text1?: InputMaybe<Scalars['String']['input']>;
+  text2?: InputMaybe<Scalars['String']['input']>;
+  ctaText?: InputMaybe<Scalars['String']['input']>;
+  ctaLink?: InputMaybe<Scalars['String']['input']>;
+  portraitBadge?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesProjectsHeaderMutation = {
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesQualificationsHeaderMutation = {
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesPrinciplesHeaderMutation = {
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesSkillsHeaderMutation = {
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesMutation = {
+  hero?: InputMaybe<PagesHeroMutation>;
+  bridge?: InputMaybe<PagesBridgeMutation>;
+  about?: InputMaybe<PagesAboutMutation>;
+  projectsHeader?: InputMaybe<PagesProjectsHeaderMutation>;
+  qualificationsHeader?: InputMaybe<PagesQualificationsHeaderMutation>;
+  principlesHeader?: InputMaybe<PagesPrinciplesHeaderMutation>;
+  skillsHeader?: InputMaybe<PagesSkillsHeaderMutation>;
+};
+
 export type ProjectPartsFragment = { __typename: 'Project', title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null };
+
+export type PagesPartsFragment = { __typename: 'Pages', hero?: { __typename: 'PagesHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesPrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null };
 
 export type ProjectQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -311,6 +551,25 @@ export type ProjectConnectionQueryVariables = Exact<{
 
 export type ProjectConnectionQuery = { __typename?: 'Query', projectConnection: { __typename?: 'ProjectConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'ProjectConnectionEdges', cursor: string, node?: { __typename: 'Project', id: string, title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
+export type PagesQueryVariables = Exact<{
+  relativePath: Scalars['String']['input'];
+}>;
+
+
+export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'Pages', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesPrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } };
+
+export type PagesConnectionQueryVariables = Exact<{
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<PagesFilter>;
+}>;
+
+
+export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'Pages', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesPrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } | null } | null> | null } };
+
 export const ProjectPartsFragmentDoc = gql`
     fragment ProjectParts on Project {
   __typename
@@ -321,6 +580,61 @@ export const ProjectPartsFragmentDoc = gql`
   description
   notice
   body
+}
+    `;
+export const PagesPartsFragmentDoc = gql`
+    fragment PagesParts on Pages {
+  __typename
+  hero {
+    __typename
+    badge
+    title
+    lede
+    primaryCtaText
+    primaryCtaLink
+    secondaryCtaText
+    secondaryCtaLink
+    trustIndicator
+  }
+  bridge {
+    __typename
+    row
+    label
+  }
+  about {
+    __typename
+    badge
+    title
+    text1
+    text2
+    ctaText
+    ctaLink
+    portraitBadge
+  }
+  projectsHeader {
+    __typename
+    eyebrow
+    title
+    description
+  }
+  qualificationsHeader {
+    __typename
+    eyebrow
+    title
+    description
+  }
+  principlesHeader {
+    __typename
+    eyebrow
+    title
+    description
+  }
+  skillsHeader {
+    __typename
+    eyebrow
+    title
+    description
+  }
 }
     `;
 export const ProjectDocument = gql`
@@ -380,6 +694,63 @@ export const ProjectConnectionDocument = gql`
   }
 }
     ${ProjectPartsFragmentDoc}`;
+export const PagesDocument = gql`
+    query pages($relativePath: String!) {
+  pages(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...PagesParts
+  }
+}
+    ${PagesPartsFragmentDoc}`;
+export const PagesConnectionDocument = gql`
+    query pagesConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: PagesFilter) {
+  pagesConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            hasReferences
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...PagesParts
+      }
+    }
+  }
+}
+    ${PagesPartsFragmentDoc}`;
 export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R>
   export function getSdk<C>(requester: Requester<C>) {
     return {
@@ -388,6 +759,12 @@ export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) 
       },
     projectConnection(variables?: ProjectConnectionQueryVariables, options?: C): Promise<{data: ProjectConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: ProjectConnectionQueryVariables, query: string}> {
         return requester<{data: ProjectConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: ProjectConnectionQueryVariables, query: string}, ProjectConnectionQueryVariables>(ProjectConnectionDocument, variables, options);
+      },
+    pages(variables: PagesQueryVariables, options?: C): Promise<{data: PagesQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PagesQueryVariables, query: string}> {
+        return requester<{data: PagesQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PagesQueryVariables, query: string}, PagesQueryVariables>(PagesDocument, variables, options);
+      },
+    pagesConnection(variables?: PagesConnectionQueryVariables, options?: C): Promise<{data: PagesConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PagesConnectionQueryVariables, query: string}> {
+        return requester<{data: PagesConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PagesConnectionQueryVariables, query: string}, PagesConnectionQueryVariables>(PagesConnectionDocument, variables, options);
       }
     };
   }

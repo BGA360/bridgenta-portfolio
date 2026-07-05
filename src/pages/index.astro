@@ -1,5 +1,9 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+
+const homeData = await getEntry('pages', 'home');
+const { hero, bridge, about, projectsHeader, qualificationsHeader, principlesHeader, skillsHeader } = homeData.data;
 ---
 
 <Layout title="Startseite" description="Portfolio von Frank Duru. Webmaster mit Fokus auf IT-Sicherheit, Systemadministration, Suchmaschinenoptimierung und moderne, KI-gestützte Softwareentwicklung.">
@@ -17,25 +21,21 @@ import Layout from '../layouts/Layout.astro';
       <span class="hero-star hero-star--8"></span>
     </div>
     <div class="hero__content">
-      <span class="badge badge--portfolio">PORTFOLIO</span>
-      <h1>
-        Frank Duru — Webmaster mit<br class="hero__br" />
-        Fokus auf KI-gestützte<br class="hero__br" />
-        Softwareentwicklung
-      </h1>
-      <p class="lede">Entwicklung zuverlässiger Web-Systeme durch strukturierte Prozesse. Mein Fokus liegt auf nachvollziehbaren Lösungen, Datensicherheit und der verständlichen Aufbereitung moderner Web-Technologien.</p>
+      <span class="badge badge--portfolio">{hero.badge}</span>
+      <h1 set:html={hero.title}></h1>
+      <p class="lede">{hero.lede}</p>
       
       <div class="hero__ctas">
-        <a class="btn btn-primary" href="/projects">
-          Projekte ansehen
+        <a class="btn btn-primary" href={hero.primaryCtaLink}>
+          {hero.primaryCtaText}
           <span class="btn__icon">
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </span>
         </a>
-        <a class="btn btn-white" href="/contact">
-          Kontakt aufnehmen
+        <a class="btn btn-white" href={hero.secondaryCtaLink}>
+          {hero.secondaryCtaText}
           <span class="btn__icon">
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>
@@ -46,7 +46,7 @@ import Layout from '../layouts/Layout.astro';
 
       <div class="hero__trust">
         <span class="dot" aria-hidden="true"></span>
-        Web-Entwicklung · Strukturierte Vorgehensweise · Suchmaschinenpräsenz · Webmaster seit 2009
+        {hero.trustIndicator}
       </div>
     </div>
 
@@ -65,8 +65,8 @@ import Layout from '../layouts/Layout.astro';
             <div class="avatar-circle c-sec">Sec</div>
           </div>
           <div class="bridge-rating">
-            <div class="bridge-row">Strukturierte Softwareentwicklung</div>
-            <div class="bridge-label">Versionierung, automatisierte Qualitätsprüfungen und nachvollziehbare Prozesse.</div>
+            <div class="bridge-row">{bridge.row}</div>
+            <div class="bridge-label">{bridge.label}</div>
           </div>
         </div>
       </div>
@@ -82,11 +82,11 @@ import Layout from '../layouts/Layout.astro';
   <section class="section section--about" data-reveal>
     <div class="container split">
       <div class="about-text-col">
-        <span class="badge badge--about">ÜBER MICH</span>
-        <h2 style="margin-top:0.9rem; font-size:clamp(1.6rem,3vw,2.3rem);">Langjährige Webmaster-Praxis mit modernem Fokus</h2>
-        <p style="margin-top:1rem; font-size:1.02rem;">Seit 2009 verwalte und optimiere ich Web-Infrastrukturen und Suchmaschinenpräsenzen für verschiedene Projekte. Um den wachsenden Anforderungen an IT-Sicherheit und moderne Web-Systeme gerecht zu werden, verbinde ich diese Erfahrung heute mit strukturierter Softwareentwicklung.</p>
-        <p style="margin-top:0.8rem; font-size:1.02rem;">Mein Schwerpunkt liegt auf dem Aufbau transparenter Systeme, die sowohl für menschliche Nutzer als auch für automatisierte Suchsysteme optimal strukturiert sind.</p>
-        <a class="btn-more" href="/about" style="margin-top:1.2rem;">Mehr über meinen Ansatz →</a>
+        <span class="badge badge--about">{about.badge}</span>
+        <h2 style="margin-top:0.9rem; font-size:clamp(1.6rem,3vw,2.3rem);">{about.title}</h2>
+        <p style="margin-top:1rem; font-size:1.02rem;">{about.text1}</p>
+        <p style="margin-top:0.8rem; font-size:1.02rem;">{about.text2}</p>
+        <a class="btn-more" href={about.ctaLink} style="margin-top:1.2rem;">{about.ctaText}</a>
       </div>
       <div class="portrait-card">
         <img src="/images/FDPP-001.webp" alt="Frank Duru Portrait" class="portrait-card__img" width="400" height="500" loading="lazy" />
@@ -99,7 +99,7 @@ import Layout from '../layouts/Layout.astro';
             <line x1="12" y1="22" x2="12" y2="18"></line>
             <circle cx="12" cy="12" r="4"></circle>
           </svg>
-          <span>Strategisch · Lösungsorientiert · Zuverlässig</span>
+          <span>{about.portraitBadge}</span>
         </div>
       </div>
     </div>
@@ -109,9 +109,9 @@ import Layout from '../layouts/Layout.astro';
   <section class="section section--tight" id="projekte" data-reveal>
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">Ausgewählte Projekte</span>
-        <h2>Aktuelle Fallstudien</h2>
-        <p>Praxisnahe Nachweise meiner Qualifikationen – von datenschutzkonformen Architekturen bis hin zu moderner Answer Engine Optimization.</p>
+        <span class="eyebrow">{projectsHeader.eyebrow}</span>
+        <h2>{projectsHeader.title}</h2>
+        <p>{projectsHeader.description}</p>
       </div>
 
       <div class="grid grid--2">
@@ -203,9 +203,9 @@ import Layout from '../layouts/Layout.astro';
   <section class="section section--tight" id="qualifikationen" data-reveal>
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">Qualifikationen</span>
-        <h2>Zertifikate &amp; Qualifikationen</h2>
-        <p>Nachweise und Abschlüsse in den Bereichen IT-Sicherheit, Systemadministration und Web-Technologien.</p>
+        <span class="eyebrow">{qualificationsHeader.eyebrow}</span>
+        <h2>{qualificationsHeader.title}</h2>
+        <p>{qualificationsHeader.description}</p>
       </div>
       <div class="grid grid--2" style="margin-top: 1.8rem;">
         <div class="card" style="padding: var(--space-4);">
@@ -246,9 +246,9 @@ import Layout from '../layouts/Layout.astro';
   <section class="section section--white" id="arbeitsweise" data-reveal>
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">Arbeitsweise</span>
-        <h2>So arbeite ich</h2>
-        <p>Jedes Projekt ist anders. Deshalb stehen für mich nicht nur technische Lösungen im Mittelpunkt, sondern auch eine strukturierte und nachvollziehbare Arbeitsweise.</p>
+        <span class="eyebrow">{principlesHeader.eyebrow}</span>
+        <h2>{principlesHeader.title}</h2>
+        <p>{principlesHeader.description}</p>
       </div>
 
       <div class="grid grid--2" style="margin-top: 2.2rem; row-gap: var(--space-4); column-gap: var(--space-5);">
@@ -279,9 +279,9 @@ import Layout from '../layouts/Layout.astro';
   <section class="section" id="faehigkeiten" data-reveal>
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">Fähigkeiten</span>
-        <h2>Nachweisbare Kompetenzen</h2>
-        <p>Eine Kombination aus langjähriger Webmaster-Praxis und formal nachgewiesenen IT-Kompetenzen.</p>
+        <span class="eyebrow">{skillsHeader.eyebrow}</span>
+        <h2>{skillsHeader.title}</h2>
+        <p>{skillsHeader.description}</p>
       </div>
 
       <div class="grid grid--3">
