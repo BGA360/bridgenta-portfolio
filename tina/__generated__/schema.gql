@@ -88,7 +88,7 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Project | Pages | Folder
+union DocumentNode = Project | PagesHome | PagesAbout | Folder
 
 type Project implements Node & Document {
   title: String!
@@ -137,7 +137,7 @@ type ProjectConnection implements Connection {
   edges: [ProjectConnectionEdges]
 }
 
-type PagesHero {
+type PagesHomeHero {
   badge: String
   title: String
   lede: String
@@ -148,12 +148,12 @@ type PagesHero {
   trustIndicator: String
 }
 
-type PagesBridge {
+type PagesHomeBridge {
   row: String
   label: String
 }
 
-type PagesAbout {
+type PagesHomeAbout {
   badge: String
   title: String
   text1: String
@@ -163,44 +163,88 @@ type PagesAbout {
   portraitBadge: String
 }
 
-type PagesProjectsHeader {
+type PagesHomeProjectsHeader {
   eyebrow: String
   title: String
   description: String
 }
 
-type PagesQualificationsHeader {
+type PagesHomeQualificationsHeader {
   eyebrow: String
   title: String
   description: String
 }
 
-type PagesPrinciplesHeader {
+type PagesHomePrinciplesHeader {
   eyebrow: String
   title: String
   description: String
 }
 
-type PagesSkillsHeader {
+type PagesHomeSkillsHeader {
   eyebrow: String
   title: String
   description: String
 }
 
-type Pages implements Node & Document {
-  hero: PagesHero
-  bridge: PagesBridge
-  about: PagesAbout
-  projectsHeader: PagesProjectsHeader
-  qualificationsHeader: PagesQualificationsHeader
-  principlesHeader: PagesPrinciplesHeader
-  skillsHeader: PagesSkillsHeader
+type PagesHome implements Node & Document {
+  hero: PagesHomeHero
+  bridge: PagesHomeBridge
+  about: PagesHomeAbout
+  projectsHeader: PagesHomeProjectsHeader
+  qualificationsHeader: PagesHomeQualificationsHeader
+  principlesHeader: PagesHomePrinciplesHeader
+  skillsHeader: PagesHomeSkillsHeader
   id: ID!
   _sys: SystemInfo!
   _values: JSON!
 }
 
-input PagesHeroFilter {
+type PagesAboutHero {
+  eyebrow: String
+  title: String
+  lede: String
+}
+
+type PagesAboutPhilosophy {
+  eyebrow: String
+  title: String
+  text1: String
+  text2: String
+  text3: String
+}
+
+type PagesAboutHowIWork {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+type PagesAboutQualificationsHeader {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+type PagesAboutCtaBand {
+  title: String
+  description: String
+}
+
+type PagesAbout implements Node & Document {
+  hero: PagesAboutHero
+  philosophy: PagesAboutPhilosophy
+  howIWork: PagesAboutHowIWork
+  qualificationsHeader: PagesAboutQualificationsHeader
+  ctaBand: PagesAboutCtaBand
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+union Pages = PagesHome | PagesAbout
+
+input PagesHomeHeroFilter {
   badge: StringFilter
   title: StringFilter
   lede: StringFilter
@@ -211,12 +255,12 @@ input PagesHeroFilter {
   trustIndicator: StringFilter
 }
 
-input PagesBridgeFilter {
+input PagesHomeBridgeFilter {
   row: StringFilter
   label: StringFilter
 }
 
-input PagesAboutFilter {
+input PagesHomeAboutFilter {
   badge: StringFilter
   title: StringFilter
   text1: StringFilter
@@ -226,38 +270,82 @@ input PagesAboutFilter {
   portraitBadge: StringFilter
 }
 
-input PagesProjectsHeaderFilter {
+input PagesHomeProjectsHeaderFilter {
   eyebrow: StringFilter
   title: StringFilter
   description: StringFilter
 }
 
-input PagesQualificationsHeaderFilter {
+input PagesHomeQualificationsHeaderFilter {
   eyebrow: StringFilter
   title: StringFilter
   description: StringFilter
 }
 
-input PagesPrinciplesHeaderFilter {
+input PagesHomePrinciplesHeaderFilter {
   eyebrow: StringFilter
   title: StringFilter
   description: StringFilter
 }
 
-input PagesSkillsHeaderFilter {
+input PagesHomeSkillsHeaderFilter {
   eyebrow: StringFilter
   title: StringFilter
   description: StringFilter
+}
+
+input PagesHomeFilter {
+  hero: PagesHomeHeroFilter
+  bridge: PagesHomeBridgeFilter
+  about: PagesHomeAboutFilter
+  projectsHeader: PagesHomeProjectsHeaderFilter
+  qualificationsHeader: PagesHomeQualificationsHeaderFilter
+  principlesHeader: PagesHomePrinciplesHeaderFilter
+  skillsHeader: PagesHomeSkillsHeaderFilter
+}
+
+input PagesAboutHeroFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  lede: StringFilter
+}
+
+input PagesAboutPhilosophyFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  text1: StringFilter
+  text2: StringFilter
+  text3: StringFilter
+}
+
+input PagesAboutHowIWorkFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  description: StringFilter
+}
+
+input PagesAboutQualificationsHeaderFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  description: StringFilter
+}
+
+input PagesAboutCtaBandFilter {
+  title: StringFilter
+  description: StringFilter
+}
+
+input PagesAboutFilter {
+  hero: PagesAboutHeroFilter
+  philosophy: PagesAboutPhilosophyFilter
+  howIWork: PagesAboutHowIWorkFilter
+  qualificationsHeader: PagesAboutQualificationsHeaderFilter
+  ctaBand: PagesAboutCtaBandFilter
 }
 
 input PagesFilter {
-  hero: PagesHeroFilter
-  bridge: PagesBridgeFilter
+  home: PagesHomeFilter
   about: PagesAboutFilter
-  projectsHeader: PagesProjectsHeaderFilter
-  qualificationsHeader: PagesQualificationsHeaderFilter
-  principlesHeader: PagesPrinciplesHeaderFilter
-  skillsHeader: PagesSkillsHeaderFilter
 }
 
 type PagesConnectionEdges {
@@ -304,7 +392,7 @@ input ProjectMutation {
   body: JSON
 }
 
-input PagesHeroMutation {
+input PagesHomeHeroMutation {
   badge: String
   title: String
   lede: String
@@ -315,12 +403,12 @@ input PagesHeroMutation {
   trustIndicator: String
 }
 
-input PagesBridgeMutation {
+input PagesHomeBridgeMutation {
   row: String
   label: String
 }
 
-input PagesAboutMutation {
+input PagesHomeAboutMutation {
   badge: String
   title: String
   text1: String
@@ -330,38 +418,82 @@ input PagesAboutMutation {
   portraitBadge: String
 }
 
-input PagesProjectsHeaderMutation {
+input PagesHomeProjectsHeaderMutation {
   eyebrow: String
   title: String
   description: String
 }
 
-input PagesQualificationsHeaderMutation {
+input PagesHomeQualificationsHeaderMutation {
   eyebrow: String
   title: String
   description: String
 }
 
-input PagesPrinciplesHeaderMutation {
+input PagesHomePrinciplesHeaderMutation {
   eyebrow: String
   title: String
   description: String
 }
 
-input PagesSkillsHeaderMutation {
+input PagesHomeSkillsHeaderMutation {
   eyebrow: String
   title: String
   description: String
+}
+
+input PagesHomeMutation {
+  hero: PagesHomeHeroMutation
+  bridge: PagesHomeBridgeMutation
+  about: PagesHomeAboutMutation
+  projectsHeader: PagesHomeProjectsHeaderMutation
+  qualificationsHeader: PagesHomeQualificationsHeaderMutation
+  principlesHeader: PagesHomePrinciplesHeaderMutation
+  skillsHeader: PagesHomeSkillsHeaderMutation
+}
+
+input PagesAboutHeroMutation {
+  eyebrow: String
+  title: String
+  lede: String
+}
+
+input PagesAboutPhilosophyMutation {
+  eyebrow: String
+  title: String
+  text1: String
+  text2: String
+  text3: String
+}
+
+input PagesAboutHowIWorkMutation {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+input PagesAboutQualificationsHeaderMutation {
+  eyebrow: String
+  title: String
+  description: String
+}
+
+input PagesAboutCtaBandMutation {
+  title: String
+  description: String
+}
+
+input PagesAboutMutation {
+  hero: PagesAboutHeroMutation
+  philosophy: PagesAboutPhilosophyMutation
+  howIWork: PagesAboutHowIWorkMutation
+  qualificationsHeader: PagesAboutQualificationsHeaderMutation
+  ctaBand: PagesAboutCtaBandMutation
 }
 
 input PagesMutation {
-  hero: PagesHeroMutation
-  bridge: PagesBridgeMutation
+  home: PagesHomeMutation
   about: PagesAboutMutation
-  projectsHeader: PagesProjectsHeaderMutation
-  qualificationsHeader: PagesQualificationsHeaderMutation
-  principlesHeader: PagesPrinciplesHeaderMutation
-  skillsHeader: PagesSkillsHeaderMutation
 }
 
 schema {

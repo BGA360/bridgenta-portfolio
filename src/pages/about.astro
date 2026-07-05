@@ -1,13 +1,17 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+
+const aboutData = await getEntry('pages', 'about');
+const { hero, philosophy, howIWork, qualificationsHeader, ctaBand } = aboutData.data;
 ---
 
 <Layout title="Über mich" description="Erfahren Sie mehr über Frank Duru – Webmaster seit 2009, spezialisiert auf Frontend Development, WordPress, SEO und moderne, KI-gestützte Softwareentwicklung.">
   <section class="page-hero">
     <div class="page-hero__inner">
-      <span class="eyebrow">Über mich</span>
-      <h1 style="margin-top:0.9rem;">Frank Duru</h1>
-      <p class="lede">Webmaster seit 2009 mit Fokus auf IT-Sicherheit, Systemadministration und KI-gestützte Softwareentwicklung.</p>
+      <span class="eyebrow">{hero.eyebrow}</span>
+      <h1 style="margin-top:0.9rem;">{hero.title}</h1>
+      <p class="lede">{hero.lede}</p>
     </div>
   </section>
 
@@ -36,11 +40,11 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </div>
       <div>
-        <span class="eyebrow">Philosophie</span>
-        <h2 style="margin-top:0.9rem; font-size:clamp(1.6rem,3vw,2.2rem);">Strukturierte Vorgehensweise &amp; Transparenz</h2>
-        <p style="margin-top:1rem;">Für mich bedeutet moderne Web-Entwicklung mehr als das bloße Schreiben von Code. Es geht darum, Systeme zu schaffen, die über Jahre hinweg sicher, stabil und wartbar bleiben. Dabei nutze ich etablierte Qualitätsstandards und nachvollziehbare Prozesse, um eine zuverlässige Softwarequalität zu garantieren.</p>
-        <p style="margin-top:0.8rem;">Ich lege großen Wert auf Datensicherheit und strukturierte Arbeitsabläufe. In meinen Projekten verwende ich automatisierte Build- und Bereitstellungsprozesse sowie systematische Code-Prüfungen. Dies sichert eine kontinuierliche Qualitätskontrolle – auch bei der Arbeit als alleiniger Entwickler.</p>
-        <p style="margin-top:0.8rem;">Ein weiterer Schwerpunkt liegt auf der klaren Strukturierung digitaler Inhalte. Durch den gezielten Einsatz strukturierter Daten stelle ich sicher, dass Webseiten sowohl von klassischen Suchmaschinen als auch von modernen Antwortdiensten präzise erfasst und korrekt interpretiert werden können.</p>
+        <span class="eyebrow">{philosophy.eyebrow}</span>
+        <h2 style="margin-top:0.9rem; font-size:clamp(1.6rem,3vw,2.2rem);">{philosophy.title}</h2>
+        <p style="margin-top:1rem;">{philosophy.text1}</p>
+        <p style="margin-top:0.8rem;">{philosophy.text2}</p>
+        <p style="margin-top:0.8rem;">{philosophy.text3}</p>
       </div>
     </div>
   </section>
@@ -48,9 +52,9 @@ import Layout from '../layouts/Layout.astro';
   <section class="section section--tight" data-reveal>
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">Wie ich arbeite</span>
-        <h2>Projektbasiertes Lernen, praktische Umsetzung</h2>
-        <p>Ich lerne am besten an echten Projekten – deshalb dokumentiere ich meine aktuellen Vorhaben offen auf dieser Seite, einschließlich Entscheidungen, Herausforderungen und Lernergebnissen.</p>
+        <span class="eyebrow">{howIWork.eyebrow}</span>
+        <h2>{howIWork.title}</h2>
+        <p>{howIWork.description}</p>
       </div>
       <div class="grid grid--3">
         <div class="card">
@@ -81,9 +85,9 @@ import Layout from '../layouts/Layout.astro';
   <section class="section section--tight" id="qualifikationen" data-reveal>
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">Qualifikationen</span>
-        <h2>Zertifikate &amp; Abschlüsse</h2>
-        <p>Formale Nachweise meiner Qualifikationen im deutschen IT- und Web-Sektor.</p>
+        <span class="eyebrow">{qualificationsHeader.eyebrow}</span>
+        <h2>{qualificationsHeader.title}</h2>
+        <p>{qualificationsHeader.description}</p>
       </div>
       <div class="grid grid--2" style="margin-top: 1.8rem;">
         <div class="card" style="padding: var(--space-4);">
@@ -122,8 +126,8 @@ import Layout from '../layouts/Layout.astro';
 
   <section class="section--tight" data-reveal>
     <div class="cta-band">
-      <h2>Offen für neue berufliche Möglichkeiten</h2>
-      <p>Ich freue mich über den fachlichen Austausch sowie passende berufliche Herausforderungen in den Bereichen IT-Security, Systemadministration, Webmaster-Services oder KI-gestützte Frontend-Entwicklung.</p>
+      <h2>{ctaBand.title}</h2>
+      <p>{ctaBand.description}</p>
       <div class="hero__ctas">
         <a class="btn btn-primary" href="/contact">Kontakt aufnehmen</a>
         <a class="btn btn-outline" href="/projects">Projekte ansehen</a>

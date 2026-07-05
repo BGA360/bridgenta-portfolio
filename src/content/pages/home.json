@@ -1,8 +1,9 @@
 {
+  "_template": "home",
   "hero": {
     "badge": "PORTFOLIO",
-    "title": "Frank Duru — Webmaster mit<br class=\"hero__br\" />\nFokus auf KI-gestützte<br class=\"hero__br\" />\nSoftwareentwicklung",
-    "lede": "Entwicklung zuverlässiger Web-Systeme durch strukturierte Prozesse. Mein Fokus liegt auf nachvollziehbaren Lösungen, Datensicherheit und der verständlichen Aufbereitung moderner Web-Technologien.",
+    "title": "Frank Duru — Webentwickler mit<br class=\"hero__br\" />\nFokus auf KI-gestützte<br class=\"hero__br\" />\nSoftwarelösungen\n\n",
+    "lede": "Ich entwickle moderne Softwarelösungen für das Web mit Unterstützung von KI und einem strukturierten Entwicklungsprozess. Dabei stehen nachvollziehbare Lösungen, Datensicherheit und die nachhaltige Weiterentwicklung bestehender Systeme im Mittelpunkt.",
     "primaryCtaText": "Projekte ansehen",
     "primaryCtaLink": "/projects",
     "secondaryCtaText": "Kontakt aufnehmen",
