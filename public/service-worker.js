@@ -1,5 +1,5 @@
 // BridGenta Portfolio — Service Worker
-const CACHE_NAME = "bridgenta-portfolio-v12";
+const CACHE_NAME = "bridgenta-portfolio-v13";
 const OFFLINE_URL = "offline.html";
 
 const PRECACHE_ASSETS = [
@@ -45,6 +45,12 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  // Bypass service worker for TinaCMS admin dashboard and local APIs
+  const url = new URL(event.request.url);
+  if (url.pathname.startsWith("/admin") || url.port === "4001") {
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
