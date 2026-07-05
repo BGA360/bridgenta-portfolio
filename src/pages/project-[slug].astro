@@ -367,7 +367,7 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
 
   @media (max-width: 640px) {
     .project-hero {
-      padding: 6.5rem var(--space-2) 3rem !important;
+      padding: 6.5rem var(--space-2) 8rem !important;
     }
     .hero-bridge {
       height: 90px !important;
@@ -489,15 +489,18 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
     background: #ffffff;
   }
 
-  /* Style markdown tables professionally */
+  /* Style markdown tables professionally and responsively */
   .tina-content table {
+    display: block;
     width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     margin: 2rem 0;
     border-collapse: collapse;
     font-size: 0.95rem;
     box-shadow: var(--shadow-soft);
     border-radius: var(--radius-s);
-    overflow: hidden;
     border: 1px solid var(--border);
   }
   .tina-content th,
@@ -505,6 +508,7 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
     padding: 0.85rem 1rem;
     border-bottom: 1px solid var(--border);
     text-align: left;
+    white-space: nowrap;
   }
   .tina-content th {
     background: #f9fafb;
@@ -514,6 +518,36 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
   }
   .tina-content tr:last-child td {
     border-bottom: none;
+  }
+
+  /* Style code blocks responsively */
+  .tina-content pre {
+    background: #f4f4f6;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-s);
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tina-content code {
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.9rem;
+    background: #f4f4f6;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    color: var(--text-dark);
+    word-break: break-all;
+  }
+  .tina-content pre code {
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    color: inherit;
+    display: block;
+    word-break: normal;
+    white-space: pre;
   }
 
   /* HTML Results Grid Presentation Inside Markdown */
