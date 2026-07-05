@@ -112,13 +112,7 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
   <!-- Continuous Canvas Content Area -->
   <section class="project-content-section">
     <div class="container">
-      <!-- Notice for private beta / test phases -->
-      {entry.data.notice && (
-        <div class="notice">
-          <h4>Hinweis zur privaten Beta</h4>
-          <p>{entry.data.notice}</p>
-        </div>
-      )}
+
 
       <!-- Framed Product Hero Image / Showcase Dashboard -->
       {heroImage && (
@@ -155,6 +149,7 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
           devStack={entry.data.devStack}
           aiBuilders={entry.data.aiBuilders}
           role={entry.data.role}
+          notice={entry.data.notice}
         />
       </div>
 
