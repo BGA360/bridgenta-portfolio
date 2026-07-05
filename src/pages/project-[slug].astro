@@ -113,11 +113,6 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
       <!-- Framed Product Hero Image / Showcase Dashboard -->
       {heroImage && (
         <div class="project-showcase-frame" data-reveal>
-          <div class="browser-header">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
           <div class="project-showcase-image-wrapper">
             <img 
               src={heroImage} 
@@ -275,24 +270,7 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
     margin-bottom: var(--space-5);
     background: #ffffff;
   }
-  .browser-header {
-    height: 38px;
-    background: #f4f4f6;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding-left: 16px;
-  }
-  .browser-header .dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #e4e4e7;
-  }
-  .browser-header .dot:nth-child(1) { background: #fca5a5; }
-  .browser-header .dot:nth-child(2) { background: #fef08a; }
-  .browser-header .dot:nth-child(3) { background: #bbf7d0; }
+
   
   .project-showcase-image-wrapper {
     position: relative;
@@ -313,15 +291,7 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
       border-radius: var(--radius-m);
       margin-bottom: var(--space-4);
     }
-    .browser-header {
-      height: 28px;
-      padding-left: 10px;
-      gap: 4px;
-    }
-    .browser-header .dot {
-      width: 7px;
-      height: 7px;
-    }
+
     .project-showcase-image-wrapper {
       max-height: 300px;
     }
