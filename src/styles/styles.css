@@ -421,7 +421,7 @@ section[id] { scroll-margin-top: 100px; }
 .hero {
   position: relative;
   margin: var(--space-4) var(--space-4) 0;
-  border-radius: var(--radius-l) var(--radius-l) 0 0;
+  border-radius: var(--radius-l);
   overflow: hidden;
   background: 
     var(--tech-gradient),
