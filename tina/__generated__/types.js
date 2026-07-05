@@ -20,55 +20,90 @@ export const ProjectPartsFragmentDoc = gql`
 export const PagesPartsFragmentDoc = gql`
     fragment PagesParts on Pages {
   __typename
-  hero {
-    __typename
-    badge
-    title
-    lede
-    primaryCtaText
-    primaryCtaLink
-    secondaryCtaText
-    secondaryCtaLink
-    trustIndicator
+  ... on PagesHome {
+    hero {
+      __typename
+      badge
+      title
+      lede
+      primaryCtaText
+      primaryCtaLink
+      secondaryCtaText
+      secondaryCtaLink
+      trustIndicator
+    }
+    bridge {
+      __typename
+      row
+      label
+    }
+    about {
+      __typename
+      badge
+      title
+      text1
+      text2
+      ctaText
+      ctaLink
+      portraitBadge
+    }
+    projectsHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    qualificationsHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    principlesHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    skillsHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
   }
-  bridge {
-    __typename
-    row
-    label
-  }
-  about {
-    __typename
-    badge
-    title
-    text1
-    text2
-    ctaText
-    ctaLink
-    portraitBadge
-  }
-  projectsHeader {
-    __typename
-    eyebrow
-    title
-    description
-  }
-  qualificationsHeader {
-    __typename
-    eyebrow
-    title
-    description
-  }
-  principlesHeader {
-    __typename
-    eyebrow
-    title
-    description
-  }
-  skillsHeader {
-    __typename
-    eyebrow
-    title
-    description
+  ... on PagesAbout {
+    hero {
+      __typename
+      eyebrow
+      title
+      lede
+    }
+    philosophy {
+      __typename
+      eyebrow
+      title
+      text1
+      text2
+      text3
+    }
+    howIWork {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    qualificationsHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    ctaBand {
+      __typename
+      title
+      description
+    }
   }
 }
     `;

@@ -51,51 +51,7 @@ const projectCollection = defineCollection({
 
 const pagesCollection = defineCollection({
   type: 'data',
-  schema: z.object({
-    hero: z.object({
-      badge: z.string(),
-      title: z.string(),
-      lede: z.string(),
-      primaryCtaText: z.string(),
-      primaryCtaLink: z.string(),
-      secondaryCtaText: z.string(),
-      secondaryCtaLink: z.string(),
-      trustIndicator: z.string(),
-    }),
-    bridge: z.object({
-      row: z.string(),
-      label: z.string(),
-    }),
-    about: z.object({
-      badge: z.string(),
-      title: z.string(),
-      text1: z.string(),
-      text2: z.string(),
-      ctaText: z.string(),
-      ctaLink: z.string(),
-      portraitBadge: z.string(),
-    }),
-    projectsHeader: z.object({
-      eyebrow: z.string(),
-      title: z.string(),
-      description: z.string(),
-    }),
-    qualificationsHeader: z.object({
-      eyebrow: z.string(),
-      title: z.string(),
-      description: z.string(),
-    }),
-    principlesHeader: z.object({
-      eyebrow: z.string(),
-      title: z.string(),
-      description: z.string(),
-    }),
-    skillsHeader: z.object({
-      eyebrow: z.string(),
-      title: z.string(),
-      description: z.string(),
-    }),
-  }),
+  schema: z.any(),
 });
 
 export const collections = {

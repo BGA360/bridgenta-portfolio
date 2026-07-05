@@ -1,0 +1,29 @@
+{
+  "_template": "about",
+  "hero": {
+    "eyebrow": "Über mich",
+    "title": "Frank Duru",
+    "lede": "Webmaster seit 2009 mit Fokus auf IT-Sicherheit, Systemadministration und KI-gestützte Softwareentwicklung."
+  },
+  "philosophy": {
+    "eyebrow": "Philosophie",
+    "title": "Strukturierte Vorgehensweise & Transparenz",
+    "text1": "Für mich bedeutet moderne Web-Entwicklung mehr als das bloße Schreiben von Code. Es geht darum, Systeme zu schaffen, die über Jahre hinweg sicher, stabil und wartbar bleiben. Dabei nutze ich etablierte Qualitätsstandards und nachvollziehbare Prozesse, um eine zuverlässige Softwarequalität zu garantieren.",
+    "text2": "Ich lege großen Wert auf Datensicherheit und strukturierte Arbeitsabläufe. In meinen Projekten verwende ich automatisierte Build- und Bereitstellungsprozesse sowie systematische Code-Prüfungen. Dies sichert eine kontinuierliche Qualitätskontrolle – auch bei der Arbeit als alleiniger Entwickler.",
+    "text3": "Ein weiterer Schwerpunkt liegt auf der klaren Strukturierung digitaler Inhalte. Durch den gezielten Einsatz strukturierter Daten stelle ich sicher, dass Webseiten sowohl von klassischen Suchmaschinen als auch von modernen Antwortdiensten präzise erfasst und korrekt interpretiert werden können."
+  },
+  "howIWork": {
+    "eyebrow": "Wie ich arbeite",
+    "title": "Projektbasiertes Lernen, praktische Umsetzung",
+    "description": "Ich lerne am besten an echten Projekten – deshalb dokumentiere ich meine aktuellen Vorhaben offen auf dieser Seite, einschließlich Entscheidungen, Herausforderungen und Lernergebnissen."
+  },
+  "qualificationsHeader": {
+    "eyebrow": "Qualifikationen",
+    "title": "Zertifikate & Abschlüsse",
+    "description": "Formale Nachweise meiner Qualifikationen im deutschen IT- und Web-Sektor."
+  },
+  "ctaBand": {
+    "title": "Offen für neue berufliche Möglichkeiten",
+    "description": "Ich freue mich über den fachlichen Austausch sowie passende berufliche Herausforderungen in den Bereichen IT-Security, Systemadministration, Webmaster-Services oder KI-gestützte Frontend-Entwicklung."
+  }
+}

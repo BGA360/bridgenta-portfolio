@@ -181,7 +181,7 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Project | Pages | Folder;
+export type DocumentNode = Project | PagesHome | PagesAbout | Folder;
 
 export type Project = Node & Document & {
   __typename?: 'Project';
@@ -233,8 +233,8 @@ export type ProjectConnection = Connection & {
   edges?: Maybe<Array<Maybe<ProjectConnectionEdges>>>;
 };
 
-export type PagesHero = {
-  __typename?: 'PagesHero';
+export type PagesHomeHero = {
+  __typename?: 'PagesHomeHero';
   badge?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   lede?: Maybe<Scalars['String']['output']>;
@@ -245,14 +245,14 @@ export type PagesHero = {
   trustIndicator?: Maybe<Scalars['String']['output']>;
 };
 
-export type PagesBridge = {
-  __typename?: 'PagesBridge';
+export type PagesHomeBridge = {
+  __typename?: 'PagesHomeBridge';
   row?: Maybe<Scalars['String']['output']>;
   label?: Maybe<Scalars['String']['output']>;
 };
 
-export type PagesAbout = {
-  __typename?: 'PagesAbout';
+export type PagesHomeAbout = {
+  __typename?: 'PagesHomeAbout';
   badge?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   text1?: Maybe<Scalars['String']['output']>;
@@ -262,49 +262,99 @@ export type PagesAbout = {
   portraitBadge?: Maybe<Scalars['String']['output']>;
 };
 
-export type PagesProjectsHeader = {
-  __typename?: 'PagesProjectsHeader';
+export type PagesHomeProjectsHeader = {
+  __typename?: 'PagesHomeProjectsHeader';
   eyebrow?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
 };
 
-export type PagesQualificationsHeader = {
-  __typename?: 'PagesQualificationsHeader';
+export type PagesHomeQualificationsHeader = {
+  __typename?: 'PagesHomeQualificationsHeader';
   eyebrow?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
 };
 
-export type PagesPrinciplesHeader = {
-  __typename?: 'PagesPrinciplesHeader';
+export type PagesHomePrinciplesHeader = {
+  __typename?: 'PagesHomePrinciplesHeader';
   eyebrow?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
 };
 
-export type PagesSkillsHeader = {
-  __typename?: 'PagesSkillsHeader';
+export type PagesHomeSkillsHeader = {
+  __typename?: 'PagesHomeSkillsHeader';
   eyebrow?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
 };
 
-export type Pages = Node & Document & {
-  __typename?: 'Pages';
-  hero?: Maybe<PagesHero>;
-  bridge?: Maybe<PagesBridge>;
-  about?: Maybe<PagesAbout>;
-  projectsHeader?: Maybe<PagesProjectsHeader>;
-  qualificationsHeader?: Maybe<PagesQualificationsHeader>;
-  principlesHeader?: Maybe<PagesPrinciplesHeader>;
-  skillsHeader?: Maybe<PagesSkillsHeader>;
+export type PagesHome = Node & Document & {
+  __typename?: 'PagesHome';
+  hero?: Maybe<PagesHomeHero>;
+  bridge?: Maybe<PagesHomeBridge>;
+  about?: Maybe<PagesHomeAbout>;
+  projectsHeader?: Maybe<PagesHomeProjectsHeader>;
+  qualificationsHeader?: Maybe<PagesHomeQualificationsHeader>;
+  principlesHeader?: Maybe<PagesHomePrinciplesHeader>;
+  skillsHeader?: Maybe<PagesHomeSkillsHeader>;
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
   _values: Scalars['JSON']['output'];
 };
 
-export type PagesHeroFilter = {
+export type PagesAboutHero = {
+  __typename?: 'PagesAboutHero';
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  lede?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesAboutPhilosophy = {
+  __typename?: 'PagesAboutPhilosophy';
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  text1?: Maybe<Scalars['String']['output']>;
+  text2?: Maybe<Scalars['String']['output']>;
+  text3?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesAboutHowIWork = {
+  __typename?: 'PagesAboutHowIWork';
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesAboutQualificationsHeader = {
+  __typename?: 'PagesAboutQualificationsHeader';
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesAboutCtaBand = {
+  __typename?: 'PagesAboutCtaBand';
+  title?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesAbout = Node & Document & {
+  __typename?: 'PagesAbout';
+  hero?: Maybe<PagesAboutHero>;
+  philosophy?: Maybe<PagesAboutPhilosophy>;
+  howIWork?: Maybe<PagesAboutHowIWork>;
+  qualificationsHeader?: Maybe<PagesAboutQualificationsHeader>;
+  ctaBand?: Maybe<PagesAboutCtaBand>;
+  id: Scalars['ID']['output'];
+  _sys: SystemInfo;
+  _values: Scalars['JSON']['output'];
+};
+
+export type Pages = PagesHome | PagesAbout;
+
+export type PagesHomeHeroFilter = {
   badge?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   lede?: InputMaybe<StringFilter>;
@@ -315,12 +365,12 @@ export type PagesHeroFilter = {
   trustIndicator?: InputMaybe<StringFilter>;
 };
 
-export type PagesBridgeFilter = {
+export type PagesHomeBridgeFilter = {
   row?: InputMaybe<StringFilter>;
   label?: InputMaybe<StringFilter>;
 };
 
-export type PagesAboutFilter = {
+export type PagesHomeAboutFilter = {
   badge?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   text1?: InputMaybe<StringFilter>;
@@ -330,38 +380,82 @@ export type PagesAboutFilter = {
   portraitBadge?: InputMaybe<StringFilter>;
 };
 
-export type PagesProjectsHeaderFilter = {
+export type PagesHomeProjectsHeaderFilter = {
   eyebrow?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
 };
 
-export type PagesQualificationsHeaderFilter = {
+export type PagesHomeQualificationsHeaderFilter = {
   eyebrow?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
 };
 
-export type PagesPrinciplesHeaderFilter = {
+export type PagesHomePrinciplesHeaderFilter = {
   eyebrow?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
 };
 
-export type PagesSkillsHeaderFilter = {
+export type PagesHomeSkillsHeaderFilter = {
   eyebrow?: InputMaybe<StringFilter>;
   title?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
+};
+
+export type PagesHomeFilter = {
+  hero?: InputMaybe<PagesHomeHeroFilter>;
+  bridge?: InputMaybe<PagesHomeBridgeFilter>;
+  about?: InputMaybe<PagesHomeAboutFilter>;
+  projectsHeader?: InputMaybe<PagesHomeProjectsHeaderFilter>;
+  qualificationsHeader?: InputMaybe<PagesHomeQualificationsHeaderFilter>;
+  principlesHeader?: InputMaybe<PagesHomePrinciplesHeaderFilter>;
+  skillsHeader?: InputMaybe<PagesHomeSkillsHeaderFilter>;
+};
+
+export type PagesAboutHeroFilter = {
+  eyebrow?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  lede?: InputMaybe<StringFilter>;
+};
+
+export type PagesAboutPhilosophyFilter = {
+  eyebrow?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  text1?: InputMaybe<StringFilter>;
+  text2?: InputMaybe<StringFilter>;
+  text3?: InputMaybe<StringFilter>;
+};
+
+export type PagesAboutHowIWorkFilter = {
+  eyebrow?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesAboutQualificationsHeaderFilter = {
+  eyebrow?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesAboutCtaBandFilter = {
+  title?: InputMaybe<StringFilter>;
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesAboutFilter = {
+  hero?: InputMaybe<PagesAboutHeroFilter>;
+  philosophy?: InputMaybe<PagesAboutPhilosophyFilter>;
+  howIWork?: InputMaybe<PagesAboutHowIWorkFilter>;
+  qualificationsHeader?: InputMaybe<PagesAboutQualificationsHeaderFilter>;
+  ctaBand?: InputMaybe<PagesAboutCtaBandFilter>;
 };
 
 export type PagesFilter = {
-  hero?: InputMaybe<PagesHeroFilter>;
-  bridge?: InputMaybe<PagesBridgeFilter>;
+  home?: InputMaybe<PagesHomeFilter>;
   about?: InputMaybe<PagesAboutFilter>;
-  projectsHeader?: InputMaybe<PagesProjectsHeaderFilter>;
-  qualificationsHeader?: InputMaybe<PagesQualificationsHeaderFilter>;
-  principlesHeader?: InputMaybe<PagesPrinciplesHeaderFilter>;
-  skillsHeader?: InputMaybe<PagesSkillsHeaderFilter>;
 };
 
 export type PagesConnectionEdges = {
@@ -468,7 +562,7 @@ export type ProjectMutation = {
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
-export type PagesHeroMutation = {
+export type PagesHomeHeroMutation = {
   badge?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   lede?: InputMaybe<Scalars['String']['input']>;
@@ -479,12 +573,12 @@ export type PagesHeroMutation = {
   trustIndicator?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type PagesBridgeMutation = {
+export type PagesHomeBridgeMutation = {
   row?: InputMaybe<Scalars['String']['input']>;
   label?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type PagesAboutMutation = {
+export type PagesHomeAboutMutation = {
   badge?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   text1?: InputMaybe<Scalars['String']['input']>;
@@ -494,43 +588,91 @@ export type PagesAboutMutation = {
   portraitBadge?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type PagesProjectsHeaderMutation = {
+export type PagesHomeProjectsHeaderMutation = {
   eyebrow?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type PagesQualificationsHeaderMutation = {
+export type PagesHomeQualificationsHeaderMutation = {
   eyebrow?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type PagesPrinciplesHeaderMutation = {
+export type PagesHomePrinciplesHeaderMutation = {
   eyebrow?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type PagesSkillsHeaderMutation = {
+export type PagesHomeSkillsHeaderMutation = {
   eyebrow?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesHomeMutation = {
+  hero?: InputMaybe<PagesHomeHeroMutation>;
+  bridge?: InputMaybe<PagesHomeBridgeMutation>;
+  about?: InputMaybe<PagesHomeAboutMutation>;
+  projectsHeader?: InputMaybe<PagesHomeProjectsHeaderMutation>;
+  qualificationsHeader?: InputMaybe<PagesHomeQualificationsHeaderMutation>;
+  principlesHeader?: InputMaybe<PagesHomePrinciplesHeaderMutation>;
+  skillsHeader?: InputMaybe<PagesHomeSkillsHeaderMutation>;
+};
+
+export type PagesAboutHeroMutation = {
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  lede?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesAboutPhilosophyMutation = {
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  text1?: InputMaybe<Scalars['String']['input']>;
+  text2?: InputMaybe<Scalars['String']['input']>;
+  text3?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesAboutHowIWorkMutation = {
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesAboutQualificationsHeaderMutation = {
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesAboutCtaBandMutation = {
+  title?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesAboutMutation = {
+  hero?: InputMaybe<PagesAboutHeroMutation>;
+  philosophy?: InputMaybe<PagesAboutPhilosophyMutation>;
+  howIWork?: InputMaybe<PagesAboutHowIWorkMutation>;
+  qualificationsHeader?: InputMaybe<PagesAboutQualificationsHeaderMutation>;
+  ctaBand?: InputMaybe<PagesAboutCtaBandMutation>;
 };
 
 export type PagesMutation = {
-  hero?: InputMaybe<PagesHeroMutation>;
-  bridge?: InputMaybe<PagesBridgeMutation>;
+  home?: InputMaybe<PagesHomeMutation>;
   about?: InputMaybe<PagesAboutMutation>;
-  projectsHeader?: InputMaybe<PagesProjectsHeaderMutation>;
-  qualificationsHeader?: InputMaybe<PagesQualificationsHeaderMutation>;
-  principlesHeader?: InputMaybe<PagesPrinciplesHeaderMutation>;
-  skillsHeader?: InputMaybe<PagesSkillsHeaderMutation>;
 };
 
 export type ProjectPartsFragment = { __typename: 'Project', title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null };
 
-export type PagesPartsFragment = { __typename: 'Pages', hero?: { __typename: 'PagesHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesPrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null };
+type PagesParts_PagesHome_Fragment = { __typename: 'PagesHome', hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null };
+
+type PagesParts_PagesAbout_Fragment = { __typename: 'PagesAbout', hero?: { __typename: 'PagesAboutHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, philosophy?: { __typename: 'PagesAboutPhilosophy', eyebrow?: string | null, title?: string | null, text1?: string | null, text2?: string | null, text3?: string | null } | null, howIWork?: { __typename: 'PagesAboutHowIWork', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesAboutQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, ctaBand?: { __typename: 'PagesAboutCtaBand', title?: string | null, description?: string | null } | null };
+
+export type PagesPartsFragment = PagesParts_PagesHome_Fragment | PagesParts_PagesAbout_Fragment;
 
 export type ProjectQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -556,7 +698,7 @@ export type PagesQueryVariables = Exact<{
 }>;
 
 
-export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'Pages', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesPrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } };
+export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'PagesHome', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } | { __typename: 'PagesAbout', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesAboutHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, philosophy?: { __typename: 'PagesAboutPhilosophy', eyebrow?: string | null, title?: string | null, text1?: string | null, text2?: string | null, text3?: string | null } | null, howIWork?: { __typename: 'PagesAboutHowIWork', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesAboutQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, ctaBand?: { __typename: 'PagesAboutCtaBand', title?: string | null, description?: string | null } | null } };
 
 export type PagesConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -568,7 +710,7 @@ export type PagesConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'Pages', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesPrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } | null } | null> | null } };
+export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'PagesHome', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } | { __typename: 'PagesAbout', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesAboutHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, philosophy?: { __typename: 'PagesAboutPhilosophy', eyebrow?: string | null, title?: string | null, text1?: string | null, text2?: string | null, text3?: string | null } | null, howIWork?: { __typename: 'PagesAboutHowIWork', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesAboutQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, ctaBand?: { __typename: 'PagesAboutCtaBand', title?: string | null, description?: string | null } | null } | null } | null> | null } };
 
 export const ProjectPartsFragmentDoc = gql`
     fragment ProjectParts on Project {
@@ -585,55 +727,90 @@ export const ProjectPartsFragmentDoc = gql`
 export const PagesPartsFragmentDoc = gql`
     fragment PagesParts on Pages {
   __typename
-  hero {
-    __typename
-    badge
-    title
-    lede
-    primaryCtaText
-    primaryCtaLink
-    secondaryCtaText
-    secondaryCtaLink
-    trustIndicator
+  ... on PagesHome {
+    hero {
+      __typename
+      badge
+      title
+      lede
+      primaryCtaText
+      primaryCtaLink
+      secondaryCtaText
+      secondaryCtaLink
+      trustIndicator
+    }
+    bridge {
+      __typename
+      row
+      label
+    }
+    about {
+      __typename
+      badge
+      title
+      text1
+      text2
+      ctaText
+      ctaLink
+      portraitBadge
+    }
+    projectsHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    qualificationsHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    principlesHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    skillsHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
   }
-  bridge {
-    __typename
-    row
-    label
-  }
-  about {
-    __typename
-    badge
-    title
-    text1
-    text2
-    ctaText
-    ctaLink
-    portraitBadge
-  }
-  projectsHeader {
-    __typename
-    eyebrow
-    title
-    description
-  }
-  qualificationsHeader {
-    __typename
-    eyebrow
-    title
-    description
-  }
-  principlesHeader {
-    __typename
-    eyebrow
-    title
-    description
-  }
-  skillsHeader {
-    __typename
-    eyebrow
-    title
-    description
+  ... on PagesAbout {
+    hero {
+      __typename
+      eyebrow
+      title
+      lede
+    }
+    philosophy {
+      __typename
+      eyebrow
+      title
+      text1
+      text2
+      text3
+    }
+    howIWork {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    qualificationsHeader {
+      __typename
+      eyebrow
+      title
+      description
+    }
+    ctaBand {
+      __typename
+      title
+      description
+    }
   }
 }
     `;
