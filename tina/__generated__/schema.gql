@@ -88,7 +88,7 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Project | PagesHome | PagesAbout | Folder
+union DocumentNode = Project | PagesHome | PagesAbout | PagesContact | Folder
 
 type Project implements Node & Document {
   title: String!
@@ -242,7 +242,36 @@ type PagesAbout implements Node & Document {
   _values: JSON!
 }
 
-union Pages = PagesHome | PagesAbout
+type PagesContactHero {
+  eyebrow: String
+  title: String
+  lede: String
+}
+
+type PagesContactTouch {
+  title: String
+  description: String
+  email: String
+}
+
+type PagesContactInfo {
+  cvSubject: String
+  email: String
+  location: String
+  responseTime: String
+  openFor: String
+}
+
+type PagesContact implements Node & Document {
+  hero: PagesContactHero
+  touch: PagesContactTouch
+  info: PagesContactInfo
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+union Pages = PagesHome | PagesAbout | PagesContact
 
 input PagesHomeHeroFilter {
   badge: StringFilter
@@ -343,9 +372,36 @@ input PagesAboutFilter {
   ctaBand: PagesAboutCtaBandFilter
 }
 
+input PagesContactHeroFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  lede: StringFilter
+}
+
+input PagesContactTouchFilter {
+  title: StringFilter
+  description: StringFilter
+  email: StringFilter
+}
+
+input PagesContactInfoFilter {
+  cvSubject: StringFilter
+  email: StringFilter
+  location: StringFilter
+  responseTime: StringFilter
+  openFor: StringFilter
+}
+
+input PagesContactFilter {
+  hero: PagesContactHeroFilter
+  touch: PagesContactTouchFilter
+  info: PagesContactInfoFilter
+}
+
 input PagesFilter {
   home: PagesHomeFilter
   about: PagesAboutFilter
+  contact: PagesContactFilter
 }
 
 type PagesConnectionEdges {
@@ -491,9 +547,36 @@ input PagesAboutMutation {
   ctaBand: PagesAboutCtaBandMutation
 }
 
+input PagesContactHeroMutation {
+  eyebrow: String
+  title: String
+  lede: String
+}
+
+input PagesContactTouchMutation {
+  title: String
+  description: String
+  email: String
+}
+
+input PagesContactInfoMutation {
+  cvSubject: String
+  email: String
+  location: String
+  responseTime: String
+  openFor: String
+}
+
+input PagesContactMutation {
+  hero: PagesContactHeroMutation
+  touch: PagesContactTouchMutation
+  info: PagesContactInfoMutation
+}
+
 input PagesMutation {
   home: PagesHomeMutation
   about: PagesAboutMutation
+  contact: PagesContactMutation
 }
 
 schema {

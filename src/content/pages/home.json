@@ -1,5 +1,4 @@
 {
-  "_template": "home",
   "hero": {
     "badge": "PORTFOLIO",
     "title": "Frank Duru — Webentwickler mit<br class=\"hero__br\" />\nFokus auf KI-gestützte<br class=\"hero__br\" />\nSoftwarelösungen\n\n",
@@ -16,9 +15,9 @@
   },
   "about": {
     "badge": "ÜBER MICH",
-    "title": "Langjährige Webmaster-Praxis mit modernem Fokus",
-    "text1": "Seit 2009 verwalte und optimiere ich Web-Infrastrukturen und Suchmaschinenpräsenzen für verschiedene Projekte. Um den wachsenden Anforderungen an IT-Sicherheit und moderne Web-Systeme gerecht zu werden, verbinde ich diese Erfahrung heute mit strukturierter Softwareentwicklung.",
-    "text2": "Mein Schwerpunkt liegt auf dem Aufbau transparenter Systeme, die sowohl für menschliche Nutzer als auch für automatisierte Suchsysteme optimal strukturiert sind.",
+    "title": "Vom Webmaster zur KI-gestützten Softwareentwicklung",
+    "text1": "Seit 2009 entwickle und betreue ich Webprojekte und habe die Entwicklung moderner Web-Technologien über viele Jahre aktiv begleitet. Mit dem Wandel der Softwareentwicklung hat sich auch mein Schwerpunkt weiterentwickelt. Heute verbinde ich diese Erfahrung mit KI-gestützter Softwareentwicklung, strukturierten Entwicklungsprozessen und einem klaren Fokus auf nachvollziehbare Architektur, Qualität und langfristig wartbare Softwarelösungen.",
+    "text2": "",
     "ctaText": "Mehr über meinen Ansatz →",
     "ctaLink": "/about",
     "portraitBadge": "Strategisch · Lösungsorientiert · Zuverlässig"
@@ -42,5 +41,6 @@
     "eyebrow": "Fähigkeiten",
     "title": "Nachweisbare Kompetenzen",
     "description": "Eine Kombination aus langjähriger Webmaster-Praxis und formal nachgewiesenen IT-Kompetenzen."
-  }
+  },
+  "_template": "home"
 }

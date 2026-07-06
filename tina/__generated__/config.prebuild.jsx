@@ -221,6 +221,44 @@ var config_default = defineConfig({
                 ]
               }
             ]
+          },
+          {
+            name: "contact",
+            label: "Kontakt Seite",
+            fields: [
+              {
+                type: "object",
+                name: "hero",
+                label: "Hero Bereich",
+                fields: [
+                  { type: "string", name: "eyebrow", label: "Augenbraue" },
+                  { type: "string", name: "title", label: "Titel" },
+                  { type: "string", name: "lede", label: "Unterzeile/Beschreibung", ui: { component: "textarea" } }
+                ]
+              },
+              {
+                type: "object",
+                name: "touch",
+                label: "Get in Touch Bereich",
+                fields: [
+                  { type: "string", name: "title", label: "Titel" },
+                  { type: "string", name: "description", label: "Beschreibungstext", ui: { component: "textarea" } },
+                  { type: "string", name: "email", label: "E-Mail Adresse" }
+                ]
+              },
+              {
+                type: "object",
+                name: "info",
+                label: "Sidebar Kontaktinfos",
+                fields: [
+                  { type: "string", name: "cvSubject", label: "Betreffzeile f\xFCr Lebenslauf-Knopf" },
+                  { type: "string", name: "email", label: "Angezeigte E-Mail" },
+                  { type: "string", name: "location", label: "Standort" },
+                  { type: "string", name: "responseTime", label: "Antwortzeit" },
+                  { type: "string", name: "openFor", label: "Offen f\xFCr (Beschreibungstext)", ui: { component: "textarea" } }
+                ]
+              }
+            ]
           }
         ]
       }
