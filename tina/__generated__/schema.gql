@@ -282,7 +282,9 @@ type PagesFooterBrand {
 }
 
 type PagesFooterNewsletter {
+  title: String
   text: String
+  placeholder: String
 }
 
 type PagesFooterBottom {
@@ -438,7 +440,9 @@ input PagesFooterBrandFilter {
 }
 
 input PagesFooterNewsletterFilter {
+  title: StringFilter
   text: StringFilter
+  placeholder: StringFilter
 }
 
 input PagesFooterBottomFilter {
@@ -640,7 +644,9 @@ input PagesFooterBrandMutation {
 }
 
 input PagesFooterNewsletterMutation {
+  title: String
   text: String
+  placeholder: String
 }
 
 input PagesFooterBottomMutation {

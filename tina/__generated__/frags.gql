@@ -131,7 +131,9 @@ fragment PagesParts on Pages {
     }
     newsletter {
       __typename
+      title
       text
+      placeholder
     }
     bottom {
       __typename

@@ -140,7 +140,9 @@ export const PagesPartsFragmentDoc = gql`
     }
     newsletter {
       __typename
+      title
       text
+      placeholder
     }
     bottom {
       __typename

@@ -221,10 +221,10 @@ import '../styles/styles.css';
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Newsletter</h4>
+          <h4>{newsletter.title}</h4>
           <p style="font-size:0.88rem; margin-bottom: 0.5rem; color: rgba(255,255,255,0.5);">{newsletter.text}</p>
           <form class="newsletter-form" aria-label="Newsletter-Anmeldung (Demo)">
-            <input type="email" placeholder="deine@email.de" required>
+            <input type="email" placeholder={newsletter.placeholder} required>
             <button type="submit" aria-label="Senden">
               <svg viewBox="0 0 24 24" width="12" height="12"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </button>

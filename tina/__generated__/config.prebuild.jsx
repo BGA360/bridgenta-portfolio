@@ -287,7 +287,9 @@ var config_default = defineConfig({
                 name: "newsletter",
                 label: "Newsletter",
                 fields: [
-                  { type: "string", name: "text", label: "Newsletter Text" }
+                  { type: "string", name: "title", label: "Titel" },
+                  { type: "string", name: "text", label: "Newsletter Text" },
+                  { type: "string", name: "placeholder", label: "E-Mail Platzhalter" }
                 ]
               },
               {
