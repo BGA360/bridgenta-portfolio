@@ -186,9 +186,14 @@ export type DocumentNode = Project | PagesHome | PagesAbout | PagesContact | Pag
 export type Project = Node & Document & {
   __typename?: 'Project';
   title: Scalars['String']['output'];
+  subtitle?: Maybe<Scalars['String']['output']>;
   category: Scalars['String']['output'];
   status: Scalars['String']['output'];
+  timeline?: Maybe<Scalars['String']['output']>;
+  role?: Maybe<Scalars['String']['output']>;
   technologies: Scalars['String']['output'];
+  devStack?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  aiBuilders?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   description: Scalars['String']['output'];
   notice?: Maybe<Scalars['String']['output']>;
   body?: Maybe<Scalars['JSON']['output']>;
@@ -212,9 +217,14 @@ export type RichTextFilter = {
 
 export type ProjectFilter = {
   title?: InputMaybe<StringFilter>;
+  subtitle?: InputMaybe<StringFilter>;
   category?: InputMaybe<StringFilter>;
   status?: InputMaybe<StringFilter>;
+  timeline?: InputMaybe<StringFilter>;
+  role?: InputMaybe<StringFilter>;
   technologies?: InputMaybe<StringFilter>;
+  devStack?: InputMaybe<StringFilter>;
+  aiBuilders?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
   notice?: InputMaybe<StringFilter>;
   body?: InputMaybe<RichTextFilter>;
@@ -679,9 +689,14 @@ export type DocumentMutation = {
 
 export type ProjectMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
+  subtitle?: InputMaybe<Scalars['String']['input']>;
   category?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
+  timeline?: InputMaybe<Scalars['String']['input']>;
+  role?: InputMaybe<Scalars['String']['input']>;
   technologies?: InputMaybe<Scalars['String']['input']>;
+  devStack?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  aiBuilders?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   description?: InputMaybe<Scalars['String']['input']>;
   notice?: InputMaybe<Scalars['String']['input']>;
   body?: InputMaybe<Scalars['JSON']['input']>;
@@ -847,7 +862,7 @@ export type PagesMutation = {
   footer?: InputMaybe<PagesFooterMutation>;
 };
 
-export type ProjectPartsFragment = { __typename: 'Project', title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null };
+export type ProjectPartsFragment = { __typename: 'Project', title: string, subtitle?: string | null, category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, description: string, notice?: string | null, body?: any | null };
 
 type PagesParts_PagesHome_Fragment = { __typename: 'PagesHome', hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null };
 
@@ -864,7 +879,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project: { __typename: 'Project', id: string, title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+export type ProjectQuery = { __typename?: 'Query', project: { __typename: 'Project', id: string, title: string, subtitle?: string | null, category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
 
 export type ProjectConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -876,7 +891,7 @@ export type ProjectConnectionQueryVariables = Exact<{
 }>;
 
 
-export type ProjectConnectionQuery = { __typename?: 'Query', projectConnection: { __typename?: 'ProjectConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'ProjectConnectionEdges', cursor: string, node?: { __typename: 'Project', id: string, title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type ProjectConnectionQuery = { __typename?: 'Query', projectConnection: { __typename?: 'ProjectConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'ProjectConnectionEdges', cursor: string, node?: { __typename: 'Project', id: string, title: string, subtitle?: string | null, category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
 export type PagesQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -901,9 +916,14 @@ export const ProjectPartsFragmentDoc = gql`
     fragment ProjectParts on Project {
   __typename
   title
+  subtitle
   category
   status
+  timeline
+  role
   technologies
+  devStack
+  aiBuilders
   description
   notice
   body

@@ -9,9 +9,14 @@ export const ProjectPartsFragmentDoc = gql`
     fragment ProjectParts on Project {
   __typename
   title
+  subtitle
   category
   status
+  timeline
+  role
   technologies
+  devStack
+  aiBuilders
   description
   notice
   body
