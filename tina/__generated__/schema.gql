@@ -92,9 +92,14 @@ union DocumentNode = Project | PagesHome | PagesAbout | PagesContact | PagesFoot
 
 type Project implements Node & Document {
   title: String!
+  subtitle: String
   category: String!
   status: String!
+  timeline: String
+  role: String
   technologies: String!
+  devStack: [String]
+  aiBuilders: [String]
   description: String!
   notice: String
   body: JSON
@@ -118,9 +123,14 @@ input RichTextFilter {
 
 input ProjectFilter {
   title: StringFilter
+  subtitle: StringFilter
   category: StringFilter
   status: StringFilter
+  timeline: StringFilter
+  role: StringFilter
   technologies: StringFilter
+  devStack: StringFilter
+  aiBuilders: StringFilter
   description: StringFilter
   notice: StringFilter
   body: RichTextFilter
@@ -500,9 +510,14 @@ input DocumentMutation {
 
 input ProjectMutation {
   title: String
+  subtitle: String
   category: String
   status: String
+  timeline: String
+  role: String
   technologies: String
+  devStack: [String]
+  aiBuilders: [String]
   description: String
   notice: String
   body: JSON
