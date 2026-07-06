@@ -181,7 +181,7 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Project | PagesHome | PagesAbout | PagesContact | Folder;
+export type DocumentNode = Project | PagesHome | PagesAbout | PagesContact | PagesFooter | Folder;
 
 export type Project = Node & Document & {
   __typename?: 'Project';
@@ -385,7 +385,41 @@ export type PagesContact = Node & Document & {
   _values: Scalars['JSON']['output'];
 };
 
-export type Pages = PagesHome | PagesAbout | PagesContact;
+export type PagesFooterTopTier = {
+  __typename?: 'PagesFooterTopTier';
+  availability?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  location?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesFooterBrand = {
+  __typename?: 'PagesFooterBrand';
+  description?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesFooterNewsletter = {
+  __typename?: 'PagesFooterNewsletter';
+  text?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesFooterBottom = {
+  __typename?: 'PagesFooterBottom';
+  copyright?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+};
+
+export type PagesFooter = Node & Document & {
+  __typename?: 'PagesFooter';
+  topTier?: Maybe<PagesFooterTopTier>;
+  brand?: Maybe<PagesFooterBrand>;
+  newsletter?: Maybe<PagesFooterNewsletter>;
+  bottom?: Maybe<PagesFooterBottom>;
+  id: Scalars['ID']['output'];
+  _sys: SystemInfo;
+  _values: Scalars['JSON']['output'];
+};
+
+export type Pages = PagesHome | PagesAbout | PagesContact | PagesFooter;
 
 export type PagesHomeHeroFilter = {
   badge?: InputMaybe<StringFilter>;
@@ -512,10 +546,37 @@ export type PagesContactFilter = {
   info?: InputMaybe<PagesContactInfoFilter>;
 };
 
+export type PagesFooterTopTierFilter = {
+  availability?: InputMaybe<StringFilter>;
+  email?: InputMaybe<StringFilter>;
+  location?: InputMaybe<StringFilter>;
+};
+
+export type PagesFooterBrandFilter = {
+  description?: InputMaybe<StringFilter>;
+};
+
+export type PagesFooterNewsletterFilter = {
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PagesFooterBottomFilter = {
+  copyright?: InputMaybe<StringFilter>;
+  email?: InputMaybe<StringFilter>;
+};
+
+export type PagesFooterFilter = {
+  topTier?: InputMaybe<PagesFooterTopTierFilter>;
+  brand?: InputMaybe<PagesFooterBrandFilter>;
+  newsletter?: InputMaybe<PagesFooterNewsletterFilter>;
+  bottom?: InputMaybe<PagesFooterBottomFilter>;
+};
+
 export type PagesFilter = {
   home?: InputMaybe<PagesHomeFilter>;
   about?: InputMaybe<PagesAboutFilter>;
   contact?: InputMaybe<PagesContactFilter>;
+  footer?: InputMaybe<PagesFooterFilter>;
 };
 
 export type PagesConnectionEdges = {
@@ -747,10 +808,37 @@ export type PagesContactMutation = {
   info?: InputMaybe<PagesContactInfoMutation>;
 };
 
+export type PagesFooterTopTierMutation = {
+  availability?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  location?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesFooterBrandMutation = {
+  description?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesFooterNewsletterMutation = {
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesFooterBottomMutation = {
+  copyright?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PagesFooterMutation = {
+  topTier?: InputMaybe<PagesFooterTopTierMutation>;
+  brand?: InputMaybe<PagesFooterBrandMutation>;
+  newsletter?: InputMaybe<PagesFooterNewsletterMutation>;
+  bottom?: InputMaybe<PagesFooterBottomMutation>;
+};
+
 export type PagesMutation = {
   home?: InputMaybe<PagesHomeMutation>;
   about?: InputMaybe<PagesAboutMutation>;
   contact?: InputMaybe<PagesContactMutation>;
+  footer?: InputMaybe<PagesFooterMutation>;
 };
 
 export type ProjectPartsFragment = { __typename: 'Project', title: string, category: string, status: string, technologies: string, description: string, notice?: string | null, body?: any | null };
@@ -761,7 +849,9 @@ type PagesParts_PagesAbout_Fragment = { __typename: 'PagesAbout', hero?: { __typ
 
 type PagesParts_PagesContact_Fragment = { __typename: 'PagesContact', hero?: { __typename: 'PagesContactHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, touch?: { __typename: 'PagesContactTouch', title?: string | null, description?: string | null, email?: string | null } | null, info?: { __typename: 'PagesContactInfo', cvSubject?: string | null, email?: string | null, location?: string | null, responseTime?: string | null, openFor?: string | null } | null };
 
-export type PagesPartsFragment = PagesParts_PagesHome_Fragment | PagesParts_PagesAbout_Fragment | PagesParts_PagesContact_Fragment;
+type PagesParts_PagesFooter_Fragment = { __typename: 'PagesFooter', topTier?: { __typename: 'PagesFooterTopTier', availability?: string | null, email?: string | null, location?: string | null } | null, brand?: { __typename: 'PagesFooterBrand', description?: string | null } | null, newsletter?: { __typename: 'PagesFooterNewsletter', text?: string | null } | null, bottom?: { __typename: 'PagesFooterBottom', copyright?: string | null, email?: string | null } | null };
+
+export type PagesPartsFragment = PagesParts_PagesHome_Fragment | PagesParts_PagesAbout_Fragment | PagesParts_PagesContact_Fragment | PagesParts_PagesFooter_Fragment;
 
 export type ProjectQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -787,7 +877,7 @@ export type PagesQueryVariables = Exact<{
 }>;
 
 
-export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'PagesHome', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } | { __typename: 'PagesAbout', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesAboutHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, philosophy?: { __typename: 'PagesAboutPhilosophy', eyebrow?: string | null, title?: string | null, text1?: string | null, text2?: string | null, text3?: string | null } | null, howIWork?: { __typename: 'PagesAboutHowIWork', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesAboutQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, ctaBand?: { __typename: 'PagesAboutCtaBand', title?: string | null, description?: string | null } | null } | { __typename: 'PagesContact', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesContactHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, touch?: { __typename: 'PagesContactTouch', title?: string | null, description?: string | null, email?: string | null } | null, info?: { __typename: 'PagesContactInfo', cvSubject?: string | null, email?: string | null, location?: string | null, responseTime?: string | null, openFor?: string | null } | null } };
+export type PagesQuery = { __typename?: 'Query', pages: { __typename: 'PagesHome', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } | { __typename: 'PagesAbout', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesAboutHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, philosophy?: { __typename: 'PagesAboutPhilosophy', eyebrow?: string | null, title?: string | null, text1?: string | null, text2?: string | null, text3?: string | null } | null, howIWork?: { __typename: 'PagesAboutHowIWork', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesAboutQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, ctaBand?: { __typename: 'PagesAboutCtaBand', title?: string | null, description?: string | null } | null } | { __typename: 'PagesContact', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesContactHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, touch?: { __typename: 'PagesContactTouch', title?: string | null, description?: string | null, email?: string | null } | null, info?: { __typename: 'PagesContactInfo', cvSubject?: string | null, email?: string | null, location?: string | null, responseTime?: string | null, openFor?: string | null } | null } | { __typename: 'PagesFooter', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, topTier?: { __typename: 'PagesFooterTopTier', availability?: string | null, email?: string | null, location?: string | null } | null, brand?: { __typename: 'PagesFooterBrand', description?: string | null } | null, newsletter?: { __typename: 'PagesFooterNewsletter', text?: string | null } | null, bottom?: { __typename: 'PagesFooterBottom', copyright?: string | null, email?: string | null } | null } };
 
 export type PagesConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -799,7 +889,7 @@ export type PagesConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'PagesHome', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } | { __typename: 'PagesAbout', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesAboutHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, philosophy?: { __typename: 'PagesAboutPhilosophy', eyebrow?: string | null, title?: string | null, text1?: string | null, text2?: string | null, text3?: string | null } | null, howIWork?: { __typename: 'PagesAboutHowIWork', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesAboutQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, ctaBand?: { __typename: 'PagesAboutCtaBand', title?: string | null, description?: string | null } | null } | { __typename: 'PagesContact', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesContactHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, touch?: { __typename: 'PagesContactTouch', title?: string | null, description?: string | null, email?: string | null } | null, info?: { __typename: 'PagesContactInfo', cvSubject?: string | null, email?: string | null, location?: string | null, responseTime?: string | null, openFor?: string | null } | null } | null } | null> | null } };
+export type PagesConnectionQuery = { __typename?: 'Query', pagesConnection: { __typename?: 'PagesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PagesConnectionEdges', cursor: string, node?: { __typename: 'PagesHome', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null } | { __typename: 'PagesAbout', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesAboutHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, philosophy?: { __typename: 'PagesAboutPhilosophy', eyebrow?: string | null, title?: string | null, text1?: string | null, text2?: string | null, text3?: string | null } | null, howIWork?: { __typename: 'PagesAboutHowIWork', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesAboutQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, ctaBand?: { __typename: 'PagesAboutCtaBand', title?: string | null, description?: string | null } | null } | { __typename: 'PagesContact', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero?: { __typename: 'PagesContactHero', eyebrow?: string | null, title?: string | null, lede?: string | null } | null, touch?: { __typename: 'PagesContactTouch', title?: string | null, description?: string | null, email?: string | null } | null, info?: { __typename: 'PagesContactInfo', cvSubject?: string | null, email?: string | null, location?: string | null, responseTime?: string | null, openFor?: string | null } | null } | { __typename: 'PagesFooter', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, topTier?: { __typename: 'PagesFooterTopTier', availability?: string | null, email?: string | null, location?: string | null } | null, brand?: { __typename: 'PagesFooterBrand', description?: string | null } | null, newsletter?: { __typename: 'PagesFooterNewsletter', text?: string | null } | null, bottom?: { __typename: 'PagesFooterBottom', copyright?: string | null, email?: string | null } | null } | null } | null> | null } };
 
 export const ProjectPartsFragmentDoc = gql`
     fragment ProjectParts on Project {
@@ -921,6 +1011,27 @@ export const PagesPartsFragmentDoc = gql`
       location
       responseTime
       openFor
+    }
+  }
+  ... on PagesFooter {
+    topTier {
+      __typename
+      availability
+      email
+      location
+    }
+    brand {
+      __typename
+      description
+    }
+    newsletter {
+      __typename
+      text
+    }
+    bottom {
+      __typename
+      copyright
+      email
     }
   }
 }

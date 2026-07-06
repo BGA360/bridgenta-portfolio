@@ -259,6 +259,47 @@ var config_default = defineConfig({
                 ]
               }
             ]
+          },
+          {
+            name: "footer",
+            label: "Footer Layout",
+            fields: [
+              {
+                type: "object",
+                name: "topTier",
+                label: "Obere Info-Karten",
+                fields: [
+                  { type: "string", name: "availability", label: "Verf\xFCgbarkeit" },
+                  { type: "string", name: "email", label: "E-Mail" },
+                  { type: "string", name: "location", label: "Standort" }
+                ]
+              },
+              {
+                type: "object",
+                name: "brand",
+                label: "Branding",
+                fields: [
+                  { type: "string", name: "description", label: "Marken-Beschreibung", ui: { component: "textarea" } }
+                ]
+              },
+              {
+                type: "object",
+                name: "newsletter",
+                label: "Newsletter",
+                fields: [
+                  { type: "string", name: "text", label: "Newsletter Text" }
+                ]
+              },
+              {
+                type: "object",
+                name: "bottom",
+                label: "Copyright Leiste",
+                fields: [
+                  { type: "string", name: "copyright", label: "Copyright Inhaber" },
+                  { type: "string", name: "email", label: "Kontakt E-Mail" }
+                ]
+              }
+            ]
           }
         ]
       }

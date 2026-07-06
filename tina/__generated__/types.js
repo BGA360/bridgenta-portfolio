@@ -127,6 +127,27 @@ export const PagesPartsFragmentDoc = gql`
       openFor
     }
   }
+  ... on PagesFooter {
+    topTier {
+      __typename
+      availability
+      email
+      location
+    }
+    brand {
+      __typename
+      description
+    }
+    newsletter {
+      __typename
+      text
+    }
+    bottom {
+      __typename
+      copyright
+      email
+    }
+  }
 }
     `;
 export const ProjectDocument = gql`
