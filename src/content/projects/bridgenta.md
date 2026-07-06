@@ -1,25 +1,26 @@
 ---
 title: "BridGenta"
 subtitle: "IT-Rekonstruktion & Governance"
-category: "Private Beta / IT-Rekonstruktion"
-status: "Private Beta"
-timeline: "März 2026"
-technologies: "Lovable (AI Builder), Produktarchitektur, AI-assisted Development"
 description: "AI-gestützte Plattform in privater Entwicklung. Die öffentliche Portfolio-Seite zeigt nur den technischen Entwicklungsansatz, nicht das unveröffentlichte Produkt."
-notice: "BridGenta befindet sich aktuell in einer kontrollierten privaten Entwicklungs- und Testphase. Die Produktfunktionen und Benutzeroberflächen werden erst nach Abschluss der ausgewählten Testphase öffentlich vorgestellt. Diese Portfolio-Seite beschreibt ausschließlich die technische Arbeitsweise, die Lernziele und den Entwicklungsansatz."
-role: "System Architect & AI Workflow Designer"
-devStack:
-  - TypeScript
-  - Astro
-  - Node.js
-  - Static Analysis
-  - GitHub Actions
-  - Privacy-First Architecture
-aiBuilders:
-  - Lovable
-  - Claude
-  - ChatGPT
-  - Antigravity
+sidebar:
+  category: "Private Beta / IT-Rekonstruktion"
+  status: "Private Beta"
+  timeline: "März 2026"
+  role: "System Architect & AI Workflow Designer"
+  technologies: "Lovable (AI Builder), Produktarchitektur, AI-assisted Development"
+  devStack:
+    - TypeScript
+    - Astro
+    - Node.js
+    - Static Analysis
+    - GitHub Actions
+    - Privacy-First Architecture
+  aiBuilders:
+    - Lovable
+    - Claude
+    - ChatGPT
+    - Antigravity
+  notice: "BridGenta befindet sich aktuell in einer kontrollierten privaten Entwicklungs- und Testphase. Die Produktfunktionen und Benutzeroberflächen werden erst nach Abschluss der ausgewählten Testphase öffentlich vorgestellt. Diese Portfolio-Seite beschreibt ausschließlich die technische Arbeitsweise, die Lernziele und den Entwicklungsansatz."
 ---
 
 ## 1. Project Overview

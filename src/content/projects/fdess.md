@@ -1,9 +1,10 @@
 ---
 title: "FD-ESS"
-category: "Explainability System"
-status: "In Entwicklung"
-technologies: "Storytelling, UX Writing, Systemdesign"
 description: "Human Explainability & Storytelling System zur verständlichen Erklärung komplexer Technologien."
+sidebar:
+  category: "Explainability System"
+  status: "In Entwicklung"
+  technologies: "Storytelling, UX Writing, Systemdesign"
 ---
 
 ## Überblick

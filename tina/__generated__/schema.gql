@@ -90,9 +90,7 @@ type Collection {
 
 union DocumentNode = Project | PagesHome | PagesAbout | PagesContact | PagesFooter | Folder
 
-type Project implements Node & Document {
-  title: String!
-  subtitle: String
+type ProjectSidebar {
   category: String!
   status: String!
   timeline: String
@@ -100,8 +98,14 @@ type Project implements Node & Document {
   technologies: String!
   devStack: [String]
   aiBuilders: [String]
-  description: String!
   notice: String
+}
+
+type Project implements Node & Document {
+  title: String!
+  subtitle: String
+  sidebar: ProjectSidebar
+  description: String!
   body: JSON
   id: ID!
   _sys: SystemInfo!
@@ -115,6 +119,17 @@ input StringFilter {
   in: [String]
 }
 
+input ProjectSidebarFilter {
+  category: StringFilter
+  status: StringFilter
+  timeline: StringFilter
+  role: StringFilter
+  technologies: StringFilter
+  devStack: StringFilter
+  aiBuilders: StringFilter
+  notice: StringFilter
+}
+
 input RichTextFilter {
   startsWith: String
   eq: String
@@ -124,15 +139,8 @@ input RichTextFilter {
 input ProjectFilter {
   title: StringFilter
   subtitle: StringFilter
-  category: StringFilter
-  status: StringFilter
-  timeline: StringFilter
-  role: StringFilter
-  technologies: StringFilter
-  devStack: StringFilter
-  aiBuilders: StringFilter
+  sidebar: ProjectSidebarFilter
   description: StringFilter
-  notice: StringFilter
   body: RichTextFilter
 }
 
@@ -508,9 +516,7 @@ input DocumentMutation {
   pages: PagesMutation
 }
 
-input ProjectMutation {
-  title: String
-  subtitle: String
+input ProjectSidebarMutation {
   category: String
   status: String
   timeline: String
@@ -518,8 +524,14 @@ input ProjectMutation {
   technologies: String
   devStack: [String]
   aiBuilders: [String]
-  description: String
   notice: String
+}
+
+input ProjectMutation {
+  title: String
+  subtitle: String
+  sidebar: ProjectSidebarMutation
+  description: String
   body: JSON
 }
 

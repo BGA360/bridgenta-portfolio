@@ -56,8 +56,8 @@ const getBadgeClass = (status) => {
 
         {sortedProjects.map((project) => {
           const initials = getInitials(project.data.title);
-          const badgeClass = getBadgeClass(project.data.status);
-          const techList = project.data.technologies.split(',').map(t => t.trim());
+          const badgeClass = getBadgeClass(project.data.sidebar.status);
+          const techList = project.data.sidebar.technologies.split(',').map(t => t.trim());
 
           return (
             <article class="project-card">
@@ -69,8 +69,8 @@ const getBadgeClass = (status) => {
                 )}
               </div>
               <div class="project-card__top">
-                <span class="project-card__cat">{project.data.category}</span>
-                <span class={`badge ${badgeClass}`}>{project.data.status}</span>
+                <span class="project-card__cat">{project.data.sidebar.category}</span>
+                <span class={`badge ${badgeClass}`}>{project.data.sidebar.status}</span>
               </div>
               <h3>{project.data.title}</h3>
               <p>{project.data.description}</p>

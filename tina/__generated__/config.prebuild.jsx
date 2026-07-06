@@ -37,59 +37,66 @@ var config_default = defineConfig({
             label: "Untertitel"
           },
           {
-            type: "string",
-            name: "category",
-            label: "Kategorie",
-            required: true
-          },
-          {
-            type: "string",
-            name: "status",
-            label: "Status",
-            options: ["In Entwicklung", "Private Beta", "Konzept / Aufbau"],
-            required: true
-          },
-          {
-            type: "string",
-            name: "timeline",
-            label: "Zeitraum"
-          },
-          {
-            type: "string",
-            name: "role",
-            label: "Meine Rolle"
-          },
-          {
-            type: "string",
-            name: "technologies",
-            label: "Technologien (Kommagetrennt)",
-            required: true
-          },
-          {
-            type: "string",
-            name: "devStack",
-            label: "Development Stack Liste",
-            list: true
-          },
-          {
-            type: "string",
-            name: "aiBuilders",
-            label: "AI Builders Liste",
-            list: true
+            type: "object",
+            name: "sidebar",
+            label: "Projekt-Sidebar",
+            fields: [
+              {
+                type: "string",
+                name: "category",
+                label: "Kategorie",
+                required: true
+              },
+              {
+                type: "string",
+                name: "status",
+                label: "Status",
+                options: ["In Entwicklung", "Private Beta", "Konzept / Aufbau"],
+                required: true
+              },
+              {
+                type: "string",
+                name: "timeline",
+                label: "Zeitraum"
+              },
+              {
+                type: "string",
+                name: "role",
+                label: "Meine Rolle"
+              },
+              {
+                type: "string",
+                name: "technologies",
+                label: "Technologien (Kommagetrennt)",
+                required: true
+              },
+              {
+                type: "string",
+                name: "devStack",
+                label: "Development Stack Liste",
+                list: true
+              },
+              {
+                type: "string",
+                name: "aiBuilders",
+                label: "AI Builders Liste",
+                list: true
+              },
+              {
+                type: "string",
+                name: "notice",
+                label: "Sonderhinweis (z.B. Beta-Notice)",
+                ui: {
+                  component: "textarea"
+                }
+              }
+            ]
           },
           {
             type: "string",
             name: "description",
             label: "Kurzbeschreibung (f\xFCr Katalog)",
             required: true,
-            ui: {
-              component: "textarea"
-            }
-          },
-          {
-            type: "string",
-            name: "notice",
-            label: "Sonderhinweis (z.B. Beta-Notice)",
             ui: {
               component: "textarea"
             }

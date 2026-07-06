@@ -10,15 +10,18 @@ export const ProjectPartsFragmentDoc = gql`
   __typename
   title
   subtitle
-  category
-  status
-  timeline
-  role
-  technologies
-  devStack
-  aiBuilders
+  sidebar {
+    __typename
+    category
+    status
+    timeline
+    role
+    technologies
+    devStack
+    aiBuilders
+    notice
+  }
   description
-  notice
   body
 }
     `;

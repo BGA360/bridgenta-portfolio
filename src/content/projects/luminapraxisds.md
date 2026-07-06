@@ -1,22 +1,23 @@
 ---
 title: "Lumina Praxis"
 subtitle: "Praxis-Website & Interaktive Rechner"
-category: "Praxis-Website / Web-App"
-status: "Abgeschlossen"
-timeline: "Herbst 2025"
-technologies: "HTML5, Tailwind CSS, JavaScript, Responsive Layout, Medical SEO"
 description: "Modernes Portal für eine biologische Zahnarztpraxis mit medizinischen SEO-Strukturen und interaktivem Vitality-Score-Rechner."
-role: "Frontend Engineer & Local SEO Designer"
-devStack:
-  - HTML5
-  - Tailwind CSS
-  - JavaScript (ES6)
-  - Responsive Design
-  - Medical SEO
-  - WCAG Accessibility
-aiBuilders:
-  - Claude
-  - Antigravity
+sidebar:
+  category: "Praxis-Website / Web-App"
+  status: "Abgeschlossen"
+  timeline: "Herbst 2025"
+  role: "Frontend Engineer & Local SEO Designer"
+  technologies: "HTML5, Tailwind CSS, JavaScript, Responsive Layout, Medical SEO"
+  devStack:
+    - HTML5
+    - Tailwind CSS
+    - JavaScript (ES6)
+    - Responsive Design
+    - Medical SEO
+    - WCAG Accessibility
+  aiBuilders:
+    - Claude
+    - Antigravity
 ---
 
 ## 1. Executive Summary
