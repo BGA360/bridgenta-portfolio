@@ -23,61 +23,99 @@ sidebar:
   notice: "BridGenta befindet sich aktuell in einer kontrollierten privaten Entwicklungs- und Testphase. Die Produktfunktionen und Benutzeroberflächen werden erst nach Abschluss der ausgewählten Testphase öffentlich vorgestellt. Diese Portfolio-Seite beschreibt ausschließlich die technische Arbeitsweise, die Lernziele und den Entwicklungsansatz."
 ---
 
-## 1. Project Overview
+## 1. Executive Summary
 BridGenta ist ein experimentelles Softwareprojekt zur praktischen Evaluierung moderner KI-gestützter Entwicklungswerkzeuge (AI Builder). In einer Ära, in der Code-Generatoren Benutzeroberflächen in Sekundenschnelle erstellen können, besteht die eigentliche ingenieurstechnische Herausforderung nicht mehr im Schreiben von Zeilen, sondern in der Strukturierung, Validierung und sicheren Integration dieses Codes in professionelle Umgebungen.
 
 Das Projekt wurde ins Leben gerufen, um Entwicklern und IT-Entscheidern eine Blaupause für die kontrollierte Rekonstruktion veralteter oder schlecht dokumentierter Legacy-Systeme an die Hand zu geben. Durch die Kombination von KI-Generatoren mit strengen Git-Workflows und automatisierten Qualitätsschranken demonstriert BridGenta, wie sich Entwicklungsgeschwindigkeit signifikant steigern lässt, ohne die architektonische Kontrolle oder Datensicherheit zu kompromittieren.
 
+---
+
+## 2. Why This Project Exists
 Die Plattform dient als praktischer Prüfstand für die reibungslose Zusammenarbeit zwischen menschlichen Softwarearchitekten und autonomen KI-Buildern (wie Lovable und Claude). Die Produktfunktionen des zugrundeliegenden Portals befinden sich derzeit in einer geschützten privaten Testphase. Diese Fallstudie konzentriert sich ausschließlich auf den zugrundeliegenden Entwicklungsansatz, die Prozess-Governance und die architektonischen Erkenntnisse.
 
-## 2. Problem to Solve
+---
+
+## 3. Context
 Moderne Legacy-Systeme leiden häufig unter mangelhafter Dokumentation, veralteten Schnittstellen und einer schleichenden architektonischen Fragmentierung (Architecture Drift). Bei der Modernisierung dieser Systeme stehen Entwickler vor der Herausforderung, bestehende Geschäftslogik präzise zu rekonstruieren, ohne unbeabsichtigte Nebeneffekte einzuführen.
 
-Der unregulierte Einsatz von KI-Generatoren verschärft dieses Problem oft, da KI-Modelle ohne klaren Kontext zu übermäßigem Code-Zuwachs (Code Bloat) und willkürlichen Abweichungen vom Design-System neigen. Es besteht daher ein dringender Bedarf an deterministischen Engineering-Prozessen. 
+---
+
+## 4. Problem
+Der unregulierte Einsatz von KI-Generatoren verschärft dieses Problem oft, da KI-Modelle ohne klaren Kontext zu übermäßigem Code-Zuwachs (Code Bloat) und willkürlichen Abweichungen vom Design-System neigen. Es besteht daher ein dringender Bedarf an deterministischen Engineering-Prozessen.
 
 Die technische Herausforderung für BridGenta bestand darin, eine Handoff-Pipeline zu entwerfen, die die hohe Frontend-Generierungsgeschwindigkeit von KI-Modellen nutzt, während die Datenhoheit, das sichere API-Routing und die Einhaltung architektonischer Grenzen durch automatisierte Gateways und manuelle Freigaben streng kontrolliert bleiben.
 
-## 3. Engineering Approach
-Um die Vorteile der KI-gestützten Entwicklung mit den Qualitätsansprüchen professioneller Softwareentwicklung zu vereinen, wurde ein mehrstufiger, qualitätsgesicherter Workflow etabliert:
-* **Manuelle Handoff-Grenzen**: Der von Lovable generierte Code wird nicht direkt in den Hauptzweig gepusht, sondern in isolierten Handoff-Branches abgelegt. Erst nach einer manuellen Überprüfung (Code Review) erfolgt die Übernahme in die Entwicklungszweige.
-* **Strikte Datentrennung**: Um sensible API-Schlüssel und Benutzerdaten vor der Erfassung durch KI-Modelle zu schützen, wird eine strikte Trennung zwischen dem statisch generierten Frontend (Astro) und dem Backend-Daten-Gateway erzwungen.
-* **Automatisierte Qualitätsschranken**: Jede Code-Änderung durchläuft eine GitHub Actions Pipeline. Diese führt automatisierte Builds und Typprüfungen durch, um sicherzustellen, dass KI-generierter Code die Anwendung nicht instabil macht.
+---
+
+## 5. Constraints
+* **Strikte Datentrennung**: Um sensible API-Schlüssel und Benutzerdaten vor der Erfassung durch KI-Modelle zu schützen, wird eine strikte Trennung erzwungen.
 * **Branch-Protection & Code-Owners**: Das Repository erzwingt restriktive Branch-Protection-Regeln. Änderungen an kritischen Architekturkomponenten erfordern zwingend das Review und die Freigabe durch den Systemarchitekten.
 
-## 4. Reconstruction in Action
-Die folgenden Abschnitte zeigen die Implementierung der Rekonstruktions-Pipeline in der Praxis. Jedes Artefakt veranschaulicht eine spezifische Phase unseres strukturierten Modernisierungsansatzes:
+[Content Gap] Detaillierte Dokumentation von geschäftlichen, zeitlichen und regulatorischen Entwicklungsbeschränkungen (z. B. DSGVO-Konformität bei Testdaten) fehlt noch und wird im nächsten Sprint ausgearbeitet.
+
+---
+
+## 6. Reconstruction Strategy
+[Content Gap] Definition der methodischen Phasen (Observe -> Understand -> Map -> Reconstruct -> Validate -> Handoff) für die systematische Migration von Legacy-Systemen fehlt.
+
+---
+
+## 7. Engineering Thinking
+[Content Gap] Begründung für die gewählte Handoff-Philosophie und die Abwägung zwischen manueller Überprüfung und automatisierter CI-Gating-Geschwindigkeit fehlt.
+
+---
+
+## 8. Architecture
+[Content Gap] Konzept- und Blockdiagramm (z. B. Trennung zwischen dem generierten Web-Frontend und dem Backend-Daten-Gateway) fehlt.
+
+---
+
+## 9. Engineering Decisions
+[Content Gap] Dokumentation der Entscheidungsgründe für den Einsatz bestimmter AI Builder (z. B. Lovable) und die Isolierung des Handoff-Bereichs fehlt.
+
+---
+
+## 10. Implementation
+Um die Vorteile der KI-gestützten Entwicklung mit den Qualitätsansprüchen professioneller Softwareentwicklung zu vereinen, wurde ein mehrstufiger, qualitätsgesicherter Workflow etabliert:
 
 ### Workspace: Systemanalyse & Isolierung
 Der Workspace bildet den operativen Einstiegspunkt jeder Rekonstruktion. Hier werden die veralteten Systemteile systematisch erfasst, Abhängigkeiten kartiert und Datenflüsse isoliert, bevor KI-generierter Code geschrieben wird. Dies stellt sicher, dass wir die bestehende Anwendungsstruktur vollständig durchdringen und die Schnittstellen präzise definieren.
-
-<figure>
-  <img src="/images/bga-portfolio/BG-PA02-Workspace.webp" alt="BridGenta Workspace Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Workspace-Interface</strong>: Visuelle Erfassung der Systemtopologie und Analyse der Handoff-Grenzen vor Beginn der Code-Generierung.</figcaption>
-</figure>
 
 *Key Takeaway*: Die visuelle Isolation im Workspace verhindert unstrukturierte Modifikationen und stellt sicher, dass wir nur exakt definierte Komponenten modernisieren.
 
 ### Workflow: Strukturierte Code-Generierung
 Der Workflow leitet den eigentlichen Rekonstruktionsprozess. Über diesen transparenten Leitfaden werden Frontend-Generatoren (wie Lovable) gezielt instruiert. Der generierte Code wird über isolierte Handoff-Zweige (Handoff Branches) in die Pipeline eingespeist, wo er manuellen Reviews und automatischen Qualitätsschranken unterliegt.
 
-<figure>
-  <img src="/images/bga-portfolio/BG-PA03-Workflow.webp" alt="BridGenta Workflow Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Modernisierungs-Workflow</strong>: Die Pipeline steuert die Handoff-Grenzen und leitet Code-Inkremente sicher in das Git-Repository.</figcaption>
-</figure>
-
 *Key Takeaway*: Der strukturierte Handoff verhindert Scope Creep und stellt sicher, dass KI-Modelle keine unkontrollierten Designabweichungen einführen.
 
 ### Governance: Validierung & Qualitätskontrolle
 Die Governance-Ebene fungiert als Gatekeeper der Plattform. Jede Codeänderung wird auf Lizenzkonformität, Sicherheitsrichtlinien und Datenschutzkompatibilität geprüft. Erst nach erfolgreicher automatisierter Build-Verifizierung und dem Review durch den Systemarchitekten erfolgt die Freigabe für die produktive Umgebung.
+
+*Key Takeaway*: Ein strenges Regelwerk ist unerlässlich, um das Risiko unbeabsichtigter Datenabflüsse oder Sicherheitslücken bei KI-generiertem Code zu eliminieren.
+
+---
+
+## 11. Public Artifacts
+Die folgenden Artefakte veranschaulichen eine spezifische Phase unseres strukturierten Modernisierungsansatzes:
+
+<figure>
+  <img src="/images/bga-portfolio/BG-PA02-Workspace.webp" alt="BridGenta Workspace Interface" loading="lazy" width="1600" height="900" />
+  <figcaption><strong>Workspace-Interface</strong>: Visuelle Erfassung der Systemtopologie und Analyse der Handoff-Grenzen vor Beginn der Code-Generierung.</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/bga-portfolio/BG-PA03-Workflow.webp" alt="BridGenta Workflow Interface" loading="lazy" width="1600" height="900" />
+  <figcaption><strong>Modernisierungs-Workflow</strong>: Die Pipeline steuert die Handoff-Grenzen und leitet Code-Inkremente sicher in das Git-Repository.</figcaption>
+</figure>
 
 <figure>
   <img src="/images/bga-portfolio/BG-PA04-Governance.webp" alt="BridGenta Governance Interface" loading="lazy" width="1600" height="900" />
   <figcaption><strong>Governance-Dashboard</strong>: Die Kontrollschranke zur automatisierter Überprüfung von Code-Sicherheit und Architekturkonformität.</figcaption>
 </figure>
 
-*Key Takeaway*: Ein strenges Regelwerk ist unerlässlich, um das Risiko unbeabsichtigter Datenabflüsse oder Sicherheitslücken bei KI-generiertem Code zu eliminieren.
+---
 
-## 5. Results
+## 12. Results
 Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare Fortschritte erzielt werden:
 
 <div class="results-grid">
@@ -110,9 +148,16 @@ Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare
   </div>
 </div>
 
-## 6. Lessons Learned
+---
+
+## 13. Lessons Learned
 Die Erprobung KI-gestützter Entwicklungswerkzeuge hat gezeigt, dass die Kombination aus hoher Code-Generierungsgeschwindigkeit und traditioneller Qualitätskontrolle der Schlüssel zu stabilen Anwendungen ist. KI-Assistenten können Routineaufgaben erheblich beschleunigen, bedürfen jedoch einer klaren Prozessführung und manueller Code-Reviews, um Architekturdrift und unkontrollierten Code-Zuwachs zu verhindern.
 
 Die Etablierung restriktiver Git-Workflows und automatisierter CI-Prüfungen erwies sich als unverzichtbar, um die Codebasis sauber zu halten und die Isolierung sensibler Anwendungsdaten zu gewährleisten.
 
 Für zukünftige Iterationen sollte die Schnittstellendefinition (API-Grenzbereich) zwischen statischem Frontend und Backend noch weiter formalisiert werden. Ein klareres, vertragsbasiertes API-Design (Contract-First) würde es KI-Generatoren ermöglichen, Frontend-Komponenten noch zielgerichteter und mit weniger Korrekturschleifen zu erstellen.
+
+---
+
+## 14. Next Evolution
+[Content Gap] Details zu den nächsten Evolutionsstufen der Rekonstruktions-Pipeline (z. B. automatisierte Contract-First Schnittstellengenerierung) fehlen.
