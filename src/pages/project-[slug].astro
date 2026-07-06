@@ -132,7 +132,7 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
 
       <!-- Main content and Sidebar Grid -->
       <div class="detail-grid">
-        <article class="tina-content" data-reveal>
+        <article class="tina-content project-content" data-reveal>
           <Content />
 
           <a class="btn btn-secondary" href="/projects" style="margin-top: 3.5rem; display: inline-block;">
@@ -367,6 +367,50 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
 </style>
 
 <style is:global>
+  /* Defensive CSS to prevent content overflow */
+  .tina-content,
+  .project-content,
+  .tina-content *,
+  .project-content * {
+    box-sizing: border-box;
+  }
+
+  .tina-content,
+  .project-content {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .tina-content p,
+  .project-content p,
+  .tina-content li,
+  .project-content li {
+    overflow-wrap: break-word;
+  }
+
+  .tina-content table,
+  .project-content table {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+  }
+
+  .tina-content pre,
+  .project-content pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .tina-content img,
+  .project-content img,
+  .tina-content figure,
+  .project-content figure {
+    max-width: 100%;
+  }
+
   /* Format compiled Markdown body to match premium case study details */
   .tina-content h2 {
     font-size: 1.45rem;
