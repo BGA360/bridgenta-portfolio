@@ -41,7 +41,7 @@ Künstliche Intelligenz beschleunigt die Code-Erstellung, ersetzt jedoch nicht d
 ---
 
 ## Context
-Im Zentrum moderner Softwareabteilungen stehen oft historisch gewachsene Web-Applikationen (Legacy-Systeme). Diese zeichnen sich typischerweise durch fehlende Testabdeckungen, veraltete Bibliotheken und eine schleichende architektonische Fragmentierung (Architecture Drift) aus. Da das ursprüngliche Entwicklungsteam meist nicht mehr verfügbar ist, fehlt jegliches implizites Wissen über die Geschäftslogik.
+Im Zentrum moderner Softwareabteilungen stehen oft historisch gewachsene Web-Applikationen (Legacy-Systeme). Diese zeichnen sich typischerweise durch fehlende Testabdeckungen, veraltete Bibliotheken und eine schleichende architektonischen Fragmentierung (Architecture Drift) aus. Da das ursprüngliche Entwicklungsteam meist nicht mehr verfügbar ist, fehlt jegliches implizites Wissen über die Geschäftslogik.
 
 Der Versuch, diese Systeme manuell neu aufzubauen, birgt enorme Risiken für den laufenden Betrieb. Gleichzeitig bietet die Evolution von Sprachmodellen die Möglichkeit, Altsysteme automatisiert zu analysieren, Code-Muster zu erkennen und in moderne Softwarearchitekturen zu übersetzen. Ohne strukturierte Prozesse führt dieser KI-gestützte Ansatz jedoch schnell zu instabilen Code-Umgebungen, da generative Modelle ohne Kontext dazu neigen, willkürliche Architekturentscheidungen zu treffen.
 
@@ -82,9 +82,14 @@ Ein phasenbasierter Migrationsprozess minimiert das Projektrisiko, indem er die 
 ---
 
 ## Engineering Thinking
+Die Modernisierung kritischer IT-Systeme scheitern in der Praxis selten an mangelnder Entwicklungsgeschwindigkeit, sondern an unkontrollierter Komplexität. Beim Neuaufbau komplexer Legacy-Systeme (Greenfield-Ansatz) geht oft wertvolle, über Jahre gereifte Geschäftslogik verloren, da diese unvollständig dokumentiert ist. Daher setzt BridGenta auf das Prinzip der **kontrollierten IT-Rekonstruktion** anstelle eines vollständigen, riskanten Systemaustauschs.
 
-## Content Gap
-Die strategische Begründung für das Zusammenspiel aus Automatisierung und manueller Kontrolle wird in einem zukünftigen Sprint ausgearbeitet.
+Dieses Vorgehen basiert auf einer strikten Trennung von Systemanalyse (Discovery) und Code-Generierung (Implementation). Bevor ein AI-Builder zur Generierung von Benutzeroberflächen oder Schnittstellen herangezogen wird, muss die bestehende Logik manuell analysiert, strukturiert und in klare Funktionsblöcke zerlegt werden.
+
+Die Rolle der Künstlichen Intelligenz wird dabei bewusst als **Beschleuniger**, nicht als Architekt definiert. AI-Builder sind hervorragend darin, isolierte Funktionskomponenten in kurzer Zeit zu schreiben. Ihnen fehlt jedoch das globale Systemverständnis, die Sensibilität für langfristige Softwarewartung (Architecture Drift) und das Bewusstsein für Sicherheitsgrenzen. Der menschliche Softwarearchitekt steuert den Prozess und etabliert strenge Governance-Regeln, um zu verhindern, dass die generative KI unstrukturierte Code-Strukturen oder Sicherheitsrisiken in das Hauptsystem einbringt.
+
+### Engineering Insight
+Erfolgreiche IT-Rekonstruktion trennt das Verstehen des Systems vom Schreiben des Codes. Erst wenn der menschliche Architekt die Schnittstellengrenzen definiert hat, kann die KI als effizienter Code-Generierungsmotor genutzt werden.
 
 ---
 
@@ -99,8 +104,51 @@ Das Architekturdiagramm und die Schnittstellenbeschreibung der Rekonstruktions-P
 
 ## Engineering Decisions
 
-## Content Gap
-Die detaillierten Entscheidungsgründe für den Einsatz des AI-Builders und der Handoff-Grenzen werden in einem zukünftigen Sprint dokumentiert.
+Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche strategische und architektonische Entscheidungen getroffen, um die Stabilität und Datensicherheit der Plattform zu garantieren.
+
+| Engineering-Entscheidung | Primärer Grund | Resultat |
+| :--- | :--- | :--- |
+| **Inkrementelle IT-Rekonstruktion** | Minimierung des Betriebsrisikos im Vergleich zu Big-Bang-Migrationen. | Sichere, schrittweise Systemmodernisierung ohne Ausfallzeiten. |
+| **KI-gestützte Frontend-Generierung** | Beschleunigung von Routine-UI-Implementierungen. | Hohe Frontend-Entwicklungsgeschwindigkeit bei voller Qualitätskontrolle. |
+| **Logische Datentrennung (Gateway)** | Schutz sensitiver Schnittstellendaten vor KI-Systemzugriffen. | Vollständige Datensicherheit; KI arbeitet nur auf UI-Ebene. |
+| **Git-basiertes Branch-Gating** | Verhinderung von unkontrolliertem Code-Einzug (AI Hallucinations). | Jeder KI-Code durchläuft manuelle Reviews vor der Systemintegration. |
+
+---
+
+### Entscheidung 1: Inkrementelle Rekonstruktion statt vollständiger Systemablösung (Big Bang)
+* **Entscheidung**: Die Migration des Legacy-Systems erfolgt schrittweise in abgegrenzten Modulen, anstatt die gesamte Applikation in einem einzigen großen Release neu zu veröffentlichen.
+* **Warum**: Eine Big-Bang-Ablösung birgt das Risiko, nicht dokumentierte Geschäftslogik zu übersehen, was zu unvorhersehbaren Systemausfällen führen kann. Die inkrementelle Migration erlaubt es, einzelne Module isoliert zu testen.
+* **Alternative**: Vollständige Neuentwicklung (Greenfield-Ansatz). Diese wurde aufgrund des unverhältnismäßig hohen Risikos unvollständiger Anforderungsanalysen verworfen.
+* **Resultat**: Module können nacheinander modernisiert, verifiziert und ausgerollt werden, wodurch das Risiko im laufenden Betrieb gegen Null sinkt.
+
+---
+
+### Entscheidung 2: KI-gestützte Frontend-Generierung mit menschlicher Governance
+* **Entscheidung**: Für die UI-Gestaltung und Standard-Frontend-Logik werden spezialisierte AI-Builder eingesetzt, während die Systemarchitektur und Core-Logik manuell definiert werden.
+* **Warum**: AI-Builder beschleunigen die Erstellung von Benutzeroberflächen erheblich. Die architektonische Kontrolle bleibt jedoch in menschlicher Hand, um unstrukturierten Code-Zuwachs (Code Bloat) zu verhindern.
+* **Alternative**: Reine manuelle Codierung des Frontends. Verworfen aufgrund des hohen zeitlichen Aufwands für repetitive Standardkomponenten.
+* **Resultat**: Eine erhebliche Zeitersparnis bei der Oberflächenerstellung, ohne Abstriche bei der Systemwartbarkeit machen zu müssen.
+
+---
+
+### Entscheidung 3: Physische und logische Datentrennung (Frontend vs. Backend-Gateway)
+* **Entscheidung**: Das generative UI-Frontend besitzt keinen direkten Zugriff auf API-Schlüssel, Datenbanken oder vertrauliche Logik. Datenabfragen werden über ein gesichertes, separates Backend-Gateway geroutet.
+* **Warum**: Generative KI-Modelle dürfen im Entwicklungsprozess nicht mit produktiven Anmeldedaten in Konktakt kommen, um unbeabsichtigte Leaks oder Trainingsdaten-Verunreinigungen zu verhindern.
+* **Alternative**: Eine monolithische Anwendungsstruktur, bei der UI und Datenschnittstellen eng verzahnt sind. Verworfen aus Sicherheits- und Datenschutzgründen.
+* **Resultat**: Maximale Sicherheit. Die KI arbeitet im isolierten Frontend ausschließlich mit anonymisierten Schemas und Mock-Daten.
+
+---
+
+### Entscheidung 4: Git-basiertes Branch-Gating (Manuelle Handoff-Grenzen)
+* **Entscheidung**: KI-generierter Code wird in separaten Handoff-Zweigen abgelegt und muss automatisierte Qualitätsschranken (CI-Builds) sowie ein manuelles Code-Review bestehen, bevor er in den Entwicklungszweig (`develop`) gemergt wird.
+* **Warum**: Syntaktisch korrekter Code kann dennoch logische Lücken oder Sicherheitsrisiken enthalten. Ein automatisches Mergen würde die Stabilität des Hauptsystems gefährden.
+* **Alternative**: Automatischer Merge bei erfolgreichem CI-Build. Verworfen, da rein maschinelle Tests keine strukturelle Design-Konformität oder logische Schwachstellen prüfen können.
+* **Resultat**: Schutz vor fehlerhaften KI-Modifikationen (Halluzinationen) und Erhalt einer sauberen, nachvollziehbaren Git-Historie.
+
+---
+
+### Engineering Insight
+Wichtige Systementscheidungen sollten durch technische Grenzen (wie API-Gateways) und organisatorische Prozesse (wie Git-Branch-Gating) erzwungen werden. Sie dürfen niemals auf dem Vertrauen in eine korrekte KI-Generierung beruhen.
 
 ---
 
