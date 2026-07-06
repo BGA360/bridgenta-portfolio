@@ -23,59 +23,67 @@ sidebar:
   notice: "BridGenta befindet sich aktuell in einer kontrollierten privaten Entwicklungs- und Testphase. Die Produktfunktionen und Benutzeroberflächen werden erst nach Abschluss der ausgewählten Testphase öffentlich vorgestellt. Diese Portfolio-Seite beschreibt ausschließlich die technische Arbeitsweise, die Lernziele und den Entwicklungsansatz."
 ---
 
-## 1. Executive Summary
+## Executive Summary
 BridGenta ist ein experimentelles Softwareprojekt zur praktischen Evaluierung moderner KI-gestützter Entwicklungswerkzeuge (AI Builder). In einer Ära, in der Code-Generatoren Benutzeroberflächen in Sekundenschnelle erstellen können, besteht die eigentliche ingenieurstechnische Herausforderung nicht mehr im Schreiben von Zeilen, sondern in der Strukturierung, Validierung und sicheren Integration dieses Codes in professionelle Umgebungen.
 
 Das Projekt wurde ins Leben gerufen, um Entwicklern und IT-Entscheidern eine Blaupause für die kontrollierte Rekonstruktion veralteter oder schlecht dokumentierter Legacy-Systeme an die Hand zu geben. Durch die Kombination von KI-Generatoren mit strengen Git-Workflows und automatisierten Qualitätsschranken demonstriert BridGenta, wie sich Entwicklungsgeschwindigkeit signifikant steigern lässt, ohne die architektonische Kontrolle oder Datensicherheit zu kompromittieren.
 
 ---
 
-## 2. Why This Project Exists
+## Why This Project Exists
 Die Plattform dient als praktischer Prüfstand für die reibungslose Zusammenarbeit zwischen menschlichen Softwarearchitekten und autonomen KI-Buildern (wie Lovable und Claude). Die Produktfunktionen des zugrundeliegenden Portals befinden sich derzeit in einer geschützten privaten Testphase. Diese Fallstudie konzentriert sich ausschließlich auf den zugrundeliegenden Entwicklungsansatz, die Prozess-Governance und die architektonischen Erkenntnisse.
 
 ---
 
-## 3. Context
+## Context
 Moderne Legacy-Systeme leiden häufig unter mangelhafter Dokumentation, veralteten Schnittstellen und einer schleichenden architektonischen Fragmentierung (Architecture Drift). Bei der Modernisierung dieser Systeme stehen Entwickler vor der Herausforderung, bestehende Geschäftslogik präzise zu rekonstruieren, ohne unbeabsichtigte Nebeneffekte einzuführen.
 
 ---
 
-## 4. Problem
+## Problem
 Der unregulierte Einsatz von KI-Generatoren verschärft dieses Problem oft, da KI-Modelle ohne klaren Kontext zu übermäßigem Code-Zuwachs (Code Bloat) und willkürlichen Abweichungen vom Design-System neigen. Es besteht daher ein dringender Bedarf an deterministischen Engineering-Prozessen.
 
 Die technische Herausforderung für BridGenta bestand darin, eine Handoff-Pipeline zu entwerfen, die die hohe Frontend-Generierungsgeschwindigkeit von KI-Modellen nutzt, während die Datenhoheit, das sichere API-Routing und die Einhaltung architektonischer Grenzen durch automatisierte Gateways und manuelle Freigaben streng kontrolliert bleiben.
 
 ---
 
-## 5. Constraints
+## Constraints
 * **Strikte Datentrennung**: Um sensible API-Schlüssel und Benutzerdaten vor der Erfassung durch KI-Modelle zu schützen, wird eine strikte Trennung erzwungen.
 * **Branch-Protection & Code-Owners**: Das Repository erzwingt restriktive Branch-Protection-Regeln. Änderungen an kritischen Architekturkomponenten erfordern zwingend das Review und die Freigabe durch den Systemarchitekten.
 
-[Content Gap] Detaillierte Dokumentation von geschäftlichen, zeitlichen und regulatorischen Entwicklungsbeschränkungen (z. B. DSGVO-Konformität bei Testdaten) fehlt noch und wird im nächsten Sprint ausgearbeitet.
+---
+
+## Reconstruction Strategy
+
+## Content Gap
+Die methodischen Phasen der IT-Rekonstruktion werden in einem zukünftigen Sprint dokumentiert.
 
 ---
 
-## 6. Reconstruction Strategy
-[Content Gap] Definition der methodischen Phasen (Observe -> Understand -> Map -> Reconstruct -> Validate -> Handoff) für die systematische Migration von Legacy-Systemen fehlt.
+## Engineering Thinking
+
+## Content Gap
+Die strategische Begründung für das Zusammenspiel aus Automatisierung und manueller Kontrolle wird in einem zukünftigen Sprint ausgearbeitet.
 
 ---
 
-## 7. Engineering Thinking
-[Content Gap] Begründung für die gewählte Handoff-Philosophie und die Abwägung zwischen manueller Überprüfung und automatisierter CI-Gating-Geschwindigkeit fehlt.
+## Architecture
+
+**Architecture diagram planned for Sprint 38.**
+
+## Content Gap
+Das Architekturdiagramm und die Schnittstellenbeschreibung der Rekonstruktions-Plattform werden in einem zukünftigen Sprint erstellt.
 
 ---
 
-## 8. Architecture
-[Content Gap] Konzept- und Blockdiagramm (z. B. Trennung zwischen dem generierten Web-Frontend und dem Backend-Daten-Gateway) fehlt.
+## Engineering Decisions
+
+## Content Gap
+Die detaillierten Entscheidungsgründe für den Einsatz des AI-Builders und der Handoff-Grenzen werden in einem zukünftigen Sprint dokumentiert.
 
 ---
 
-## 9. Engineering Decisions
-[Content Gap] Dokumentation der Entscheidungsgründe für den Einsatz bestimmter AI Builder (z. B. Lovable) und die Isolierung des Handoff-Bereichs fehlt.
-
----
-
-## 10. Implementation
+## Implementation
 Um die Vorteile der KI-gestützten Entwicklung mit den Qualitätsansprüchen professioneller Softwareentwicklung zu vereinen, wurde ein mehrstufiger, qualitätsgesicherter Workflow etabliert:
 
 ### Workspace: Systemanalyse & Isolierung
@@ -95,27 +103,29 @@ Die Governance-Ebene fungiert als Gatekeeper der Plattform. Jede Codeänderung w
 
 ---
 
-## 11. Public Artifacts
-Die folgenden Artefakte veranschaulichen eine spezifische Phase unseres strukturierten Modernisierungsansatzes:
+## Public Artifacts
 
+### Workspace-Interface
+Zweck: Visuelle Erfassung der Systemtopologie und Analyse der Handoff-Grenzen vor Beginn der Code-Generierung.
 <figure>
   <img src="/images/bga-portfolio/BG-PA02-Workspace.webp" alt="BridGenta Workspace Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Workspace-Interface</strong>: Visuelle Erfassung der Systemtopologie und Analyse der Handoff-Grenzen vor Beginn der Code-Generierung.</figcaption>
 </figure>
 
+### Modernisierungs-Workflow
+Zweck: Die Pipeline steuert die Handoff-Grenzen und leitet Code-Inkremente sicher in das Git-Repository.
 <figure>
   <img src="/images/bga-portfolio/BG-PA03-Workflow.webp" alt="BridGenta Workflow Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Modernisierungs-Workflow</strong>: Die Pipeline steuert die Handoff-Grenzen und leitet Code-Inkremente sicher in das Git-Repository.</figcaption>
 </figure>
 
+### Governance-Dashboard
+Zweck: Die Kontrollschranke zur automatisierten Überprüfung von Code-Sicherheit und Architekturkonformität.
 <figure>
   <img src="/images/bga-portfolio/BG-PA04-Governance.webp" alt="BridGenta Governance Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Governance-Dashboard</strong>: Die Kontrollschranke zur automatisierter Überprüfung von Code-Sicherheit und Architekturkonformität.</figcaption>
 </figure>
 
 ---
 
-## 12. Results
+## Results
 Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare Fortschritte erzielt werden:
 
 <div class="results-grid">
@@ -150,7 +160,7 @@ Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare
 
 ---
 
-## 13. Lessons Learned
+## Lessons Learned
 Die Erprobung KI-gestützter Entwicklungswerkzeuge hat gezeigt, dass die Kombination aus hoher Code-Generierungsgeschwindigkeit und traditioneller Qualitätskontrolle der Schlüssel zu stabilen Anwendungen ist. KI-Assistenten können Routineaufgaben erheblich beschleunigen, bedürfen jedoch einer klaren Prozessführung und manueller Code-Reviews, um Architekturdrift und unkontrollierten Code-Zuwachs zu verhindern.
 
 Die Etablierung restriktiver Git-Workflows und automatisierter CI-Prüfungen erwies sich als unverzichtbar, um die Codebasis sauber zu halten und die Isolierung sensibler Anwendungsdaten zu gewährleisten.
@@ -159,5 +169,7 @@ Für zukünftige Iterationen sollte die Schnittstellendefinition (API-Grenzberei
 
 ---
 
-## 14. Next Evolution
-[Content Gap] Details zu den nächsten Evolutionsstufen der Rekonstruktions-Pipeline (z. B. automatisierte Contract-First Schnittstellengenerierung) fehlen.
+## Next Evolution
+
+## Content Gap
+Die zukünftigen Ausbaustufen der Rekonstruktions-Pipeline werden in einem späteren Sprint erfasst.
