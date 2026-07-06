@@ -21,27 +21,93 @@ sidebar:
     - Antigravity
 ---
 
-## 1. Executive Summary
-AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung und Erprobung von Suchmechanismen in KI-gestützten Systemen (Answer Engine Optimization und Generative Engine Optimization).
+## Executive Summary
+AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung und Erprobung von Suchmechanismen in KI-gestützten Systemen (Answer Engine Optimization — AEO und Generative Engine Optimization — GEO). Ziel des Projekts ist es, Web-Inhalte systematisch auf Entity-Klarheit, strukturierte Daten und Lesbarkeit hin zu analysieren. Dadurch soll die Sichtbarkeit und korrekte Zitierbarkeit von Webinhalten in modernen KI-Suchmaschinen wie Perplexity, ChatGPT Search und Google Gemini bewertet und optimiert werden.
 
-Ziel des Projekts ist es, Web-Inhalte systematisch auf Entity-Klarheit, strukturierte Daten und Lesbarkeit hin zu analysieren. Dadurch soll die Sichtbarkeit und korrekte Zitierbarkeit von Webinhalten in modernen KI-Suchmaschinen (wie Perplexity, ChatGPT Search und Google Gemini) bewertet und optimiert werden.
+---
 
-## 2. Challenge
-Klassische SEO-Methoden basieren primär auf Keywords und Backlinks. KI-Modelle interpretieren Inhalte hingegen kontextuell und greifen auf strukturierte Wissensgraphen zurück. Die technische Herausforderung bestand darin, eine Analyse-Infrastruktur aufzubauen, um Antwortqualität (Eindeutigkeit für LLM-Parser), semantische Dichte (Vollständigkeit von Schema-Auszeichnungen) und Crawler-Optimierung (robots.txt, Sitemap) präzise bewerten zu können.
+## Context
+Klassische Suchmaschinen bewerten Webseiten vorwiegend nach Keywords und Backlinks. Moderne KI-Suchmaschinen und Large Language Models (LLMs) interpretieren Webinhalte hingegen kontextuell und greifen auf strukturierte Wissensgraphen zurück. Für Betreiber von Webseiten bedeutet dieser Wandel, dass reine Textoptimierung nicht mehr ausreicht, um in KI-generierten Antworten als Quelle aufzutauchen. Es bedarf einer präzisen Deklaration von Entitäten und klaren logischen Bezügen im HTML-Markup.
 
-## 3. Approach
-Als alleiniger Initiator dieses Forschungsprojekts verfolge ich einen strukturierten, programmatischen Ansatz zur Analyse und Implementierung:
-* **Entwicklung der Analyse-Logik**: Konzeption und Programmierung modularer Prüfmodule in modernem JavaScript (Node.js für Parser-Skripte, Cheerio zur HTML-Struktur-Analyse).
-* **Architektur**: Aufbau einer ressourcenschonenden, statisch generierten Dokumentations- und Auswertungsoberfläche mittels Astro.
-* **Modellierung**: Entwurf strukturierter JSON-LD- und Dublin-Core-Vorlagen zur semantischen Verknüpfung komplexer Entity-Beziehungen.
-* **Evaluation**: Praktische Erprobung und Validierung der Analyse-Ergebnisse an realen Web-Inhalten.
+<div class="engineering-insight">
+  <div class="engineering-insight__title">Engineering Insight</div>
+  <p class="engineering-insight__text">Der Übergang von klassischen Suchmaschinen zu generativen Antwortdiensten erfordert eine Verschiebung des Fokus von Keywords hin zur eindeutigen Deklaration semantischer Entitäten im Code.</p>
+</div>
 
-## 4. Public Artifacts
+---
 
-### Artefakt 1: Projekt-Visualisierung
-*(Hinweis: Da sich das Tool in aktiver Entwicklung befindet, zeigt diese Skizze das konzeptionelle Berichts-Layout.)*
+## Problem
+Klassischen Webseiten fehlt oft die semantische Tiefe, die für das fehlerfreie Parsing durch LLM-Crawler erforderlich ist. Ohne strukturierte Validierung kommt es häufig zu unentdeckten Fehlern in der JSON-LD-Struktur, robots.txt-Konflikten oder unklaren Entity-Beziehungen. Dies führt dazu, dass generative Suchmaschinen die Inhalte nicht korrekt einordnen können und sie folglich nicht in ihren Antworten zitieren. Es fehlt eine automatisierte Testinfrastruktur, um die Auslesbarkeit von Webinhalten für KI-Systeme zu messen und zu bewerten.
 
-```
+---
+
+## Constraints
+Das Projekt unterliegt logischen und technischen Rahmenbedingungen, die den Analyseumfang eingrenzen:
+- **Ressourcen und Ratenbegrenzung**: Da die Analyse-Skripte externe Validierungs-APIs aufrufen, müssen Ratenbegrenzungen (Rate Limits) berücksichtigt werden, um Blockaden zu vermeiden.
+- **Datenintegrität**: Die analysierten Daten dürfen keine sensiblen oder persönlichen Informationen enthalten (Privacy-by-Design).
+- **Statische Präsentation**: Die Dokumentation der Analyseergebnisse muss ohne Datenbankabfragen auf einem statischen Webserver lauffähig sein.
+
+<div class="engineering-insight">
+  <div class="engineering-insight__title">Engineering Insight</div>
+  <p class="engineering-insight__text">Automatisierte Analyse-Tools müssen externe API-Grenzen respektieren und lokale Caching-Mechanismen nutzen, um eine zuverlässige und blockierungsfreie Validierung zu gewährleisten.</p>
+</div>
+
+---
+
+## Engineering Thinking
+Das Kernkonzept von AEOcortex beruht auf der Annahme, dass KI-Modelle bei der Informationssuche deterministischen Pfaden folgen. Anstatt darauf zu hoffen, dass ein LLM unstrukturierte HTML-Seiten richtig interpretiert, deklarieren wir Datenmodelle explizit. Das Tool prüft Webseiten daher gezielt auf maschinenlesbare Schnittstellen (JSON-LD, Dublin Core) und berechnet die Verständlichkeit des Fließtexts anhand linguistischer Heuristiken.
+
+---
+
+## Architecture
+Die Plattform ist modular aufgebaut, um Analyse-Logik und Präsentationsschicht strikt voneinander zu trennen. Ein Node.js-basierter Parser lädt das HTML der Zielwebseite, extrahiert die semantischen Metadaten und führt strukturierte Validierungsprüfungen durch. Die Ergebnisse werden in einer lokalen JSON-Struktur abgelegt, welche anschließend von Astro eingelesen wird, um das statische Berichts-Dashboard zu generieren.
+
+<div class="engineering-insight">
+  <div class="engineering-insight__title">Engineering Insight</div>
+  <p class="engineering-insight__text">Die Trennung von Parser-Logik (Node.js/Cheerio) und Präsentationsschicht (Astro) ermöglicht eine performante, statische Berichtsgenerierung ohne serverseitigen Overhead.</p>
+</div>
+
+---
+
+## Engineering Decisions
+Im Rahmen des Projekts wurden wesentliche Designentscheidungen getroffen, um die Effizienz der Analyse zu sichern:
+
+<div class="decision-grid">
+  <div class="decision-card">
+    <h3 class="decision-card__title">Parser-Wahl</h3>
+    <div class="decision-card__group">
+      <span class="decision-card__label">Alternative</span>
+      <p class="decision-card__text">Puppeteer (vollständiges Browser-Rendering)</p>
+    </div>
+    <div class="decision-card__group">
+      <span class="decision-card__label">Entscheidung</span>
+      <p class="decision-card__text">Cheerio für schnelles, ressourcenschonendes HTML-Parsing im Speicher.</p>
+    </div>
+  </div>
+  <div class="decision-card">
+    <h3 class="decision-card__title">Metadaten-Standard</h3>
+    <div class="decision-card__group">
+      <span class="decision-card__label">Alternative</span>
+      <p class="decision-card__text">Microdata direkt im HTML-Markup</p>
+    </div>
+    <div class="decision-card__group">
+      <span class="decision-card__label">Entscheidung</span>
+      <p class="decision-card__text">JSON-LD für eine saubere Trennung von Layout und semantischen Datenstrukturen.</p>
+    </div>
+  </div>
+</div>
+
+---
+
+## Implementation
+Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nutzt Cheerio zur Extraktion der Metadaten und prüft diese gegen die offiziellen Schema.org-Spezifikationen. Ein weiteres Modul berechnet die Lesbarkeit von Texten mithilfe von Algorithmen wie dem Flesch-Reading-Ease-Index, um die Verständlichkeit für LLM-Parsing-Prozesse zu bewerten.
+
+---
+
+## Public Artifacts
+
+<figure>
+  <pre><code>
 +-----------------------------------+
 |             AEOcortex             |
 |                                   |
@@ -53,10 +119,11 @@ Als alleiniger Initiator dieses Forschungsprojekts verfolge ich einen strukturie
 |   * robots.txt Direktive korrigiert|
 |   * Dublin-Core Tags hinzufügen   |
 +-----------------------------------+
-```
+  </code></pre>
+  <figcaption><strong>Artefakt 1: Konzeptionelles Berichts-Layout</strong> – Zweck: Visuelle Darstellung der Analyseergebnisse und der automatischen Optimierungsempfehlungen.</figcaption>
+</figure>
 
-### Artefakt 2: High-Level Ablaufdiagramm
-Das folgende Diagramm beschreibt den Datenfluss des Analyse- und Bewertungsprozesses von AEOcortex:
+<figure>
 
 ```mermaid
 graph LR
@@ -67,21 +134,78 @@ graph LR
     TextCheck --> Report
 ```
 
-### Artefakt 3: Ergebnis-Nachweis
-Vergleich der Fehlererkennungsrate vor und nach dem Einsatz der AEOcortex-Module:
+  <figcaption><strong>Artefakt 2: High-Level Ablaufdiagramm</strong> – Zweck: Veranschaulichung des Datenflusses von der HTML-Eingabe bis zur Berichtsgenerierung.</figcaption>
+</figure>
 
-| Prüfbereich | Erkennung manuell | Erkennung mit AEOcortex-Skripten |
-| :--- | :--- | :--- |
-| JSON-LD Validierungsfehler | Sporadisch | 100% automatisiert |
-| robots.txt Konflikte | Schwer auffindbar | Sofortige Warnmeldung |
-| LLM-Crawler Barrieren | Unbekannt | Detaillierte Analyse der Auslesbarkeit |
+<div class="architecture-note">
+  <strong>Artefakt 3: Ergebnis-Nachweis (Validierungs-Matrix)</strong> – Zweck: Vergleich der Fehlererkennungsrate vor und nach dem Einsatz der AEOcortex-Module.
+</div>
 
-## 5. Results
-* **Entity-Prüfung**: Zuverlässige Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen.
-* **Lesbarkeits-Indikator**: Funktionierende Heuristik zur Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle.
-* **Prozess-Optimierung**: Erfolgreiche Beseitigung struktureller Crawling-Barrieren (wie fehlerhafte robots.txt-Direktiven) bei realen Testprojekten.
+<div class="evidence-grid">
+  <div class="evidence-card">
+    <h4 class="evidence-card__title">JSON-LD Validierung</h4>
+    <div class="evidence-card__meta">
+      <div class="evidence-card__item">
+        <span class="evidence-card__label">Manuelle Prüfung</span>
+        <p class="evidence-card__value">Nur sporadische und fehleranfällige Entdeckung von Schema-Fehlern.</p>
+      </div>
+      <div class="evidence-card__item">
+        <span class="evidence-card__label">Mit AEOcortex</span>
+        <p class="evidence-card__value">100% automatisierte Erkennung fehlerhafter Graphstrukturen.</p>
+      </div>
+    </div>
+  </div>
+  <div class="evidence-card">
+    <h4 class="evidence-card__title">robots.txt Konflikte</h4>
+    <div class="evidence-card__meta">
+      <div class="evidence-card__item">
+        <span class="evidence-card__label">Manuelle Prüfung</span>
+        <p class="evidence-card__value">Schwer auffindbare Blockaden in komplexen Verzeichnissen.</p>
+      </div>
+      <div class="evidence-card__item">
+        <span class="evidence-card__label">Mit AEOcortex</span>
+        <p class="evidence-card__value">Sofortige Warnmeldung bei blockierten Hauptentitäten.</p>
+      </div>
+    </div>
+  </div>
+  <div class="evidence-card">
+    <h4 class="evidence-card__title">LLM-Crawler Barrieren</h4>
+    <div class="evidence-card__meta">
+      <div class="evidence-card__item">
+        <span class="evidence-card__label">Manuelle Prüfung</span>
+        <p class="evidence-card__value">Unbekannte Blockaden für neue KI-Crawler (z.B. OAI-SearchBot).</p>
+      </div>
+      <div class="evidence-card__item">
+        <span class="evidence-card__label">Mit AEOcortex</span>
+        <p class="evidence-card__value">Detaillierte Analyse der Auslesbarkeit für alle großen LLM-Parser.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-## 6. Lessons Learned
-Dieses Forschungsprojekt hat mein Verständnis für die Funktionsweise generativer Suchmaschinen und semantischer Parsing-Modelle vertieft. Die Analyse von Entity-Beziehungen zeigt deutlich, dass präzise deklarierte und validierte Metadaten die Grundlage für die maschinelle Erfassung komplexer Kontexte bilden.
+<div class="engineering-insight">
+  <div class="engineering-insight__title">Engineering Insight</div>
+  <p class="engineering-insight__text">Visualisierungen komplexer Entitätsbeziehungen und strukturierte Datenvergleiche erleichtern die Fehleridentifikation in der Metadatenstruktur erheblich.</p>
+</div>
 
-Zudem wurde verdeutlicht, wie wichtig automatisierte Prüfverfahren im Entwicklungsprozess sind. Die manuelle Verifizierung strukturierter Daten ist fehleranfällig; automatisierte Validierungsskripte sparen wertvolle Zeit und garantieren die Einhaltung aktueller Web-Standards.
+---
+
+## Results
+- **Entity-Prüfung**: Zuverlässige Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Build-Prozess.
+- **Lesbarkeits-Indikator**: Funktionierende Heuristik zur Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle.
+- **Prozess-Optimierung**: Erfolgreiche Beseitigung struktureller Crawling-Barrieren bei realen Testprojekten.
+
+---
+
+## Lessons Learned
+Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generativer Suchmaschinen und semantischer Parsing-Modelle vertieft. Die Analyse von Entity-Beziehungen zeigt deutlich, dass präzise deklarierte und validierte Metadaten die Grundlage für die maschinelle Erfassung komplexer Kontexte bilden. Zudem wurde verdeutlicht, wie wichtig automatisierte Prüfverfahren im Entwicklungsprozess sind. Die manuelle Verifizierung strukturierter Daten ist fehleranfällig; automatisierte Validierungsskripte sparen wertvolle Zeit und garantieren die Einhaltung aktueller Web-Standards.
+
+---
+
+## Future Evolution
+Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte direkt in CI/CD-Pipelines (z. B. GitHub Actions) geplant. Dadurch sollen Schema- und Lesbarkeitsprüfungen bei jedem Commit automatisch ausgeführt werden. Weiterhin soll ein interaktives Dashboard zur Live-Validierung beliebiger URLs aufgebaut werden, um die Benutzerfreundlichkeit des Tools zu erhöhen.
+
+<div class="engineering-insight">
+  <div class="engineering-insight__title">Engineering Insight</div>
+  <p class="engineering-insight__text">Die Integration semantischer Prüfungen in den CI/CD-Prozess verhindert, dass fehlerhafte Metadaten oder Crawling-Barrieren in die Produktionsumgebung gelangen.</p>
+</div>
