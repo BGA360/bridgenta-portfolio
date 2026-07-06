@@ -41,6 +41,11 @@ export default defineConfig({
           },
           {
             type: "string",
+            name: "subtitle",
+            label: "Untertitel",
+          },
+          {
+            type: "string",
             name: "category",
             label: "Kategorie",
             required: true,
@@ -54,9 +59,31 @@ export default defineConfig({
           },
           {
             type: "string",
+            name: "timeline",
+            label: "Zeitraum",
+          },
+          {
+            type: "string",
+            name: "role",
+            label: "Meine Rolle",
+          },
+          {
+            type: "string",
             name: "technologies",
-            label: "Technologien",
+            label: "Technologien (Kommagetrennt)",
             required: true,
+          },
+          {
+            type: "string",
+            name: "devStack",
+            label: "Development Stack Liste",
+            list: true,
+          },
+          {
+            type: "string",
+            name: "aiBuilders",
+            label: "AI Builders Liste",
+            list: true,
           },
           {
             type: "string",
