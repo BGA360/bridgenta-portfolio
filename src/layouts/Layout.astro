@@ -1,7 +1,7 @@
 ---
 import Schema from '../components/Schema.astro';
 import CookieConsent from '../components/CookieConsent.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 
 interface Props {
   title: string;
@@ -16,6 +16,10 @@ interface Props {
 }
 
 const { title, description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.", project } = Astro.props;
+
+// Fetch footer content dynamically
+const footerData = await getEntry('pages', 'footer');
+const { topTier, brand, newsletter, bottom } = footerData.data;
 
 // Fetch projects dynamically for footer listing (only active projects)
 const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
@@ -149,7 +153,7 @@ import '../styles/styles.css';
             </div>
             <div>
               <h4>Verfügbarkeit</h4>
-              <p>Offen für neue berufliche Chancen</p>
+              <p>{topTier.availability}</p>
             </div>
           </div>
           <div class="footer-info-card">
@@ -158,7 +162,9 @@ import '../styles/styles.css';
             </div>
             <div>
               <h4>E-Mail</h4>
-              <p>ref@bridgenta.de</p>
+              <p>
+                <a href={`mailto:${topTier.email}`} style="color: inherit; text-decoration: none;">{topTier.email}</a>
+              </p>
             </div>
           </div>
           <div class="footer-info-card">
@@ -167,7 +173,7 @@ import '../styles/styles.css';
             </div>
             <div>
               <h4>Standort</h4>
-              <p>Deutschland (Remote / Frankfurt-nah)</p>
+              <p>{topTier.location}</p>
             </div>
           </div>
         </div>
@@ -191,7 +197,7 @@ import '../styles/styles.css';
             </svg>
             Brid<span>Genta</span>.de
           </a>
-          <p>Portfolio von Frank Duru – Web-Entwicklung, IT-Sicherheit, Systemadministration und Suchmaschinenoptimierung.</p>
+          <p>{brand.description}</p>
         </div>
         <div class="footer-col">
           <h4>Navigation</h4>
@@ -215,10 +221,10 @@ import '../styles/styles.css';
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Newsletter</h4>
-          <p style="font-size:0.88rem; margin-bottom: 0.5rem; color: rgba(255,255,255,0.5);">Erhalten Sie Updates zu neuen Projekten.</p>
+          <h4>{newsletter.title}</h4>
+          <p style="font-size:0.88rem; margin-bottom: 0.5rem; color: rgba(255,255,255,0.5);">{newsletter.text}</p>
           <form class="newsletter-form" aria-label="Newsletter-Anmeldung (Demo)">
-            <input type="email" placeholder="deine@email.de" required>
+            <input type="email" placeholder={newsletter.placeholder} required>
             <button type="submit" aria-label="Senden">
               <svg viewBox="0 0 24 24" width="12" height="12"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </button>
@@ -227,8 +233,8 @@ import '../styles/styles.css';
       </div>
       <div class="footer-bottom">
         <div class="copyright-badge">
-          <span>© <span id="year">2026</span> BridGenta.de – Frank Duru</span>
-          <span>E-Mail: ref@bridgenta.de</span>
+          <span>© <span id="year">2026</span> {bottom.copyright}</span>
+          <span>E-Mail: <a href={`mailto:${bottom.email}`} style="color: inherit; text-decoration: none;">{bottom.email}</a></span>
         </div>
       </div>
     </div>

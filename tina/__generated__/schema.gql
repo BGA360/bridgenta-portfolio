@@ -88,7 +88,7 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Project | PagesHome | PagesAbout | Folder
+union DocumentNode = Project | PagesHome | PagesAbout | PagesContact | PagesFooter | Folder
 
 type Project implements Node & Document {
   title: String!
@@ -242,7 +242,67 @@ type PagesAbout implements Node & Document {
   _values: JSON!
 }
 
-union Pages = PagesHome | PagesAbout
+type PagesContactHero {
+  eyebrow: String
+  title: String
+  lede: String
+}
+
+type PagesContactTouch {
+  title: String
+  description: String
+  email: String
+}
+
+type PagesContactInfo {
+  cvSubject: String
+  email: String
+  location: String
+  responseTime: String
+  openFor: String
+}
+
+type PagesContact implements Node & Document {
+  hero: PagesContactHero
+  touch: PagesContactTouch
+  info: PagesContactInfo
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+type PagesFooterTopTier {
+  availability: String
+  email: String
+  location: String
+}
+
+type PagesFooterBrand {
+  description: String
+}
+
+type PagesFooterNewsletter {
+  title: String
+  text: String
+  placeholder: String
+}
+
+type PagesFooterBottom {
+  copyright: String
+  email: String
+}
+
+type PagesFooter implements Node & Document {
+  topTier: PagesFooterTopTier
+  brand: PagesFooterBrand
+  newsletter: PagesFooterNewsletter
+  bottom: PagesFooterBottom
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+union Pages = PagesHome | PagesAbout | PagesContact | PagesFooter
 
 input PagesHomeHeroFilter {
   badge: StringFilter
@@ -343,9 +403,65 @@ input PagesAboutFilter {
   ctaBand: PagesAboutCtaBandFilter
 }
 
+input PagesContactHeroFilter {
+  eyebrow: StringFilter
+  title: StringFilter
+  lede: StringFilter
+}
+
+input PagesContactTouchFilter {
+  title: StringFilter
+  description: StringFilter
+  email: StringFilter
+}
+
+input PagesContactInfoFilter {
+  cvSubject: StringFilter
+  email: StringFilter
+  location: StringFilter
+  responseTime: StringFilter
+  openFor: StringFilter
+}
+
+input PagesContactFilter {
+  hero: PagesContactHeroFilter
+  touch: PagesContactTouchFilter
+  info: PagesContactInfoFilter
+}
+
+input PagesFooterTopTierFilter {
+  availability: StringFilter
+  email: StringFilter
+  location: StringFilter
+}
+
+input PagesFooterBrandFilter {
+  description: StringFilter
+}
+
+input PagesFooterNewsletterFilter {
+  title: StringFilter
+  text: StringFilter
+  placeholder: StringFilter
+}
+
+input PagesFooterBottomFilter {
+  copyright: StringFilter
+  email: StringFilter
+}
+
+input PagesFooterFilter {
+  topTier: PagesFooterTopTierFilter
+  brand: PagesFooterBrandFilter
+  newsletter: PagesFooterNewsletterFilter
+  bottom: PagesFooterBottomFilter
+}
+
 input PagesFilter {
   home: PagesHomeFilter
   about: PagesAboutFilter
+  contact: PagesContactFilter
+  footer: PagesFooterFilter
 }
 
 type PagesConnectionEdges {
@@ -491,9 +607,65 @@ input PagesAboutMutation {
   ctaBand: PagesAboutCtaBandMutation
 }
 
+input PagesContactHeroMutation {
+  eyebrow: String
+  title: String
+  lede: String
+}
+
+input PagesContactTouchMutation {
+  title: String
+  description: String
+  email: String
+}
+
+input PagesContactInfoMutation {
+  cvSubject: String
+  email: String
+  location: String
+  responseTime: String
+  openFor: String
+}
+
+input PagesContactMutation {
+  hero: PagesContactHeroMutation
+  touch: PagesContactTouchMutation
+  info: PagesContactInfoMutation
+}
+
+input PagesFooterTopTierMutation {
+  availability: String
+  email: String
+  location: String
+}
+
+input PagesFooterBrandMutation {
+  description: String
+}
+
+input PagesFooterNewsletterMutation {
+  title: String
+  text: String
+  placeholder: String
+}
+
+input PagesFooterBottomMutation {
+  copyright: String
+  email: String
+}
+
+input PagesFooterMutation {
+  topTier: PagesFooterTopTierMutation
+  brand: PagesFooterBrandMutation
+  newsletter: PagesFooterNewsletterMutation
+  bottom: PagesFooterBottomMutation
+}
+
 input PagesMutation {
   home: PagesHomeMutation
   about: PagesAboutMutation
+  contact: PagesContactMutation
+  footer: PagesFooterMutation
 }
 
 schema {

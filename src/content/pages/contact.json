@@ -1,0 +1,20 @@
+{
+  "_template": "contact",
+  "hero": {
+    "eyebrow": "Kontakt",
+    "title": "Kontakt für berufliche Möglichkeiten",
+    "lede": "Ich freue mich über passende Stellenangebote, den Austausch mit Personalverantwortlichen und Unternehmen sowie Herausforderungen in den Bereichen Systemadministration, IT-Sicherheit, Webmaster-Services und strukturierte Web-Entwicklung."
+  },
+  "touch": {
+    "title": "Get in Touch",
+    "description": "Schreib mir einfach eine E-Mail. Ich freue mich über deine Nachricht, Anfragen für Kooperationen oder berufliche Möglichkeiten und antworte dir in der Regel innerhalb von 1–2 Werktagen.",
+    "email": "ref@bridgenta.de"
+  },
+  "info": {
+    "cvSubject": "Lebenslauf anfragen",
+    "email": "ref@bridgenta.de",
+    "location": "Deutschland · remote-freundlich",
+    "responseTime": "In der Regel innerhalb von 2 Werktagen",
+    "openFor": "Festanstellung, Teilzeit, Junior Frontend, Webdesign, SEO/AEO/GEO und AI-assisted Development"
+  }
+}

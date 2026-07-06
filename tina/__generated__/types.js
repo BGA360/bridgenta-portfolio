@@ -105,6 +105,51 @@ export const PagesPartsFragmentDoc = gql`
       description
     }
   }
+  ... on PagesContact {
+    hero {
+      __typename
+      eyebrow
+      title
+      lede
+    }
+    touch {
+      __typename
+      title
+      description
+      email
+    }
+    info {
+      __typename
+      cvSubject
+      email
+      location
+      responseTime
+      openFor
+    }
+  }
+  ... on PagesFooter {
+    topTier {
+      __typename
+      availability
+      email
+      location
+    }
+    brand {
+      __typename
+      description
+    }
+    newsletter {
+      __typename
+      title
+      text
+      placeholder
+    }
+    bottom {
+      __typename
+      copyright
+      email
+    }
+  }
 }
     `;
 export const ProjectDocument = gql`

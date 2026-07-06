@@ -1,13 +1,17 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+
+const contactData = await getEntry('pages', 'contact');
+const { hero, touch, info } = contactData.data;
 ---
 
-<Layout title="Kontakt" description="Treten Sie mit mir in Kontakt. Schreiben Sie eine E-Mail an ref@bridgenta.de für Kooperationen, Anfragen oder berufliche Möglichkeiten.">
+<Layout title="Kontakt" description={`Treten Sie mit mir in Kontakt. Schreiben Sie eine E-Mail an ${touch.email} für Kooperationen, Anfragen oder berufliche Möglichkeiten.`}>
   <section class="page-hero">
     <div class="page-hero__inner">
-      <span class="eyebrow">Kontakt</span>
-      <h1 style="margin-top:0.9rem;">Kontakt für berufliche Möglichkeiten</h1>
-      <p class="lede">Ich freue mich über passende Stellenangebote, den Austausch mit Personalverantwortlichen und Unternehmen sowie Herausforderungen in den Bereichen Systemadministration, IT-Sicherheit, Webmaster-Services und strukturierte Web-Entwicklung.</p>
+      <span class="eyebrow">{hero.eyebrow}</span>
+      <h1 style="margin-top:0.9rem;">{hero.title}</h1>
+      <p class="lede">{hero.lede}</p>
     </div>
   </section>
 
@@ -22,16 +26,16 @@ import Layout from '../layouts/Layout.astro';
   <section class="section" data-reveal>
     <div class="container detail-grid">
       <div class="card" style="padding:var(--space-4); display: flex; flex-direction: column; justify-content: center;">
-        <h2 style="font-size:1.8rem; margin-bottom:1rem; font-family: var(--font-display); color: var(--text-dark);">Get in Touch</h2>
+        <h2 style="font-size:1.8rem; margin-bottom:1rem; font-family: var(--font-display); color: var(--text-dark);">{touch.title}</h2>
         <p style="color: var(--text-muted); line-height: 1.7; font-size: 1.05rem; margin-bottom: 1.5rem;">
-          Schreib mir einfach eine E-Mail. Ich freue mich über deine Nachricht, Anfragen für Kooperationen oder berufliche Möglichkeiten und antworte dir in der Regel innerhalb von 1–2 Werktagen.
+          {touch.description}
         </p>
 
         <div style="margin-top: 0.5rem;">
           <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-bottom: 0.5rem;">E-Mail-Adresse</h3>
           <div class="email-copy-box">
-            <a class="email-display" href="mailto:ref@bridgenta.de" aria-label="E-Mail senden an ref@bridgenta.de">
-              ref@bridgenta.de
+            <a class="email-display" href={`mailto:${touch.email}`} aria-label={`E-Mail senden an ${touch.email}`}>
+              {touch.email}
             </a>
             <button class="btn-copy" id="btn-copy-email" aria-label="E-Mail-Adresse kopieren">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -47,7 +51,7 @@ import Layout from '../layouts/Layout.astro';
 
       <aside class="card contact-info-card" style="padding:var(--space-4); height:fit-content;">
         <div style="display:flex; flex-direction:column; gap:0.7rem; margin-bottom:1.6rem;">
-          <a class="btn btn-primary btn-block" href="mailto:ref@bridgenta.de?subject=Lebenslauf%20anfragen">Lebenslauf anfragen</a>
+          <a class="btn btn-primary btn-block" href={`mailto:${info.email}?subject=${encodeURIComponent(info.cvSubject)}`}>{info.cvSubject}</a>
           <a class="btn btn-secondary btn-block" href="/projects">Portfolio ansehen</a>
         </div>
         <div class="contact-info-row">
@@ -56,7 +60,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div>
             <h4>E-Mail</h4>
-            <p>ref@bridgenta.de</p>
+            <p>{info.email}</p>
           </div>
         </div>
         <div class="contact-info-row">
@@ -65,7 +69,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div>
             <h4>Standort</h4>
-            <p>Deutschland · remote-freundlich</p>
+            <p>{info.location}</p>
           </div>
         </div>
         <div class="contact-info-row">
@@ -74,7 +78,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div>
             <h4>Antwortzeit</h4>
-            <p>In der Regel innerhalb von 2 Werktagen</p>
+            <p>{info.responseTime}</p>
           </div>
         </div>
         <div class="contact-info-row">
@@ -83,7 +87,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div>
             <h4>Offen für</h4>
-            <p>Festanstellung, Teilzeit, Junior Frontend, Webdesign, SEO/AEO/GEO und AI-assisted Development</p>
+            <p>{info.openFor}</p>
           </div>
         </div>
       </aside>
@@ -153,10 +157,9 @@ import Layout from '../layouts/Layout.astro';
     }
   </style>
 
-  <script>
+  <script define:vars={{ emailText: touch.email }}>
     const copyBtn = document.getElementById('btn-copy-email');
     const statusMsg = document.getElementById('copy-status');
-    const emailText = 'ref@bridgenta.de';
 
     if (copyBtn && statusMsg) {
       copyBtn.addEventListener('click', async () => {
