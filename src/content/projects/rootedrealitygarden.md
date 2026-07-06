@@ -1,22 +1,23 @@
 ---
 title: "Rooted Reality Gardens"
 subtitle: "Regenerative Landschaftsgestaltung & Technical SEO"
-category: "Unternehmens-Website / SEO"
-status: "Abgeschlossen"
-timeline: "Herbst 2025"
-technologies: "HTML5, CSS3, JavaScript, Technical SEO, AEO/GEO, JSON-LD Schema"
 description: "Website-Entwicklung und umfassende Suchmaschinen- und Answer-Engine-Optimierung für eine Agentur für regenerative Landschaftsgestaltung."
-role: "Technical Webmaster & Automation Engineer"
-devStack:
-  - HTML5
-  - CSS3
-  - JavaScript
-  - Python (Automation)
-  - JSON-LD (Schema.org)
-  - robots.txt & Sitemap
-aiBuilders:
-  - Claude
-  - Antigravity
+sidebar:
+  category: "Unternehmens-Website / SEO"
+  status: "Abgeschlossen"
+  timeline: "Herbst 2025"
+  role: "Technical Webmaster & Automation Engineer"
+  technologies: "HTML5, CSS3, JavaScript, Technical SEO, AEO/GEO, JSON-LD Schema"
+  devStack:
+    - HTML5
+    - CSS3
+    - JavaScript
+    - Python (Automation)
+    - JSON-LD (Schema.org)
+    - robots.txt & Sitemap
+  aiBuilders:
+    - Claude
+    - Antigravity
 ---
 
 ## 1. Executive Summary

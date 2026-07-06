@@ -1,5 +1,5 @@
 // BridGenta Portfolio — Service Worker
-const CACHE_NAME = "bridgenta-portfolio-v19";
+const CACHE_NAME = "bridgenta-portfolio-v20";
 const OFFLINE_URL = "offline.html";
 
 const PRECACHE_ASSETS = [

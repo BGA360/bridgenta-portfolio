@@ -1,9 +1,10 @@
 ---
 title: "BuildDaddy"
-category: "Learning Platform"
-status: "Konzept / Aufbau"
-technologies: "Curriculum-Design, UX, EdTech-Konzeption"
 description: "Konzept für eine Lernplattform, die Erwachsenen den Einstieg in AI-gestützte Softwareentwicklung erleichtert."
+sidebar:
+  category: "Learning Platform"
+  status: "Konzept / Aufbau"
+  technologies: "Curriculum-Design, UX, EdTech-Konzeption"
 ---
 
 ## Überblick

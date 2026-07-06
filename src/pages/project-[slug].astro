@@ -36,7 +36,7 @@ const getBadgeClass = (status) => {
   return 'badge--dev';
 };
 
-const badgeClass = getBadgeClass(entry.data.status);
+const badgeClass = getBadgeClass(entry.data.sidebar.status);
 
 // Set hero image for BridGenta
 const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-Hero.webp' : undefined;
@@ -47,9 +47,9 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
   description={entry.data.description}
   project={{
     title: entry.data.title,
-    category: entry.data.category,
-    status: entry.data.status,
-    technologies: entry.data.technologies,
+    category: entry.data.sidebar.category,
+    status: entry.data.sidebar.status,
+    technologies: entry.data.sidebar.technologies,
     description: entry.data.description
   }}
 >
@@ -74,9 +74,9 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
       </nav>
 
       <div class="project-hero__content" data-reveal>
-        <span class={`badge ${badgeClass} project-hero__badge`}>{entry.data.status}</span>
+        <span class={`badge ${badgeClass} project-hero__badge`}>{entry.data.sidebar.status}</span>
         <h1 class="project-hero__title">{entry.data.title}</h1>
-        <p class="project-hero__subtitle">{entry.data.subtitle || entry.data.category}</p>
+        <p class="project-hero__subtitle">{entry.data.subtitle || entry.data.sidebar.category}</p>
         <p class="project-hero__description">{entry.data.description}</p>
       </div>
     </div>
@@ -142,14 +142,14 @@ const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-He
 
         <!-- Sticky Sidebar -->
         <PortfolioSidebar 
-          category={entry.data.category}
-          status={entry.data.status}
-          timeline={entry.data.timeline}
-          technologies={entry.data.technologies}
-          devStack={entry.data.devStack}
-          aiBuilders={entry.data.aiBuilders}
-          role={entry.data.role}
-          notice={entry.data.notice}
+          category={entry.data.sidebar.category}
+          status={entry.data.sidebar.status}
+          timeline={entry.data.sidebar.timeline}
+          technologies={entry.data.sidebar.technologies}
+          devStack={entry.data.sidebar.devStack}
+          aiBuilders={entry.data.sidebar.aiBuilders}
+          role={entry.data.sidebar.role}
+          notice={entry.data.sidebar.notice}
         />
       </div>
 

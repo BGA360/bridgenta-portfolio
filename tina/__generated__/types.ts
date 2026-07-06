@@ -183,10 +183,8 @@ export type CollectionDocumentsArgs = {
 
 export type DocumentNode = Project | PagesHome | PagesAbout | PagesContact | PagesFooter | Folder;
 
-export type Project = Node & Document & {
-  __typename?: 'Project';
-  title: Scalars['String']['output'];
-  subtitle?: Maybe<Scalars['String']['output']>;
+export type ProjectSidebar = {
+  __typename?: 'ProjectSidebar';
   category: Scalars['String']['output'];
   status: Scalars['String']['output'];
   timeline?: Maybe<Scalars['String']['output']>;
@@ -194,8 +192,15 @@ export type Project = Node & Document & {
   technologies: Scalars['String']['output'];
   devStack?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   aiBuilders?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  description: Scalars['String']['output'];
   notice?: Maybe<Scalars['String']['output']>;
+};
+
+export type Project = Node & Document & {
+  __typename?: 'Project';
+  title: Scalars['String']['output'];
+  subtitle?: Maybe<Scalars['String']['output']>;
+  sidebar?: Maybe<ProjectSidebar>;
+  description: Scalars['String']['output'];
   body?: Maybe<Scalars['JSON']['output']>;
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
@@ -209,6 +214,17 @@ export type StringFilter = {
   in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type ProjectSidebarFilter = {
+  category?: InputMaybe<StringFilter>;
+  status?: InputMaybe<StringFilter>;
+  timeline?: InputMaybe<StringFilter>;
+  role?: InputMaybe<StringFilter>;
+  technologies?: InputMaybe<StringFilter>;
+  devStack?: InputMaybe<StringFilter>;
+  aiBuilders?: InputMaybe<StringFilter>;
+  notice?: InputMaybe<StringFilter>;
+};
+
 export type RichTextFilter = {
   startsWith?: InputMaybe<Scalars['String']['input']>;
   eq?: InputMaybe<Scalars['String']['input']>;
@@ -218,15 +234,8 @@ export type RichTextFilter = {
 export type ProjectFilter = {
   title?: InputMaybe<StringFilter>;
   subtitle?: InputMaybe<StringFilter>;
-  category?: InputMaybe<StringFilter>;
-  status?: InputMaybe<StringFilter>;
-  timeline?: InputMaybe<StringFilter>;
-  role?: InputMaybe<StringFilter>;
-  technologies?: InputMaybe<StringFilter>;
-  devStack?: InputMaybe<StringFilter>;
-  aiBuilders?: InputMaybe<StringFilter>;
+  sidebar?: InputMaybe<ProjectSidebarFilter>;
   description?: InputMaybe<StringFilter>;
-  notice?: InputMaybe<StringFilter>;
   body?: InputMaybe<RichTextFilter>;
 };
 
@@ -687,9 +696,7 @@ export type DocumentMutation = {
   pages?: InputMaybe<PagesMutation>;
 };
 
-export type ProjectMutation = {
-  title?: InputMaybe<Scalars['String']['input']>;
-  subtitle?: InputMaybe<Scalars['String']['input']>;
+export type ProjectSidebarMutation = {
   category?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
   timeline?: InputMaybe<Scalars['String']['input']>;
@@ -697,8 +704,14 @@ export type ProjectMutation = {
   technologies?: InputMaybe<Scalars['String']['input']>;
   devStack?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   aiBuilders?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  description?: InputMaybe<Scalars['String']['input']>;
   notice?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ProjectMutation = {
+  title?: InputMaybe<Scalars['String']['input']>;
+  subtitle?: InputMaybe<Scalars['String']['input']>;
+  sidebar?: InputMaybe<ProjectSidebarMutation>;
+  description?: InputMaybe<Scalars['String']['input']>;
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
@@ -862,7 +875,7 @@ export type PagesMutation = {
   footer?: InputMaybe<PagesFooterMutation>;
 };
 
-export type ProjectPartsFragment = { __typename: 'Project', title: string, subtitle?: string | null, category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, description: string, notice?: string | null, body?: any | null };
+export type ProjectPartsFragment = { __typename: 'Project', title: string, subtitle?: string | null, description: string, body?: any | null, sidebar?: { __typename: 'ProjectSidebar', category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, notice?: string | null } | null };
 
 type PagesParts_PagesHome_Fragment = { __typename: 'PagesHome', hero?: { __typename: 'PagesHomeHero', badge?: string | null, title?: string | null, lede?: string | null, primaryCtaText?: string | null, primaryCtaLink?: string | null, secondaryCtaText?: string | null, secondaryCtaLink?: string | null, trustIndicator?: string | null } | null, bridge?: { __typename: 'PagesHomeBridge', row?: string | null, label?: string | null } | null, about?: { __typename: 'PagesHomeAbout', badge?: string | null, title?: string | null, text1?: string | null, text2?: string | null, ctaText?: string | null, ctaLink?: string | null, portraitBadge?: string | null } | null, projectsHeader?: { __typename: 'PagesHomeProjectsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, qualificationsHeader?: { __typename: 'PagesHomeQualificationsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, principlesHeader?: { __typename: 'PagesHomePrinciplesHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null, skillsHeader?: { __typename: 'PagesHomeSkillsHeader', eyebrow?: string | null, title?: string | null, description?: string | null } | null };
 
@@ -879,7 +892,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project: { __typename: 'Project', id: string, title: string, subtitle?: string | null, category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+export type ProjectQuery = { __typename?: 'Query', project: { __typename: 'Project', id: string, title: string, subtitle?: string | null, description: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sidebar?: { __typename: 'ProjectSidebar', category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, notice?: string | null } | null } };
 
 export type ProjectConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -891,7 +904,7 @@ export type ProjectConnectionQueryVariables = Exact<{
 }>;
 
 
-export type ProjectConnectionQuery = { __typename?: 'Query', projectConnection: { __typename?: 'ProjectConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'ProjectConnectionEdges', cursor: string, node?: { __typename: 'Project', id: string, title: string, subtitle?: string | null, category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, description: string, notice?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type ProjectConnectionQuery = { __typename?: 'Query', projectConnection: { __typename?: 'ProjectConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'ProjectConnectionEdges', cursor: string, node?: { __typename: 'Project', id: string, title: string, subtitle?: string | null, description: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, sidebar?: { __typename: 'ProjectSidebar', category: string, status: string, timeline?: string | null, role?: string | null, technologies: string, devStack?: Array<string | null> | null, aiBuilders?: Array<string | null> | null, notice?: string | null } | null } | null } | null> | null } };
 
 export type PagesQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -917,15 +930,18 @@ export const ProjectPartsFragmentDoc = gql`
   __typename
   title
   subtitle
-  category
-  status
-  timeline
-  role
-  technologies
-  devStack
-  aiBuilders
+  sidebar {
+    __typename
+    category
+    status
+    timeline
+    role
+    technologies
+    devStack
+    aiBuilders
+    notice
+  }
   description
-  notice
   body
 }
     `;

@@ -4,18 +4,20 @@ const projectCollection = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    category: z.string(),
-    status: z.string(),
-    technologies: z.string(),
+    subtitle: z.string().optional(),
     description: z.string(),
     
-    // Golden Template additions
-    subtitle: z.string().optional(),
-    timeline: z.string().optional(),
-    devStack: z.array(z.string()).optional(),
-    aiBuilders: z.array(z.string()).optional(),
-    role: z.string().optional(),
-    notice: z.string().optional(),
+    // Sidebar fields grouped
+    sidebar: z.object({
+      category: z.string(),
+      status: z.string(),
+      timeline: z.string().optional(),
+      role: z.string().optional(),
+      technologies: z.string(),
+      devStack: z.array(z.string()).optional(),
+      aiBuilders: z.array(z.string()).optional(),
+      notice: z.string().optional(),
+    }),
     
     // Section Title overrides
     sectionTitles: z.object({

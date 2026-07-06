@@ -1,22 +1,23 @@
 ---
 title: "StarCleaners"
 subtitle: "Premium Cleaning Services & PWA"
-category: "Luxury Cleaning Services Website & PWA"
-status: "Abgeschlossen"
-timeline: "Sommer 2025"
-technologies: "HTML5, Vanilla CSS, JavaScript, Progressive Web App (PWA), Local SEO"
 description: "Premium-Webpräsenz mit integrierten PWA-Funktionen und lokalem SEO-Entitätsschema für eine exklusive Reinigungsagentur."
-role: "Full Stack Developer & PWA Architect"
-devStack:
-  - HTML5
-  - Vanilla CSS3
-  - JavaScript (ES6)
-  - Service Workers (PWA)
-  - manifest.json
-  - JSON-LD (LocalBusiness)
-aiBuilders:
-  - Claude
-  - Antigravity
+sidebar:
+  category: "Luxury Cleaning Services Website & PWA"
+  status: "Abgeschlossen"
+  timeline: "Sommer 2025"
+  role: "Full Stack Developer & PWA Architect"
+  technologies: "HTML5, Vanilla CSS, JavaScript, Progressive Web App (PWA), Local SEO"
+  devStack:
+    - HTML5
+    - Vanilla CSS3
+    - JavaScript (ES6)
+    - Service Workers (PWA)
+    - manifest.json
+    - JSON-LD (LocalBusiness)
+  aiBuilders:
+    - Claude
+    - Antigravity
 ---
 
 ## 1. Projektübersicht
