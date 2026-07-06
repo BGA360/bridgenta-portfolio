@@ -94,11 +94,44 @@ Erfolgreiche IT-Rekonstruktion trennt das Verstehen des Systems vom Schreiben de
 ---
 
 ## Architecture
+Die Architektur der BridGenta IT-Rekonstruktionsplattform basiert auf einer strikten physischen und logischen Kapselung von Risiko- und Sicherheitsbereichen. Sie teilt das Gesamtsystem in drei klar abgegrenzte Schichten:
 
-**Architecture diagram planned for Sprint 38.**
+```
+[ Generierter UI-Bereich (Lovable/Frontend) ]
+                    ↓  (Schnittstellen-Vertrag / API Contract)
+[ Gesichertes Backend-Daten-Gateway (Sicherheits-Proxy) ]
+                    ↓  (Datenbank-Kopplung)
+[ Legacy-Datenbank (Isoliert) ]
+```
 
-## Content Gap
-Das Architekturdiagramm und die Schnittstellenbeschreibung der Rekonstruktions-Plattform werden in einem zukünftigen Sprint erstellt.
+* **Generierter UI-Bereich (Frontend)**: Dieser Bereich beherbergt die Benutzeroberflächen und wird mit hoher Geschwindigkeit durch AI-Builder erzeugt. Er besitzt zu keinem Zeitpunkt direkten Zugriff auf Datenbanken oder sensible Systemressourcen.
+* **Backend-Daten-Gateway (Sicherheits-Proxy)**: Diese Schicht fungiert als Übersetzer und Schutzwall. Jede Datenabfrage aus dem Frontend wird hier validiert. Das Gateway bereinigt Datenströme, filtert sensible Parameter aus und stellt sicher, dass nur vertragskonforme Anfragen an die Legacy-Datenbank weitergeleitet werden.
+* **Legacy-Datenbank**: Das Altsystem bleibt physisch gekapselt hinter dem Gateway und ist vor direkten Manipulationen geschützt.
+
+### Interaktion und Risikominimierung
+Durch diese Schichtung wird das Systemrisiko erheblich gesenkt. Sollte ein AI-Builder fehlerhaften Frontend-Code generieren oder eine unerwartete Designabweichung einführen, bleibt dieser Fehler im UI-Bereich gefangen. Das Backend-Daten-Gateway blockiert jede unautorisierte oder unvollständige Anfrage, wodurch die Integrität der Datenbank gewahrt bleibt.
+
+---
+
+### Visuelle Dokumentation (Geplant)
+Um die Datenflüsse und die Handoff-Grenzen noch anschaulicher darzustellen, sind folgende Diagramme für zukünftige Entwicklungsphasen vorgesehen:
+
+* **Architecture Diagram (planned)**: Detaillierte Darstellung der Schichtgrenzen zwischen Frontend und Backend-Gateway.
+* **Governance Flow Diagram (planned)**: Visualisierung der automatisierten CI/CD-Freigabeschranken und Code-Owner-Reviews.
+* **Reconstruction Lifecycle Diagram (planned)**: Ablaufplan der Rekonstruktionsphasen (Observe -> Understand -> Map -> Reconstruct -> Validate -> Handoff).
+
+---
+
+### Evidence Mapping Table
+
+| Engineering-Behauptung (Claim) | Unterstützender Nachweis (Evidence) | Status |
+| :--- | :--- | :--- |
+| **Handoff-Stabilität** | Branch-Gating & Isolierte Handoff-Branches | Complete (Workspace-Mockup) |
+| **Datensicherheit** | Physisches API-Gateway und logische Trennung | Complete (Architecture-Schema) |
+| **Wartbarkeit** | Modulare Funktionsisolierung & Gating-Prüfung | Complete (Governance-Dashboard) |
+
+### Engineering Insight
+Eine sichere Rekonstruktionsarchitektur minimiert Abhängigkeiten. Indem das System in einen schnellen, generativen UI-Bereich und ein starres, manuell geprüftes Backend-Gateway geteilt wird, lässt sich Entwicklungsgeschwindigkeit mit absoluter Stabilität vereinen.
 
 ---
 
@@ -142,7 +175,7 @@ Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche str
 ### Entscheidung 4: Git-basiertes Branch-Gating (Manuelle Handoff-Grenzen)
 * **Entscheidung**: KI-generierter Code wird in separaten Handoff-Zweigen abgelegt und muss automatisierte Qualitätsschranken (CI-Builds) sowie ein manuelles Code-Review bestehen, bevor er in den Entwicklungszweig (`develop`) gemergt wird.
 * **Warum**: Syntaktisch korrekter Code kann dennoch logische Lücken oder Sicherheitsrisiken enthalten. Ein automatisches Mergen würde die Stabilität des Hauptsystems gefährden.
-* **Alternative**: Automatischer Merge bei erfolgreichem CI-Build. Verworfen, da rein maschinelle Tests keine strukturelle Design-Konformität oder logische Schwachstellen prüfen können.
+* **Alternative**: Automatischer Merge bei erfolgreichem CI-Build. Verworfen, da rein maschinelle Tests keine strukturelle Design-Konformität or logische Schwachstellen prüfen können.
 * **Resultat**: Schutz vor fehlerhaften KI-Modifikationen (Halluzinationen) und Erhalt einer sauberen, nachvollziehbaren Git-Historie.
 
 ---
@@ -173,24 +206,38 @@ Die Governance-Ebene fungiert als Gatekeeper der Plattform. Jede Codeänderung w
 ---
 
 ## Public Artifacts
+Die folgenden Visualisierungen belegen die Funktionalität und die Prozessschritte unserer Rekonstruktions-Pipeline:
 
 ### Workspace-Interface
-Zweck: Visuelle Erfassung der Systemtopologie und Analyse der Handoff-Grenzen vor Beginn der Code-Generierung.
 <figure>
   <img src="/images/bga-portfolio/BG-PA02-Workspace.webp" alt="BridGenta Workspace Interface" loading="lazy" width="1600" height="900" />
 </figure>
 
+* **Purpose**: Veranschaulicht die visuelle Systemanalyse und Strukturierung der Legacy-Datenströme vor Beginn der Code-Generierung.
+* **Engineering Evidence**: Belegt die Isolierung von Funktionsblöcken und die Definition der Schnittstellen-Verträge im Vorbereitungsbereich.
+* **Reader Value**: Der Leser versteht, dass keine Code-Generierung ohne vorherige präzise Strukturanalyse stattfindet.
+
+---
+
 ### Modernisierungs-Workflow
-Zweck: Die Pipeline steuert die Handoff-Grenzen und leitet Code-Inkremente sicher in das Git-Repository.
 <figure>
   <img src="/images/bga-portfolio/BG-PA03-Workflow.webp" alt="BridGenta Workflow Interface" loading="lazy" width="1600" height="900" />
 </figure>
 
+* **Purpose**: Dokumentiert die Steuerung des Handoff-Prozesses zwischen dem AI-Builder und dem Git-Repository.
+* **Engineering Evidence**: Belegt die Nutzung isolierter Handoff-Branches zur Code-Übertragung.
+* **Reader Value**: Der Leser begreift, wie der generative Codefluss kontrolliert und kanalisiert wird.
+
+---
+
 ### Governance-Dashboard
-Zweck: Die Kontrollschranke zur automatisierten Überprüfung von Code-Sicherheit und Architekturkonformität.
 <figure>
   <img src="/images/bga-portfolio/BG-PA04-Governance.webp" alt="BridGenta Governance Interface" loading="lazy" width="1600" height="900" />
 </figure>
+
+* **Purpose**: Visualisiert das zentrale Kontroll- und Freigabeschild der automatisierten und manuellen Gating-Prozesse.
+* **Engineering Evidence**: Zeigt den Status der Lizenzprüfung, der Sicherheits-Scans und der manuellen Systemarchitekten-Zustimmung.
+* **Reader Value**: Der Leser sieht den praktischen Beleg dafür, dass kein Code ungeprüft in die Produktion gelangt.
 
 ---
 
