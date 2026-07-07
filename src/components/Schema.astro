@@ -13,7 +13,7 @@ interface Props {
 
 const { title, description, project } = Astro.props;
 
-const siteUrl = 'https://bridgenta.de';
+const siteUrl = Astro.site ? Astro.site.origin : 'https://bridgenta.de';
 const pathname = Astro.url.pathname;
 
 // Normalize path for canonical representation to avoid duplicate entities
