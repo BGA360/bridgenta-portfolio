@@ -4,14 +4,76 @@
 <meta charset="UTF-8">
 <title>Offline – BridGenta Portfolio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css">
+<style>
+  :root {
+    --bg: #090e1a;
+    --text: #c5d1ec;
+    --primary: #00e5ff;
+    --primary-hover: #00b4d8;
+    --card-bg: #111a2e;
+    --border: #1e2d4a;
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .container {
+    text-align: center;
+    max-width: 500px;
+    padding: 2.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+  .eyebrow {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--primary);
+  }
+  h1 {
+    font-size: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+  }
+  p {
+    font-size: 1rem;
+    color: #8b9bb4;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  .btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #090e1a;
+    background-color: var(--primary);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+  }
+  .btn:hover {
+    background-color: var(--primary-hover);
+  }
+</style>
 </head>
 <body>
-<div class="container" style="padding-top:6rem; padding-bottom:6rem; text-align:center;">
+<div class="container">
   <span class="eyebrow">Keine Verbindung</span>
-  <h1 style="margin-top:1rem;">Du bist gerade offline</h1>
-  <p style="max-width:480px;margin:1rem auto 2rem;">Diese Seite ist offline nicht verfügbar. Sobald du wieder online bist, lädt BridGenta.de automatisch weiter.</p>
-  <a class="btn btn-primary" href="index.html">Erneut versuchen</a>
+  <h1>Du bist gerade offline</h1>
+  <p>Diese Seite ist offline nicht verfügbar. Sobald du wieder online bist, lädt BridGenta.de automatisch weiter.</p>
+  <a class="btn" href="/">Erneut versuchen</a>
 </div>
 </body>
 </html>

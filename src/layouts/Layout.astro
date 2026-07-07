@@ -32,7 +32,7 @@ const pathname = Astro.url.pathname;
 const cleanPath = pathname.replace(/\/$/, ""); // Normalize path (remove trailing slash)
 
 // Normalize URL for production canonical representation
-const siteUrl = 'https://bridgenta.de';
+const siteUrl = Astro.site ? Astro.site.origin : 'https://bridgenta.de';
 let cleanPathname = pathname.replace(/\/$/, "").replace(/\/index\.html$/, "");
 if (cleanPathname === "/index") {
   cleanPathname = "";
@@ -75,11 +75,11 @@ import '../styles/styles.css';
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://bridgenta.de/images/og-featured.jpg" />
+  <meta property="og:image" content={`${siteUrl}/images/og-featured.jpg`} />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={displayTitle} />
   <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content="https://bridgenta.de/images/og-featured.jpg" />
+  <meta name="twitter:image" content={`${siteUrl}/images/og-featured.jpg`} />
 
   <!-- GEO Metadata Tags -->
   <meta name="geo.region" content="DE-HE" />

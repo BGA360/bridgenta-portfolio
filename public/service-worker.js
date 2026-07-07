@@ -4,19 +4,8 @@ const OFFLINE_URL = "offline.html";
 
 const PRECACHE_ASSETS = [
   "/",
-  "index.html",
-  "projects.html",
-  "about.html",
-  "contact.html",
-  "project-aeocortex.html",
-  "project-bridgenta.html",
-  "project-luminapraxisds.html",
-  "project-rootedrealitygarden.html",
-  "project-starcleaners.html",
-  "styles.css",
-  "script.js",
-  "manifest.json",
-  OFFLINE_URL,
+  "/offline.html",
+  "/manifest.json",
 ];
 
 self.addEventListener("install", (event) => {
