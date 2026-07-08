@@ -20,6 +20,12 @@ jobs:
       - name: 📂 Checkout Code
         uses: actions/checkout@v4
 
+      - name: 📂 Checkout Workspace Validation
+        uses: actions/checkout@v4
+        with:
+          repository: BGA360/bridgenta-workspace
+          path: bridgenta-workspace
+
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
