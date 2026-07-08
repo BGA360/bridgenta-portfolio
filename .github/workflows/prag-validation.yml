@@ -26,7 +26,6 @@ jobs:
           repository: BGA360/bridgenta-workspace
           path: bridgenta-workspace
           ref: main
-          token: ''
 
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
