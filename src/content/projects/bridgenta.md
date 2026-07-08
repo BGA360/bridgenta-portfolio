@@ -24,184 +24,188 @@ sidebar:
 ---
 
 ## Executive Summary
-BridGenta ist eine evidenzbasierte Rekonstruktionsplattform für Altsysteme, die bestehende Softwaresysteme systematisch analysiert und auf moderne KI-gestützte Entwicklungsplattformen vorbereitet. In einer Ära, in der Code-Generatoren Benutzeroberflächen in Sekundenschnelle erstellen können, besteht die eigentliche ingenieurstechnische Herausforderung nicht mehr im Schreiben von Zeilen, sondern in der präzisen Aufarbeitung, Strukturierung und Validierung des Wissens aus historisch gewachsenen Systemen.
+BridGenta ist eine Plattform zur Rekonstruktion von Altsystemen. Das System analysiert bestehende Software. So bereitet es diese auf moderne AI Builder (ein KI-Werkzeug, das automatisch Code erstellt) vor.
 
-Durch die Erstellung strukturierter Rekonstruktionsmodelle und die Generierung evidenzbasierter Rekonstruktionspakete demonstriert BridGenta, wie sich Entwicklungsgeschwindigkeit bei der Migration veralteter Systeme signifikant steigern lässt, ohne die architektonische Kontrolle, die Datensicherheit oder die Datenhoheit zu gefährden.
+Heute können Generatoren Oberflächen schnell erstellen. Die echte Herausforderung liegt aber nicht im Schreiben von Code. Ingenieure müssen das Wissen aus alten Systemen genau aufarbeiten und prüfen.
+
+BridGenta erstellt strukturierte Modelle. Die Plattform erzeugt ein Reconstruction Package (ein strukturiertes Datenpaket mit allem Wissen über das Altsystem, das der KI als Grundlage dient). Das System zeigt, wie Entwickler veraltete Software schneller migrieren. Dabei bleibt die Sicherheit der Daten geschützt.
 
 ---
 
 ## Why This Project Exists
-Die rasante Entwicklung von KI-gestützten Code-Generatoren (AI Builder) verändert die Softwareentwicklung grundlegend. Während Benutzeroberflächen und einfache Logiken heute in kürzester Zeit generiert werden können, stehen Entwicklungsteams vor einer neuen Hürde: Wie lässt sich dieser generierte Code ohne detailliertes Vorwissen über die bestehenden Legacy-Systeme sicher und konsistent integrieren?
+Neue Generatoren verändern die Entwicklung von Software sehr schnell. Zwar erstellen Programme einfache Logik heute in kurzer Zeit. Teams stehen aber vor einer großen Hürde. Sie müssen den neuen Code sicher in bestehende Legacy-Systeme (ein altes, oft schlecht dokumentiertes Softwaresystem) einbauen. Dafür fehlt ihnen oft das Vorwissen.
 
-Klassische IT-Modernisierungsprojekte scheitern häufig an mangelnder Dokumentation der Altsysteme, hohen manuellen Migrationskosten und dem Risiko, unbemerkt Sicherheitslücken einzuführen. Der Einsatz von KI kann diese Prozesse massiv beschleunigen, benötigt jedoch eine präzise Aufbereitung des Alt-Kontexts (Governance), um unkontrollierten Code-Zuwachs (Code Bloat) und Architekturabweichungen (Architecture Drift) zu verhindern. BridGenta wurde entwickelt, um Altsysteme systematisch zu kartieren, das darin verborgene Wissen zu erhalten und als strukturierte Datengrundlage für nachgelagerte KI-Entwicklungsprozesse bereitzustellen.
+Klassische Modernisierungen scheitern oft. Der Grund ist meist eine schlechte Dokumentation. Auch hohe Kosten und neue Sicherheitslücken sind ein Risiko. Künstliche Intelligenz beschleunigt diese Arbeit. Sie braucht aber eine klare Governance (das Regelwerk, das Qualität und Sicherheit überwacht). Nur so lassen sich Code Bloat (unnötig aufgeblähter, schwer wartbarer Code) und Architecture Drift (eine schleichende Abweichung von der geplanten Systemstruktur) verhindern.
+
+BridGenta kartiert alte Systeme. Die Plattform bewahrt das Wissen der Systeme auf. Sie stellt dieses Wissen als strukturierte Daten für die KI bereit.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Künstliche Intelligenz beschleunigt die Code-Erstellung, benötigt jedoch präzise vorbereiteten Systemkontext. Ein erfolgreicher Rekonstruktionsprozess erfordert die Trennung von Wissenserfassung und Code-Generierung.</p>
+  <p class="engineering-insight__text">Künstliche Intelligenz schreibt Code schneller. Sie braucht aber genaue Daten über das System. Entwickler müssen zuerst das Wissen erfassen, bevor die KI neuen Code generiert.</p>
 </div>
 
 ---
 
 ## Context
-Im Zentrum moderner Softwareabteilungen stehen oft historisch gewachsene Web-Applikationen (Legacy-Systeme). Diese zeichnen sich typischerweise durch fehlende Testabdeckungen, veraltete Bibliotheken und eine schleichende architektonische Fragmentierung (Architecture Drift) aus. Da das ursprüngliche Entwicklungsteam meist nicht mehr verfügbar ist, fehlt jegliches implizites Wissen über die exakte Geschäftslogik.
+In vielen IT-Abteilungen laufen historisch gewachsene Web-Anwendungen. Diesen Programmen fehlen oft Tests. Sie nutzen veraltete Bibliotheken. Auch weichen sie oft von ihrer Struktur ab. Meist arbeitet das alte Team nicht mehr im Unternehmen. Deshalb kennt niemand mehr die genaue Logik der Anwendung.
 
-Der Versuch, diese Systeme manuell neu aufzubauen, birgt enorme Risiken für den laufenden Betrieb. Gleichzeitig bietet die Evolution von Sprachmodellen die Möglichkeit, Altsysteme automatisiert zu analysieren. Ohne strukturierte, vorab aufbereitete Kontextmodelle führt dieser KI-gestützte Ansatz jedoch schnell zu instabilen Code-Umgebungen, da generative Modelle ohne Systemkontext dazu neigen, willkürliche Architekturentscheidungen zu treffen.
+Ein manueller Neubau ist sehr riskant. Der Betrieb kann dadurch ausfallen. Zwar können moderne Sprachmodelle alte Systeme automatisch analysieren. Ohne strukturierte Modelle führt der Einsatz von KI jedoch zu Fehlern im Code. Ohne genauen Kontext treffen generative Modelle willkürliche Entscheidungen für die Struktur.
 
 ---
 
 ## Problem
-Die Modernisierung von Altsystemen ist fehleranfällig und zeitintensiv. Der unregulierte Einsatz von KI-Generatoren ohne präzises Systemkontext-Wissen führt zu übermäßigem Code-Zuwachs (Code Bloat), Sicherheitslücken und einer Abweichung von etablierten Standards. Es fehlt ein deterministischer Prozess, der die Geschwindigkeit von KI-Buildern nutzt, indem er das funktionale und technische Wissen von Altsystemen vor der Rekonstruktion systematisch erfasst und in strukturierten Paketen bereitstellt.
+Die Modernisierung alter Software kostet viel Zeit und verursacht Fehler. Wenn Entwickler KI-Generatoren ohne genauen Systemkontext nutzen, entstehen Probleme. Es drohen Sicherheitslücken und überflüssiger Code. Es fehlt ein klarer Ablauf. Dieser Ablauf muss das Wissen der Altsysteme erfassen, bevor die eigentliche Rekonstruktion beginnt. Erst danach kann man die Geschwindigkeit der KI sicher nutzen.
 
 ---
 
 ## Constraints
-Das Projekt unterliegt strengen technischen und betrieblichen Randbedingungen, die den Entwicklungsrahmen definieren:
+Das Projekt muss sich an strenge technische und operative Regeln halten. Diese Regeln bestimmen den Rahmen der Entwicklung:
 
 <div class="evidence-grid">
   <div class="evidence-card">
     <h4 class="evidence-card__title">Datensicherheit &amp; Geheimnisschutz</h4>
-    <p class="evidence-card__value">Generative KI-Modelle dürfen keinen Zugriff auf sensible Produktionsdaten, Kundendaten oder API-Schlüssel erhalten. Dies erfordert eine strikte physische und logische Datentrennung zwischen dem Frontend und den Datenverarbeitungs-Gateways.</p>
+    <p class="evidence-card__value">KI-Modelle dürfen keine echten Kundendaten oder geheimen Schlüssel lesen. Deshalb trennen wir das Frontend logisch und physisch von den Gateways.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title">Manuelle Qualitätssicherung (Gating)</h4>
-    <p class="evidence-card__value">Da KI-Modelle fehlerhaften Code (Halluzinationen) generieren können, darf kein Code automatisiert in den Hauptzweig (<code>main</code>) einfließen. Jedes Inkrement erfordert ein menschliches Review.</p>
+    <p class="evidence-card__value">Generative KI erzeugt manchmal fehlerhaften Code. Deshalb darf das System Code nicht automatisch in den Hauptzweig übernehmen. Ein Mensch muss jede Änderung prüfen.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title">Architekturkonsistenz</h4>
-    <p class="evidence-card__value">Die Anwendung muss streng modular aufgebaut bleiben, um sicherzustellen, dass KI-Modifikationen lokal isoliert bleiben und keine unkontrollierten Nebeneffekte in anderen Systemteilen auslösen.</p>
+    <p class="evidence-card__value">Wir bauen die Anwendung streng in einzelnen Modulen auf. So bleiben Änderungen der KI lokal begrenzt. Sie stören andere Teile der Software nicht.</p>
   </div>
 </div>
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Sicherheits- und Datenschutzgrenzen müssen hart im System verankert sein. Sie dürfen niemals von der Zuverlässigkeit eines generativen KI-Modells abhängen, sondern müssen durch die Infrastruktur und den Git-Workflow erzwungen werden.</p>
+  <p class="engineering-insight__text">Entwickler müssen Grenzen für Sicherheit und Datenschutz fest im System einbauen. Diese Regeln dürfen nicht von der Zuverlässigkeit der KI abhängen. Die Infrastruktur und der Arbeitsablauf müssen diese Grenzen erzwingen.</p>
 </div>
 
 ---
 
 ## Reconstruction Strategy
-Die BridGenta-Methodik teilt den Migrationsprozess in sechs aufeinanderfolgende Phasen auf, um eine kontrollierte IT-Rekonstruktion zu gewährleisten:
+Die Methode von BridGenta teilt die Modernisierung in sechs Schritte. So bleibt der gesamte Prozess kontrolliert:
 
 <div class="evidence-grid">
   <div class="evidence-card">
     <h4 class="evidence-card__title"><span class="evidence-card__label">Phase 1</span> Observe (Beobachten)</h4>
-    <p class="evidence-card__value">Erfassung und Analyse der bestehenden Legacy-Applikation sowie der aktiven Datenströme im laufenden Betrieb.</p>
+    <p class="evidence-card__value">Das System analysiert die alte Anwendung und beobachtet die Datenströme im laufenden Betrieb.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title"><span class="evidence-card__label">Phase 2</span> Understand (Verstehen)</h4>
-    <p class="evidence-card__value">Rekonstruktion der Geschäftslogik und Dokumentation der Systemabhängigkeiten im Workspace.</p>
+    <p class="evidence-card__value">Der Architekt dokumentiert alle Abhängigkeiten und erfasst die Logik im Arbeitsbereich.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title"><span class="evidence-card__label">Phase 3</span> Map (Kartieren)</h4>
-    <p class="evidence-card__value">Definition der exakten Schnittstellen (API-Spezifikation) und Abgrenzung der modernisierten Komponenten.</p>
+    <p class="evidence-card__value">Wir legen die Schnittstellen fest und grenzen die neuen Teile des Systems ab.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title"><span class="evidence-card__label">Phase 4</span> Reconstruct (Rekonstruieren)</h4>
-    <p class="evidence-card__value">Strukturierte Generierung des Codes durch KI-Assistenten auf Basis präziser, kontextreicher Prompts in isolierten Zweigen.</p>
+    <p class="evidence-card__value">Die KI generiert den neuen Code in einem geschützten Bereich. Dazu nutzt sie genaue Anweisungen.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title"><span class="evidence-card__label">Phase 5</span> Validate (Validieren)</h4>
-    <p class="evidence-card__value">Überprüfung des generierten Codes durch automatisierte Qualitätsschranken (Build-Tests, Typprüfungen) und manuelles Code-Review.</p>
+    <p class="evidence-card__value">Automatische Tests und menschliche Prüfer kontrollieren den generierten Code sorgfältig.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title"><span class="evidence-card__label">Phase 6</span> Handoff (Übergabe)</h4>
-    <p class="evidence-card__value">Kontrollierte Integration der validierten Komponenten in das Haupt-Repository.</p>
+    <p class="evidence-card__value">Der geprüfte Code wird kontrolliert in das Hauptarchiv integriert.</p>
   </div>
 </div>
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Ein phasenbasierter Migrationsprozess minimiert das Projektrisiko, indem er die Analyse des Altsystems strikt von der Code-Generierung trennt und sicherstellt, dass die KI nur mit klaren Grenzspezifikationen arbeitet.</p>
+  <p class="engineering-insight__text">Ein Ablauf in Phasen senkt das Risiko im Projekt. Er trennt die Analyse der alten Software streng von der Erstellung des Codes. Die KI arbeitet nur mit klaren Vorgaben.</p>
 </div>
 
 ---
 
 ## Engineering Thinking
-Die Modernisierung kritischer IT-Systeme scheitern in der Praxis selten an mangelnder Entwicklungsgeschwindigkeit, sondern an unkontrollierter Komplexität. Beim Neuaufbau komplexer Legacy-Systeme (Greenfield-Ansatz) geht oft wertvolle, über Jahre gereifte Geschäftslogik verloren, da diese unvollständig dokumentiert ist. Daher setzt BridGenta auf das Prinzip der **kontrollierten IT-Rekonstruktion** anstelle eines vollständigen, riskanten Systemaustauschs.
+Die Modernisierung wichtiger Systeme scheitern selten an der Geschwindigkeit. Meist scheitert sie an zu hoher Komplexität. Wenn Entwickler einen Greenfield-Ansatz (ein komplett neuer Aufbau des Systems, statt einer schrittweisen Modernisierung) wählen, geht oft altes Wissen verloren. Oft fehlt eine vollständige Dokumentation der alten Geschäftslogik. Deshalb nutzt BridGenta eine kontrollierte Rekonstruktion und tauscht nicht das ganze System auf einmal aus.
 
-Dieses Vorgehen basiert auf der zentralen Philosophie: **Zuerst verstehen. Danach rekonstruieren.** Bevor ein AI-Builder zur Generierung von Benutzeroberflächen oder Schnittstellen herangezogen wird, muss die bestehende Logik systematisch erfasst, analysiert und in klare Funktionsblöcke zerlegt werden.
+Der Prozess folgt einer klaren Regel: **Zuerst verstehen. Danach rekonstruieren.** Bevor eine KI Oberflächen oder Schnittstellen baut, analysieren wir die alte Logik. Wir zerlegen diese Logik in klare Bausteine.
 
-Die Rolle der Künstlichen Intelligenz wird dabei bewusst als **Beschleuniger**, nicht als Architekt definiert. AI-Builder sind hervorragend darin, isolierte Funktionskomponenten in kurzer Zeit zu schreiben. Ihnen fehlt jedoch das globale Systemverständnis, die Sensibilität für langfristige Softwarewartung (Architecture Drift) und das Bewusstsein für Sicherheitsgrenzen. Der menschliche Softwarearchitekt steuert den Prozess und etabliert strenge Governance-Regeln, um zu verhindern, dass generative KI-Modelle unstrukturierte Code-Strukturen oder Sicherheitsrisiken in das Hauptsystem einbringen.
+Die KI dient als Beschleuniger, aber nicht als Architekt. KI-Werkzeuge können einzelne Bausteine sehr schnell schreiben. Ihnen fehlt jedoch der Überblick über das gesamte System. Sie erkennen schleichende Abweichungen nicht und beachten keine Sicherheitsgrenzen. Der menschliche Architekt leitet den Prozess und setzt strenge Regeln durch. So verhindert er, dass die KI schlechten Code oder Sicherheitsrisiken einbaut.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Erfolgreiche IT-Rekonstruktion trennt das Verstehen des Systems vom Schreiben des Codes. Erst wenn der menschliche Architekt die Schnittstellengrenzen definiert hat, kann die KI als effizienter Code-Generierungsmotor genutzt werden.</p>
+  <p class="engineering-insight__text">Eine erfolgreiche Rekonstruktion trennt das Verstehen der Software vom Schreiben des Codes. Zuerst legt der Architekt die Schnittstellen fest. Erst danach generiert die KI den Code.</p>
 </div>
 
 ---
 
 ## Capabilities &amp; Intelligence Domains
-Die Plattform stützt sich auf sieben integrierte Fähigkeiten (Intelligence Domains), um den Rekonstruktionsprozess deterministisch zu steuern:
+Die Plattform nutzt sieben Intelligence Domains (ein klar abgegrenzter Fähigkeitsbereich der Plattform). Diese Bereiche steuern den Ablauf genau.
 
-- **Source Intelligence**: Analysiert die bestehende Codebasis, um Systemtopologien, Alt-Technologien und verdeckte Abhängigkeiten aufzudecken.
-- **Reconstruction Intelligence**: Generiert präzise Schnittstellenspezifikationen (API-Spezifikationen) und kartiert relationale Datenflüsse.
-- **Preservation Intelligence**: Sichert das technische und visuelle Verhalten des Altsystems durch strukturierte Erhaltungsebenen.
-- **Cross-Layer Intelligence**: Korreliert und validiert Informationen über Frontend-, Logik- und Datenbank-Schichten hinweg, um Inkonsistenzen zu verhindern.
-- **Human Review**: Bietet geführte Review-Schnittstellen für Softwarearchitekten, um die Hoheit über geschäftskritische Entscheidungen zu wahren.
-- **Governance**: Überprüft regulatorische Standards, Sicherheitsrichtlinien, Datensicherheit und Code-Qualitätsmetriken.
-- **Export Intelligence**: Bündelt das rekonstruierte Systemwissen in standardisierte, maschinenlesbare Rekonstruktionspakete für nachgelagerte Entwicklungswerkzeuge.
+- **Source Intelligence (Quellcode-Analyse)**: Dieses Werkzeug liest den alten Programmcode und sucht nach Fehlern. So deckt das System versteckte Abhängigkeiten und alte Technologien auf.
+- **Reconstruction Intelligence (Schnittstellen-Erstellung)**: Diese Funktion entwirft Schnittstellen und legt fest, wie Daten fließen sollen. Sie beschreibt die Datenströme präzise und übersichtlich.
+- **Preservation Intelligence (Verhaltens-Erhaltung)**: Diese Komponente speichert das Verhalten der alten Anwendung auf verschiedenen Ebenen. Dadurch bleibt die ursprüngliche Logik für die Zukunft erhalten.
+- **Cross-Layer Intelligence (Schichten-Prüfung)**: Diese Funktion vergleicht die Daten aller Schichten der Anwendung. Sie verhindert, dass sich Fehler zwischen Oberfläche und Datenbank einschleichen.
+- **Human Review (Menschliche Freigabe)**: Diese Ansicht zeigt dem Architekten alle Änderungen. Er behält die Kontrolle und trifft wichtige Entscheidungen selbst.
+- **Governance (Regelwerks-Prüfung)**: Dieser Bereich überwacht die Qualität und prüft die Einhaltung aller Sicherheitsregeln. Er stellt sicher, dass kein unsicherer Code in das System gelangt.
+- **Export Intelligence (Paket-Ausgabe)**: Diese Funktion bündelt das gesammelte Wissen über das Altsystem. Sie übergibt die Daten als fertiges Paket an andere Entwicklungsprogramme.
 
 ---
 
 ## Architecture &amp; Preservation Layers
-Die Softwarearchitektur von BridGenta is modular aufgebaut, um den Rekonstruktionsprozess streng vom Live-Betrieb zu isolieren. Das System trennt die Analyse- und Dokumentationsmodule physisch von den produktiven Datenbanken der Altsysteme.
+Die Struktur der Software ist modular. Das System trennt die Module für die Analyse physisch von den echten Datenbanken.
 
-Um das funktionale, visuelle und technische Verhalten der bestehenden Anwendungen unverfälscht zu übertragen, verwendet die Plattform drei **Preservation Layers** (Erhaltungsebenen):
+Die Plattform nutzt drei Preservation Layers (eine Ebene, die bestimmte Eigenschaften des Altsystems – z. B. Design oder Verhalten – bewahrt). So übertragen wir alle Eigenschaften der alten Anwendung ohne Fehler.
 
-- **Visibility Preservation Layer (VPL)**: Erhält die technische Observability des Systems. Sie erfasst Schnittstellendefinitionen, Code-Metriken, Fehlerprotokolle und statische Systemdiagnosen.
-- **Experience Preservation Layer (EPL)**: Sichert das funktionale Verhalten und die User Experience. Sie dokumentiert Benutzerpfade, Zustandsübergänge, Formularvalidierungen und Kern-Geschäftslogiken.
-- **Design Preservation Layer (DPL)**: Konserviert die visuelle Identität und Struktur. Sie extrahiert Layout-Token, Styling-Richtlinien, Farbpaletten und CSS-Klassenstrukturen, um ein konsistentes Design-System im Ziel-System zu garantieren.
+- **Visibility Preservation Layer (VPL, Sichtbarkeitsebene)**: Diese Ebene misst die Observability (die Möglichkeit, den internen Zustand eines Systems von außen zu beobachten und zu messen). Sie erfasst alle Schnittstellen und sucht nach Fehlern im Code.
+- **Experience Preservation Layer (EPL, Verhaltensebene)**: Diese Ebene sichert die Logik und Funktionen der Anwendung. Sie schreibt Benutzerpfade und Zustände genau auf.
+- **Design Preservation Layer (DPL, Gestaltungsebene)**: Diese Ebene bewahrt das Aussehen der Benutzeroberfläche. Sie speichert Farben, Schriftarten und CSS-Klassen für das neue System.
 
-Durch diese Ebenen entsteht ein vollständiges Abbild des Systems, welches als strukturierter Kontext (Reconstruction Package) die Unsicherheit bei der KI-gestützten Code-Generierung minimiert.
+Diese drei Ebenen erzeugen ein Abbild des Altsystems. Dieses Abbild dient als Reconstruction Package, um Fehler bei der Code-Generierung durch die KI zu vermeiden.
 
 ---
 
 ## Engineering Decisions
-Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche strategische und architektonische Entscheidungen getroffen, um die Stabilität und Datensicherheit der Plattform zu garantieren.
+Vor dem Start traf das Team wichtige Entscheidungen für die Struktur. Diese Entscheidungen sichern die Stabilität und schützen die Daten der Plattform:
 
 <div class="decision-grid">
   <div class="decision-card">
     <h3 class="decision-card__title">Inkrementelle IT-Rekonstruktion</h3>
     <div class="decision-card__group">
       <span class="decision-card__label">Primärer Grund</span>
-      <p class="decision-card__text">Minimierung des Betriebsrisikos im Vergleich zu Big-Bang-Migrationen.</p>
+      <p class="decision-card__text">Wir senken das Risiko im Betrieb im Vergleich zu einer Big-Bang-Migration (eine Umstellung des gesamten Systems auf einmal, statt in Etappen).</p>
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Sichere, schrittweise Systemmodernisierung ohne Ausfallzeiten.</p>
+      <p class="decision-card__text">Wir modernisieren das System Schritt für Schritt ohne Ausfälle.</p>
     </div>
   </div>
   <div class="decision-card">
     <h3 class="decision-card__title">Kontextreiche Wissensmodellierung</h3>
     <div class="decision-card__group">
       <span class="decision-card__label">Primärer Grund</span>
-      <p class="decision-card__text">Vermeidung von KI-Halluzinationen durch mangelnden Systemkontext.</p>
+      <p class="decision-card__text">Wir vermeiden AI Hallucinations (Fehler der KI, bei denen sie falsche Fakten erfindet). Diese entstehen durch fehlenden Kontext.</p>
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Präzise Rekonstruktionspakete (Reconstruction Packages), die als strukturierter Kontext dienen.</p>
+      <p class="decision-card__text">Die Plattform liefert genaue Datenpakete als Arbeitsgrundlage.</p>
     </div>
   </div>
   <div class="decision-card">
     <h3 class="decision-card__title">Logische Datentrennung (Gateway)</h3>
     <div class="decision-card__group">
       <span class="decision-card__label">Primärer Grund</span>
-      <p class="decision-card__text">Schutz sensitiver Schnittstellendaten vor KI-Systemzugriffen.</p>
+      <p class="decision-card__text">Wir schützen sensible Daten vor dem Zugriff der KI.</p>
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Vollständige Datensicherheit; KI arbeitet nur auf UI-Ebene.</p>
+      <p class="decision-card__text">Daten bleiben sicher. Die KI arbeitet nur auf der UI (die Benutzeroberfläche, auf der der Nutzer arbeitet).</p>
     </div>
   </div>
   <div class="decision-card">
     <h3 class="decision-card__title">Git-basiertes Branch-Gating</h3>
     <div class="decision-card__group">
       <span class="decision-card__label">Primärer Grund</span>
-      <p class="decision-card__text">Verhinderung von unkontrolliertem Code-Einzug (AI Hallucinations).</p>
+      <p class="decision-card__text">Wir verhindern, dass die KI ungeprüften Code in das System einfügt.</p>
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Jeder KI-Code durchläuft manuelle Reviews vor der Systemintegration.</p>
+      <p class="decision-card__text">Ein Mensch prüft jeden Code der KI vor dem Einbau.</p>
     </div>
   </div>
 </div>
@@ -214,19 +218,19 @@ Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche str
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Entscheidung</span>
-        <p class="evidence-card__value">Die Migration des Legacy-Systems erfolgt schrittweise in abgegrenzten Modulen, anstatt die gesamte Applikation in einem einzigen großen Release neu zu veröffentlichen.</p>
+        <p class="evidence-card__value">Wir modernisieren das System Schritt für Schritt in einzelnen Modulen. Wir veröffentlichen nicht alles in einem einzigen großen Schritt.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Warum</span>
-        <p class="evidence-card__value">Eine Big-Bang-Ablösung birgt das Risiko, nicht dokumentierte Geschäftslogik zu übersehen, was zu unvorhersehbaren Systemausfällen führen kann. Die inkrementelle Migration erlaubt es, einzelne Module isoliert zu testen.</p>
+        <p class="evidence-card__value">Bei einer schnellen Umstellung übersehen Entwickler leicht geheime Geschäftslogik. Das kann zu Ausfällen führen. Die schrittweise Modernisierung erlaubt es uns, Module einzeln zu testen.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Alternative</span>
-        <p class="evidence-card__value">Vollständige Neuentwicklung (Greenfield-Ansatz). Diese wurde aufgrund des unverhältnismäßig hohen Risikos unvollständiger Anforderungsanalysen verworfen.</p>
+        <p class="evidence-card__value">Ein Greenfield-Ansatz. Diesen haben wir wegen des hohen Risikos verworfen.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Resultat</span>
-        <p class="evidence-card__value">Module können nacheinander modernisiert, verifiziert und ausgerollt werden, wodurch das Risiko im laufenden Betrieb gegen Null sinkt.</p>
+        <p class="evidence-card__value">Wir modernisieren, prüfen und aktivieren die Module nacheinander. Das Risiko für den Betrieb sinkt damit fast auf Null.</p>
       </div>
     </div>
   </div>
@@ -236,19 +240,19 @@ Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche str
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Entscheidung</span>
-        <p class="evidence-card__value">Erstellung detaillierter Rekonstruktionspakete (Reconstruction Packages), die das Systemverhalten abbilden, statt KI direkt Code schreiben zu lassen.</p>
+        <p class="evidence-card__value">Wir erstellen genaue Pakete mit dem Wissen über das System. Wir lassen die KI nicht direkt Code schreiben.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Warum</span>
-        <p class="evidence-card__value">Generative Modelle benötigen präzise Kontextgrenzen. Ohne diese strukturierten Vorleistungen führt KI-generierter Code schnell zu Sicherheitslücken und Code-Zuwachs (Code Bloat).</p>
+        <p class="evidence-card__value">Generative Modelle brauchen genaue Grenzen. Ohne diese Vorbereitung baut die KI schnell Fehler und Code Bloat in das System ein.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Alternative</span>
-        <p class="evidence-card__value">Direkte, ungesicherte Code-Generierung durch KI-Builder direkt am Produktivsystem. Verworfen wegen des Risikos struktureller Instabilität.</p>
+        <p class="evidence-card__value">Die direkte Generierung von Code ohne Schutz am Live-System. Das haben wir wegen des Risikos für die Stabilität verworfen.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Resultat</span>
-        <p class="evidence-card__value">KI-Modelle erhalten exakten Kontext über das Zielverhalten, was die Präzision erhöht und manuelle Korrekturschleifen minimiert.</p>
+        <p class="evidence-card__value">Die KI erhält genaue Vorgaben. Das erhöht die Genauigkeit und spart Zeit bei der Korrektur.</p>
       </div>
     </div>
   </div>
@@ -258,19 +262,19 @@ Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche str
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Entscheidung</span>
-        <p class="evidence-card__value">Das generative UI-Frontend besitzt keinen direkten Zugriff auf API-Schlüssel, Datenbanken oder vertrauliche Logik. Datenabfragen werden über ein gesichertes, separates Backend-Gateway geroutet.</p>
+        <p class="evidence-card__value">Die Benutzeroberfläche greift nicht direkt auf Datenbanken oder Schlüssel zu. Ein sicheres Gateway leitet alle Anfragen weiter.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Warum</span>
-        <p class="evidence-card__value">Generative KI-Modelle dürfen im Entwicklungsprozess nicht mit produktiven Anmeldedaten in Kontakt kommen, um unbeabsichtigte Leaks oder Trainingsdaten-Verunreinigungen zu verhindern.</p>
+        <p class="evidence-card__value">Die KI darf im Prozess nicht mit echten Passwörtern arbeiten. So verhindern wir den Diebstahl von Daten.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Alternative</span>
-        <p class="evidence-card__value">Eine monolithische Anwendungsstruktur, bei der UI und Datenschnittstellen eng verzahnt sind. Verworfen aus Sicherheits- und Datenschutzgründen.</p>
+        <p class="evidence-card__value">Ein eng verzahntes System ohne Trennung. Das haben wir aus Gründen des Datenschutzes verworfen.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Resultat</span>
-        <p class="evidence-card__value">Maximale Sicherheit. Die KI arbeitet im isolierten Frontend ausschließlich mit anonymisierten Schemas und Mock-Daten.</p>
+        <p class="evidence-card__value">Das System bietet hohe Sicherheit. Die KI arbeitet nur mit Mock-Daten (künstliche Testdaten, die keine echten, sensiblen Informationen enthalten).</p>
       </div>
     </div>
   </div>
@@ -280,19 +284,19 @@ Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche str
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Entscheidung</span>
-        <p class="evidence-card__value">KI-generierter Code wird in separaten Handoff-Zweigen abgelegt und muss automatisierte Qualitätsschranken (CI-Builds) sowie ein manuelles Code-Review bestehen, bevor er in den Entwicklungszweig (<code>develop</code>) gemergt wird.</p>
+        <p class="evidence-card__value">Das System legt neuen Code in eigenen Zweigen ab. Der Code muss Tests bestehen und von Menschen geprüft werden.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Warum</span>
-        <p class="evidence-card__value">Syntaktisch korrekter Code kann dennoch logische Lücken oder Sicherheitsrisiken enthalten. Ein automatisches Mergen würde die Stabilität des Hauptsystems gefährden.</p>
+        <p class="evidence-card__value">Auch fehlerfreier Code kann Sicherheitsrisiken enthalten. Ein automatischer Einbau gefährdet die Stabilität des Hauptsystems.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Alternative</span>
-        <p class="evidence-card__value">Automatischer Merge bei erfolgreichem CI-Build. Verworfen, da rein maschinelle Tests keine strukturelle Design-Konformität oder logische Schwachstellen prüfen können.</p>
+        <p class="evidence-card__value">Ein automatischer Einbau nach dem Testlauf. Das haben wir verworfen, da Maschinen das Design nicht bewerten können.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Resultat</span>
-        <p class="evidence-card__value">Schutz vor fehlerhaften KI-Modifikationen (Halluzinationen) und Erhalt einer sauberen, nachvollziehbaren Git-Historie.</p>
+        <p class="evidence-card__value">Das Gating (eine Kontrollstufe, die Code erst nach Prüfung durchlässt) schützt das Archiv vor Fehlern der KI.</p>
       </div>
     </div>
   </div>
@@ -300,7 +304,7 @@ Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche str
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Wichtige Systementscheidungen sollten durch technische Grenzen (wie API-Gateways) und organisatorische Prozesse (wie Git-Branch-Gating) erzwungen werden. Sie dürfen niemals auf dem Vertrauen in eine korrekte KI-Generierung beruhen.</p>
+  <p class="engineering-insight__text">Entwickler müssen wichtige Entscheidungen über technische Grenzen erzwingen. Sie dürfen der KI nicht blind vertrauen. Die Struktur und die Prozesse müssen die Einhaltung der Regeln sichern.</p>
 </div>
 
 ---
@@ -309,24 +313,24 @@ Bevor mit der technischen Implementierung begonnen wurde, wurden wesentliche str
 Um die Vorteile der KI-gestützten Entwicklung mit den Qualitätsansprüchen professioneller Softwareentwicklung zu vereinen, wurde ein mehrstufiger, qualitätsgesicherter Workflow innerhalb der Entwicklungsplattform etabliert:
 
 ### Workspace: Systemanalyse & Isolierung
-Der Workspace bildet den operativen Einstiegspunkt jeder Rekonstruktion. Hier werden die veralteten Systemteile systematisch erfasst, Abhängigkeiten kartiert und Datenflüsse isoliert. Dies stellt sicher, dass wir die bestehende Anwendungsstruktur vollständig durchdringen und die Schnittstellen präzise definieren.
+Der Arbeitsbereich bildet den Einstieg für jede Rekonstruktion. Hier erfassen wir die alten Systemteile und kartieren alle Abhängigkeiten. Das Team isoliert die Datenströme. So verstehen wir die alte Struktur und legen Schnittstellen fest.
 
 <div class="architecture-note">
-  <strong>Key Takeaway:</strong> Die visuelle Isolation im Workspace verhindert unstrukturierte Modifikationen und stellt sicher, dass wir nur exakt definierte Komponenten modernisieren.
+  <strong>Key Takeaway:</strong> Die visuelle Isolation im Arbeitsbereich verhindert ungeplante Änderungen. Sie stellt sicher, dass wir nur ausgewählte Module erneuern.
 </div>
 
 ### Workflow: Strukturierte Code-Generierung
-Der Workflow leitet den eigentlichen Rekonstruktionsprozess. Über diesen transparenten Leitfaden werden Frontend-Generatoren (wie Lovable) gezielt instruiert. Der generierte Code wird über isolierte Handoff-Zweige (Handoff Branches) in die Pipeline eingespeist, wo er manuellen Reviews und automatischen Qualitätsschranken unterliegt.
+Der Arbeitsablauf steuert die Rekonstruktion. Wir instruieren die Generatoren über diesen Leitfaden gezielt. Der neue Code fließt über Handoff (die kontrollierte Übergabe von Code an den nächsten Schritt) Zweige in die Pipeline (eine automatisierte Kette von Arbeitsschritten). Dort prüfen automatische Systeme und menschliche Reviewer den Code.
 
 <div class="architecture-note">
-  <strong>Key Takeaway:</strong> Der strukturierte Handoff verhindert Scope Creep und stellt sicher, dass KI-Modelle keine unkontrollierten Designabweichungen einführen.
+  <strong>Key Takeaway:</strong> Die Übergabe verhindert Scope Creep (ein unkontrolliertes Anwachsen der Projektanforderungen). Sie sorgt dafür, dass das Aussehen der Anwendung einheitlich bleibt.
 </div>
 
 ### Governance: Validierung & Qualitätskontrolle
-Die Governance-Ebene fungiert als Gatekeeper. Jede Codeänderung wird auf Lizenzkonformität, Sicherheitsrichtlinien und Datenschutzkompatibilität geprüft. Erst nach erfolgreicher automatisierter Build-Verifizierung und dem Review durch den Systemarchitekten erfolgt die Freigabe für die produktive Umgebung.
+Die Governance-Ebene prüft jede Änderung, bevor sie freigegeben wird. Das System kontrolliert Lizenzen, Datenschutz und Sicherheitsregeln. Erst nach einem erfolgreichen Testlauf und dem Review durch den Architekten geben wir den Code für die Produktion frei.
 
 <div class="architecture-note">
-  <strong>Key Takeaway:</strong> Ein strenges Regelwerk ist unerlässlich, um das Risiko unbeabsichtigter Datenabflüsse oder Sicherheitslücken bei KI-generiertem Code zu eliminieren.
+  <strong>Key Takeaway:</strong> Ein strenges Regelwerk ist wichtig. Es verhindert den Abfluss von Daten und schützt vor Fehlern im KI-Code.
 </div>
 
 ---
@@ -335,23 +339,23 @@ Die Governance-Ebene fungiert als Gatekeeper. Jede Codeänderung wird auf Lizenz
 
 <figure>
   <img src="/images/bga-portfolio/BG-PA02-Workspace.webp" alt="BridGenta Workspace Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Workspace-Interface</strong> – Zweck: Visuelle Erfassung der Systemtopologie und Analyse der Handoff-Grenzen vor Beginn der Code-Generierung.</figcaption>
+  <figcaption><strong>Workspace-Interface</strong> – Dieses Bild zeigt das System und hilft dem Architekten, die Grenzen für den Code vor dem Start festzulegen.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/bga-portfolio/BG-PA03-Workflow.webp" alt="BridGenta Workflow Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Modernisierungs-Workflow</strong> – Zweck: Die Pipeline steuert die Handoff-Grenzen und leitet Code-Inkremente sicher in das Git-Repository.</figcaption>
+  <figcaption><strong>Modernisierungs-Workflow</strong> – Dieser Prozess leitet neue Programmteile sicher in das Archiv weiter.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/bga-portfolio/BG-PA04-Governance.webp" alt="BridGenta Governance Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Governance-Dashboard</strong> – Zweck: Die Kontrollschranke zur automatisierten Überprüfung von Code-Sicherheit und Architekturkonformität.</figcaption>
+  <figcaption><strong>Governance-Dashboard</strong> – Diese Übersicht zeigt dem Prüfer alle Tests zur Sicherheit und zur Struktur des Codes.</figcaption>
 </figure>
 
 ---
 
 ## Results
-Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare Fortschritte im Rahmen der Beta-Tests erzielt werden:
+Durch den klaren Prozess hat das Team im Testlauf messbare Erfolge erzielt:
 
 <div class="results-grid">
   <div class="result-card">
@@ -360,7 +364,7 @@ Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare
     </div>
     <div class="result-card__content">
       <h3>Handoff-Stabilität</h3>
-      <p>Erfolgreiche Vermeidung unkontrollierter Code-Überschreibungen durch klar definierte Git-Handoff-Zweige im Rahmen der Testläufe.</p>
+      <p>Wir verhindern das Überschreiben von Code durch klare Zweige im Testlauf.</p>
     </div>
   </div>
   <div class="result-card">
@@ -369,7 +373,7 @@ Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare
     </div>
     <div class="result-card__content">
       <h3>Sicherheit</h3>
-      <p>Verhinderung unbeabsichtigter Leaks von API-Schlüsseln oder Zugangsdaten durch strikte Filterregeln.</p>
+      <p>Filterregeln verhindern den Diebstahl von Passwörtern und Schlüsseln.</p>
     </div>
   </div>
   <div class="result-card">
@@ -378,7 +382,7 @@ Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare
     </div>
     <div class="result-card__content">
       <h3>Wartbarkeit</h3>
-      <p>Erhalt einer sauberen, modularen Code-Struktur durch manuelle Qualitätskontrollen nach der KI-Generierung.</p>
+      <p>Menschliche Prüfer sichern eine saubere Struktur des neuen Codes.</p>
     </div>
   </div>
 </div>
@@ -386,18 +390,18 @@ Durch die konsequente Anwendung dieses strukturierten Prozesses konnten messbare
 ---
 
 ## Lessons Learned
-Die Erprobung KI-gestützter Entwicklungswerkzeuge hat gezeigt, dass die Kombination aus hoher Code-Generierungsgeschwindigkeit und traditioneller Qualitätskontrolle der Schlüssel zu stabilen Anwendungen ist. KI-Assistenten können Routineaufgaben erheblich beschleunigen, bedürfen jedoch einer klaren Prozessführung und manueller Code-Reviews, um Architekturdrift und unkontrollierten Code-Zuwachs zu verhindern.
+Die Tests mit der KI zeigen ein klares Ergebnis. Die Verbindung aus hoher Geschwindigkeit und klassischer Kontrolle sichert stabile Programme. Die KI beschleunigt einfache Aufgaben. Sie braucht aber klare Regeln und menschliche Prüfer. Nur so verhindern wir Fehler und unordentlichen Code.
 
-Die Etablierung restriktiver Git-Workflows und automatisierter CI-Prüfungen erwies sich als unverzichtbar, um die Codebasis sauber zu halten und die Isolierung sensibler Anwendungsdaten zu gewährleisten.
+Strenge Arbeitsabläufe in Git und automatische Tests sind unverzichtbar. Sie halten den Quellcode sauber und schützen sensible Daten.
 
-Für zukünftige Iterationen sollte die Schnittstellendefinition (API-Grenzbereich) zwischen statischem Frontend und Backend noch weiter formalisiert werden. Ein klareres, vertragsbasiertes API-Design (Contract-First) würde es KI-Generatoren ermöglichen, Frontend-Komponenten noch zielgerichteter und mit weniger Korrekturschleifen zu erstellen.
+In Zukunft wollen wir Schnittstellen noch genauer festlegen. Ein Contract-First (ein ansatz, bei dem zuerst die Schnittstelle festgelegt wird, bevor man Code schreibt) Design hilft der KI. Sie kann Oberflächen dann mit weniger Fehlern erstellen.
 
 ---
 
 ## Next Evolution
-Die zukünftigen Entwicklungsschritte konzentrieren sich auf den weiteren Ausbau der Analyse- und Exportfunktionen, um die Integration in nachgelagerte Entwicklungsumgebungen noch nahtloser zu gestalten:
+Das Team plant weitere Schritte für die Plattform. Wir wollen die Analyse ausbauen und den Export von Daten erleichtern.
 
-- **Erweiterung der Source Intelligence**: Automatische Erkennung und Klassifizierung komplexer, proprietärer Legacy-Entwurfsmuster.
-- **API-Formalisierung**: Ausbau des Contract-First-Designs und direkte Generierung standardisierter API-Schemas.
-- **Optimierung der Reconstruction Packages**: Maschinenlesbare Exportformate zur direkten Prompt-Fütterung gängiger KI-Systeme.
-- **Automatisierte Validierung**: Integration erweiterter statischer Sicherheitsprüfungen im Handoff-Prozess.
+- **Erweiterung der Quellcode-Analyse**: Das System soll alte Entwurfsmuster automatisch erkennen.
+- **API-Formalisierung**: Wir bauen das Schnittstellen-Design aus und generieren Schemas automatisch.
+- **Optimierung der Datenpakete**: Wir verbessern die Exportformate. So kann die KI die Daten direkt lesen.
+- **Automatisierte Validierung**: Wir bauen neue Sicherheitsprüfungen in die automatischen Abläufe ein.
