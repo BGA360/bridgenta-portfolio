@@ -76,8 +76,17 @@ Die operativen Schichten der BECC definieren die konkreten Vorgaben für die Ers
 
 ---
 
-## 6. Zukünftige Evolution
+## 6. Versionsfreigaben & Evolution (Releases & Evolution)
+
+Die BECC wird als stabiles Regelwerk gepflegt und kontrolliert weiterentwickelt. Alle Versionsstände und Änderungsrichtlinien sind im [Release-Verzeichnis](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/) abgelegt:
+
+- **Aktueller Stand**: [Version 1.0.0-RC1 Release Candidate](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/BECC-v1.0-RC1.md)
+- **Änderungshistorie**: [Changelog](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/CHANGELOG.md)
+- **Entwicklungsplan**: [Roadmap](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/ROADMAP.md)
+- **Governance**: [Release-Richtlinie](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/RELEASE_POLICY.md)
+- **Versionsdetails**: [Release Notes](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/RELEASE_NOTES.md)
 
 Als lebendes Framework wird die BECC in aufeinanderfolgenden, kontrollierten Sprints weiterentwickelt. Zukünftige Sprints werden spezifische Richtlinien wie Schreibstandards, Fachterminologien und Qualitätsprüfungen einführen, welche sich nahtlos in diese konstitutionelle Grundlage einfügen müssen.
+
 
 
