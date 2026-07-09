@@ -58,7 +58,7 @@ Sämtliche Dokumente der verfassungsmäßigen Grundlage sind nachfolgend aufgef�
 
 ---
 
-## 5. Operative Standards (Sprints 0.2 – 0.9)
+## 5. Operative Standards (Sprints 0.2 – 1.0)
 
 Die operativen Schichten der BECC definieren die konkreten Vorgaben für die Erstellung, Formulierung und Prüfung technischer Dokumentation:
 
@@ -72,10 +72,12 @@ Die operativen Schichten der BECC definieren die konkreten Vorgaben für die Ers
 | **Dokumentenarchitektur** (Sprint 0.7) | [ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/06-document-architecture/ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md) | Richtlinien zur Strukturierung von Dokumenten und logischer Abfolge. |
 | **Schreibstandard** (Sprint 0.8) | [ENGINEERING_WRITING_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/07-writing/ENGINEERING_WRITING_STANDARD.md) | Handwerkliche Schreibregeln auf Satz- und Absatzebene. |
 | **Review- & Feedbackstandard** (Sprint 0.9) | [ENGINEERING_REVIEW_FEEDBACK_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/08-review-feedback/ENGINEERING_REVIEW_FEEDBACK_STANDARD.md) | Standards für Peer Reviews und regelbasiertes Feedback zu Dokumenten. |
+| **Qualitätssicherungsstandard** (Sprint 1.0) | [ENGINEERING_COMMUNICATION_QA_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md) | Framework für kontinuierliche Verbesserung, Audits und Drift-Prüfung. |
 
 ---
 
 ## 6. Zukünftige Evolution
 
 Als lebendes Framework wird die BECC in aufeinanderfolgenden, kontrollierten Sprints weiterentwickelt. Zukünftige Sprints werden spezifische Richtlinien wie Schreibstandards, Fachterminologien und Qualitätsprüfungen einführen, welche sich nahtlos in diese konstitutionelle Grundlage einfügen müssen.
+
 
