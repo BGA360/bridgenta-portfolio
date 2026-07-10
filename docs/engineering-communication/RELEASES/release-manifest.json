@@ -1,5 +1,5 @@
 {
-  "release": "BECC-v1.0-RC2",
+  "release": "BECC-v1.0-GA",
   "date": "2026-07-10",
   "files": {
     "docs/engineering-communication/00-foundation/AUDIENCE.md": "sha256-38005049295fd4feb7bfc53286bcdcf4bafdbf996a2ce04f96eec02fcd3ea963",
@@ -20,16 +20,19 @@
     "docs/engineering-communication/09-quality-assurance/MOCK_AMENDMENT_CASE_STUDY.md": "sha256-778e1f0109c095280ab8fc5d9380ad60299b414f48a79da0544080ef895e010f",
     "docs/engineering-communication/README.md": "sha256-e4bd6dba143a46fd5386f5b113dd63b2055d763b6287b3ccc768f3f2ca60a1f8",
     "docs/engineering-communication/RELEASES/AUDIT_CONSOLIDATION_REGISTER.md": "sha256-0690be5f59b5d9d4a815cee8474c7c22aff21c11a3647bf082e810d69382806d",
+    "docs/engineering-communication/RELEASES/BECC-v1.0-FINAL-RELEASE-READINESS-REVIEW.md": "sha256-5b22174cc1ff2384a1a842f7db04405907104654bb56525881c661a030955c05",
+    "docs/engineering-communication/RELEASES/BECC-v1.0-GA-DECLARATION.md": "sha256-902b3948513cdd72a5ac20fb552668eee0128f0558b45b22d2e0c9bcd01ada28",
+    "docs/engineering-communication/RELEASES/BECC-v1.0-GA.md": "sha256-5b6f688bfa86e058cb942ca2c554d4ec24dbd017d10a2bd6d1c65eb621e90b67",
     "docs/engineering-communication/RELEASES/BECC-v1.0-RC1.md": "sha256-511cb79247b5dcbc84bb73f843149a6e20d0cf26387abfaf9cbe1f5a5fb2e6a5",
     "docs/engineering-communication/RELEASES/BECC-v1.0-RC2-ENGINEERING-DECISION-REVIEW.md": "sha256-a51a07728671817fdf95494f329cadd20214321caf60ff007019c1f7212460a4",
     "docs/engineering-communication/RELEASES/BECC-v1.0-RC2-IMPLEMENTATION-PLAN.md": "sha256-062164e8a4e47ca46fb076ec872a02d47b2b132b984faaffbe2908179a449551",
     "docs/engineering-communication/RELEASES/BECC-v1.0-RC2-REMEDIATION-PLAN.md": "sha256-47f42b740b84f50d3d630cbeb6967ec8792b3ee4dc24cf7fd8dcdfa0819f3aa2",
     "docs/engineering-communication/RELEASES/BECC-v1.0-RC2-VERIFICATION-REPORT.md": "sha256-7123c03bb78882236491b4160689d6428fb91a03be9611878f4b3fbeb442f837",
-    "docs/engineering-communication/RELEASES/BECC-v1.0-RC2.md": "sha256-a45899476cbbe6aa8976ca02d5ac571295643fb8d1fdbbd62e2baf5aa6608ebb",
-    "docs/engineering-communication/RELEASES/CHANGELOG.md": "sha256-35260a7d5727fa766eba335db3c082c9a7c33f55a4c0494bf4bdff02c1e60233",
+    "docs/engineering-communication/RELEASES/BECC-v1.0-RC2.md": "sha256-9f15bda18ca8115291618436bf26d4ff2cf0505447e80a99d156cec839866179",
+    "docs/engineering-communication/RELEASES/CHANGELOG.md": "sha256-a3a681a206efcbd6a4ed653da2544e568af7797ed317cd97627e628879574bd4",
     "docs/engineering-communication/RELEASES/MAINTAINER_GUIDE.md": "sha256-00b6f8cadaa04279df3af93c6c6ceb011faf01ee6971ff894e8d75aff208919c",
-    "docs/engineering-communication/RELEASES/RELEASE_NOTES.md": "sha256-3da6b2f93ce69e857ae4221c1a4c3e8598f29bbe5051e583eb37c7a3a246435f",
+    "docs/engineering-communication/RELEASES/RELEASE_NOTES.md": "sha256-1b653edf75189301b1d742d90352aae8f1b3da5774a7ba452d9e1ac86ca04625",
     "docs/engineering-communication/RELEASES/RELEASE_POLICY.md": "sha256-5794098c9647be4c1cdeed73456f413032a21b108a6c3a463f6d055c3c76607f",
-    "docs/engineering-communication/RELEASES/ROADMAP.md": "sha256-7d7e216ddf48aa39cfc1b3783bff5bd09532def46fabaa18aa0559a76ef5fc12"
+    "docs/engineering-communication/RELEASES/ROADMAP.md": "sha256-213ce49840c27e7ac5cad50ebb3c9a22bf3ebc099831f5adb0c592e6c5fb0cef"
   }
 }

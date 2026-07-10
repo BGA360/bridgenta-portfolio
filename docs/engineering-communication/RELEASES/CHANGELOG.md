@@ -4,6 +4,18 @@ Dieses Dokument erfasst alle konstitutionellen Meilensteine und Versionsfreigabe
 
 ---
 
+## [1.0.0] — 2026-07-10
+
+### Hinzugefügt
+- **General Availability (GA) deklariert**: Die BECC v1.0 wurde offiziell als stabiler Produktionsstandard für die technische Kommunikation innerhalb des Repositories freigegeben.
+- **Konstitutionelle Freigabedokumente**: Erstellung der Spezifikationen `BECC-v1.0-GA.md` und `BECC-v1.0-GA-DECLARATION.md`.
+
+### Geändert
+- **RC2-Lebenszyklus abgeschlossen**: Der Release-Engineering-Lebenszyklus von RC2 wurde formell geschlossen. Es wurden keine technischen Codeänderungen oder konstitutionelle Modifikationen während der GA-Phase eingeführt.
+- **Operationaler Lebenszyklus aktiviert**: Der Übergang in die Phase der **Constitutional Stewardship** wurde formell vollzogen.
+
+---
+
 ## [1.0.0-RC2] — 2026-07-10
 
 ### Hinzugefügt
