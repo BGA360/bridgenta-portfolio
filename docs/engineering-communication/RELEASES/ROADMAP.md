@@ -4,6 +4,16 @@ Dieses Dokument definiert den Entwicklungsplan für nachgelagerte, operative Wer
 
 ---
 
+## Release-Status (Release Status)
+
+- **Release Candidate 1 (RC1)**: Abgeschlossen (2026-07-09)
+- **Release Candidate 2 (RC2) - Audit-Remediation & Tooling**: Abgeschlossen (2026-07-10)
+- **Release Candidate 2 (RC2) - Packaging**: Abgeschlossen (2026-07-10)
+- **Final Release Readiness Review**: Nächster Schritt (In Vorbereitung)
+- **General Availability (GA)**: Ausstehend (Nach erfolgreichem Review)
+
+---
+
 ## Phase 3 — Operative Werkzeuge (Roadmap)
 
 Die Umsetzung der Roadmap ist in vier Themenblöcke unterteilt, die nacheinander realisiert werden sollen:

@@ -4,6 +4,22 @@ Dieses Dokument erfasst alle konstitutionellen Meilensteine und Versionsfreigabe
 
 ---
 
+## [1.0.0-RC2] — 2026-07-10
+
+### Hinzugefügt
+- **Automatisierte Qualitätskontrollen (Linting & Linkcheck)**: Einführung eines lokalen Node-basierten Linters (`lint_markdown.cjs`) und Linkcheckers (`check_markdown_links.cjs`, `audit_links.cjs`) in `/tooling/` zur statischen Dokumentenanalyse.
+- **GitHub Actions CI Integration**: Einbindung der Validierungen in die `.github/workflows/deploy.yml` Pipeline, um jeden Pull Request automatisch vor und nach dem Build auf Formatierung und Linkfehler zu prüfen.
+- **Maintainer- & Repository-Governance**: Erstellung von `/CONTRIBUTING.md` für Beitragsrichtlinien, `/CODEOWNERS` zur Zuweisung von Review-Zuständigkeiten und `RELEASES/MAINTAINER_GUIDE.md` für Release-Management.
+- **Simulierte Amendment Fallstudie**: Erstellung von `09-quality-assurance/MOCK_AMENDMENT_CASE_STUDY.md` zur praktischen Demonstration von Verfassungsänderungsverfahren.
+- **Kryptografische Integritätsabsicherung**: Bereitstellung von `RELEASES/release-manifest.json` mit SHA-256 Hashes aller BECC-Assets.
+- **Governance-Klärung**: Integration klarer Definitionen für Designed Governance und Operational Governance im QA-Standard (`09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md`).
+- **Workflow-Harmonisierung**: Gegenseitige Cross-References in `workflow.md`, `publication-governance.md` und dem QA-Standard.
+
+### Geändert
+- **Relative Linkstruktur**: Alle absoluten `file:///` Links im gesamten `docs/` Verzeichnis wurden auf relative Pfade umgestellt, um vollständige Portabilität und fehlerfreie Linkprüfung zu gewährleisten.
+
+---
+
 ## [1.0.0-RC1] — 2026-07-09
 
 ### Hinzugefügt
