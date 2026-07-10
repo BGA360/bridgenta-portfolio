@@ -2,6 +2,17 @@
 
 Dieses Dokument erfasst alle konstitutionellen Meilensteine und Versionsfreigaben der BECC im BridGenta-Ökosystem.
 
+## [1.0.0-Stewardship-Pilot-1] — 2026-07-10
+
+### Hinzugefügt
+- **BECC Bewertungskonzept (Sprint 0.0)**: Erstellung der `BECC-ASSESSMENT-METHODOLOGY.md` zur Definition standardisierter Bewertungskriterien, Outcomes (Compliant, Partially Compliant, Non-Compliant, N/A, Requires Interpretation) und EDR-Governance-Workflows.
+- **BECC Bewertungsmatrix (Sprint 0.1 / 0.1A)**: Erstellung der `BECC-ASSESSMENT-MATRIX.md` mit 35 standardisierten Prüffragen (`AQ-ES-001` bis `AQ-AP-002`) für alle 15 Kapitel der Dokumentenarchitektur.
+- **Pilot-Statut für Pilot 1 (Sprint 1.0)**: Erstellung der `PILOT-1-CHARTER.md` zur Festlegung von Zielen, Geltungsbereich und Governance für die Validierung der BridGenta Fallstudie.
+- **Baseline-Definition (Sprint 1.1)**: Erstellung der `PILOT-1-BASELINE-DEFINITION.md` zur Konfigurationssteuerung und zum Einfrieren des Prüfstands (`src/content/projects/bridgenta.md` auf Commit `abfa63dc6b79b175cabf76d9c38662d3a6bca659`).
+- **Konformitätsprüfung (Sprint 1.2)**: Erstellung des ersten Prüfberichts `PILOT-1-COMPLIANCE-ASSESSMENT.md` mit der Erfassung objektiver Belege für alle 15 Matrixkapitel.
+- **Befundregister (Sprint 1.3)**: Erstellung des `PILOT-1-FINDINGS-REGISTER.md` zur Katalogisierung von 6 formalen, rückverfolgbaren Abweichungen (`FIN-PILOT-001` bis `FIN-PILOT-006`).
+- **Engineering Decision Review (Sprint 1.4)**: Erstellung des EDR-Berichts `PILOT-1-ENGINEERING-DECISION-REVIEW.md` zur Festlegung technischer Entscheidungen (alle 6 Befunde als "Accept" freigegeben für die Phase Pilot 1 Remediation).
+
 ---
 
 ## [1.0.0] — 2026-07-10
