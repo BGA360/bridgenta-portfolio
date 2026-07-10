@@ -8,7 +8,7 @@ Dieses Dokument stellt keine mechanischen Schreibregeln (wie Satzlängen oder Gr
 
 ## 1. Konstitutioneller Bezug
 
-Diese Prinzipien leiten ihre Gültigkeit und Autorität direkt aus der [BECC-Mission](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md), der [BECC-Vision](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/VISION.md) und den übergeordneten [BECC-Prinzipien](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/PRINCIPLES.md) ab. Zukünftige detaillierte Schreibstandards, Glossare und Vorlagen müssen mit den hier verankerten Grundsätzen übereinstimmen.
+Diese Prinzipien leiten ihre Gültigkeit und Autorität direkt aus der [BECC-Mission](../00-foundation/MISSION.md), der [BECC-Vision](../00-foundation/VISION.md) und den übergeordneten [BECC-Prinzipien](../00-foundation/PRINCIPLES.md) ab. Zukünftige detaillierte Schreibstandards, Glossare und Vorlagen müssen mit den hier verankerten Grundsätzen übereinstimmen.
 
 ---
 
@@ -52,4 +52,4 @@ Einzelne Module, Frameworks oder Services werden stets als Teile eines größere
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur BECC-Übersicht](../README.md)

@@ -20,13 +20,13 @@ The BridGenta Constitutional Governance Framework (BGCF) defines the highest-lev
 
 | Document | Purpose |
 | :--- | :--- |
-| [README.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/README.md) | Entry point mapping the constitutional governance rules and AI workflow. |
-| [engineering-philosophy.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/engineering-philosophy.md) | Outlines the highest mindset: problem-first, security-by-design, and decision-driven development. |
-| [content-constitution.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/content-constitution.md) | Establishes the editorial mission, B2–C1 German language level, and calm tone of voice. |
-| [project-case-study-constitution.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/project-case-study-constitution.md) | Standardizes the structural storytelling template for all engineering case studies. |
-| [writing-standards.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/writing-standards.md) | Defines strict grammatical preferences (active voice, sentence limits, compound hyphenations). |
-| [explainability-standard.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/explainability-standard.md) | Sets the 3-step explanation protocol (Context, Decision, Verification) for complex features. |
-| [ai-collaboration-protocol.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/ai-collaboration-protocol.md) | Outlines security, secret exclusion, branch-isolation, and quality gating protocols for coding assistants. |
+| [README.md](../../constitution/README.md) | Entry point mapping the constitutional governance rules and AI workflow. |
+| [engineering-philosophy.md](../../constitution/engineering-philosophy.md) | Outlines the highest mindset: problem-first, security-by-design, and decision-driven development. |
+| [content-constitution.md](../../constitution/content-constitution.md) | Establishes the editorial mission, B2–C1 German language level, and calm tone of voice. |
+| [project-case-study-constitution.md](../../constitution/project-case-study-constitution.md) | Standardizes the structural storytelling template for all engineering case studies. |
+| [writing-standards.md](../../constitution/writing-standards.md) | Defines strict grammatical preferences (active voice, sentence limits, compound hyphenations). |
+| [explainability-standard.md](../../constitution/explainability-standard.md) | Sets the 3-step explanation protocol (Context, Decision, Verification) for complex features. |
+| [ai-collaboration-protocol.md](../../constitution/ai-collaboration-protocol.md) | Outlines security, secret exclusion, branch-isolation, and quality gating protocols for coding assistants. |
 
 ---
 

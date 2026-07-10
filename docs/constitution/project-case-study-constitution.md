@@ -21,9 +21,9 @@ The purpose of this constitution is to standardize how engineering work is docum
 ## Dependencies
 
 This document directly depends on and must comply with:
-- [README.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/README.md) (Constitutional Governance Entry Point)
-- [engineering-philosophy.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/engineering-philosophy.md) (Engineering Mindset & Core Principles)
-- [content-constitution.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/content-constitution.md) (Tone of Voice & Editorial Guidelines)
+- [README.md](README.md) (Constitutional Governance Entry Point)
+- [engineering-philosophy.md](engineering-philosophy.md) (Engineering Mindset & Core Principles)
+- [content-constitution.md](content-constitution.md) (Tone of Voice & Editorial Guidelines)
 
 ---
 

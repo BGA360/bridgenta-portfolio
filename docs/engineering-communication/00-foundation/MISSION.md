@@ -33,4 +33,4 @@ Indem wir das Verständnis des Lesers fokussieren, erzeugen wir langfristiges Ve
 
 ---
 
-[Zurück zur Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur Übersicht](../README.md)

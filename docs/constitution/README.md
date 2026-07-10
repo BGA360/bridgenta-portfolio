@@ -41,7 +41,7 @@ Every contributor must review the applicable constitutional documents before mod
 
 | Document | Purpose |
 | :--- | :--- |
-| [engineering-philosophy.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/engineering-philosophy.md) | Defines the engineering mindset and core principles behind BridGenta. |
+| [engineering-philosophy.md](engineering-philosophy.md) | Defines the engineering mindset and core principles behind BridGenta. |
 | `content-constitution.md` | Defines communication principles and content structure. |
 | `project-case-study-constitution.md` | Standardizes all engineering case studies. |
 | `writing-standards.md` | Defines writing style, language level, and editorial rules. |

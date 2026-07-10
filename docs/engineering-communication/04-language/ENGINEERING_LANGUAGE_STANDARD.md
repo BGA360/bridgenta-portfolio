@@ -8,7 +8,7 @@ Dieses Dokument regelt nicht die Textgestaltung oder die Formatierung von Dokume
 
 ## 1. Konstitutioneller Bezug
 
-Dieser Sprachstandard baut direkt auf der [BECC-Mission](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), dem [Standard für technische Erklärbarkeit](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md) und den [Kommunikationszielen](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md) auf. 
+Dieser Sprachstandard baut direkt auf der [BECC-Mission](../00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](../01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), dem [Standard für technische Erklärbarkeit](../02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md) und den [Kommunikationszielen](../03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md) auf. 
 
 Zukünftige operative Standards (wie das Stilhandbuch für Fachbegriffe, der Glossarstandard und die Übersetzungshilfen) beziehen ihre Gültigkeit aus diesem Dokument.
 
@@ -105,4 +105,4 @@ Dieses Dokument dient als verfassungsrechtliche Basis für nachgelagerte, operat
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur BECC-Übersicht](../README.md)

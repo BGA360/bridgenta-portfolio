@@ -28,4 +28,4 @@ Indem jedes Dokument den direkten Weg von der Problemstellung über die Entschei
 
 ---
 
-[Zurück zur Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur Übersicht](../README.md)

@@ -186,8 +186,8 @@ Before publishing content, ask:
 ## Constitutional Compliance
 
 Every future content sprint should begin by validating changes against:
-- [Engineering Philosophy](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/engineering-philosophy.md)
-- [Content Constitution](file:///c:/antigravity/statichtmlpro/fdrefs/docs/constitution/content-constitution.md)
+- [Engineering Philosophy](engineering-philosophy.md)
+- [Content Constitution](content-constitution.md)
 
 ---
 

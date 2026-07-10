@@ -8,7 +8,7 @@ Dieses Dokument regelt nicht die Gliederung oder das Layout, sondern definiert d
 
 ## 1. Konstitutioneller Bezug
 
-Dieser Schreibstandard operationalisiert direkt die [BECC-Mission](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md), die [Leitlinien für technisches Schreiben](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), den [Standard für technische Erklärbarkeit](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md), die [Kommunikationsziele](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md), den [Sprachstandard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/04-language/ENGINEERING_LANGUAGE_STANDARD.md), den [Terminologie-Standard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md) und den [Standard für Dokumentenarchitektur](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/06-document-architecture/ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md).
+Dieser Schreibstandard operationalisiert direkt die [BECC-Mission](../00-foundation/MISSION.md), die [Leitlinien für technisches Schreiben](../01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), den [Standard für technische Erklärbarkeit](../02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md), die [Kommunikationsziele](../03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md), den [Sprachstandard](../04-language/ENGINEERING_LANGUAGE_STANDARD.md), den [Terminologie-Standard](../05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md) und den [Standard für Dokumentenarchitektur](../06-document-architecture/ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md).
 
 Zukünftige operative Vorlagen (z. B. ADR-Templates oder Fallstudien-Richtlinien) müssen die hier festgelegten Schreibregeln einhalten.
 
@@ -114,4 +114,4 @@ Dieser Schreibstandard bildet das Fundament für nachgelagerte Dokumente und Tem
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur BECC-Übersicht](../README.md)

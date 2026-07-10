@@ -113,8 +113,8 @@ Konkrete Schreibvorlagen (Templates), Wörterbücher (Glossary), automatisierte 
 
 ## 9. Zukünftige Evolution
 
-Änderungen an der BECC erfolgen ausschließlich über das verfassungsrechtliche Änderungsverfahren (Amendments), wie im [Qualitätsstandard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md) festgelegt. Rückwärtskompatibilität und kontrollierte Migration bestehender Dokumente müssen bei jeder Änderung gewährleistet sein.
+Änderungen an der BECC erfolgen ausschließlich über das verfassungsrechtliche Änderungsverfahren (Amendments), wie im [Qualitätsstandard](../09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md) festgelegt. Rückwärtskompatibilität und kontrollierte Migration bestehender Dokumente müssen bei jeder Änderung gewährleistet sein.
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur BECC-Übersicht](../README.md)

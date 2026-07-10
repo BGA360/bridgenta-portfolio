@@ -1,0 +1,15 @@
+# CODEOWNERS for BridGenta repository
+# This file assigns code review and approval ownership for key repository assets.
+
+# Default owner for everything is the Constitutional Architect
+*                       @BGA360
+
+# Specific owners for governance and framework directories
+/docs/framework/        @BGA360
+/docs/constitution/     @BGA360
+/docs/engineering-communication/ @BGA360
+
+# Specific owners for frontend Astro assets
+/src/                   @BGA360
+/tina/                  @BGA360
+/public/                @BGA360

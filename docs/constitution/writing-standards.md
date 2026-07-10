@@ -59,7 +59,7 @@ In IT and web development, English terms are common. Handle them consistently:
 
 ### 2. Markdown Formatting Conventions
 - **Bold (`**bold**`)**: Use to highlight key technical decisions, outcomes, or files. Do not over-use.
-- **Inline Code (`` `code` ``)**: Always use for file paths, commands, code symbols, variables, and ports (e.g., [Layout.astro](file:///c:/antigravity/statichtmlpro/fdrefs/src/layouts/Layout.astro), `npm run dev`, `port 4001`).
+- **Inline Code (`` `code` ``)**: Always use for file paths, commands, code symbols, variables, and ports (e.g., [Layout.astro](../../src/layouts/Layout.astro), `npm run dev`, `port 4001`).
 - **Fenced Code Blocks**: Use language identifiers for code snippets to enable syntax highlighting.
 
 ### 3. Avoid Hyperbole & Marketing Jargon
