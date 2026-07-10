@@ -87,3 +87,12 @@ Vor dem Mergen eines inhaltsbezogenen Pull Requests in den `main`-Zweig muss der
 * [ ] **Social Media Test**: Alle Elemente sind LinkedIn-tauglich.
 * [ ] **Eignungs-Test**: Jedes Element erfüllt einen klaren Belegzweck.
 * [ ] **FDPP-Konformität**: Eventuell genutzte Porträtfotos tragen das Kürzel `FDPP-###`.
+
+---
+
+## 9. Verwandte Governance-Dokumente (Related Governance Documents)
+
+Diese Publikations-Governance ist Teil des dreisäuligen Qualitäts- und Governance-Modells von BridGenta:
+- **Repository- und Entwicklungs-Workflows**: Das Git-Verfahren und der PR-Review-Ablauf sind im [Workflow-Leitfaden](workflow.md) beschrieben.
+- **Qualitätssicherungs- und Kommunikationsstandards**: Die Richtlinien zur Verständlichkeit und kontinuierlichen Weiterentwicklung der Dokumente sind im [BECC-Qualitätssicherungsstandard](engineering-communication/09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md) definiert.
+

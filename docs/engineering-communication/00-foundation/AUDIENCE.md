@@ -32,4 +32,4 @@ Durch diese strukturierte Aufbereitung skaliert jedes Dokument automatisch mit d
 
 ---
 
-[Zurück zur Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur Übersicht](../README.md)

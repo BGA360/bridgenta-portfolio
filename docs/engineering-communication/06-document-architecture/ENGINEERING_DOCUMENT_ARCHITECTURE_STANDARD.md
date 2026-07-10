@@ -8,7 +8,7 @@ Dieses Dokument regelt nicht den sprachlichen Ausdruck oder das Design der Oberf
 
 ## 1. Konstitutioneller Bezug
 
-Dieser Standard baut direkt auf der [BECC-Mission](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), dem [Standard für technische Erklärbarkeit](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md), den [Kommunikationszielen](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md), dem [Sprachstandard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/04-language/ENGINEERING_LANGUAGE_STANDARD.md) und dem [Terminologie-Standard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md) auf. 
+Dieser Standard baut direkt auf der [BECC-Mission](../00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](../01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), dem [Standard für technische Erklärbarkeit](../02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md), den [Kommunikationszielen](../03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md), dem [Sprachstandard](../04-language/ENGINEERING_LANGUAGE_STANDARD.md) und dem [Terminologie-Standard](../05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md) auf. 
 
 Zukünftige operative Vorlagen (z. B. ADR-Templates, Case-Study-Formate und Review-Checklisten) leiten ihre Berechtigung aus diesem Dokument ab.
 
@@ -130,4 +130,4 @@ Dieses Dokument dient als verfassungsrechtliche Basis für nachgelagerte, operat
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur BECC-Übersicht](../README.md)

@@ -32,4 +32,4 @@ Wenn diese Frage für alle definierten Zielgruppen positiv beantwortet werden ka
 
 ---
 
-[Zurück zur Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur Übersicht](../README.md)

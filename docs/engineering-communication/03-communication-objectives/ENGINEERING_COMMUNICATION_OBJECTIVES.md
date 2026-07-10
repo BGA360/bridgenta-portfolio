@@ -8,7 +8,7 @@ Dieses Dokument regelt nicht die sprachlichen Details oder Formatvorgaben, sonde
 
 ## 1. Konstitutioneller Bezug
 
-Diese Kommunikationsziele leiten sich direkt aus der [BECC-Mission](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md) und dem [Standard für technische Erklärbarkeit](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md) ab. Zukünftige Richtlinien (wie Sprachstandards, Stilhandbücher und Review-Checklisten) werden an diesen Zielen ausgerichtet.
+Diese Kommunikationsziele leiten sich direkt aus der [BECC-Mission](../00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](../01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md) und dem [Standard für technische Erklärbarkeit](../02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md) ab. Zukünftige Richtlinien (wie Sprachstandards, Stilhandbücher und Review-Checklisten) werden an diesen Zielen ausgerichtet.
 
 ---
 
@@ -76,4 +76,4 @@ Folgende Merkmale zeigen, dass ein Dokument seine Kommunikationsziele verfehlt h
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur BECC-Übersicht](../README.md)

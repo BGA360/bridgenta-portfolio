@@ -8,9 +8,15 @@ Dieses Dokument regelt nicht die konkreten Prüf-Checklisten oder Metrik-Dashboa
 
 ## 1. Konstitutioneller Bezug
 
-Dieser Standard schließt die verfassungsmäßige Architektur der BECC ab. Er baut direkt auf der [BECC-Mission](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), dem [Standard für technische Erklärbarkeit](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md), den [Kommunikationszielen](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md), dem [Sprachstandard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/04-language/ENGINEERING_LANGUAGE_STANDARD.md), dem [Terminologie-Standard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md), dem [Standard für Dokumentenarchitektur](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/06-document-architecture/ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md), dem [Schreibstandard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/07-writing/ENGINEERING_WRITING_STANDARD.md) und dem [Standard für Review und Feedback](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/08-review-feedback/ENGINEERING_REVIEW_FEEDBACK_STANDARD.md) auf.
+Dieser Standard schließt die verfassungsmäßige Architektur der BECC ab. Er baut direkt auf der [BECC-Mission](../00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](../01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), dem [Standard für technische Erklärbarkeit](../02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md), den [Kommunikationszielen](../03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md), dem [Sprachstandard](../04-language/ENGINEERING_LANGUAGE_STANDARD.md), dem [Terminologie-Standard](../05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md), dem [Standard für Dokumentenarchitektur](../06-document-architecture/ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md), dem [Schreibstandard](../07-writing/ENGINEERING_WRITING_STANDARD.md) und dem [Standard für Review und Feedback](../08-review-feedback/ENGINEERING_REVIEW_FEEDBACK_STANDARD.md) auf.
 
 Zukünftige operative Qualitätssicherungsinstrumente (z. B. QA-Checklists, Audit-Frameworks und Konformitätsprüfungen) beziehen ihre Autorität aus diesem Standard.
+
+### 1.1 Governance-Ebenen (Governance Levels)
+
+Dieses Framework unterscheidet strikt zwischen zwei Governance-Ebenen:
+- **Designed Governance (Soll-Governance)**: Die verfassungsmäßig definierte und dokumentierte Struktur der BECC-Standards, Richtlinien und Freigabeschranken. Sie legt fest, welche Regeln und Qualitätsanforderungen existieren. Änderungen an der Designed Governance erfordern ein formelles Verfassungsänderungsverfahren (Amendment).
+- **Operational Governance (Ist-Governance)**: Die physische Durchsetzung und Überprüfung dieser Standards im täglichen Repository-Betrieb und in Release-Zyklen. Sie wird durch konkrete Werkzeuge wie Pull-Request-Reviews, automatisierte Linter, Link-Checking-Infrastrukturen und Release-Manifeste operationalisiert und nachweisbar dokumentiert.
 
 ---
 
@@ -82,6 +88,8 @@ Dokumenten-Update (Veröffentlichung der neuen Version)
 Schulung & Kommunikation (Verbreitung im Team)
 ```
 
+Ein praktisches, simuliertes Beispiel für den Ablauf eines solchen Änderungsverfahrens ist in der [Fallstudie zum Verfassungsänderungsverfahren (Mock-Amendment Case Study)](./MOCK_AMENDMENT_CASE_STUDY.md) dokumentiert.
+
 ---
 
 ## 5. Qualitäts-Anti-Muster (Quality Anti-Patterns)
@@ -108,4 +116,12 @@ Dieses Dokument dient als verfassungsrechtliche Basis für nachgelagerte, operat
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+## 7. Verknüpfte Kanonische Abläufe (Linked Canonical Workflows)
+
+Dieser Qualitätssicherungsstandard arbeitet eng mit den anderen Betriebsdokumenten des Repositorys zusammen:
+- **Entwicklungs- und Review-Workflows**: Der gesamte Git- und PR-Lifecycle ist im [BridGenta Repository Workflow Guide](../../workflow.md) beschrieben.
+- **Freigabe- und Veröffentlichungsprozess**: Die Sicherheits- und Datenschutzfreigabe für öffentliche Inhalte ist in der [BridGenta Publikations-Governance](../../publication-governance.md) verankert.
+
+---
+
+[Zurück zur BECC-Übersicht](../README.md)

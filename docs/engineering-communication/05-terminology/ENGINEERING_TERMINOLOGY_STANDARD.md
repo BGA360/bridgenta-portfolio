@@ -8,7 +8,7 @@ Dieses Dokument regelt nicht die konkreten Wörterbucheinträge oder Übersetzun
 
 ## 1. Konstitutioneller Bezug
 
-Dieser Terminologie-Standard baut direkt auf der [BECC-Mission](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), dem [Standard für technische Erklärbarkeit](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md), den [Kommunikationszielen](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md) und dem [Sprachstandard](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/04-language/ENGINEERING_LANGUAGE_STANDARD.md) auf. 
+Dieser Terminologie-Standard baut direkt auf der [BECC-Mission](../00-foundation/MISSION.md), den [Leitlinien für technisches Schreiben](../01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md), dem [Standard für technische Erklärbarkeit](../02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md), den [Kommunikationszielen](../03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md) und dem [Sprachstandard](../04-language/ENGINEERING_LANGUAGE_STANDARD.md) auf. 
 
 Alle operativen Werkzeuge wie das Stilhandbuch für Fachbegriffe, das Glossar, der Tooltip-Standard, die Übersetzungshilfen und das Begriffsregister leiten ihre Gültigkeit aus diesem Standard ab.
 
@@ -97,4 +97,4 @@ Die folgenden Fehler verringern die Kommunikationsqualität und sind unzulässig
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur BECC-Übersicht](../README.md)

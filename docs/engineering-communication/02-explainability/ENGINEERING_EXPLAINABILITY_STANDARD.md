@@ -8,7 +8,7 @@ Dieser Standard befasst sich nicht mit Schreibmechanik oder Dokumenten-Layouts, 
 
 ## 1. Konstitutioneller Bezug
 
-Dieser Standard baut direkt auf der [BECC-Mission](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md), der [BECC-Vision](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/VISION.md) und den [Leitlinien für technisches Schreiben](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md) auf. Alle zukünftigen operativen Dokumente (wie konkrete Textvorlagen, Checklisten und Review-Richtlinien) müssen diesem Standard entsprechen.
+Dieser Standard baut direkt auf der [BECC-Mission](../00-foundation/MISSION.md), der [BECC-Vision](../00-foundation/VISION.md) und den [Leitlinien für technisches Schreiben](../01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md) auf. Alle zukünftigen operativen Dokumente (wie konkrete Textvorlagen, Checklisten und Review-Richtlinien) müssen diesem Standard entsprechen.
 
 ---
 
@@ -90,4 +90,4 @@ Folgende Fehler behindern das technische Verständnis und sind zu vermeiden:
 
 ---
 
-[Zurück zur BECC-Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur BECC-Übersicht](../README.md)

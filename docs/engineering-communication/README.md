@@ -49,12 +49,12 @@ Sämtliche Dokumente der verfassungsmäßigen Grundlage sind nachfolgend aufgef�
 
 | Dokument | Relative URL | Zweck |
 | :--- | :--- | :--- |
-| **Mission** | [MISSION.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/MISSION.md) | Definiert den Auftrag der BECC und warum Kommunikation Teil der Engineering-Qualität ist. |
-| **Vision** | [VISION.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/VISION.md) | Beschreibt das langfristige Ziel exzellenter Kommunikation und Transparenz auf BridGenta. |
-| **Scope (Geltungsbereich)** | [SCOPE.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/SCOPE.md) | Grenzt präzise ab, was die BECC regelt und was außerhalb ihres Geltungsbereichs liegt. |
-| **Audience (Zielgruppe)** | [AUDIENCE.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/AUDIENCE.md) | Definiert die Leser und beschreibt die Skalierbarkeit technischer Inhalte. |
-| **Principles (Prinzipien)** | [PRINCIPLES.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/PRINCIPLES.md) | Legt die dauerhaften, übergeordneten Leitprinzipien der technischen Kommunikation fest. |
-| **Success Criteria** | [SUCCESS_CRITERIA.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/00-foundation/SUCCESS_CRITERIA.md) | Definiert die Messgrößen für den Erfolg technischer Kommunikation auf BridGenta. |
+| **Mission** | [MISSION.md](00-foundation/MISSION.md) | Definiert den Auftrag der BECC und warum Kommunikation Teil der Engineering-Qualität ist. |
+| **Vision** | [VISION.md](00-foundation/VISION.md) | Beschreibt das langfristige Ziel exzellenter Kommunikation und Transparenz auf BridGenta. |
+| **Scope (Geltungsbereich)** | [SCOPE.md](00-foundation/SCOPE.md) | Grenzt präzise ab, was die BECC regelt und was außerhalb ihres Geltungsbereichs liegt. |
+| **Audience (Zielgruppe)** | [AUDIENCE.md](00-foundation/AUDIENCE.md) | Definiert die Leser und beschreibt die Skalierbarkeit technischer Inhalte. |
+| **Principles (Prinzipien)** | [PRINCIPLES.md](00-foundation/PRINCIPLES.md) | Legt die dauerhaften, übergeordneten Leitprinzipien der technischen Kommunikation fest. |
+| **Success Criteria** | [SUCCESS_CRITERIA.md](00-foundation/SUCCESS_CRITERIA.md) | Definiert die Messgrößen für den Erfolg technischer Kommunikation auf BridGenta. |
 
 ---
 
@@ -64,27 +64,27 @@ Die operativen Schichten der BECC definieren die konkreten Vorgaben für die Ers
 
 | Standard | Relative URL | Zweck |
 | :--- | :--- | :--- |
-| **Schreibprinzipien** (Sprint 0.2) | [ENGINEERING_WRITING_PRINCIPLES.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md) | Philosophische Schreib-Leitlinien (z. B. Entscheidungen erklären). |
-| **Erklärbarkeit** (Sprint 0.3) | [ENGINEERING_EXPLAINABILITY_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md) | Standard für die Strukturierung komplexer Konzepte. |
-| **Kommunikationsziele** (Sprint 0.4) | [ENGINEERING_COMMUNICATION_OBJECTIVES.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md) | Definition der inhaltlichen Verständniseffekte beim Leser. |
-| **Sprachstandard** (Sprint 0.5) | [ENGINEERING_LANGUAGE_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/04-language/ENGINEERING_LANGUAGE_STANDARD.md) | Linguistischer Rahmen für IT-Standardfachbegriffe und Deutsch-Englisch-Einsatz. |
-| **Terminologiestandard** (Sprint 0.6) | [ENGINEERING_TERMINOLOGY_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md) | Regelwerk für Governance und Lebenszyklus technischer Fachausdrücke. |
-| **Dokumentenarchitektur** (Sprint 0.7) | [ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/06-document-architecture/ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md) | Richtlinien zur Strukturierung von Dokumenten und logischer Abfolge. |
-| **Schreibstandard** (Sprint 0.8) | [ENGINEERING_WRITING_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/07-writing/ENGINEERING_WRITING_STANDARD.md) | Handwerkliche Schreibregeln auf Satz- und Absatzebene. |
-| **Review- & Feedbackstandard** (Sprint 0.9) | [ENGINEERING_REVIEW_FEEDBACK_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/08-review-feedback/ENGINEERING_REVIEW_FEEDBACK_STANDARD.md) | Standards für Peer Reviews und regelbasiertes Feedback zu Dokumenten. |
-| **Qualitätssicherungsstandard** (Sprint 1.0) | [ENGINEERING_COMMUNICATION_QA_STANDARD.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md) | Framework für kontinuierliche Verbesserung, Audits und Drift-Prüfung. |
+| **Schreibprinzipien** (Sprint 0.2) | [ENGINEERING_WRITING_PRINCIPLES.md](01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md) | Philosophische Schreib-Leitlinien (z. B. Entscheidungen erklären). |
+| **Erklärbarkeit** (Sprint 0.3) | [ENGINEERING_EXPLAINABILITY_STANDARD.md](02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md) | Standard für die Strukturierung komplexer Konzepte. |
+| **Kommunikationsziele** (Sprint 0.4) | [ENGINEERING_COMMUNICATION_OBJECTIVES.md](03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md) | Definition der inhaltlichen Verständniseffekte beim Leser. |
+| **Sprachstandard** (Sprint 0.5) | [ENGINEERING_LANGUAGE_STANDARD.md](04-language/ENGINEERING_LANGUAGE_STANDARD.md) | Linguistischer Rahmen für IT-Standardfachbegriffe und Deutsch-Englisch-Einsatz. |
+| **Terminologiestandard** (Sprint 0.6) | [ENGINEERING_TERMINOLOGY_STANDARD.md](05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md) | Regelwerk für Governance und Lebenszyklus technischer Fachausdrücke. |
+| **Dokumentenarchitektur** (Sprint 0.7) | [ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md](06-document-architecture/ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md) | Richtlinien zur Strukturierung von Dokumenten und logischer Abfolge. |
+| **Schreibstandard** (Sprint 0.8) | [ENGINEERING_WRITING_STANDARD.md](07-writing/ENGINEERING_WRITING_STANDARD.md) | Handwerkliche Schreibregeln auf Satz- und Absatzebene. |
+| **Review- & Feedbackstandard** (Sprint 0.9) | [ENGINEERING_REVIEW_FEEDBACK_STANDARD.md](08-review-feedback/ENGINEERING_REVIEW_FEEDBACK_STANDARD.md) | Standards für Peer Reviews und regelbasiertes Feedback zu Dokumenten. |
+| **Qualitätssicherungsstandard** (Sprint 1.0) | [ENGINEERING_COMMUNICATION_QA_STANDARD.md](09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md) | Framework für kontinuierliche Verbesserung, Audits und Drift-Prüfung. |
 
 ---
 
 ## 6. Versionsfreigaben & Evolution (Releases & Evolution)
 
-Die BECC wird als stabiles Regelwerk gepflegt und kontrolliert weiterentwickelt. Alle Versionsstände und Änderungsrichtlinien sind im [Release-Verzeichnis](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/) abgelegt:
+Die BECC wird als stabiles Regelwerk gepflegt und kontrolliert weiterentwickelt. Alle Versionsstände und Änderungsrichtlinien sind im [Release-Verzeichnis](RELEASES) abgelegt:
 
-- **Aktueller Stand**: [Version 1.0.0-RC1 Release Candidate](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/BECC-v1.0-RC1.md)
-- **Änderungshistorie**: [Changelog](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/CHANGELOG.md)
-- **Entwicklungsplan**: [Roadmap](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/ROADMAP.md)
-- **Governance**: [Release-Richtlinie](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/RELEASE_POLICY.md)
-- **Versionsdetails**: [Release Notes](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/RELEASE_NOTES.md)
+- **Aktueller Stand**: [Version 1.0.0-RC1 Release Candidate](RELEASES/BECC-v1.0-RC1.md)
+- **Änderungshistorie**: [Changelog](RELEASES/CHANGELOG.md)
+- **Entwicklungsplan**: [Roadmap](RELEASES/ROADMAP.md)
+- **Governance**: [Release-Richtlinie](RELEASES/RELEASE_POLICY.md)
+- **Versionsdetails**: [Release Notes](RELEASES/RELEASE_NOTES.md)
 
 Als lebendes Framework wird die BECC in aufeinanderfolgenden, kontrollierten Sprints weiterentwickelt. Zukünftige Sprints werden spezifische Richtlinien wie Schreibstandards, Fachterminologien und Qualitätsprüfungen einführen, welche sich nahtlos in diese konstitutionelle Grundlage einfügen müssen.
 

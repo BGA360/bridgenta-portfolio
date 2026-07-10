@@ -7,7 +7,9 @@
     "start": "tinacms dev -c \"astro dev\"",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "node tooling/lint_markdown.cjs",
+    "check-links": "node tooling/check_markdown_links.cjs"
   },
   "dependencies": {
     "astro": "^4.11.3"

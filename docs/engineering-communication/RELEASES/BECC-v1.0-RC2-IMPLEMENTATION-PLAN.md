@@ -16,9 +16,9 @@ Dieses Dokument stellt den offiziellen **Implementierungsplan (Implementation Pl
 - **Verfassende Rolle**: Framework Steward / Release Engineer (Antigravity)
 - **Genehmigungsinstanz**: Constitutional Architect / Project Owner (BGA360)
 - **Autoritative Eingangsdaten**:
-  - [AUDIT_CONSOLIDATION_REGISTER.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/AUDIT_CONSOLIDATION_REGISTER.md)
-  - [BECC-v1.0-RC2-REMEDIATION-PLAN.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/BECC-v1.0-RC2-REMEDIATION-PLAN.md)
-  - [BECC-v1.0-RC2-ENGINEERING-DECISION-REVIEW.md](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/RELEASES/BECC-v1.0-RC2-ENGINEERING-DECISION-REVIEW.md)
+  - [AUDIT_CONSOLIDATION_REGISTER.md](AUDIT_CONSOLIDATION_REGISTER.md)
+  - [BECC-v1.0-RC2-REMEDIATION-PLAN.md](BECC-v1.0-RC2-REMEDIATION-PLAN.md)
+  - [BECC-v1.0-RC2-ENGINEERING-DECISION-REVIEW.md](BECC-v1.0-RC2-ENGINEERING-DECISION-REVIEW.md)
 - **Nachfolgendes Artefakt**: RC2 Sprint 5 — RC2 Implementation (Ausführung)
 
 ---

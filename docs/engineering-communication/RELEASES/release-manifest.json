@@ -1,0 +1,24 @@
+{
+  "release": "BECC-v1.0-RC2",
+  "date": "2026-07-10",
+  "files": {
+    "docs/engineering-communication/00-foundation/AUDIENCE.md": "sha256-38005049295fd4feb7bfc53286bcdcf4bafdbf996a2ce04f96eec02fcd3ea963",
+    "docs/engineering-communication/00-foundation/MISSION.md": "sha256-4112aebf19e5b0eb86a1944e4afe6b69aa2212d613e82c722586d0b472e97ef5",
+    "docs/engineering-communication/00-foundation/PRINCIPLES.md": "sha256-3456a4d048e46d2a7b755a0cec42f64c2f72fc04b0eafafea3fc4a9a7c4f4760",
+    "docs/engineering-communication/00-foundation/SCOPE.md": "sha256-c1174b894fb0a992a67b8b990895ce88de4437dcc9ed4f93de2e933700e26433",
+    "docs/engineering-communication/00-foundation/SUCCESS_CRITERIA.md": "sha256-f64add8eab9ccf5fb73255046c6a5bdb783ddc22a0b46e489974a2d2cd4635fa",
+    "docs/engineering-communication/00-foundation/VISION.md": "sha256-174662cc5ec32258f8a0beb79179c7481f485ae332bbaef94b6324f49ea66b6f",
+    "docs/engineering-communication/01-writing-principles/ENGINEERING_WRITING_PRINCIPLES.md": "sha256-6e94fb8be69e1cea5ae8774ac7adf0b5a4d4c7e6dcf5449e6ab24984280167be",
+    "docs/engineering-communication/02-explainability/ENGINEERING_EXPLAINABILITY_STANDARD.md": "sha256-ce0b7bc243795e4419c6d0fed459cdb227ed26951a4ed8e93e5f1fb792e8529e",
+    "docs/engineering-communication/03-communication-objectives/ENGINEERING_COMMUNICATION_OBJECTIVES.md": "sha256-b38eef4f3b843ddf4527d7dca9f3d74fe04768cc170dde67ff3b210e83d8984f",
+    "docs/engineering-communication/04-language/ENGINEERING_LANGUAGE_STANDARD.md": "sha256-c6e42ced294c12cff433646e1d75031ba3eab2e57931339f91951d1bc5987c9f",
+    "docs/engineering-communication/05-terminology/ENGINEERING_TERMINOLOGY_STANDARD.md": "sha256-ace2c048542c4d935f1a3a958104a1fb91f54c189bb258ce02774bb88342b91a",
+    "docs/engineering-communication/06-document-architecture/ENGINEERING_DOCUMENT_ARCHITECTURE_STANDARD.md": "sha256-55a6e4c19bb14a0b09abd5996224520d079a881650071ecb29be2f1214629c19",
+    "docs/engineering-communication/07-writing/ENGINEERING_WRITING_STANDARD.md": "sha256-3fea41c42e8455a0f65aeb45257347c098cf39f480a80f6156fa8486ecad9586",
+    "docs/engineering-communication/08-review-feedback/ENGINEERING_REVIEW_FEEDBACK_STANDARD.md": "sha256-4d5b83bfdbdc1d6c7652756f1049073ead82c5c7cfb4e815fbc1034746bded5a",
+    "docs/engineering-communication/09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md": "sha256-233325855a1858cda749505a9bc111014fe8f128e1a1e7289758fdbde6a21c09",
+    "docs/engineering-communication/09-quality-assurance/MOCK_AMENDMENT_CASE_STUDY.md": "sha256-90a06821a83336595e0f13f41c73017cc47693d8f9db45b95914e13ff7574583",
+    "docs/engineering-communication/README.md": "sha256-e4bd6dba143a46fd5386f5b113dd63b2055d763b6287b3ccc768f3f2ca60a1f8",
+    "docs/engineering-communication/RELEASES/BECC-v1.0-RC1.md": "sha256-511cb79247b5dcbc84bb73f843149a6e20d0cf26387abfaf9cbe1f5a5fb2e6a5"
+  }
+}

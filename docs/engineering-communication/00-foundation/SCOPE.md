@@ -43,4 +43,4 @@ Die Trennung der drei Hauptframeworks folgt einer klaren Zuordnung:
 
 ---
 
-[Zurück zur Übersicht](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/README.md)
+[Zurück zur Übersicht](../README.md)

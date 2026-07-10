@@ -53,7 +53,7 @@ Once development is complete and validated, push your branch and open a Pull Req
 ---
 
 ## 4. CI/CD Pipeline
-Our GitHub Actions pipeline [.github/workflows/deploy.yml](file:///c:/antigravity/statichtmlpro/fdrefs/.github/workflows/deploy.yml) is structured as follows:
+Our GitHub Actions pipeline [.github/workflows/deploy.yml](../.github/workflows/deploy.yml) is structured as follows:
 * **`build` Job**: Automatically runs on every pull request targeting `main`. It compiles the site to verify that there are no compilation errors.
 * **`deploy` Job**: Only runs on direct `push` events to the `main` branch (which occurs when a Pull Request is successfully merged). It publishes the compiled bundle to the production server.
 * **Status Enforcement**: The `build` check is required by branch protection. If the build step fails, the merge button is locked.
@@ -69,10 +69,19 @@ Our GitHub Actions pipeline [.github/workflows/deploy.yml](file:///c:/antigravit
 ---
 
 ## 6. Publication Governance & Content Security
-All public contributions, content revisions, screenshots, diagrams, and assets must comply with the [BridGenta Publication Governance](file:///c:/antigravity/statichtmlpro/fdrefs/docs/publication-governance.md).
+All public contributions, content revisions, screenshots, diagrams, and assets must comply with the [BridGenta Publication Governance](publication-governance.md).
 
 Prior to merging any PR containing content changes, the reviewer must check that:
 * It conforms to the **PEPA (Public Evidence, Protected Assets)** principle.
 * It follows the **Three Artifact Rule** for project case studies.
 * All portraits follow the **FDPP-###** standard.
 * The PR passes the **Social Media** and **Evidence** tests as outlined in the governance checklist.
+
+---
+
+## 7. Verwandte Governance-Dokumente (Related Governance Documents)
+
+Dieses Repository folgt dem dreisäuligen Governance-Modell zur Absicherung der Code-, Veröffentlichungs- und Dokumentenqualität:
+- **Veröffentlichungs- und Asset-Klassifizierung**: Die Regeln zur progressive Offenlegung und Asset-Freigabe sind in der [Publikations-Governance](publication-governance.md) beschrieben.
+- **Qualitäts- und Erklärungsstandards**: Die Einhaltung der verfassungsmäßigen Dokumentationsstandards und der evolutionäre Änderungszyklus sind im [BECC-Qualitätssicherungsstandard](engineering-communication/09-quality-assurance/ENGINEERING_COMMUNICATION_QA_STANDARD.md) verankert.
+
