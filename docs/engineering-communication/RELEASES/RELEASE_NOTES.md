@@ -1,49 +1,49 @@
-# Release Notes — BridGenta Engineering Communication Constitution (BECC) Version 1.0 Release Candidate 2 (RC2)
+# Release Notes — BridGenta Engineering Communication Constitution (BECC) Version 1.0 General Availability (GA)
 
-Dieses Dokument enthält die offizielle Freigabe-Mitteilung (Release Notes) für den zweiten **Release Candidate (RC2)** der BECC Version 1.0.
-
----
-
-## 1. Warum dieses Release existiert (Why RC2 Exists)
-
-Nach der Fertigstellung von RC1 wurde die Verfassung einer Reihe von unabhängigen Framework-Audits (Claude, Codex und Antigravity) unterzogen. 
-
-Das Release Candidate 2 (RC2) konsolidiert alle Auditbefunde, setzt die genehmigten EDR-Abhilfemaßnahmen um und etabliert eine automatisierte Validierungsinfrastruktur (Operational Governance) im Repository. Damit wird sichergestellt, dass die BECC-Standards portabel, verifiziert und nachhaltig im Repository-Betrieb abgesichert sind.
+Dieses Dokument enthält die offizielle Freigabe-Mitteilung (Release Notes) für die **General Availability (GA)** der BECC Version 1.0.
 
 ---
 
-## 2. Wesentliche Neuerungen und Änderungen (What Changed)
+## 1. Ankündigung der General Availability (General Availability Announcement)
 
-- **Vollständige Link-Portabilität**: Alle absoluten Links (`file:///`) wurden in relative Pfade umgewandelt. Das Framework ist nun vollständig portabel und plattformunabhängig einsetzbar.
-- **Repository-Governance & Beitragsregeln**: 
-  - Eine neue `/CONTRIBUTING.md` regelt den exakten Ablauf von Code- und Dokumentenbeiträgen.
-  - Eine `/CODEOWNERS`-Datei weist die review-berechtigten Instanzen für verfassungsrelevante Verzeichnisse zu.
-  - Der `RELEASES/MAINTAINER_GUIDE.md` dokumentiert den Release-Workflow und den Absicherungsprozess für zukünftige Maintainer.
-- **Automatisierte Validierungs-Tools**: In `/tooling/` wurden länderspezifisch konfigurierte Node-Skripte für Markdown-Linting, Markdown-Linkchecks und HTML-Routen-Auditing implementiert. Diese sind in die lokale Entwicklung (`npm run lint`, `npm run check-links`) und in die CI/CD-Pipelines integriert.
-- **Kryptografische Absicherung (Release-Manifest)**: Eine kryptografische Prüfsummendatei `release-manifest.json` schützt das Release vor unbeabsichtigten Manipulationen oder schleichender Drift.
-- **Simuliertes Änderungsverfahren**: Eine neue Fallstudie `09-quality-assurance/MOCK_AMENDMENT_CASE_STUDY.md` zeigt anschaulich, wie Verfassungsänderungen beantragt, reviewt und freigegeben werden.
-- **Governance-Präzisierung**: Der QA-Standard definiert nun trennscharf Designed Governance (Regelwerk) und Operational Governance (technische Kontrollschranken).
+Nach dem erfolgreichen Durchlauf der Verfassungsentwicklung, der unabhängigen Audits, der geregelten Mängelbehebung (Remediation) und der abschließenden Freigabeprüfung (Readiness Review) wird die **BridGenta Engineering Communication Constitution (BECC) Version 1.0** hiermit formell als **General Availability (GA)** freigegeben.
+
+BECC v1.0 ist ab sofort der verbindliche, stabile Produktionsstandard für alle ingenieurtechnischen Dokumentationen und technischen Kommunikationen im BridGenta-Repository.
 
 ---
 
-## 3. Unabhängige Verifikation (What Was Verified)
+## 2. Reifegrad des Frameworks (Framework Maturity)
 
-Die Betriebsbereitschaft von RC2 wurde im [Verification Report](./BECC-v1.0-RC2-VERIFICATION-REPORT.md) erfolgreich nachgewiesen:
-1. **Automatisierte Builds & Checks**: Alle Astro-Builds, Markdown-Linter und Linkchecker laufen sowohl in lokalen Windows-Umgebungen als auch in der Linux-CI-Umgebung mit **PASS** (0 Fehler) durch.
-2. **Kryptografische Signierung**: Alle Hashes im Manifest stimmen präzise mit den physischen Dateien überein.
-3. **Traceability**: Alle Änderungen sind lückenlos über Work Packages auf die Auditberichte zurückführbar.
+Das Framework erreicht mit dem GA-Release seine volle operative Reife:
+
+### 2.1 Engineering-Reife (Engineering Maturity)
+- Die inhaltlichen Grundlagen (Phasen 1 & 2) wurden in den Sprints 0.1 bis 1.0 vollständig ausdefiniert und im Portal verlinkt.
+- Alle Verweise und Links wurden vollständig portabel auf relative Pfade umgestellt, um systemübergreifende Portabilität zu garantieren.
+
+### 2.2 Repository-Reife (Repository Maturity)
+- Etablierung klarer Beitrags- und Zuständigkeitsregeln durch `/CONTRIBUTING.md` und `/CODEOWNERS`.
+- Bereitstellung des Maintainer-Leitfadens zur transparenten Dokumentation des Release-Prozesses.
+
+### 2.3 Governance-Reife (Governance Maturity)
+- Saubere begriffliche Abgrenzung zwischen Soll-Regeln (Designed Governance) und Ist-Automatisierung (Operational Governance).
+- Praktischer Nachweis der Änderungsfähigkeit durch eine simulierte Amendment-Fallstudie (`MOCK_AMENDMENT_CASE_STUDY.md`).
+
+### 2.4 Operative Reife & Validierung (Operational Readiness)
+- Einführung von Markdown-Linting und Linkcheckern zur statischen Codeanalyse in `/tooling/`.
+- Vollständige Integration der Testschranken in die GitHub Actions CI-Pipeline, um fehlerhafte Commits automatisiert zu blockieren.
 
 ---
 
-## 4. Verbliebene Einschränkungen (Remaining Limitations)
+## 3. Schließung des RC2-Lebenszyklus (RC2 Lifecycle Closure)
 
-Wie in RC1 sind nachgelagerte Wörterbücher, Glossare, Übersetzungstools und spezifische ADR-Templates nicht Teil dieser Verfassung. Sie werden in Phase 3 als operative Assets nachgelagert entwickelt.
+Mit der Erreichung der General Availability ist der Lebenszyklus von **Release Candidate 2 (RC2)** formell abgeschlossen. Es wurden keine funktionalen Änderungen oder inhaltliche Abweichungen der Normen gegenüber der verifizierten RC2-Version vorgenommen. Alle nachfolgenden Entwicklungen werden unter der **Constitutional Stewardship** verwaltet.
 
 ---
 
-## 5. Nächste Phase (Expected Next Phase)
+## 4. Zukünftiger Lebenszyklus (Operational Lifecycle)
 
-Mit der erfolgreichen Verifikation und dem Packaging von RC2 tritt das Framework in die finale Phase ein:
-- **RC2 Sprint 8 — Final Release Readiness Review**
+Das Framework tritt nun in die Phase der **Constitutional Stewardship** (Verfassungsverwaltung) ein. Zukünftige Anpassungen oder Erweiterungen erfolgen ausschließlich über den geregelten Änderungsprozess (Amendments) oder geplante Minor-/Major-Releases.
 
-Nach erfolgreichem Abschluss dieses Reviews durch den Project Owner wird die allgemeine Betriebsbereitschaft (**General Availability - GA**) der BECC v1.0 deklariert.
+---
+
+[Zurück zur BECC-Übersicht](../README.md)

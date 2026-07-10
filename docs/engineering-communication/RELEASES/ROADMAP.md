@@ -1,6 +1,6 @@
 # Roadmap — BridGenta Engineering Communication Constitution (BECC)
 
-Dieses Dokument definiert den Entwicklungsplan für nachgelagerte, operative Werkzeuge (Phase 3 Assets) nach der erfolgreichen Veröffentlichung der BECC Version 1.0 (GA). Diese Assets überführen die verfassungsrechtlichen Leitlinien in die tägliche Entwicklungspraxis.
+Dieses Dokument definiert den Entwicklungsplan für nachgelagerte, operative Werkzeuge (Phase 3 Assets) sowie den langfristigen Governance-Zyklus nach der erfolgreichen Veröffentlichung der BECC Version 1.0 (GA).
 
 ---
 
@@ -9,8 +9,34 @@ Dieses Dokument definiert den Entwicklungsplan für nachgelagerte, operative Wer
 - **Release Candidate 1 (RC1)**: Abgeschlossen (2026-07-09)
 - **Release Candidate 2 (RC2) - Audit-Remediation & Tooling**: Abgeschlossen (2026-07-10)
 - **Release Candidate 2 (RC2) - Packaging**: Abgeschlossen (2026-07-10)
-- **Final Release Readiness Review**: Nächster Schritt (In Vorbereitung)
-- **General Availability (GA)**: Ausstehend (Nach erfolgreichem Review)
+- **Final Release Readiness Review**: Abgeschlossen (2026-07-10)
+- **BECC v1.0 General Availability (GA) — Complete**: Abgeschlossen (2026-07-10)
+
+---
+
+## Nächster Lebenszyklus: Constitutional Stewardship (Next Lifecycle)
+
+Mit dem Erreichen der General Availability (GA) tritt das Framework in den operativen Governance-Betrieb über. Zukünftige Aktivitäten konzentrieren sich auf folgende Schwerpunkte:
+
+### 1. Constitutional Stewardship (Verfassungsverwaltung)
+- Kontinuierliche Überwachung der Schreibqualität im Repository.
+- Einhaltung der CODEOWNERS-Reviewregeln für Dokumentationsbeiträge.
+
+### 2. Maintenance (Wartung)
+- Fehlerbehebungen (Patches), redaktionelle Überarbeitungen und Syntaxanpassungen.
+- Wartung und Pflege der Validierungsskripte in `/tooling/`.
+
+### 3. Operational Improvements (Operative Verbesserungen)
+- Weiterentwicklung der Astro-Dokumentations-Templates.
+- Integration zusätzlicher Textqualitätswerkzeuge (z.B. Vale) zur automatisierten Stilprüfung.
+
+### 4. Constitutional Amendments (Verfassungsänderungen)
+- Durchführung formaler Verfassungsänderungsverfahren bei inhaltlichen Anpassungsbedarfen.
+- Abnahme und Dokumentation genehmigter Amendments im Änderungsprotokoll.
+
+### 5. Zukünftige BECC v1.1 Planung (Future BECC v1.1)
+- Vorausschauende Planung neuer konstitutioneller Schichten und erweiterter Standards.
+- Konsolidierung von Feedback der Entwicklerteams zur Vorbereitung der Minorversion 1.1.
 
 ---
 
