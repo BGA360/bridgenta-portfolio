@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const baseDir = path.resolve(__dirname, '..');
-const docsDir = path.join(baseDir, 'docs');
+const docsDir = path.join(baseDir, 'docs/engineering-communication');
 
 let errorCount = 0;
 
@@ -23,15 +23,17 @@ function lintMarkdown(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
   const lines = content.split('\n');
   const relPath = path.relative(baseDir, filePath).replace(/\\/g, '/');
+  console.log(`Linting file: ${relPath}`);
 
   let h1Count = 0;
   let lastHeadingLevel = 0;
 
   lines.forEach((line, idx) => {
     const lineNum = idx + 1;
+    const cleanLine = line.replace(/\r$/, '');
 
     // Check Heading structure
-    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    const headingMatch = cleanLine.match(/^(#{1,6})\s+(.+)$/);
     if (headingMatch) {
       const level = headingMatch[1].length;
       if (level === 1) h1Count++;
