@@ -8,8 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "node bridgenta-workspace/tooling/lint_markdown.cjs",
-    "check-links": "node bridgenta-workspace/tooling/check_markdown_links.cjs"
+    "lint": "node tooling/lint_markdown.cjs",
+    "check-links": "node tooling/check_markdown_links.cjs"
   },
   "dependencies": {
     "astro": "^4.11.3"
