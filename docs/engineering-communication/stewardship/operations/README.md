@@ -63,14 +63,60 @@ operations/[Assessment-ID]/
 
 ---
 
-## 5. Namenskonvention (Naming Convention)
+## 5. Arbeitsumgebungen automatisch generieren (Workspace Generator)
+
+Um konsistente und standardkonforme Arbeitsumgebungen zu gewährleisten, steht ein PowerShell-Skript zur Verfügung, das den ersten Schritt eines Audits automatisiert.
+
+### Skript-Ablauf & Governance
+*   **Ablageort des Skripts**: `docs/engineering-communication/stewardship/operations/scripts/create-assessment-workspace.ps1`
+*   **Erzeugte Artefakte**: Das Skript erstellt ausschließlich den neuen Ordner `operations/[Assessment-ID]/` sowie die beiden Einstiegsdateien `ASSESSMENT-CONFIG.yml` und `ASSESSMENT-REQUEST.md`.
+*   **Governance-Erzwingung**: Nachfolgende Dokumente des Lebenszyklus (wie `BASELINE-DEFINITION.md`, `COMPLIANCE-ASSESSMENT.md` etc.) werden **nicht** generiert und müssen im Verlauf des Audit-Prozesses physisch erstellt und formell freigegeben werden.
+
+### Benötigte Parameter (Parameters)
+
+| Parameter | Typ | Beschreibung | Beispiel |
+| :--- | :--- | :--- | :--- |
+| `AssessmentId` | String (Mandatory) | Eindeutige Kennung des Audits (Muster: `^[A-Z]{2,4}-\d{3}$`). | `AC-001` |
+| `ProjectName` | String (Mandatory) | Name des zu prüfenden Projekts. | `AEOcortex` |
+| `ArtifactPath` | String (Mandatory) | Repository-relativer Pfad zum Ziel-Artefakt. | `src/content/projects/aeocortex.md` |
+| `ProductionUrl` | String (Mandatory) | Produktiv-URL des veröffentlichten Berichts. | `https://bridgenta.de/project-aeocortex/` |
+| `Language` | String (Optional) | Sprache der Dokumentation (Default: `German`). | `German` |
+| `ReadingLevel` | String (Optional) | Ziel-Leserstufe nach GER (Default: `CEFR B2`). | `CEFR B2` |
+| `ProjectOwner` | String (Optional) | Eigner des Ziel-Projekts (Default: `BGA360`). | `BGA360` |
+| `FrameworkVersion` | String (Optional) | Genutztes BECC-Framework (Default: `v1.0 GA`). | `v1.0 GA` |
+| `AssessmentType` | String (Optional) | Typ des Audits (Default: `Full Operational Assessment`). | `Full Operational Assessment` |
+
+### Beispiel für die Ausführung (Example Execution)
+
+```powershell
+.\docs\engineering-communication\stewardship\operations\scripts\create-assessment-workspace.ps1 `
+    -AssessmentId AC-001 `
+    -ProjectName "AEOcortex" `
+    -ArtifactPath "src/content/projects/aeocortex.md" `
+    -ProductionUrl "https://bridgenta.de/project-aeocortex/" `
+    -Language "German" `
+    -ReadingLevel "CEFR B2"
+```
+
+### Erwartete Ordnerstruktur nach Ausführung (Expected Output)
+
+```text
+operations/
+└── AC-001/
+    ├── ASSESSMENT-CONFIG.yml
+    └── ASSESSMENT-REQUEST.md
+```
+
+---
+
+## 6. Namenskonvention (Naming Convention)
 
 *   **Identifikator**: Die Ordnernamen entsprechen exakt der ID (z. B. `BA-002`, `AC-001`, `LP-001`, `SC-001`).
 *   **Eigenschaften**: IDs sind permanent, eindeutig und werden nach ihrer Vergabe niemals wiederverwendet oder umbenannt.
 
 ---
 
-## 6. Integration im Stewardship-System (Relationships)
+## 7. Integration im Stewardship-System (Relationships)
 
 Die operativen Audits in diesem Verzeichnis liefern die notwendigen Belege für die übergeordneten Stewardship-Prozesse:
 *   Sie speisen das zentrale **Bewertungsbuch (Assessment Ledger)** ([`BECC-ASSESSMENT-LEDGER.md`](../BECC-ASSESSMENT-LEDGER.md)).
@@ -79,7 +125,7 @@ Die operativen Audits in diesem Verzeichnis liefern die notwendigen Belege für 
 
 ---
 
-## 7. Archivierung & Erhaltung (Archiving)
+## 8. Archivierung & Erhaltung (Archiving)
 
 *   **Schreibschutz**: Sobald die Datei `ASSESSMENT-CLOSURE.md` von allen Rollen gezeichnet wurde, gilt das Audit als archiviert und darf nicht mehr bearbeitet werden.
 *   **Historischer Wert**: Nachweise und Befunde sind permanent im Repository aufzubewahren und dürfen nicht gelöscht werden, um Revisionssicherheit zu gewährleisten.
