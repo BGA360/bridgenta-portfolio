@@ -148,6 +148,35 @@ Hiermit wird das erste operative Validierungsaudit (Pilot 1) offiziell registrie
     *   Abschlussbericht: [PILOT-1-OPERATIONAL-VALIDATION-REPORT.md](./pilots/PILOT-1-OPERATIONAL-VALIDATION-REPORT.md)
 *   **Notes**: Erfolgreicher Erstdurchlauf des gesamten operativen Governance-Lebenszyklus. Das Post-Remediation-Assessment bestätigte die vollständige Behebung aller Abweichungen ohne qualitative Regresse.
 
+### Bucheintrag: AC-001 (AEOcortex Audit 1)
+
+*   **Assessment ID**: AC-001
+*   **Assessment Name**: AEOcortex Project Case Study — Operational Assessment AC-001
+*   **Framework Version**: BECC v1.0.0 GA
+*   **Assessment Artifact**: `src/content/projects/aeocortex.md` (Commit: `217a565816900cadac8f46effc8cd4a5638d971c` bei Baseline)
+*   **Assessment Type**: Full Operational Assessment
+*   **Assessment Status**: **Assessment Completed — Awaiting Human Approval**
+*   **Assessment Start Date**: 2026-07-13
+*   **Assessment Completion Date**: 2026-07-13
+*   **Reviewer**: Antigravity (Stewardship Agent)
+*   **Implementer**: Pending (Awaiting Human Approval of EDR)
+*   **Assessment Outcome**: **Non-Compliant**
+*   **Findings**: `FIN-AC-001`, `FIN-AC-002`, `FIN-AC-003`
+*   **Engineering Decisions**: `EDR-AC-001-001`
+*   **Remediation Status**: **Awaiting Implementation**
+*   **Validation Status**: **Awaiting Verification**
+*   **Repository Reference**: `operation/ac-001`
+*   **Supporting Documents**:
+    *   Antrag: [ASSESSMENT-REQUEST.md](./operations/AC-001/ASSESSMENT-REQUEST.md)
+    *   Baseline: [BASELINE-DEFINITION.md](./operations/AC-001/BASELINE-DEFINITION.md)
+    *   Erstprüfung: [COMPLIANCE-ASSESSMENT.md](./operations/AC-001/COMPLIANCE-ASSESSMENT.md)
+    *   Befunde: [FINDINGS-REGISTER.md](./operations/AC-001/FINDINGS-REGISTER.md)
+    *   Entscheidungen: [ENGINEERING-DECISION-REVIEW.md](./operations/AC-001/ENGINEERING-DECISION-REVIEW.md)
+    *   Spezifikation: [CONTROLLED-REMEDIATION-SPECIFICATION.md](./operations/AC-001/CONTROLLED-REMEDIATION-SPECIFICATION.md)
+    *   Bereitschaftsbericht: [REMEDIATION-READINESS-ASSESSMENT.md](./operations/AC-001/REMEDIATION-READINESS-ASSESSMENT.md)
+    *   Abschlussbericht: [ASSESSMENT-COMPLETED.md](./operations/AC-001/ASSESSMENT-COMPLETED.md)
+*   **Notes**: Die Prüfung wurde erfolgreich ausgeführt. Sie ergab drei offene Befunde. Die Behebungsplanung ist abgeschlossen und bereit zur Freigabe. Es wurden vereinbarungsgemäß keine Änderungen an der Zieldatei `aeocortex.md` vorgenommen.
+
 ---
 
 ## 9. Anwendung im Stewardship (Stewardship Usage)
