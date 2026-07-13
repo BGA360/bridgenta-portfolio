@@ -26,9 +26,9 @@ Die Behebung wurde unter strikter Einhaltung der Freigabebedingungen ohne Auswei
 
 - **Modifizierte Datei**: `src/content/projects/aeocortex.md`
 - **Hinzugefügte Kapitel**:
-  1.  **Validation**: Eingefügt nach *Public Artifacts* und vor *Results* (MAT-009).
-  2.  **Risks**: Eingefügt nach *Lessons Learned* und vor *Future Evolution* (MAT-012).
-  3.  **References**: Angehängt am Dokumentende nach *Future Evolution* (MAT-014).
+  1.  **Validation**: Eingefügt unmittelbar nach der Überschrift "## Public Artifacts" und unmittelbar vor der Überschrift "## Results" (MAT-009).
+  2.  **Risks**: Eingefügt unmittelbar nach der Überschrift "## Lessons Learned" und unmittelbar vor der Überschrift "## Future Evolution" (MAT-012).
+  3.  **References**: Eingefügt unmittelbar nach der Überschrift "## Future Evolution" (MAT-014).
 
 Es wurden **keine** bestehenden Textabschnitte, Architekturbeschreibungen oder EDR-Einträge editiert.
 
