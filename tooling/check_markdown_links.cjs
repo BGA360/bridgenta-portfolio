@@ -13,8 +13,16 @@ function walk(dir, callback) {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
     if (stat.isDirectory()) {
+      // Exclude research snapshot directory
+      if (filePath.replace(/\\/g, '/').endsWith('v2/research/rkf-reference/docs')) {
+        continue;
+      }
       walk(filePath, callback);
     } else if (stat.isFile() && file.endsWith('.md')) {
+      // Exclude research markdown files from link auditing
+      if (filePath.replace(/\\/g, '/').includes('v2/research/rkf-reference')) {
+        continue;
+      }
       callback(filePath);
     }
   }

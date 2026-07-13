@@ -12,6 +12,10 @@ function walk(dir, callback) {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
     if (stat.isDirectory()) {
+      // Exclude research snapshot directory from formatting validation
+      if (filePath.replace(/\\/g, '/').endsWith('v2/research/rkf-reference/docs')) {
+        continue;
+      }
       walk(filePath, callback);
     } else if (stat.isFile() && file.endsWith('.md')) {
       callback(filePath);

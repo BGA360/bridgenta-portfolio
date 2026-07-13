@@ -1,0 +1,2851 @@
+[
+  {
+    "name": "canon",
+    "type": "directory",
+    "path": "canon",
+    "parentPath": "",
+    "depth": 1
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "canon/README.md",
+    "parentPath": "canon",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "examples",
+    "type": "directory",
+    "path": "examples",
+    "parentPath": "",
+    "depth": 1
+  },
+  {
+    "name": "akukom",
+    "type": "directory",
+    "path": "examples/akukom",
+    "parentPath": "examples",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "examples/akukom/README.md",
+    "parentPath": "examples/akukom",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "bridgenta",
+    "type": "directory",
+    "path": "examples/bridgenta",
+    "parentPath": "examples",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "examples/bridgenta/README.md",
+    "parentPath": "examples/bridgenta",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "dicsay",
+    "type": "directory",
+    "path": "examples/dicsay",
+    "parentPath": "examples",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "examples/dicsay/README.md",
+    "parentPath": "examples/dicsay",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "framework",
+    "type": "directory",
+    "path": "framework",
+    "parentPath": "",
+    "depth": 1
+  },
+  {
+    "name": "18-lessons-learned",
+    "type": "directory",
+    "path": "framework/18-lessons-learned",
+    "parentPath": "framework",
+    "depth": 2
+  },
+  {
+    "name": "LL-0001-Constitutional-Volume-8.md",
+    "type": "file",
+    "path": "framework/18-lessons-learned/LL-0001-Constitutional-Volume-8.md",
+    "parentPath": "framework/18-lessons-learned",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "framework/18-lessons-learned/README.md",
+    "parentPath": "framework/18-lessons-learned",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "artifact-lifecycle",
+    "type": "directory",
+    "path": "framework/artifact-lifecycle",
+    "parentPath": "framework",
+    "depth": 2
+  },
+  {
+    "name": "artifact-authority-model.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/artifact-authority-model.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "artifact-catalogue.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/artifact-catalogue.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "artifact-dependency-model.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/artifact-dependency-model.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "artifact-lifecycle-flow.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/artifact-lifecycle-flow.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "artifact-lifecycle-specification-v1.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/artifact-lifecycle-specification-v1.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "artifact-quality-gates.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/artifact-quality-gates.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "artifact-validation-model.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/artifact-validation-model.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "artifact-versioning.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/artifact-versioning.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-evolution.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/future-evolution.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "framework/artifact-lifecycle/README.md",
+    "parentPath": "framework/artifact-lifecycle",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-engineering-methodology-v1.md",
+    "type": "file",
+    "path": "framework/constitutional-engineering-methodology-v1.md",
+    "parentPath": "framework",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "framework-overview-v1.md",
+    "type": "file",
+    "path": "framework/framework-overview-v1.md",
+    "parentPath": "framework",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "methodology",
+    "type": "directory",
+    "path": "framework/methodology",
+    "parentPath": "framework",
+    "depth": 2
+  },
+  {
+    "name": "glossary.md",
+    "type": "file",
+    "path": "framework/methodology/glossary.md",
+    "parentPath": "framework/methodology",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "lessons-learned.md",
+    "type": "file",
+    "path": "framework/methodology/lessons-learned.md",
+    "parentPath": "framework/methodology",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "the-loop.md",
+    "type": "file",
+    "path": "framework/methodology/the-loop.md",
+    "parentPath": "framework/methodology",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "framework/README.md",
+    "parentPath": "framework",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "releases",
+    "type": "directory",
+    "path": "framework/releases",
+    "parentPath": "framework",
+    "depth": 2
+  },
+  {
+    "name": "CEF-v1.0-Framework-Release.md",
+    "type": "file",
+    "path": "framework/releases/CEF-v1.0-Framework-Release.md",
+    "parentPath": "framework/releases",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "framework/releases/README.md",
+    "parentPath": "framework/releases",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "specification",
+    "type": "directory",
+    "path": "framework/specification",
+    "parentPath": "framework",
+    "depth": 2
+  },
+  {
+    "name": "cst-tpci-app-development-specification.md",
+    "type": "file",
+    "path": "framework/specification/cst-tpci-app-development-specification.md",
+    "parentPath": "framework/specification",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "templates",
+    "type": "directory",
+    "path": "framework/templates",
+    "parentPath": "framework",
+    "depth": 2
+  },
+  {
+    "name": "boundary-matrix-template.md",
+    "type": "file",
+    "path": "framework/templates/boundary-matrix-template.md",
+    "parentPath": "framework/templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "debugging-template.md",
+    "type": "file",
+    "path": "framework/templates/debugging-template.md",
+    "parentPath": "framework/templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "engineering-log-template.md",
+    "type": "file",
+    "path": "framework/templates/engineering-log-template.md",
+    "parentPath": "framework/templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "ontology-template.md",
+    "type": "file",
+    "path": "framework/templates/ontology-template.md",
+    "parentPath": "framework/templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "security-template.md",
+    "type": "file",
+    "path": "framework/templates/security-template.md",
+    "parentPath": "framework/templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vocabulary-template.md",
+    "type": "file",
+    "path": "framework/templates/vocabulary-template.md",
+    "parentPath": "framework/templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "methodology",
+    "type": "directory",
+    "path": "methodology",
+    "parentPath": "",
+    "depth": 1
+  },
+  {
+    "name": "project",
+    "type": "directory",
+    "path": "project",
+    "parentPath": "",
+    "depth": 1
+  },
+  {
+    "name": "00-constitution",
+    "type": "directory",
+    "path": "project/00-constitution",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/00-constitution/README.md",
+    "parentPath": "project/00-constitution",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "01-rkf",
+    "type": "directory",
+    "path": "project/01-rkf",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/01-rkf/architecture-overview.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "audience.md",
+    "type": "file",
+    "path": "project/01-rkf/audience.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-pillars.md",
+    "type": "file",
+    "path": "project/01-rkf/core-pillars.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-principles.md",
+    "type": "file",
+    "path": "project/01-rkf/core-principles.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "domains.md",
+    "type": "file",
+    "path": "project/01-rkf/domains.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/01-rkf/future-vision.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "governance-philosophy.md",
+    "type": "file",
+    "path": "project/01-rkf/governance-philosophy.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/01-rkf/mission.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "organizational-readiness.md",
+    "type": "file",
+    "path": "project/01-rkf/organizational-readiness.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/01-rkf/philosophy.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/01-rkf/purpose.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/01-rkf/README.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "reference-knowledge.md",
+    "type": "file",
+    "path": "project/01-rkf/reference-knowledge.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "shared-vocabulary.md",
+    "type": "file",
+    "path": "project/01-rkf/shared-vocabulary.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/01-rkf/vision.md",
+    "parentPath": "project/01-rkf",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "02-curiosity-journey",
+    "type": "directory",
+    "path": "project/02-curiosity-journey",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "accessibility-principles.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/accessibility-principles.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "adaptation-philosophy.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/adaptation-philosophy.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/architecture-overview.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "confidence-model.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/confidence-model.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-principles.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/core-principles.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "curiosity-philosophy.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/curiosity-philosophy.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/future-vision.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "human-understanding-model.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/human-understanding-model.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "learner-discovery.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/learner-discovery.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "learning-science.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/learning-science.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "learning-signals.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/learning-signals.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/mission.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "motivation-model.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/motivation-model.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "onboarding-philosophy.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/onboarding-philosophy.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/philosophy.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "presentation-preferences.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/presentation-preferences.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "privacy-principles.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/privacy-principles.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/purpose.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/README.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "recommendation-philosophy.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/recommendation-philosophy.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/02-curiosity-journey/vision.md",
+    "parentPath": "project/02-curiosity-journey",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "03-fd-ess",
+    "type": "directory",
+    "path": "project/03-fd-ess",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "analogy-philosophy.md",
+    "type": "file",
+    "path": "project/03-fd-ess/analogy-philosophy.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/03-fd-ess/architecture-overview.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "cognitive-load.md",
+    "type": "file",
+    "path": "project/03-fd-ess/cognitive-load.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-principles.md",
+    "type": "file",
+    "path": "project/03-fd-ess/core-principles.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "explainability-assets.md",
+    "type": "file",
+    "path": "project/03-fd-ess/explainability-assets.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "explainability-boundaries.md",
+    "type": "file",
+    "path": "project/03-fd-ess/explainability-boundaries.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "explainability-philosophy.md",
+    "type": "file",
+    "path": "project/03-fd-ess/explainability-philosophy.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/03-fd-ess/future-vision.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "human-centered-communication.md",
+    "type": "file",
+    "path": "project/03-fd-ess/human-centered-communication.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-transformation.md",
+    "type": "file",
+    "path": "project/03-fd-ess/knowledge-transformation.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "memory-anchors.md",
+    "type": "file",
+    "path": "project/03-fd-ess/memory-anchors.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mental-models.md",
+    "type": "file",
+    "path": "project/03-fd-ess/mental-models.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/03-fd-ess/mission.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/03-fd-ess/philosophy.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "progressive-disclosure.md",
+    "type": "file",
+    "path": "project/03-fd-ess/progressive-disclosure.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/03-fd-ess/purpose.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "quality-principles.md",
+    "type": "file",
+    "path": "project/03-fd-ess/quality-principles.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/03-fd-ess/README.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "storytelling-philosophy.md",
+    "type": "file",
+    "path": "project/03-fd-ess/storytelling-philosophy.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/03-fd-ess/vision.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "visual-explainability.md",
+    "type": "file",
+    "path": "project/03-fd-ess/visual-explainability.md",
+    "parentPath": "project/03-fd-ess",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "04-cst",
+    "type": "directory",
+    "path": "project/04-cst",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/04-cst/README.md",
+    "parentPath": "project/04-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "04-knowledge-model",
+    "type": "directory",
+    "path": "project/04-knowledge-model",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/architecture-overview.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-principles.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/core-principles.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "explainability-asset.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/explainability-asset.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/future-vision.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "governance-asset.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/governance-asset.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-asset.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/knowledge-asset.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-governance.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/knowledge-governance.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-lifecycle.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/knowledge-lifecycle.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-object.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/knowledge-object.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-provenance.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/knowledge-provenance.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-quality.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/knowledge-quality.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-traceability.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/knowledge-traceability.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "learning-asset.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/learning-asset.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/mission.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/philosophy.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/purpose.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/README.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "relationship-model.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/relationship-model.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/vision.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vocabulary-asset.md",
+    "type": "file",
+    "path": "project/04-knowledge-model/vocabulary-asset.md",
+    "parentPath": "project/04-knowledge-model",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "05-knowledge-governance",
+    "type": "directory",
+    "path": "project/05-knowledge-governance",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/architecture-overview.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-principles.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/core-principles.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/future-vision.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "governance-boundaries.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/governance-boundaries.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-approval.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-approval.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-authority.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-authority.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-evolution.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-evolution.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-lifecycle.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-lifecycle.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-ownership.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-ownership.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-provenance.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-provenance.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-quality.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-quality.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-retirement.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-retirement.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-review.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-review.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-stewardship.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-stewardship.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-traceability.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-traceability.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-validation.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-validation.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-versioning.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/knowledge-versioning.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/mission.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/philosophy.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/purpose.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/README.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/05-knowledge-governance/vision.md",
+    "parentPath": "project/05-knowledge-governance",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "05-tpci",
+    "type": "directory",
+    "path": "project/05-tpci",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/05-tpci/README.md",
+    "parentPath": "project/05-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "06-knowledge-graph",
+    "type": "directory",
+    "path": "project/06-knowledge-graph",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/architecture-overview.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-principles.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/core-principles.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/future-vision.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "graph-boundaries.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/graph-boundaries.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "graph-consistency.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/graph-consistency.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "graph-evolution.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/graph-evolution.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "graph-governance.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/graph-governance.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "graph-integrity.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/graph-integrity.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "graph-philosophy.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/graph-philosophy.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "graph-quality.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/graph-quality.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-context.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/knowledge-context.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-navigation.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/knowledge-navigation.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-paths.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/knowledge-paths.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/mission.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "node-philosophy.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/node-philosophy.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/philosophy.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/purpose.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/README.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "relationship-philosophy.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/relationship-philosophy.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "representation-principles.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/representation-principles.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/06-knowledge-graph/vision.md",
+    "parentPath": "project/06-knowledge-graph",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "07-cst",
+    "type": "directory",
+    "path": "project/07-cst",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/07-cst/architecture-overview.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "boundary-validation.md",
+    "type": "file",
+    "path": "project/07-cst/boundary-validation.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-consistency.md",
+    "type": "file",
+    "path": "project/07-cst/constitutional-consistency.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-drift.md",
+    "type": "file",
+    "path": "project/07-cst/constitutional-drift.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-health.md",
+    "type": "file",
+    "path": "project/07-cst/constitutional-health.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-integrity.md",
+    "type": "file",
+    "path": "project/07-cst/constitutional-integrity.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-observability.md",
+    "type": "file",
+    "path": "project/07-cst/constitutional-observability.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-principles.md",
+    "type": "file",
+    "path": "project/07-cst/core-principles.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "dependency-validation.md",
+    "type": "file",
+    "path": "project/07-cst/dependency-validation.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/07-cst/future-vision.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/07-cst/mission.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/07-cst/philosophy.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/07-cst/purpose.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/07-cst/README.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "responsibility-validation.md",
+    "type": "file",
+    "path": "project/07-cst/responsibility-validation.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "structural-coherence.md",
+    "type": "file",
+    "path": "project/07-cst/structural-coherence.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "system-thinking.md",
+    "type": "file",
+    "path": "project/07-cst/system-thinking.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "validation-boundaries.md",
+    "type": "file",
+    "path": "project/07-cst/validation-boundaries.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "validation-philosophy.md",
+    "type": "file",
+    "path": "project/07-cst/validation-philosophy.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/07-cst/vision.md",
+    "parentPath": "project/07-cst",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "07-engineering",
+    "type": "directory",
+    "path": "project/07-engineering",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/07-engineering/README.md",
+    "parentPath": "project/07-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "08-roadmap",
+    "type": "directory",
+    "path": "project/08-roadmap",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/08-roadmap/README.md",
+    "parentPath": "project/08-roadmap",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "08-tpci",
+    "type": "directory",
+    "path": "project/08-tpci",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/08-tpci/architecture-overview.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "behaviour.md",
+    "type": "file",
+    "path": "project/08-tpci/behaviour.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "behavioural-integrity.md",
+    "type": "file",
+    "path": "project/08-tpci/behavioural-integrity.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-boundaries.md",
+    "type": "file",
+    "path": "project/08-tpci/constitutional-boundaries.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-trust.md",
+    "type": "file",
+    "path": "project/08-tpci/constitutional-trust.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "control.md",
+    "type": "file",
+    "path": "project/08-tpci/control.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "core-principles.md",
+    "type": "file",
+    "path": "project/08-tpci/core-principles.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "cst-relationship.md",
+    "type": "file",
+    "path": "project/08-tpci/cst-relationship.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "evidence.md",
+    "type": "file",
+    "path": "project/08-tpci/evidence.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "feedback-and-revalidation.md",
+    "type": "file",
+    "path": "project/08-tpci/feedback-and-revalidation.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/08-tpci/future-vision.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "governance-relationship.md",
+    "type": "file",
+    "path": "project/08-tpci/governance-relationship.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-governance-relationship.md",
+    "type": "file",
+    "path": "project/08-tpci/knowledge-governance-relationship.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/08-tpci/mission.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "open-questions.md",
+    "type": "file",
+    "path": "project/08-tpci/open-questions.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/08-tpci/philosophy.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "power.md",
+    "type": "file",
+    "path": "project/08-tpci/power.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "proportionality-and-blast-radius.md",
+    "type": "file",
+    "path": "project/08-tpci/proportionality-and-blast-radius.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/08-tpci/purpose.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/08-tpci/README.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "reliability.md",
+    "type": "file",
+    "path": "project/08-tpci/reliability.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "structural-integrity.md",
+    "type": "file",
+    "path": "project/08-tpci/structural-integrity.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "tpci-role.md",
+    "type": "file",
+    "path": "project/08-tpci/tpci-role.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "trust-evaluation-model.md",
+    "type": "file",
+    "path": "project/08-tpci/trust-evaluation-model.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "trust-judgement.md",
+    "type": "file",
+    "path": "project/08-tpci/trust-judgement.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/08-tpci/vision.md",
+    "parentPath": "project/08-tpci",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "09-decisions",
+    "type": "directory",
+    "path": "project/09-decisions",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "DEC-0001-constitutional-development-roadmap.md",
+    "type": "file",
+    "path": "project/09-decisions/DEC-0001-constitutional-development-roadmap.md",
+    "parentPath": "project/09-decisions",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "DEC-0003-constitutional-volume-boundary-review.md",
+    "type": "file",
+    "path": "project/09-decisions/DEC-0003-constitutional-volume-boundary-review.md",
+    "parentPath": "project/09-decisions",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "DEC-0004-Adopt-TPCI-Blueprint-v2.0-as-Constitutional-Foundation.md",
+    "type": "file",
+    "path": "project/09-decisions/DEC-0004-Adopt-TPCI-Blueprint-v2.0-as-Constitutional-Foundation.md",
+    "parentPath": "project/09-decisions",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/09-decisions/README.md",
+    "parentPath": "project/09-decisions",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "09-engineering",
+    "type": "directory",
+    "path": "project/09-engineering",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/09-engineering/architecture-overview.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitution-before-implementation.md",
+    "type": "file",
+    "path": "project/09-engineering/constitution-before-implementation.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-engineering.md",
+    "type": "file",
+    "path": "project/09-engineering/constitutional-engineering.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-testing.md",
+    "type": "file",
+    "path": "project/09-engineering/constitutional-testing.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "documentation.md",
+    "type": "file",
+    "path": "project/09-engineering/documentation.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "engineering-boundaries.md",
+    "type": "file",
+    "path": "project/09-engineering/engineering-boundaries.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "engineering-governance.md",
+    "type": "file",
+    "path": "project/09-engineering/engineering-governance.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "engineering-principles.md",
+    "type": "file",
+    "path": "project/09-engineering/engineering-principles.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "engineering-traceability.md",
+    "type": "file",
+    "path": "project/09-engineering/engineering-traceability.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-engineering.md",
+    "type": "file",
+    "path": "project/09-engineering/future-engineering.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/09-engineering/future-vision.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "human-ai-collaboration.md",
+    "type": "file",
+    "path": "project/09-engineering/human-ai-collaboration.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "implementation-boundaries.md",
+    "type": "file",
+    "path": "project/09-engineering/implementation-boundaries.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-before-code.md",
+    "type": "file",
+    "path": "project/09-engineering/knowledge-before-code.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/09-engineering/mission.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "open-questions.md",
+    "type": "file",
+    "path": "project/09-engineering/open-questions.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/09-engineering/philosophy.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/09-engineering/purpose.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "quality-principles.md",
+    "type": "file",
+    "path": "project/09-engineering/quality-principles.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/09-engineering/README.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "relationships.md",
+    "type": "file",
+    "path": "project/09-engineering/relationships.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "software-boundaries.md",
+    "type": "file",
+    "path": "project/09-engineering/software-boundaries.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "traceability.md",
+    "type": "file",
+    "path": "project/09-engineering/traceability.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "validation.md",
+    "type": "file",
+    "path": "project/09-engineering/validation.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "verification.md",
+    "type": "file",
+    "path": "project/09-engineering/verification.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "versioning.md",
+    "type": "file",
+    "path": "project/09-engineering/versioning.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/09-engineering/vision.md",
+    "parentPath": "project/09-engineering",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "10-research",
+    "type": "directory",
+    "path": "project/10-research",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/10-research/README.md",
+    "parentPath": "project/10-research",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "10-runtime",
+    "type": "directory",
+    "path": "project/10-runtime",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-overview.md",
+    "type": "file",
+    "path": "project/10-runtime/architecture-overview.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-runtime.md",
+    "type": "file",
+    "path": "project/10-runtime/constitutional-runtime.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-vision.md",
+    "type": "file",
+    "path": "project/10-runtime/future-vision.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "mission.md",
+    "type": "file",
+    "path": "project/10-runtime/mission.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "open-questions.md",
+    "type": "file",
+    "path": "project/10-runtime/open-questions.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "philosophy.md",
+    "type": "file",
+    "path": "project/10-runtime/philosophy.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "purpose.md",
+    "type": "file",
+    "path": "project/10-runtime/purpose.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/10-runtime/README.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "relationships.md",
+    "type": "file",
+    "path": "project/10-runtime/relationships.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-behaviour.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-behaviour.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-boundaries.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-boundaries.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-drift.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-drift.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-evidence.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-evidence.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-feedback.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-feedback.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-governance.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-governance.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-monitoring.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-monitoring.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-observation.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-observation.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-principles.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-principles.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-recovery.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-recovery.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-reliability.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-reliability.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-resilience.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-resilience.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-traceability.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-traceability.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-validation.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-validation.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime-verification.md",
+    "type": "file",
+    "path": "project/10-runtime/runtime-verification.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "vision.md",
+    "type": "file",
+    "path": "project/10-runtime/vision.md",
+    "parentPath": "project/10-runtime",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "11-knowledge-assets",
+    "type": "directory",
+    "path": "project/11-knowledge-assets",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/11-knowledge-assets/README.md",
+    "parentPath": "project/11-knowledge-assets",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "12-templates",
+    "type": "directory",
+    "path": "project/12-templates",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "architecture-specification-template.md",
+    "type": "file",
+    "path": "project/12-templates/architecture-specification-template.md",
+    "parentPath": "project/12-templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-document-template.md",
+    "type": "file",
+    "path": "project/12-templates/constitutional-document-template.md",
+    "parentPath": "project/12-templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "decision-record-template.md",
+    "type": "file",
+    "path": "project/12-templates/decision-record-template.md",
+    "parentPath": "project/12-templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "knowledge-asset-template.md",
+    "type": "file",
+    "path": "project/12-templates/knowledge-asset-template.md",
+    "parentPath": "project/12-templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "readme-standards.md",
+    "type": "file",
+    "path": "project/12-templates/readme-standards.md",
+    "parentPath": "project/12-templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/12-templates/README.md",
+    "parentPath": "project/12-templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "review-report-template.md",
+    "type": "file",
+    "path": "project/12-templates/review-report-template.md",
+    "parentPath": "project/12-templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "sprint-specification-template.md",
+    "type": "file",
+    "path": "project/12-templates/sprint-specification-template.md",
+    "parentPath": "project/12-templates",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "13-architecture-blueprints",
+    "type": "directory",
+    "path": "project/13-architecture-blueprints",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/13-architecture-blueprints/README.md",
+    "parentPath": "project/13-architecture-blueprints",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "RKF-TPCI-Architectural-Blueprint-v1.0.md",
+    "type": "file",
+    "path": "project/13-architecture-blueprints/RKF-TPCI-Architectural-Blueprint-v1.0.md",
+    "parentPath": "project/13-architecture-blueprints",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "RKF-TPCI-Architectural-Blueprint-v2.0.md",
+    "type": "file",
+    "path": "project/13-architecture-blueprints/RKF-TPCI-Architectural-Blueprint-v2.0.md",
+    "parentPath": "project/13-architecture-blueprints",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "14-architecture-reviews",
+    "type": "directory",
+    "path": "project/14-architecture-reviews",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "AR-0001-TPCI-Blueprint-v2.0-Constitutional-Readiness-Review.md",
+    "type": "file",
+    "path": "project/14-architecture-reviews/AR-0001-TPCI-Blueprint-v2.0-Constitutional-Readiness-Review.md",
+    "parentPath": "project/14-architecture-reviews",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/14-architecture-reviews/README.md",
+    "parentPath": "project/14-architecture-reviews",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "15-gap-analyses",
+    "type": "directory",
+    "path": "project/15-gap-analyses",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "GA-0001-Constitutional-Repository-Gap-Analysis.md",
+    "type": "file",
+    "path": "project/15-gap-analyses/GA-0001-Constitutional-Repository-Gap-Analysis.md",
+    "parentPath": "project/15-gap-analyses",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/15-gap-analyses/README.md",
+    "parentPath": "project/15-gap-analyses",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "16-writing-specifications",
+    "type": "directory",
+    "path": "project/16-writing-specifications",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "CVS-0008-TPCI-Constitutional-Writing-Specification.md",
+    "type": "file",
+    "path": "project/16-writing-specifications/CVS-0008-TPCI-Constitutional-Writing-Specification.md",
+    "parentPath": "project/16-writing-specifications",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/16-writing-specifications/README.md",
+    "parentPath": "project/16-writing-specifications",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "17-constitutional-reviews",
+    "type": "directory",
+    "path": "project/17-constitutional-reviews",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "AR-0002-Constitutional-Review-of-Volume-8.md",
+    "type": "file",
+    "path": "project/17-constitutional-reviews/AR-0002-Constitutional-Review-of-Volume-8.md",
+    "parentPath": "project/17-constitutional-reviews",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "AR-0003-Constitutional-Review-of-Volume-9.md",
+    "type": "file",
+    "path": "project/17-constitutional-reviews/AR-0003-Constitutional-Review-of-Volume-9.md",
+    "parentPath": "project/17-constitutional-reviews",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/17-constitutional-reviews/README.md",
+    "parentPath": "project/17-constitutional-reviews",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "18-system-architecture",
+    "type": "directory",
+    "path": "project/18-system-architecture",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "constitutional-authority-model.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-authority-model.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-boundary-model.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-boundary-model.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-dependency-model.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-dependency-model.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-domain-map.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-domain-map.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-evidence-model.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-evidence-model.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-evolution-model.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-evolution-model.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-governance-model.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-governance-model.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-information-flow.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-information-flow.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-system-architecture-v1.md",
+    "type": "file",
+    "path": "project/18-system-architecture/constitutional-system-architecture-v1.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-system-evolution.md",
+    "type": "file",
+    "path": "project/18-system-architecture/future-system-evolution.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/18-system-architecture/README.md",
+    "parentPath": "project/18-system-architecture",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "19-domain-expansion",
+    "type": "directory",
+    "path": "project/19-domain-expansion",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "constitutional-dependency-roadmap.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/constitutional-dependency-roadmap.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-domain-catalogue.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/constitutional-domain-catalogue.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-domain-roadmap.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/constitutional-domain-roadmap.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "constitutional-prioritization.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/constitutional-prioritization.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "expansion-principles.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/expansion-principles.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "future-domain-guidelines.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/future-domain-guidelines.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "integration-strategy.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/integration-strategy.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "phase-ii-domain-expansion.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/phase-ii-domain-expansion.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/19-domain-expansion/README.md",
+    "parentPath": "project/19-domain-expansion",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "20-domain-specifications",
+    "type": "directory",
+    "path": "project/20-domain-specifications",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "CDS-0001-Privacy-Constitution.md",
+    "type": "file",
+    "path": "project/20-domain-specifications/CDS-0001-Privacy-Constitution.md",
+    "parentPath": "project/20-domain-specifications",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/20-domain-specifications/README.md",
+    "parentPath": "project/20-domain-specifications",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "21-research-specifications",
+    "type": "directory",
+    "path": "project/21-research-specifications",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/21-research-specifications/README.md",
+    "parentPath": "project/21-research-specifications",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "RS-0001-Privacy-Constitution.md",
+    "type": "file",
+    "path": "project/21-research-specifications/RS-0001-Privacy-Constitution.md",
+    "parentPath": "project/21-research-specifications",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "22-architecture-blueprints",
+    "type": "directory",
+    "path": "project/22-architecture-blueprints",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "BP-0002-Privacy-Constitution-Architecture-v1.md",
+    "type": "file",
+    "path": "project/22-architecture-blueprints/BP-0002-Privacy-Constitution-Architecture-v1.md",
+    "parentPath": "project/22-architecture-blueprints",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/22-architecture-blueprints/README.md",
+    "parentPath": "project/22-architecture-blueprints",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "23-validation-pilots",
+    "type": "directory",
+    "path": "project/23-validation-pilots",
+    "parentPath": "project",
+    "depth": 2
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/23-validation-pilots/README.md",
+    "parentPath": "project/23-validation-pilots",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "VP-0001-Privacy-Constitution.md",
+    "type": "file",
+    "path": "project/23-validation-pilots/VP-0001-Privacy-Constitution.md",
+    "parentPath": "project/23-validation-pilots",
+    "depth": 3,
+    "extension": ".md"
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "project/README.md",
+    "parentPath": "project",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "runtime",
+    "type": "directory",
+    "path": "runtime",
+    "parentPath": "",
+    "depth": 1
+  },
+  {
+    "name": "current-state.md",
+    "type": "file",
+    "path": "runtime/current-state.md",
+    "parentPath": "runtime",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "debugging-log.md",
+    "type": "file",
+    "path": "runtime/debugging-log.md",
+    "parentPath": "runtime",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "drift-inventory.md",
+    "type": "file",
+    "path": "runtime/drift-inventory.md",
+    "parentPath": "runtime",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "engineering-log.md",
+    "type": "file",
+    "path": "runtime/engineering-log.md",
+    "parentPath": "runtime",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "release-readiness.md",
+    "type": "file",
+    "path": "runtime/release-readiness.md",
+    "parentPath": "runtime",
+    "depth": 2,
+    "extension": ".md"
+  },
+  {
+    "name": "security",
+    "type": "directory",
+    "path": "security",
+    "parentPath": "",
+    "depth": 1
+  },
+  {
+    "name": "specification",
+    "type": "directory",
+    "path": "specification",
+    "parentPath": "",
+    "depth": 1
+  },
+  {
+    "name": "START_HERE.md",
+    "type": "file",
+    "path": "START_HERE.md",
+    "parentPath": "",
+    "depth": 1,
+    "extension": ".md"
+  }
+]
