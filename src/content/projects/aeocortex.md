@@ -190,6 +190,19 @@ graph LR
 
 ---
 
+## Validation
+*(Verweis: Assessment AC-001, Finding FIN-AC-001, Arbeitsauftrag RM-001)*
+
+Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Parser erfolgt auf Basis vordefinierter Testverfahren:
+- **Automatisierte Schema-Prüfung**: JSON-LD-Strukturen werden gegen die offiziellen Schema.org-Spezifikationen abgeglichen, um Syntaxfehler und fehlende Relationen zu erkennen.
+- **Lesbarkeits-Kalkulation**: Textinhalte werden über standardisierte Metriken (wie den Flesch-Reading-Ease-Index) auf ihre Eindeutigkeit für LLM-Crawler hin analysiert.
+
+### Testparameter und Umgebung
+* **Mock-Dokumente**: Für Tests werden präparierte HTML-Dokumente mit typischen Markup-Fehlern (z. B. unvollständige Entity-Verschachtelungen) verwendet, um die Erkennungsgenauigkeit des Parsers zu validieren.
+* **Rate-Limit-Checks**: Zugriffssimulationen auf Zielwebseiten erfolgen mit Ratenbegrenzungen (maximal 100 HTTP-Anfragen pro Minute), um die Stabilität bei Webserver-Restriktionen zu testen.
+
+---
+
 ## Results
 - **Entity-Prüfung**: Zuverlässige Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Build-Prozess.
 - **Lesbarkeits-Indikator**: Funktionierende Heuristik zur Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle.
@@ -202,6 +215,18 @@ Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generative
 
 ---
 
+## Risks
+*(Verweis: Assessment AC-001, Finding FIN-AC-002, Arbeitsauftrag RM-001)*
+
+Die automatisierte Analyse von Webinhalten für KI-Suchmaschinen birgt technische und operative Risiken, die durch gezielte Absicherungsmaßnahmen (Mitigations) minimiert werden:
+
+| Risiko-ID | Risikobeschreibung | Schadensklasse | Eintrittswahrscheinlichkeit | Gegenmaßnahme (Mitigation) |
+| :--- | :--- | :--- | :--- | :--- |
+| **RISK-AC-001** | IP-Blockaden durch Webserver der Zielseiten bei zu hoher Anfragedichte. | **Mittel** | **Mittel** | Einhaltung strenger Ratenbegrenzungen (Rate Limiting) und lokales Caching abgerufener Seiten. |
+| **RISK-AC-002** | Schema-Drift durch Aktualisierungen der Standarddefinitionen auf Schema.org. | **Mittel** | **Gering** | Kontinuierliche Überwachung der Validierungs-Fehlerraten im Build-Prozess und regelmäßige Spec-Updates. |
+
+---
+
 ## Future Evolution
 Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte direkt in CI/CD-Pipelines (z. B. GitHub Actions) geplant. Dadurch sollen Schema- und Lesbarkeitsprüfungen bei jedem Commit automatisch ausgeführt werden. Weiterhin soll ein interaktives Dashboard zur Live-Validierung beliebiger URLs aufgebaut werden, um die Benutzerfreundlichkeit des Tools zu erhöhen.
 
@@ -209,3 +234,13 @@ Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte dir
   <div class="engineering-insight__title">Engineering Insight</div>
   <p class="engineering-insight__text">Die Integration semantischer Prüfungen in den CI/CD-Prozess verhindert, dass fehlerhafte Metadaten oder Crawling-Barrieren in die Produktionsumgebung gelangen.</p>
 </div>
+
+---
+
+## References
+*(Verweis: Assessment AC-001, Finding FIN-AC-003, Arbeitsauftrag RM-001)*
+
+* **Astro Static Site Generator**: [Astro-Dokumentation](https://docs.astro.build/) — Framework für das Berichts-Dashboard.
+* **Cheerio HTML Parser**: [Cheerio API-Referenz](https://cheerio.js.org/) — Kernbibliothek für schnelles HTML-Parsing im Speicher.
+* **Schema.org Spezifikationen**: [Schema.org-Standards](https://schema.org/) — Referenz für strukturierte Metadaten.
+* **BECC-Bewertungsrichtlinien**: Referenz auf die [BECC-Matrix](https://github.com/BGA360/bridgenta-portfolio/blob/main/docs/engineering-communication/stewardship/BECC-ASSESSMENT-MATRIX.md) für Konformitätsbewertungen im Repository.
