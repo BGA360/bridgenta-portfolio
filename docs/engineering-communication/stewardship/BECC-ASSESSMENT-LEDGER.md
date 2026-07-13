@@ -155,7 +155,7 @@ Hiermit wird das erste operative Validierungsaudit (Pilot 1) offiziell registrie
 *   **Framework Version**: BECC v1.0.0 GA
 *   **Assessment Artifact**: `src/content/projects/aeocortex.md` (Commit: `217a565816900cadac8f46effc8cd4a5638d971c` bei Baseline)
 *   **Assessment Type**: Full Operational Assessment
-*   **Assessment Status**: **Assessment Completed — Awaiting Human Approval**
+*   **Assessment Status**: **Human Decision Recorded**
 *   **Assessment Start Date**: 2026-07-13
 *   **Assessment Completion Date**: 2026-07-13
 *   **Reviewer**: Antigravity (Stewardship Agent)
@@ -175,7 +175,11 @@ Hiermit wird das erste operative Validierungsaudit (Pilot 1) offiziell registrie
     *   Spezifikation: [CONTROLLED-REMEDIATION-SPECIFICATION.md](./operations/AC-001/CONTROLLED-REMEDIATION-SPECIFICATION.md)
     *   Bereitschaftsbericht: [REMEDIATION-READINESS-ASSESSMENT.md](./operations/AC-001/REMEDIATION-READINESS-ASSESSMENT.md)
     *   Abschlussbericht: [ASSESSMENT-COMPLETED.md](./operations/AC-001/ASSESSMENT-COMPLETED.md)
-*   **Notes**: Die Prüfung wurde erfolgreich ausgeführt. Sie ergab drei offene Befunde. Die Behebungsplanung ist abgeschlossen und bereit zur Freigabe. Es wurden vereinbarungsgemäß keine Änderungen an der Zieldatei `aeocortex.md` vorgenommen.
+    *   Entscheidung: [HUMAN-REVIEW-DECISION.md](./operations/AC-001/HUMAN-REVIEW-DECISION.md)
+    *   Prüfnachweise: [HUMAN-REVIEW-EVIDENCE.md](./operations/AC-001/HUMAN-REVIEW-EVIDENCE.md)
+    *   Laufzeit-Protokoll: [HUMAN-REVIEW-RUNTIME-TRACE.md](./operations/AC-001/HUMAN-REVIEW-RUNTIME-TRACE.md)
+    *   Freigabe: [IMPLEMENTATION-AUTHORIZATION.md](./operations/AC-001/IMPLEMENTATION-AUTHORIZATION.md)
+*   **Notes**: Die Prüfung wurde erfolgreich ausgeführt. Sie ergab drei offene Befunde. Die Behebungsplanung ist abgeschlossen und bereit zur Freigabe. Es wurden vereinbarungsgemäß keine Änderungen an der Zieldatei `aeocortex.md` vorgenommen. Human Review hat am 13. Juli 2026 die Behebung freigegeben.
 
 ---
 
