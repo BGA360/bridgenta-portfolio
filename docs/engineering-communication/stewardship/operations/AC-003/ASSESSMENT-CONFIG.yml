@@ -1,0 +1,16 @@
+id: ac-003
+name: starcleaners
+type: operational-assessment
+status: active
+lifecycle: public-active
+public: true
+entryPoint: /project-starcleaners/
+target: src/content/projects/starcleaners.md
+assessmentMode: engineering
+knowledgeProfile: starcleaners
+language: de
+defaultTransformation: engineering-communication
+runtimeEnabled: true
+ruleSet: becc-v1.0
+assessmentDate: 2026-07-13
+reviewer: Antigravity
