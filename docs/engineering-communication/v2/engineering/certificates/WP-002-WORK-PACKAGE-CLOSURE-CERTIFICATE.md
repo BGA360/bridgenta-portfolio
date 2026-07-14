@@ -45,9 +45,9 @@ This document serves as the official **Work Package Closure Certificate** for WP
 
 | Acceptance Criterion | Implementation Evidence | Test Evidence | Result |
 | :--- | :--- | :--- | :--- |
-| Raw request payloads are validated | [`becc-runtime/shared/validation.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/shared/validation.ts) | `WP-002: Request Parsing` | **PASS** |
-| Invalid structures are rejected with schema errors | [`becc-runtime/shared/validation.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/shared/validation.ts) | `WP-002: Field Validation` | **PASS** |
-| Schema module tests pass | [`becc-runtime/tests/validation.test.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/tests/validation.test.ts) | All 27 tests pass successfully | **PASS** |
+| Raw request payloads are validated | [`becc-runtime/shared/validation.ts`](../../../../../becc-runtime/shared/validation.ts) | `WP-002: Request Parsing` | **PASS** |
+| Invalid structures are rejected with schema errors | [`becc-runtime/shared/validation.ts`](../../../../../becc-runtime/shared/validation.ts) | `WP-002: Field Validation` | **PASS** |
+| Schema module tests pass | [`becc-runtime/tests/validation.test.ts`](../../../../../becc-runtime/tests/validation.test.ts) | All 27 tests pass successfully | **PASS** |
 
 ---
 
@@ -65,19 +65,19 @@ This document serves as the official **Work Package Closure Certificate** for WP
 
 ## 6. Changed-File Traceability
 
-*   **[`becc-runtime/package.json`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/package.json)** & **[`becc-runtime/package-lock.json`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/package-lock.json)**:
+*   **[`becc-runtime/package.json`](../../../../../becc-runtime/package.json)** & **[`becc-runtime/package-lock.json`](../../../../../becc-runtime/package-lock.json)**:
     *   *WP Responsibility*: Submodule packages boundaries and dependencies (added `yaml` dependency).
     *   *Acceptance Criterion Served*: Enables parsing of YAML payloads.
     *   *Test/Validation Evidence*: `npm run build` and `npm run test` execution.
-*   **[`becc-runtime/shared/types.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/shared/types.ts)**:
+*   **[`becc-runtime/shared/types.ts`](../../../../../becc-runtime/shared/types.ts)**:
     *   *WP Responsibility*: Defines the `AssessmentRequest`, `ValidationErrorDetails`, and `ValidationResult` TypeScript types.
     *   *Acceptance Criterion Served*: Canonical representation of `AssessmentRequest` in code.
     *   *Test/Validation Evidence*: TypeScript compile check.
-*   **[`becc-runtime/shared/validation.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/shared/validation.ts)**:
+*   **[`becc-runtime/shared/validation.ts`](../../../../../becc-runtime/shared/validation.ts)**:
     *   *WP Responsibility*: Implements parsing, UUID validation, timestamp generation, and schema constraint checks (e.g., non-empty names, path traversal prevention).
     *   *Acceptance Criterion Served*: Safe ingestion and validation of request payloads.
     *   *Test/Validation Evidence*: All request parsing and field validation unit tests.
-*   **[`becc-runtime/tests/validation.test.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/tests/validation.test.ts)**:
+*   **[`becc-runtime/tests/validation.test.ts`](../../../../../becc-runtime/tests/validation.test.ts)**:
     *   *WP Responsibility*: Native test suite using `node:test` covering request parsing, field validations, format restrictions, and path traversal rejection.
     *   *Acceptance Criterion Served*: Acceptance criteria verification.
     *   *Test/Validation Evidence*: Running test suite.
