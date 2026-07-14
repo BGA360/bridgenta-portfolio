@@ -1,0 +1,37 @@
+{
+  "framework": "BECC",
+  "version": "2.0.0-GA",
+  "release_type": "GA",
+  "release_status": "released",
+  "lifecycle_state": "production",
+  "approval_authority": "Architecture Review Board",
+  "release_date": "2026-07-14",
+  "architecture_status": "frozen",
+  "operational_status": "validated",
+  "governance_status": "validated",
+  "compatibility": {
+    "v1.0": "fully backward-compatible",
+    "generation_1_templates": "supported under legacy compliance baselines",
+    "generation_2_templates": "supported under full compliance guidelines"
+  },
+  "release_artifacts": [
+    "docs/engineering-communication/RELEASES/BECC-v2.0-GA-DECLARATION.md",
+    "docs/engineering-communication/RELEASES/BECC-v2.0-RELEASE-NOTES.md",
+    "docs/engineering-communication/RELEASES/BECC-v2.0-CHANGELOG.md"
+  ],
+  "artifact_checksums": {
+    "docs/engineering-communication/RELEASES/BECC-v2.0-GA-DECLARATION.md": {
+      "algorithm": "MD5",
+      "hash": "ADD94619EB11AC06A7EDEB052FACF64F"
+    },
+    "docs/engineering-communication/RELEASES/BECC-v2.0-RELEASE-NOTES.md": {
+      "algorithm": "MD5",
+      "hash": "BF4C378365E490B76545CB33FF57FFC9"
+    },
+    "docs/engineering-communication/RELEASES/BECC-v2.0-CHANGELOG.md": {
+      "algorithm": "MD5",
+      "hash": "076CDDDAFA465EE0E4FCB2E3499FCCC2"
+    }
+  },
+  "deferred_opportunities_reference": "docs/engineering-communication/stewardship/BECC-v2-PORTFOLIO-IMPROVEMENT-CANDIDATE-REGISTER.md"
+}

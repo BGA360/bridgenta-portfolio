@@ -1,0 +1,16 @@
+id: ac-004
+name: bridgenta
+type: operational-assessment
+status: active
+lifecycle: public-active
+public: true
+entryPoint: /project-bridgenta/
+target: src/content/projects/bridgenta.md
+assessmentMode: engineering
+knowledgeProfile: bridgenta
+language: de
+defaultTransformation: engineering-communication
+runtimeEnabled: true
+ruleSet: becc-v1.0
+assessmentDate: 2026-07-13
+reviewer: Antigravity

@@ -77,8 +77,8 @@ To function as the central knowledge hub, every candidate entry must maintain a 
 *   **Proposed Improvement**: Update the core case study template to include a mandatory `## Validation` section detailing calculator tests, ranking audits, and test parameters.
 *   **Root Cause**: Legacy case study template did not contain a placeholder or instructions for validation tests.
 *   **Initial Confidence**: Low
-*   **Current Confidence**: Low
-*   **Current Status**: **Observation**
+*   **Current Confidence**: Moderate
+*   **Current Status**: **Under Evaluation**
 *   **Evidence History**:
     1.  *Assessment ID*: [AC-001](./operations/AC-001/ASSESSMENT-COMPLETED.md)
         *   *Project*: AEOcortex
@@ -90,6 +90,16 @@ To function as the central knowledge hub, every candidate entry must maintain a 
         *   *Finding ID*: [FIN-AC-002-001](./operations/AC-002/FINDINGS-REGISTER.md)
         *   *Date*: 2026-07-13
         *   *Summary*: Sektion fehlt. Provisorisch in CRS-AC-002 aufgenommen.
+    3.  *Assessment ID*: [AC-003](./operations/AC-003/ASSESSMENT-COMPLETED.md)
+        *   *Project*: StarCleaners
+        *   *Finding ID*: [FIN-AC-003-001](./operations/AC-003/FINDINGS-REGISTER.md)
+        *   *Date*: 2026-07-13
+        *   *Summary*: Sektion fehlt. Provisorisch in CRS-AC-003 aufgenommen.
+    4.  *Assessment ID*: [AC-004](./operations/AC-004/ASSESSMENT-COMPLETED.md)
+        *   *Project*: BridGenta
+        *   *Finding ID*: None (Compliant)
+        *   *Date*: 2026-07-13
+        *   *Summary*: Sektion ist vorhanden. Gegenbeweis erbracht, dass Standard erfüllbar ist.
 
 ---
 
@@ -100,8 +110,8 @@ To function as the central knowledge hub, every candidate entry must maintain a 
 *   **Proposed Improvement**: Update the case study template to include a mandatory `## Risks` section with a predefined risk mitigation table layout.
 *   **Root Cause**: Legacy template deficiency; absence of structured risks layout in authoring guides.
 *   **Initial Confidence**: Low
-*   **Current Confidence**: Low
-*   **Current Status**: **Observation**
+*   **Current Confidence**: Moderate
+*   **Current Status**: **Under Evaluation**
 *   **Evidence History**:
     1.  *Assessment ID*: [AC-001](./operations/AC-001/ASSESSMENT-COMPLETED.md)
         *   *Project*: AEOcortex
@@ -113,6 +123,16 @@ To function as the central knowledge hub, every candidate entry must maintain a 
         *   *Finding ID*: [FIN-AC-002-002](./operations/AC-002/FINDINGS-REGISTER.md)
         *   *Date*: 2026-07-13
         *   *Summary*: Sektion fehlt. Provisorisch in CRS-AC-002 aufgenommen.
+    3.  *Assessment ID*: [AC-003](./operations/AC-003/ASSESSMENT-COMPLETED.md)
+        *   *Project*: StarCleaners
+        *   *Finding ID*: [FIN-AC-003-002](./operations/AC-003/FINDINGS-REGISTER.md)
+        *   *Date*: 2026-07-13
+        *   *Summary*: Sektion fehlt. Provisorisch in CRS-AC-003 aufgenommen.
+    4.  *Assessment ID*: [AC-004](./operations/AC-004/ASSESSMENT-COMPLETED.md)
+        *   *Project*: BridGenta
+        *   *Finding ID*: None (Compliant)
+        *   *Date*: 2026-07-13
+        *   *Summary*: Sektion ist vorhanden. Gegenbeweis erbracht, dass Standard erfüllbar ist.
 
 ---
 
@@ -123,8 +143,8 @@ To function as the central knowledge hub, every candidate entry must maintain a 
 *   **Proposed Improvement**: Update the case study template to include a mandatory `## References` section with a link format standard (recommending absolute GitHub links for internal docs to prevent Astro build failures).
 *   **Root Cause**: Authoring pattern treating case studies as marketing copy rather than specifications.
 *   **Initial Confidence**: Low
-*   **Current Confidence**: Low
-*   **Current Status**: **Observation**
+*   **Current Confidence**: Moderate
+*   **Current Status**: **Under Evaluation**
 *   **Evidence History**:
     1.  *Assessment ID*: [AC-001](./operations/AC-001/ASSESSMENT-COMPLETED.md)
         *   *Project*: AEOcortex
@@ -136,3 +156,13 @@ To function as the central knowledge hub, every candidate entry must maintain a 
         *   *Finding ID*: [FIN-AC-002-003](./operations/AC-002/FINDINGS-REGISTER.md)
         *   *Date*: 2026-07-13
         *   *Summary*: Sektion fehlt. Provisorisch in CRS-AC-002 aufgenommen.
+    3.  *Assessment ID*: [AC-003](./operations/AC-003/ASSESSMENT-COMPLETED.md)
+        *   *Project*: StarCleaners
+        *   *Finding ID*: [FIN-AC-003-003](./operations/AC-003/FINDINGS-REGISTER.md)
+        *   *Date*: 2026-07-13
+        *   *Summary*: Sektion fehlt. Provisorisch in CRS-AC-003 aufgenommen.
+    4.  *Assessment ID*: [AC-004](./operations/AC-004/ASSESSMENT-COMPLETED.md)
+        *   *Project*: BridGenta
+        *   *Finding ID*: None (Compliant)
+        *   *Date*: 2026-07-13
+        *   *Summary*: Sektion ist vorhanden. Gegenbeweis erbracht, dass Standard erfüllbar ist.
