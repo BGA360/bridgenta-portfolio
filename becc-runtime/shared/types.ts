@@ -30,3 +30,20 @@ export interface HealthReport {
     readonly logLevel: 'info' | 'warn' | 'error';
   };
 }
+
+export interface AssessmentRequest {
+  readonly assessmentId: string;
+  readonly project: string;
+  readonly target: string;
+  readonly timestamp: string;
+  readonly providerPreference?: string;
+}
+
+export interface ValidationErrorDetails {
+  [field: string]: string;
+}
+
+export type ValidationResult<T> =
+  | { success: true; data: T }
+  | { success: false; errors: ValidationErrorDetails };
+
