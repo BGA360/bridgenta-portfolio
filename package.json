@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "node tooling/lint_markdown.cjs",
-    "check-links": "node tooling/check_markdown_links.cjs"
+    "check-links": "node tooling/check_markdown_links.cjs",
+    "test:runtime": "npm --prefix becc-runtime test"
   },
   "dependencies": {
     "astro": "^4.11.3"
