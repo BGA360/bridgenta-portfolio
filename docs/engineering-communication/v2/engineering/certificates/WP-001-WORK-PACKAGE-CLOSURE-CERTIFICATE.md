@@ -77,27 +77,27 @@ This document serves as the official **Work Package Closure Certificate** for WP
 
 ## 6. Changed-File Traceability
 
-*   **[`becc-runtime/bin/becc.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/bin/becc.ts)**:
+*   **[`becc-runtime/bin/becc.ts`](../../../../../becc-runtime/bin/becc.ts)**:
     *   *WP Responsibility*: Main execution entry point. Parses CLI inputs, loads and validates config envs, logs structured JSON, and intercepts process signals.
     *   *Acceptance Criterion Served*: CLI contracts, config validation, signals, and structured logging.
     *   *Test/Validation Evidence*: All CLI, configuration, and lifecycle tests.
-*   **[`becc-runtime/shared/types.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/shared/types.ts)**:
+*   **[`becc-runtime/shared/types.ts`](../../../../../becc-runtime/shared/types.ts)**:
     *   *WP Responsibility*: Houses type contracts for config loading and logger event structures.
     *   *Acceptance Criterion Served*: Type safety and parameter verification.
     *   *Test/Validation Evidence*: TypeScript compilation check.
-*   **[`becc-runtime/tests/bootstrap.test.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/tests/bootstrap.test.ts)**:
+*   **[`becc-runtime/tests/bootstrap.test.ts`](../../../../../becc-runtime/tests/bootstrap.test.ts)**:
     *   *WP Responsibility*: Native test suite using `node:test` covering CLI flags, environment failures, signals, and logs.
     *   *Acceptance Criterion Served*: Validation requirements.
     *   *Test/Validation Evidence*: Running test suite.
-*   **[`becc-runtime/package.json`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/package.json)** & **[`tsconfig.json`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/tsconfig.json)**:
+*   **[`becc-runtime/package.json`](../../../../../becc-runtime/package.json)** & **[`becc-runtime/tsconfig.json`](../../../../../becc-runtime/tsconfig.json)**:
     *   *WP Responsibility*: Submodule packages boundaries and TSC compile rules.
     *   *Acceptance Criterion Served*: Compiled binary registers locally.
     *   *Test/Validation Evidence*: `npm run build` execution.
-*   **[`becc-runtime/.gitignore`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/.gitignore)**:
+*   **[`becc-runtime/.gitignore`](../../../../../becc-runtime/.gitignore)**:
     *   *WP Responsibility*: Exclude build directories (`dist/`, `node_modules/`).
     *   *Acceptance Criterion Served*: Clean repository boundaries.
     *   *Test/Validation Evidence*: Git status verification.
-*   **[`package.json`](file:///c:/antigravity/statichtmlpro/fdrefs/package.json)**:
+*   **[`package.json`](../../../../../package.json)**:
     *   *WP Responsibility*: Adds `"test:runtime"` command delegation for test isolation.
     *   *Acceptance Criterion Served*: Unified testing entry point.
     *   *Test/Validation Evidence*: `npm run test:runtime` execution.
