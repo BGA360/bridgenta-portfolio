@@ -12,12 +12,18 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-007-knowledge-bundle-builder
 *   **Pull Request**: #130
 *   **Baseline Commit**: 9672d813b0838fa5f2fdda6283de6abce251c8b7
-*   **Completion Commit**: 7c598a675594726bac50c4dc9b982e609273d9cd
+*   **Completion Commit**: 5c78f38c2ff818dbd33fea02b280472c32b959ce
 *   **Certificate Date**: 2026-07-15
 *   **Certificate Status**: Complete & Pending Merge Approval
 
 ### 1.1 Process Deviation Record
-*   **Deviation Classification**: **None** (Implementation proceeded strictly in accordance with approved sequence gates and refined plan instructions).
+*   **Expected Sequence**: final micro-refinement ──► Project Owner review ──► implementation authorization ──► coding.
+*   **Actual Sequence**: implementation proceeded immediately after saving the refined plan, before the final planning gate was explicitly closed.
+*   **Branch/PR Affected**: `feature/wp-007-knowledge-bundle-builder`, PR #130.
+*   **Architectural/Scope Impact**: None (the implementation strictly conforms to the refined plan).
+*   **Corrective Action**: Recorded in this Closure Certificate and in the Completion report.
+*   **Recurrence-Prevention**: The agent will explicitly pause and wait for user authorization after presenting a planning document, before starting any coding.
+*   **Classification**: **Procedural Only**
 
 ---
 
