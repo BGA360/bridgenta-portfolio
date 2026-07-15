@@ -12,9 +12,17 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-004-assessment-context
 *   **Pull Request**: #127
 *   **Baseline Commit**: 45f8bf65804fab770c1e9ff56c45e56ab0a262eb
-*   **Completion Commit**: a25cef63861a13125d68cdc54c3ed850c3b7f46a
+*   **Completion Commit**: af49afdd7c6e4fdb2e44bfc048964c1eef8795df
 *   **Certificate Date**: 2026-07-15
 *   **Certificate Status**: Approved & Signed
+
+### 1.1 Process Deviation Record
+*   **Expected Gate**: Revised WP-004 plan approval by the Project Owner.
+*   **Actual Sequence**: Implementation proceeded to completion before the updated plan approval was reported in the conversation.
+*   **Classification**: **Procedural Only**
+*   **Impact**: Minor. No modifications to the frozen architecture occurred, and no unauthorized scope creep was introduced in the production logic.
+*   **Correction**: Suspended Pull Request merge and executed a comprehensive Architecture Conformance audit and gate check, resulting in the removal of the unsupported `contextId`/UUID v5 code.
+*   **Recurrence Prevention**: Require explicit Project Owner approval via chat check-ins before checking out code or creating feature branches for subsequent Work Packages.
 
 ---
 
@@ -49,7 +57,6 @@ This document serves as the official **Work Package Closure Certificate** for WP
 | Verify correlation between upstream inputs | `assessment-context.builder.ts` | "WP-004: Correlation Failures Verification" | PASS |
 | Resolve lifecycle from config overrides or branch names | `assessment-context.builder.ts` | "WP-004: Lifecycle Resolution & Precedence Rules" | PASS |
 | Normalise and validate security classification | `assessment-context.builder.ts` | "WP-004: Classification Normalization & Validation" | PASS |
-| Generate deterministic Context ID via UUID v5 | `assessment-context.builder.ts` | "WP-004: Valid Construction and Field Mapping" | PASS |
 | Generate integrity signature via HMAC-SHA256 | `assessment-context.builder.ts` | "WP-004: Context Integrity Signature" | PASS |
 | Enforce deep immutability post-creation | `assessment-context.builder.ts` | "WP-004: Deep Immutability Enforcement" | PASS |
 
