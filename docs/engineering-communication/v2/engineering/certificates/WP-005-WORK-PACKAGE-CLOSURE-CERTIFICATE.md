@@ -12,9 +12,16 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-005-runtime-orchestrator
 *   **Pull Request**: #128
 *   **Baseline Commit**: 1b9b354e60155b5f25bf1531c3bf79a022d4f208
-*   **Completion Commit**: 6fd507392618c75af272a06be3b3ddd1f3bb9b58
+*   **Completion Commit**: c12ce4b19a314b32fd11b99952da24ed7b0486ee
 *   **Certificate Date**: 2026-07-15
-*   **Certificate Status**: Approved & Signed
+*   **Certificate Status**: Complete & Pending Merge Approval
+
+### 1.1 Process Deviation Record
+*   **Expected Sequence**: Targeted micro-refinement ──► Project Owner review ──► Implementation authorization ──► Coding execution.
+*   **Actual Sequence**: Implementation check-in was reported in the conversation before the final refined planning cycle had been fully closed and authorized by the Project Owner.
+*   **Classification**: **Procedural Only** (Final conformance audit has confirmed that zero architectural deviations or scope expansions exist in the production baseline).
+*   **Corrective Action**: Performed a thorough Architecture Conformance audit and gate review before merging Pull Request #128, resulting in the removal of un-budgeted Git reset and file deletion APIs.
+*   **Recurrence Prevention**: Coding implementation may not begin for subsequent Work Packages until explicit Project Owner approval is recorded in the chat transcript.
 
 ---
 
@@ -33,10 +40,21 @@ This document serves as the official **Work Package Closure Certificate** for WP
     *   [BECC v2.0 — Engineering Canonical Data Model](../BECC-v2-ENGINEERING-CANONICAL-DATA-MODEL.md)
     *   [BECC v2.0 — Implementation Architecture Specification](../../architecture/BECC-v2-IMPLEMENTATION-ARCHITECTURE-SPECIFICATION.md)
     *   [BECC v2.0 — Runtime Orchestrator Engineering Domain Specification](../domains/BECC-v2-RUNTIME-ORCHESTRATOR-ENGINEERING-DOMAIN-SPECIFICATION.md)
-*   **Repository-Structure Conformance**: Conforming. All logic is isolated in `becc-runtime/orchestrator/` subdirectory.
-*   **Dependency Conformance**: Conforming. `becc-runtime/orchestrator` depends only on abstract domain interfaces, Event Bus type contracts, and standard Node library features, avoiding tight coupling or factory generation of downstream domains.
-*   **Canonical Data Model Conformance**: Conforming. Uses standard CDM-compliant request payloads and event definitions.
-*   **Architecture-Freeze Status**: Conforming. WP-005 is frozen. No future features or downstream features are integrated.
+*   **Repository-Structure Conformance**: Conforming. All logic is isolated in the modular `orchestrator/` subdirectory.
+*   **Dependency Conformance**: Conforming. The orchestrator service depends strictly on abstract interfaces and event models injected via constructor injection, preventing tight coupling.
+*   **Rollback Conformance**: Conforming. Audited against the read-only WP-003 Project Connector specification. Writable Git resets and filesystem deletions have been completely removed from WP-005; rollback coordination is restricted to cancelling active work, clearing local session states, and warning/logging that external remediation is required.
+*   **Downstream Port Conformance**: Conforming. Audited downstream interfaces are minimal, defining only context parameters and start/result hooks without exposing traversal details, selections, or vendor formatting logic.
+
+### 3.1 Downstream Interface Audit
+
+| Interface | Methods | Payload Contracts | Orchestration Need | Future Owner | Premature Semantics |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `IKnowledgeResolver` | `resolve` | `AssessmentContext` | Resolve active rules | WP-006 | None |
+| `IKnowledgeBundleBuilder` | `build` | `resolvedKnowledge` | Package compiled rules | WP-007 | None |
+| `IProviderBroker` | `selectProvider`, `invokeAdapter` | `providerPreference`, `AssessmentContext` | Route LLM requests | WP-008 / WP-009 | None |
+| `ITransformationEngine` | `transform` | `AssessmentContext`, response | Run document diffs | WP-010 | None |
+| `IValidationEngine` | `validate` | `AssessmentContext`, diff, bundle | Check compliance | WP-011 | None |
+| `IHumanReviewEngine` | `stageReview` | `AssessmentContext`, validationReport | Wait review gate | WP-012 | None |
 
 ---
 
@@ -123,12 +141,9 @@ Confirm the absence of:
 
 ---
 
-## 9. Open Issues
+## 9. Open Observations
 
-*   **Blocking Issues**: None
-*   **Non-Blocking Issues**: None
-*   **Deferred Implementation Observations**: None
-*   **Required Engineering Change Proposals**: None
+*   **OBS-WP005-001 — Rollback Separation**: WP-005 coordinates rollback requests by warning that external remediation is required. Since WP-003 is read-only, actual repo write mutations remain unassigned to a runtime software domain. An ECP should be evaluated in BECC v2.1 if automated self-healing git operations are required.
 
 ---
 
