@@ -49,8 +49,6 @@ export interface IEventBus {
 // Injected Bounded Context Domain Interfaces (WP-003 - WP-012)
 export interface IProjectConnector {
   connect(request: AssessmentRequest): Promise<ProjectConnectorResult>;
-  resetToCommit(sessionId: string, baselineSHA: string): Promise<void>;
-  purgeDraftFiles(sessionId: string): Promise<void>;
 }
 
 export interface IKnowledgeResolver {

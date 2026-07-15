@@ -15,8 +15,6 @@ import { AssessmentRequest } from '../shared/types.js';
 
 class MockProjectConnector {
   public connectCalls = 0;
-  public purgeCalls = 0;
-  public resetCalls = 0;
 
   async connect(request: AssessmentRequest) {
     this.connectCalls++;
@@ -46,14 +44,6 @@ class MockProjectConnector {
       },
       status: 'success' as const
     };
-  }
-
-  async resetToCommit(sessionId: string, baselineSHA: string) {
-    this.resetCalls++;
-  }
-
-  async purgeDraftFiles(sessionId: string) {
-    this.purgeCalls++;
   }
 }
 
@@ -250,7 +240,6 @@ test('WP-005: Pipeline Integration - Human Review Rejection and Cleanup', async 
   // Process human review rejection
   await orchestrator.handleReviewDecision('sess-integration-2', false, { success: true });
   assert.strictEqual(orchestrator.getSessionState('sess-integration-2'), 'Completed');
-  assert.strictEqual(connector.purgeCalls, 1); // purgeDraftFiles called
 });
 
 test('WP-005: Timeout Enforcement - Domain execution timeout', async () => {
@@ -286,7 +275,6 @@ test('WP-005: Timeout Enforcement - Domain execution timeout', async () => {
   }, DomainTimeoutException);
 
   assert.strictEqual(orchestrator.getSessionState('sess-timeout-1'), 'Failed');
-  assert.strictEqual(connector.purgeCalls, 1); // workspace cleaned up on fail
 
   // Clean env variable
   delete process.env.TIMEOUT_RESOLVER;

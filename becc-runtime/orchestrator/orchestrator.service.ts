@@ -150,13 +150,7 @@ export class RuntimeOrchestrator {
       stateMachine.transitionTo('Completed');
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.HumanRejected, null));
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.RuntimeCompleted, { outcome: 'Rejected' }));
-
-      // Clean up workspace draft files
-      try {
-        await this.connector.purgeDraftFiles(sessionId);
-      } catch (cleanupErr) {
-        console.error(`[Orchestrator] Failed to purge draft files for session ${sessionId}:`, cleanupErr);
-      }
+      console.warn(`[Orchestrator] Session ${sessionId} rejected. External remediation is required.`);
     }
 
     this.cleanupSession(sessionId);
@@ -263,17 +257,7 @@ export class RuntimeOrchestrator {
   }
 
   private async rollbackWorkspace(sessionId: string, baselineCommit?: string): Promise<void> {
-    try {
-      // 1. Purge draft files
-      await this.connector.purgeDraftFiles(sessionId);
-
-      // 2. Revert workspace changes if commit SHA is known
-      if (baselineCommit) {
-        await this.connector.resetToCommit(sessionId, baselineCommit);
-      }
-    } catch (err) {
-      console.error(`[Orchestrator] Rollback failed for session ${sessionId}:`, err);
-    }
+    console.warn(`[Orchestrator] Rollback requested for session ${sessionId} (baseline: ${baselineCommit || 'unknown'}). External remediation is required.`);
   }
 
   private cleanupSession(sessionId: string): void {
