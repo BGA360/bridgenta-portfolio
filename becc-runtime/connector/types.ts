@@ -5,6 +5,7 @@ export interface ProjectConfig {
   readonly projectId?: string;
   readonly projectType?: string;
   readonly classification?: string;
+  readonly lifecycle?: string;
 }
 
 export interface ProjectConnectorResult {

@@ -47,3 +47,38 @@ export type ValidationResult<T> =
   | { success: true; data: T }
   | { success: false; errors: ValidationErrorDetails };
 
+export interface AssessmentContext {
+  readonly assessmentId: string;
+  readonly project: string;
+  readonly target: string;
+  readonly projectIdentity: {
+    readonly name: string;
+    readonly id: string;
+  };
+  readonly repositoryDetails: {
+    readonly remoteUri: string;
+    readonly branch: string;
+    readonly commitHash: string;
+    readonly status: 'clean' | 'dirty';
+  };
+  readonly targetDocument: {
+    readonly path: string;
+    readonly hash: string;
+  };
+  readonly projectType: string;
+  readonly lifecyclePhase: 'Design' | 'Active' | 'Review' | 'Release';
+  readonly publicationClassification: string;
+  readonly providerPreference?: string;
+  readonly runtimeMetadata: {
+    readonly env: 'production' | 'development' | 'test';
+    readonly os: string;
+    readonly timestamp: string;
+    readonly processId: number;
+  };
+  readonly traceabilityMetadata: {
+    readonly signature: string;
+  };
+  readonly creationTimestamp: string;
+}
+
+
