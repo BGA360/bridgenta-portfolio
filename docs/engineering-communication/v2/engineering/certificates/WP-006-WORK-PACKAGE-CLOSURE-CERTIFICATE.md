@@ -12,7 +12,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-006-knowledge-resolver
 *   **Pull Request**: #129
 *   **Baseline Commit**: 3fb26b3c9ec417d4fefd1db26563e46c761b0c03
-*   **Completion Commit**: 5aa1efa5c7212cdcbd7f8b6569fdab4403a46a40
+*   **Completion Commit**: bdbc1b8202c16b275a78117bc53e617228e5e4aa
 *   **Certificate Date**: 2026-07-15
 *   **Certificate Status**: Complete & Pending Merge Approval
 
