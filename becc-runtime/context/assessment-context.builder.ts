@@ -75,7 +75,7 @@ export class AssessmentContextBuilder {
       return 'Review';
     }
 
-    return 'Active';
+    return 'Release';
   }
 
   /**

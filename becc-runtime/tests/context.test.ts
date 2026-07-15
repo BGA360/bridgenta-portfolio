@@ -166,7 +166,7 @@ test('WP-004: Lifecycle Resolution & Precedence Rules', () => {
     ['feature/new-feature', 'Active'],
     ['hotfix/security-patch', 'Active'],
     ['review/design-review', 'Review'],
-    ['arbitrary-branch', 'Active']
+    ['arbitrary-branch', 'Release']
   ];
 
   for (const [branch, expectedPhase] of testBranches) {
