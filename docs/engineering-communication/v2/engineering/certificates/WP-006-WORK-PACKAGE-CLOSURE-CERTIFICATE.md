@@ -12,9 +12,9 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-006-knowledge-resolver
 *   **Pull Request**: #129
 *   **Baseline Commit**: 3fb26b3c9ec417d4fefd1db26563e46c761b0c03
-*   **Completion Commit**: bdbc1b8202c16b275a78117bc53e617228e5e4aa
+*   **Completion Commit**: 71befa9024bc68e0de8cd77384e234a8b01a8b5e
 *   **Certificate Date**: 2026-07-15
-*   **Certificate Status**: Complete & Pending Merge Approval
+*   **Certificate Status**: FROZEN & MERGED
 
 ### 1.1 Process Deviation Record
 *   **Deviation Classification**: **None** (Implementation proceeded strictly in accordance with approved sequence gates and refined plan instructions).
@@ -70,7 +70,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Markdown Link Validation**: `npm run check-links` -> Passed successfully (exit code 0)
 *   **Astro Build**: `npm run build` -> Successful (exit code 0)
 *   **HTML Link Audit**: `node tooling/audit_links.cjs` -> Passed successfully (exit code 0)
-*   **Remote CI**: Pending/Green on Pull Request #129
+*   **Remote CI**: Passed successfully on main branch (all checks green)
 
 ---
 
@@ -148,3 +148,9 @@ Confirm the absence of:
 
 *   **Authorization**: **SUCCESSOR WORK PACKAGE MAY BE PLANNED**
 *   **Successor Name**: WP-007 — Knowledge Bundle Builder
+
+---
+
+## 11. Open Observations
+
+*   **OBS-WP006-001 — Precedence Registry Isolation**: The deterministic `precedenceOrder` mapping is currently embedded within the resolver codebase. Future BECC versions should evaluate moving precedence ordering into a dedicated constitutional precedence registry so that governance ordering can evolve independently from runtime implementation. (Recommendation: Review during BECC v2.1 planning).
