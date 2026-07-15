@@ -48,7 +48,6 @@ export type ValidationResult<T> =
   | { success: false; errors: ValidationErrorDetails };
 
 export interface AssessmentContext {
-  readonly contextId: string;
   readonly assessmentId: string;
   readonly project: string;
   readonly target: string;

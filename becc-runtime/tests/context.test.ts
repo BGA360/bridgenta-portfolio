@@ -93,13 +93,11 @@ test('WP-004: Valid Construction and Field Mapping', () => {
   assert.strictEqual(context.publicationClassification, 'public');
 
   // Assert generated details
-  assert.ok(context.contextId);
   assert.ok(context.traceabilityMetadata.signature);
   assert.ok(context.creationTimestamp);
 
-  // Assert deterministic ID generation
+  // Assert deterministic signature generation
   const context2 = AssessmentContextBuilder.build(request, result);
-  assert.strictEqual(context.contextId, context2.contextId);
   assert.strictEqual(context.traceabilityMetadata.signature, context2.traceabilityMetadata.signature);
 });
 

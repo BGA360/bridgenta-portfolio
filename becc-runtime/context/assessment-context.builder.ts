@@ -47,23 +47,6 @@ function sortKeys(obj: any): any {
   return sortedObj;
 }
 
-// RFC 4122 compliant UUID v5 generator using standard SHA-1 hash
-function generateUuidV5(name: string): string {
-  // Use DNS namespace UUID: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
-  const nsBytes = Buffer.from('6ba7b8109dad11d180b400c04fd430c8', 'hex');
-  const nameBytes = Buffer.from(name, 'utf-8');
-  const hash = crypto.createHash('sha1').update(Buffer.concat([nsBytes, nameBytes])).digest('hex');
-
-  const part1 = hash.substring(0, 8);
-  const part2 = hash.substring(8, 12);
-  const part3 = '5' + hash.substring(13, 16); // Version 5
-  // Variant 1 (RFC 4122) sets the two most significant bits of the 9th byte to 1 and 0 (0x80 to 0xbf)
-  const varByte = (parseInt(hash.substring(16, 18), 16) & 0x3f | 0x80).toString(16).padStart(2, '0');
-  const part4 = varByte + hash.substring(18, 20);
-  const part5 = hash.substring(20, 32);
-
-  return `${part1}-${part2}-${part3}-${part4}-${part5}`;
-}
 
 export class AssessmentContextBuilder {
   /**
@@ -111,8 +94,8 @@ export class AssessmentContextBuilder {
    */
   public static generateTraceabilitySignature(assessmentId: string, contextFields: any): string {
     try {
-      // Exclude contextId, traceabilityMetadata, and creationTimestamp to avoid cycles or non-deterministic fields
-      const { contextId, traceabilityMetadata, creationTimestamp, ...rest } = contextFields;
+      // Exclude traceabilityMetadata and creationTimestamp to avoid cycles or non-deterministic fields
+      const { traceabilityMetadata, creationTimestamp, ...rest } = contextFields;
       const sorted = sortKeys(rest);
       const serialized = JSON.stringify(sorted);
       return crypto.createHmac('sha256', assessmentId).update(serialized).digest('hex');
@@ -168,7 +151,7 @@ export class AssessmentContextBuilder {
     const creationTimestamp = new Date().toISOString();
 
     // 4. Assemble intermediate context fields
-    const contextFields: Omit<AssessmentContext, 'contextId' | 'traceabilityMetadata'> = {
+    const contextFields: Omit<AssessmentContext, 'traceabilityMetadata'> = {
       assessmentId: reqCloned.assessmentId,
       project: reqCloned.project.trim(),
       target: reqCloned.target.trim(),
@@ -199,12 +182,10 @@ export class AssessmentContextBuilder {
       creationTimestamp
     };
 
-    // 5. Generate signature and deterministic Context ID
+    // 5. Generate signature
     const signature = this.generateTraceabilitySignature(reqCloned.assessmentId, contextFields);
-    const contextId = generateUuidV5(signature);
 
     const context: AssessmentContext = {
-      contextId,
       ...contextFields,
       traceabilityMetadata: {
         signature
@@ -213,7 +194,6 @@ export class AssessmentContextBuilder {
 
     // 6. Basic structural validation
     if (
-      !context.contextId ||
       !context.assessmentId ||
       !context.project ||
       !context.target ||
