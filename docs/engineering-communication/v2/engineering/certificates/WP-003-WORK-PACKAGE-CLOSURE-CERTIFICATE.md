@@ -30,9 +30,9 @@ This document serves as the official **Work Package Closure Certificate** for WP
 ## 3. Architecture Conformance
 
 *   **Governing Architecture Artifacts**:
-    *   [BECC v2.0 — Project Connector Engineering Domain Specification](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/v2/engineering/domains/PROJECT-CONNECTOR-ENGINEERING-DOMAIN-SPECIFICATION.md)
-    *   [BECC v2.0 — Implementation Architecture Specification](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/v2/architecture/BECC-v2-IMPLEMENTATION-ARCHITECTURE-SPECIFICATION.md)
-    *   [BECC v2.0 — Engineering Canonical Data Model](file:///c:/antigravity/statichtmlpro/fdrefs/docs/engineering-communication/v2/engineering/BECC-v2-ENGINEERING-CANONICAL-DATA-MODEL.md)
+    *   [BECC v2.0 — Project Connector Engineering Domain Specification](../domains/PROJECT-CONNECTOR-ENGINEERING-DOMAIN-SPECIFICATION.md)
+    *   [BECC v2.0 — Implementation Architecture Specification](../../architecture/BECC-v2-IMPLEMENTATION-ARCHITECTURE-SPECIFICATION.md)
+    *   [BECC v2.0 — Engineering Canonical Data Model](../BECC-v2-ENGINEERING-CANONICAL-DATA-MODEL.md)
 *   **Repository-Structure Conformance**: Conforming. All logic is isolated in a modular `connector/` subdirectory under `becc-runtime` instead of using globally shared files.
 *   **Dependency Conformance**: Conforming. `becc-runtime/connector` depends only on `becc-runtime/shared/types.ts` and standard Node libraries.
 *   **Canonical Data Model Conformance**: Conforming. Consumes the canonical `AssessmentRequest` and returns a clean, facts-only `ProjectConnectorResult`.
@@ -70,27 +70,27 @@ This document serves as the official **Work Package Closure Certificate** for WP
 
 ## 6. Changed-File Traceability
 
-*   **[`becc-runtime/tsconfig.json`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/tsconfig.json)**:
+*   **[`becc-runtime/tsconfig.json`](../../../../../becc-runtime/tsconfig.json)**:
     *   *WP Responsibility*: Configure TypeScript compiler scope.
     *   *Acceptance Criterion Served*: Integration builds.
     *   *Test/Validation Evidence*: `npm --prefix becc-runtime run build`
-*   **[`becc-runtime/connector/types.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/connector/types.ts)**:
+*   **[`becc-runtime/connector/types.ts`](../../../../../becc-runtime/connector/types.ts)**:
     *   *WP Responsibility*: Define strict types for Project Configuration and Discovery Result.
     *   *Acceptance Criterion Served*: Canonical Output Contract.
     *   *Test/Validation Evidence*: Type-checking compile phase.
-*   **[`becc-runtime/connector/exceptions.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/connector/exceptions.ts)**:
+*   **[`becc-runtime/connector/exceptions.ts`](../../../../../becc-runtime/connector/exceptions.ts)**:
     *   *WP Responsibility*: Define secure exceptions with clean public messages.
     *   *Acceptance Criterion Served*: Error handling.
     *   *Test/Validation Evidence*: Assertion tests in `connector.test.ts`.
-*   **[`becc-runtime/connector/project-connector.service.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/connector/project-connector.service.ts)**:
+*   **[`becc-runtime/connector/project-connector.service.ts`](../../../../../becc-runtime/connector/project-connector.service.ts)**:
     *   *WP Responsibility*: Core project discovery and facts resolution.
     *   *Acceptance Criterion Served*: All WP-003 criteria.
     *   *Test/Validation Evidence*: Native Node test suite in `connector.test.ts`.
-*   **[`becc-runtime/tests/connector.test.ts`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/tests/connector.test.ts)**:
+*   **[`becc-runtime/tests/connector.test.ts`](../../../../../becc-runtime/tests/connector.test.ts)**:
     *   *WP Responsibility*: Provide unit and integration testing coverage.
     *   *Acceptance Criterion Served*: Verifying behavior.
     *   *Test/Validation Evidence*: Test runner execution.
-*   **[`becc-runtime/tests/fixtures/project-connector/`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/tests/fixtures/project-connector/)**:
+*   **[`becc-runtime/tests/fixtures/project-connector/`](../../../../../becc-runtime/tests/fixtures/project-connector/)**:
     *   *WP Responsibility*: Provide immutable static fixtures for document classification and config loading.
     *   *Acceptance Criterion Served*: Testing adequacy.
     *   *Test/Validation Evidence*: Connector tests.
