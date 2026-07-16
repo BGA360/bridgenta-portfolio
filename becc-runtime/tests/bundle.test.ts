@@ -143,7 +143,7 @@ test('WP-007: Materialization - Valid range, heading mismatch and hash drift', a
           heading: 'RULE-01: Heading',
           startLine: 1,
           endLine: 3,
-          contentHash: 'incorrect-hash-signature',
+          contentHash: 'incorrect-hash-digest',
           precedenceOrder: 1,
           precedenceTier: 'Canon',
           authoritySource: 'rule.md',

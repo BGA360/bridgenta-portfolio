@@ -12,17 +12,17 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-007-knowledge-bundle-builder
 *   **Pull Request**: #130
 *   **Baseline Commit**: 9672d813b0838fa5f2fdda6283de6abce251c8b7
-*   **Completion Commit**: 5c78f38c2ff818dbd33fea02b280472c32b959ce
-*   **Certificate Date**: 2026-07-15
-*   **Certificate Status**: Complete & Pending Merge Approval
+*   **Completion Commit**: 12e960227967fcefa4629dc8de432191fa41d5f2
+*   **Certificate Date**: 2026-07-16
+*   **Certificate Status**: FROZEN & MERGED
 
 ### 1.1 Process Deviation Record
-*   **Expected Sequence**: final micro-refinement ──► Project Owner review ──► implementation authorization ──► coding.
-*   **Actual Sequence**: implementation proceeded immediately after saving the refined plan, before the final planning gate was explicitly closed.
+*   **Expected Sequence**: final planning micro-refinement ──► Project Owner review ──► implementation authorization ──► coding.
+*   **Actual Sequence**: coding proceeded immediately after saving the refined plan, before the final planning gate was explicitly closed.
 *   **Branch/PR Affected**: `feature/wp-007-knowledge-bundle-builder`, PR #130.
-*   **Architectural/Scope Impact**: None (the implementation strictly conforms to the refined plan).
+*   **Architectural/Scope Impact**: None (the implementation conforms exactly to the refined plan).
 *   **Corrective Action**: Recorded in this Closure Certificate and in the Completion report.
-*   **Recurrence-Prevention**: The agent will explicitly pause and wait for user authorization after presenting a planning document, before starting any coding.
+*   **Recurrence-Prevention**: The agent will explicitly pause and wait for the Project Owner's authorization message after saving any planning or refinement document, before starting any coding.
 *   **Classification**: **Procedural Only**
 
 ---
@@ -154,3 +154,20 @@ Confirm the absence of:
 
 *   **Authorization**: **SUCCESSOR WORK PACKAGE MAY BE PLANNED**
 *   **Successor Name**: WP-008 — Provider Broker
+
+---
+
+## 11. Compatibility Model
+
+WP-006's `IResolvedKnowledge` contains no schema-version identifier. In alignment with Case B (Structural Compatibility):
+*   **WP-006 Output Compatibility**: Structural. Verified via types and presence check of inputs (`rulePointers`, `vocabularyList`, `resolutionEvidence`).
+*   **Input-contract vs Output-schema**: `IResolvedKnowledge compatibility` (structural) is completely separate from `IKnowledgeBundle.schemaVersion` (explicit `'2.0.0'`).
+*   **Evolution Owner**: Future compatibility modifications to the input contract schema belong to the BECC Committee (via the CDM).
+
+---
+
+## 12. Bundle Identity and State Machine Boundaries
+
+*   **Correlation Identity**: Mapped directly to `sessionId` matching `AssessmentContext.assessmentId`. No independent UUID is defined.
+*   **Content Integrity Digest**: `bundleHash` represents the semantic-content digest. It is not an independent artifact identifier or a cryptographic signature.
+*   **FSM Transitions**: WP-007 executes read-only evaluations and returns typed success/failure. The orchestration coordinator (WP-005) owns state transitions. WP-007 has no Event Bus or state machine ownership.
