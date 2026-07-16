@@ -3,25 +3,11 @@ import { AssessmentContext } from '../shared/types.js';
 
 export class InstructionComposerService implements IInstructionComposer {
   public composeSystemInstructions(bundle: IKnowledgeBundle): string {
-    const canons = bundle.rules.filter(r => r.type === 'Canon');
-    const guidelines = bundle.rules.filter(r => r.type === 'Guideline');
-
     let instructions = 'You are an expert software engineer checking compliance against BridGenta Portfolio Rules.\n';
-    instructions += 'Apply the following rules strictly in order of precedence:\n\n';
+    instructions += 'Apply the following rules strictly in the order presented:\n\n';
 
-    if (canons.length > 0) {
-      instructions += '### CANONICAL RULES (Mandatory):\n';
-      for (const rule of canons) {
-        instructions += `- [${rule.id}]: ${rule.summary}\n  Body: ${rule.body}\n`;
-      }
-      instructions += '\n';
-    }
-
-    if (guidelines.length > 0) {
-      instructions += '### GUIDELINE RULES:\n';
-      for (const rule of guidelines) {
-        instructions += `- [${rule.id}]: ${rule.summary}\n  Body: ${rule.body}\n`;
-      }
+    for (const rule of bundle.rules) {
+      instructions += `- [${rule.id}] (${rule.type}): ${rule.summary}\n  Body: ${rule.body}\n`;
     }
 
     return instructions.trim();

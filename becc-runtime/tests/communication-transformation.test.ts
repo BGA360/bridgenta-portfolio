@@ -90,17 +90,17 @@ function createMockResponse(text: string): IProviderResponse {
 // 1. INSTRUCTION COMPOSITION & PRECEDENCE TESTS
 // ==========================================
 
-test('WP-010: Precedence - Canon rules appear above Guideline rules', () => {
+test('WP-010: Precedence - Preserves packaged bundle rule order', () => {
   const composer = new InstructionComposerService();
   const bundle = createMockBundle();
   const instructions = composer.composeSystemInstructions(bundle);
 
-  const canonIndex = instructions.indexOf('RULE-002');
-  const guidelineIndex = instructions.indexOf('RULE-001');
+  const rule1Index = instructions.indexOf('RULE-001');
+  const rule2Index = instructions.indexOf('RULE-002');
 
-  assert.ok(canonIndex !== -1, 'Canon rule must be present');
-  assert.ok(guidelineIndex !== -1, 'Guideline rule must be present');
-  assert.ok(canonIndex < guidelineIndex, 'Canon rules must reside above Guidelines in hierarchy');
+  assert.ok(rule1Index !== -1, 'RULE-001 must be present');
+  assert.ok(rule2Index !== -1, 'RULE-002 must be present');
+  assert.ok(rule1Index < rule2Index, 'Rules must follow the exact order in the bundle');
 });
 
 test('WP-010: Snapshot Projection - Encloses source code in XML tags', () => {
