@@ -79,6 +79,27 @@ export interface AssessmentContext {
     readonly signature: string;
   };
   readonly creationTimestamp: string;
+}export interface ProviderExecutionEnvelope {
+  readonly sessionId: string;
+  readonly promptText: string;
+  readonly systemInstructions?: string;
+  readonly bundleHash: string;
+  readonly policy: {
+    readonly temperature: number;
+    readonly maxTokens: number;
+  };
 }
 
-
+export interface IProviderResponse {
+  readonly text: string;
+  readonly stopReason: 'stop' | 'length' | 'content_filter' | 'other';
+  readonly tokenUsage: {
+    readonly inputTokens: number;
+    readonly outputTokens: number;
+  };
+  readonly providerId: string;
+  readonly metadata: {
+    readonly requestId: string;
+    readonly timestamp: string;
+  };
+}
