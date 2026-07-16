@@ -12,9 +12,9 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-009-provider-adapter
 *   **Pull Request**: #132
 *   **Baseline Commit**: 301799f0b9b13a93cfc51274d0a5c7689bd03317
-*   **Completion Commit**: d288e97bd98fb25339e2ff39080f121e6b5d5e37
+*   **Completion Commit**: 76b6ed570ee490321825933eece3af77d2852e6f
 *   **Certificate Date**: 2026-07-16
-*   **Certificate Status**: Complete & Pending Merge Approval
+*   **Certificate Status**: WP-009 COMPLETE — MERGE AUTHORIZED
 
 ### 1.1 Process Deviation Record
 *   **Deviation Classification**: **None** (Implementation proceeded strictly in accordance with approved sequence gates and refined plan instructions).
@@ -69,7 +69,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Markdown Link Validation**: `npm run check-links` -> Passed successfully (exit code 0)
 *   **Astro Build**: `npm run build` -> Successful (exit code 0)
 *   **HTML Link Audit**: `node tooling/audit_links.cjs` -> Passed successfully (exit code 0)
-*   **Remote CI**: Pending on Pull Request #132
+*   **Remote CI**: Green on main branch (all checks green)
 
 ---
 
@@ -151,5 +151,13 @@ Confirm the absence of:
 
 ## 10. Successor Authorization
 
-*   **Authorization**: **SUCCESSOR WORK PACKAGE MAY BE PLANNED**
+*   **Authorization**: **SUCCESSOR WORK PACKAGE MAY BE PLANNED (Planning Phase Only; no implementation is authorized)**
 *   **Successor Name**: WP-010 — Communication Transformation
+
+---
+
+## 11. Open Observations
+
+*   **OBS-WP009-001 — Tokenizer client dependencies are currently instantiated inside the adapters codebase. Future versions should evaluate providing a centralized tokenizer port registry at Orchestrator level, so that token count checks can remain fully generic.**
+    *   *Category*: Architecture Evolution
+    *   *Recommendation*: Review during BECC v2.1 planning.
