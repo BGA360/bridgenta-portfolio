@@ -12,9 +12,9 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-008-provider-broker
 *   **Pull Request**: #131
 *   **Baseline Commit**: 6462e1d946c451ee4e1e8861bc8faccb8d406b8a
-*   **Completion Commit**: db3630f4060504961674c3514d7efb0ef8714a37
+*   **Completion Commit**: a5d8c73e7dabf1332b59712cb75c4cd1b0c13df0
 *   **Certificate Date**: 2026-07-16
-*   **Certificate Status**: Complete & Pending Merge Approval
+*   **Certificate Status**: WP-008 COMPLETE — MERGE AUTHORIZED
 
 ### 1.1 Process Deviation Record
 *   **Deviation Classification**: **None** (Implementation proceeded strictly in accordance with approved sequence gates and refined plan instructions).
@@ -71,7 +71,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Markdown Link Validation**: `npm run check-links` -> Passed successfully (exit code 0)
 *   **Astro Build**: `npm run build` -> Successful (exit code 0)
 *   **HTML Link Audit**: `node tooling/audit_links.cjs` -> Passed successfully (exit code 0)
-*   **Remote CI**: Pending on Pull Request #131
+*   **Remote CI**: Green on Pull Request #131
 
 ---
 
@@ -82,24 +82,24 @@ This document serves as the official **Work Package Closure Certificate** for WP
     *   *Acceptance Criterion Served*: Compilation.
     *   *Test/Validation Evidence*: `npm --prefix becc-runtime run build`.
 *   **[`becc-runtime/broker/types.ts`](../../../../../becc-runtime/broker/types.ts)**:
-    *   *WP Responsibility*: Declares canonical provider descriptor contracts and selection result schemas.
-    *   *Acceptance Criterion Served*: Type definitions.
+    *   *WP Responsibility*: Declares provider capability, registration, and selection result schemas.
+    *   *Acceptance Criterion Served*: Declarative metadata.
     *   *Test/Validation Evidence*: Compiler checks.
 *   **[`becc-runtime/broker/exceptions.ts`](../../../../../becc-runtime/broker/exceptions.ts)**:
     *   *WP Responsibility*: Custom exceptions for ineligible candidates and config conflicts.
     *   *Acceptance Criterion Served*: Error handling.
     *   *Test/Validation Evidence*: Assertion tests in `provider-broker.test.ts`.
 *   **[`becc-runtime/broker/provider-registry.service.ts`](../../../../../becc-runtime/broker/provider-registry.service.ts)**:
-    *   *WP Responsibility*: Loads registrations and enforces startup checks.
+    *   *WP Responsibility*: Loads configuration and validates registry.
     *   *Acceptance Criterion Served*: Startup validation.
     *   *Test/Validation Evidence*: Registry validation tests in `provider-broker.test.ts`.
 *   **[`becc-runtime/broker/provider-selector.service.ts`](../../../../../becc-runtime/broker/provider-selector.service.ts)**:
-    *   *WP Responsibility*: Implements compatibility checks and tie-breaking algorithms.
+    *   *WP Responsibility*: Implements tie-breaking and preference fallback policy.
     *   *Acceptance Criterion Served*: Deterministic selection.
     *   *Test/Validation Evidence*: Selection tests in `provider-broker.test.ts`.
 *   **[`becc-runtime/broker/provider-broker.service.ts`](../../../../../becc-runtime/broker/provider-broker.service.ts)**:
     *   *WP Responsibility*: Facade coordinator, bundle schema check.
-    *   *Acceptance Criterion Served*: Structural ingestion validation.
+    *   *Acceptance Criterion Served*: Ingestion validation.
     *   *Test/Validation Evidence*: Bundle ingestion tests in `provider-broker.test.ts`.
 *   **[`becc-runtime/tests/provider-broker.test.ts`](../../../../../becc-runtime/tests/provider-broker.test.ts)**:
     *   *WP Responsibility*: Comprehensive test suite.
@@ -139,3 +139,26 @@ Confirm the absence of:
 
 *   **Authorization**: **SUCCESSOR WORK PACKAGE MAY BE PLANNED**
 *   **Successor Name**: WP-009 — Provider Adapter
+
+---
+
+## 11. Capacity Boundary
+
+`maxContextTokens` remains as a pass-through declarative property only. It is not evaluated by WP-008. All tokenizer-specific context calculations and capacity enforcement are owned downstream by WP-009 (Provider Adapter).
+
+---
+
+## 12. Security Boundary
+
+WP-008 is a side-effect-free, read-only policy engine and exposes no transport or repository-mutation capability. It contains no filesystem writes, no network calls, accesses no credentials, and mutates no external state.
+
+---
+
+## 13. WP-005 ──► WP-009 Handoff Boundary
+
+The orchestrator (WP-005) routes the following inputs to WP-009:
+*   **Knowledge Bundle** (materialized rules context).
+*   **Provider Selection Result** (selected provider, session mapping, and bundle correlation hash).
+*   **Selected Provider ID** (routes execution adapter).
+*   **Credentials** (loaded inside WP-009 secure environment).
+*   WP-008 does not invoke WP-009 or share API tokens.
