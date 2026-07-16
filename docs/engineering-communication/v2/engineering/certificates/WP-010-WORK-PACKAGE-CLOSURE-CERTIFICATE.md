@@ -12,13 +12,13 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-010-communication-transformation
 *   **Pull Request**: #133
 *   **Baseline Commit**: 55cbb38b2457cb11d706c5146b1b6148e4963d17
-*   **Completion Commit**: 2ebe9dd3e5e411ca4729d5150eee5161bd77d9f3
+*   **Completion Commit**: ce13c4e646723e2e2d5b54686f7318e1a361a4b6
 *   **Certificate Date**: 2026-07-16
 *   **Certificate Status**: Complete & Pending Merge Approval
 
 ### 1.1 Process Deviation Record
 *   **Deviation Classification**: **Procedural Only** (Implementation proceeded immediately upon receiving authorization request, without awaiting a separate review loop for the refined plan. Non-blocking since the implementation satisfies all architectural constraints).
-*   **Corrective Action**: Establish explicit checkout checks for multi-agent handoffs.
+*   **Recurrence-Prevention Rule**: No implementation branch may be created and no production code may be written until the refined plan has been returned and the Project Owner has explicitly authorized implementation.
 
 ---
 
@@ -40,7 +40,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Phase A / Phase B Split**: Conforming. Prompts compile in Phase A (`assembleExecutionEnvelope`), and diffs parse in Phase B (`transformProviderResponse`).
 *   **No filesystem read**: Conforming. Content snapshots are received via `AssessmentContext` context parameters.
 *   **Precedence Preservation**: Conforming. Renders rules in the exact order packaged by WP-007, avoiding any re-sorting or recalculation.
-*   **XML Tags wrap**: Conforming. Employs replaceable target tags (`<target_file>`).
+*   **XML Tags wrap**: Conforming. Employs replaceable target tags (`<target_file>`) with closing tag escape mapping to prevent delimiter injection.
 *   **Deep Immutability**: Conforming. All generated envelopes, candidate communications, and traces are deeply frozen.
 
 ---
@@ -51,9 +51,10 @@ This document serves as the official **Work Package Closure Certificate** for WP
 | :--- | :--- | :--- | :--- |
 | Precedence Order | `instruction-composer.service.ts` | "WP-010: Precedence - Preserves packaged bundle rule order" | PASS |
 | Snapshot Projection | `instruction-composer.service.ts` | "WP-010: Snapshot Projection - Encloses source code in XML tags" | PASS |
+| XML tag escape | `instruction-composer.service.ts` | "WP-010: Security - XML closing tag escape protection" | PASS |
 | Phase A Envelope | `envelope-builder.service.ts` | "WP-010: Phase A - Compiles frozen ProviderExecutionEnvelope" | PASS |
 | Fence parsing | `provider-response-parser.service.ts`| "WP-010: Parser - Strips markdown code fences from LLM responses" | PASS |
-| Fallback raw text | `provider-response-parser.service.ts`| "WP-010: Parser - Returns raw response if no fences exist" | PASS |
+| Fail-Closed Ambiguity | `provider-response-parser.service.ts`| "WP-010: Parser - Rejects multiple fenced blocks / raw prose" | PASS |
 | Phase B Provenance | `communication-transformation.service.ts`| "WP-010: Phase B - Creates CandidateCommunication and TransformationMetadata" | PASS |
 | Immutability check | `communication-transformation.service.ts`| "WP-010: Phase B - Creates CandidateCommunication and TransformationMetadata" | PASS |
 
@@ -62,7 +63,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 ## 5. Validation Summary
 
 *   **Runtime Build**: `npm --prefix becc-runtime run build` -> Successful (exit code 0)
-*   **Runtime Tests**: `npm run test:runtime` -> 102 tests passed, 0 failed (exit code 0)
+*   **Runtime Tests**: `npm run test:runtime` -> 109 tests passed, 0 failed (exit code 0)
 *   **Repository Lint**: `npm run lint` -> Passed successfully (exit code 0)
 *   **Markdown Link Validation**: `npm run check-links` -> Passed successfully (exit code 0)
 *   **Astro Build**: `npm run build` -> Successful (exit code 0)
@@ -92,7 +93,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
     *   *WP Responsibility*: Compiles envelopes.
     *   *Acceptance Criterion Served*: Phase A assembly.
 *   **[`becc-runtime/transformer/provider-response-parser.service.ts`](../../../../../becc-runtime/transformer/provider-response-parser.service.ts)**:
-    *   *WP Responsibility*: Strips markdown fences.
+    *   *WP Responsibility*: Strips markdown fences, fails closed on prose.
     *   *Acceptance Criterion Served*: Response parse.
 *   **[`becc-runtime/transformer/candidate-communication-builder.service.ts`](../../../../../becc-runtime/transformer/candidate-communication-builder.service.ts)**:
     *   *WP Responsibility*: Compiles communication payload.
