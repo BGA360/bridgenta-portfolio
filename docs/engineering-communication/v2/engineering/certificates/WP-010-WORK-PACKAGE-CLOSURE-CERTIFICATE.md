@@ -12,9 +12,9 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-010-communication-transformation
 *   **Pull Request**: #133
 *   **Baseline Commit**: 55cbb38b2457cb11d706c5146b1b6148e4963d17
-*   **Completion Commit**: ce13c4e646723e2e2d5b54686f7318e1a361a4b6
+*   **Completion Commit**: 7a644e97eac7d6c26b135adff3da41c5f9878e4a
 *   **Certificate Date**: 2026-07-16
-*   **Certificate Status**: Complete & Pending Merge Approval
+*   **Certificate Status**: FROZEN
 
 ### 1.1 Process Deviation Record
 *   **Deviation Classification**: **Procedural Only** (Implementation proceeded immediately upon receiving authorization request, without awaiting a separate review loop for the refined plan. Non-blocking since the implementation satisfies all architectural constraints).
@@ -68,7 +68,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Markdown Link Validation**: `npm run check-links` -> Passed successfully (exit code 0)
 *   **Astro Build**: `npm run build` -> Successful (exit code 0)
 *   **HTML Link Audit**: `node tooling/audit_links.cjs` -> Passed successfully (exit code 0)
-*   **Remote CI**: Build checks and PRAG Validation Gate checks are **green** (passing) on PR #133.
+*   **Remote CI**: Green on main branch (all checks green)
 
 ---
 
@@ -139,3 +139,16 @@ Confirm the absence of:
 
 *   **Authorization**: **SUCCESSOR WORK PACKAGE MAY BE PLANNED (Planning Phase Only; no implementation is authorized)**
 *   **Successor Name**: WP-011 — Communication Validation Engine
+
+---
+
+## 11. Observation Register
+
+*   **OBS-WP010-001 — Structured Candidate Evolution**
+    *   *Category*: Architecture Evolution
+    *   *Description*: WP-010 currently represents controlled communication changes through the approved candidate and diff contracts. Future BECC versions should evaluate whether a richer typed change-operation model would improve deterministic validation, Human Review, application safety, and multi-format communication support.
+    *   *Recommendation*: Review during BECC v2.1 Canonical Data Model planning.
+*   **OBS-WP010-002 — Provider-Neutral Envelope Structure**
+    *   *Category*: Architecture Evolution
+    *   *Description*: The amended v2.0 Provider Execution Envelope uses the currently approved prompt and instruction representation. Future versions should evaluate a more structured provider-neutral content model to support multipart, structured-output, tool-enabled, and non-LLM execution providers without relying on flattened prompt text.
+    *   *Recommendation*: Review during BECC v2.1 runtime architecture planning.
