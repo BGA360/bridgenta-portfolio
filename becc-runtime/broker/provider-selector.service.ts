@@ -39,16 +39,7 @@ export class ProviderSelectorService {
         continue;
       }
 
-      // 3. Capacity Check
-      const estimatedTokens = Math.ceil(bundle.buildMetadata.sizeBytes / 4);
-      if (estimatedTokens > reg.capabilities.maxContextTokens) {
-        trace.push(createTrace(
-          'candidate_rejected',
-          reg.providerId,
-          `Rejected: Context size (${estimatedTokens} tokens estimated from ${bundle.buildMetadata.sizeBytes} bytes) exceeds limit of ${reg.capabilities.maxContextTokens} tokens.`
-        ));
-        continue;
-      }
+
 
       trace.push(createTrace('candidate_eligible', reg.providerId, `Candidate is eligible.`));
       eligible.push(reg);

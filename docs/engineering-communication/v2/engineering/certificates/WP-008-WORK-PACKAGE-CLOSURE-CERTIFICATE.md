@@ -54,7 +54,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 | Startup Configuration Validation | `provider-registry.service.ts` | "WP-008: Registry - Valid configuration initialization", "WP-008: Registry - Fails on duplicate provider ID" | PASS |
 | Schema Version Ingestion | `provider-broker.service.ts` | "WP-008: Bundle - Fails on unsupported schema version" | PASS |
 | Bundle Hash Validation | `provider-broker.service.ts` | "WP-008: Bundle - Fails on malformed bundleHash" | PASS |
-| Context Tokens Filter | `provider-selector.service.ts` | "WP-008: Selection - Fails when context window exceeded" | PASS |
+| Eligibility Matching | `provider-selector.service.ts` | "WP-008: Selection - Fails when all compatible providers are disabled" | PASS |
 | Deterministic Tie-Breaker | `provider-selector.service.ts` | "WP-008: Selection - Deterministic tie-breaking alphabetically" | PASS |
 | Fallback Cycle Rejection | `provider-registry.service.ts` | "WP-008: Registry - Fails on cycle fallback chain" | PASS |
 | Structured Selection Trace | `provider-selector.service.ts` | "WP-008: Selection - Respects preference if eligible" | PASS |

@@ -205,10 +205,27 @@ test('WP-008: Selection - Selects enabled compatible provider', () => {
   assert.strictEqual(result.fallbackApplied, false);
 });
 
-test('WP-008: Selection - Fails when context window exceeded', () => {
-  const registry = new ProviderRegistryService(createMockConfig());
-  // Estimate tokens = 100000 / 4 = 25000 tokens, which exceeds all limits (max 4096)
-  const bundle = createMockBundle(100000);
+test('WP-008: Selection - Fails when all compatible providers are disabled', () => {
+  const config = createMockConfig();
+  // Add a provider that supports "3.0.0" but is disabled
+  (config.registrations as any).push({
+    providerId: 'provider-disabled-3',
+    label: 'Disabled 3.0.0 Provider',
+    enabled: false,
+    category: 'cloud',
+    capabilities: {
+      maxContextTokens: 4096,
+      supportsSystemInstructions: true,
+      supportsTools: true
+    },
+    supportedSchemaVersions: ['3.0.0']
+  });
+  // Make sure selectionPriority has it
+  (config.selectionPriority as any)['provider-disabled-3'] = 1;
+
+  const registry = new ProviderRegistryService(config);
+  const bundle = createMockBundle();
+  (bundle as any).schemaVersion = '3.0.0';
   const broker = new ProviderBrokerService();
 
   assert.throws(() => {
