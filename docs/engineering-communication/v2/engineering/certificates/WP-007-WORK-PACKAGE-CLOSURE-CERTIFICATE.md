@@ -12,7 +12,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-007-knowledge-bundle-builder
 *   **Pull Request**: #130
 *   **Baseline Commit**: 9672d813b0838fa5f2fdda6283de6abce251c8b7
-*   **Completion Commit**: 12e960227967fcefa4629dc8de432191fa41d5f2
+*   **Completion Commit**: a31fe2504634375f9557a88defe650a34770c696
 *   **Certificate Date**: 2026-07-16
 *   **Certificate Status**: FROZEN & MERGED
 
@@ -171,3 +171,9 @@ WP-006's `IResolvedKnowledge` contains no schema-version identifier. In alignmen
 *   **Correlation Identity**: Mapped directly to `sessionId` matching `AssessmentContext.assessmentId`. No independent UUID is defined.
 *   **Content Integrity Digest**: `bundleHash` represents the semantic-content digest. It is not an independent artifact identifier or a cryptographic signature.
 *   **FSM Transitions**: WP-007 executes read-only evaluations and returns typed success/failure. The orchestration coordinator (WP-005) owns state transitions. WP-007 has no Event Bus or state machine ownership.
+
+---
+
+## 13. Open Observations
+
+*   **OBS-WP007-001 — Structural Input Compatibility Evolution**: WP-006 ──► WP-007 compatibility is currently structural because `IResolvedKnowledge` does not contain an explicit contract-version field. Future BECC versions may evaluate introducing explicit versioning for inter-work-package canonical contracts if structural evolution becomes difficult to govern. (Recommendation: Review during BECC v2.1 Canonical Data Model planning).
