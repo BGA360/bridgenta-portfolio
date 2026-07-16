@@ -7,7 +7,8 @@ export class TransformationMetadataBuilderService implements ITransformationMeta
     promptText: string,
     modelId: string,
     durationMs: number,
-    ruleIds: readonly string[]
+    includedRuleIds: readonly string[],
+    providerReferencedRuleIds: readonly string[]
   ): TransformationMetadata {
     const promptHash = createHash('sha256')
       .update(promptText || '')
@@ -17,7 +18,8 @@ export class TransformationMetadataBuilderService implements ITransformationMeta
       promptHash,
       modelId,
       durationMs,
-      ruleHits: Object.freeze([...ruleIds])
+      includedRuleIds: Object.freeze([...includedRuleIds]),
+      providerReferencedRuleIds: Object.freeze([...providerReferencedRuleIds])
     };
 
     return Object.freeze(metadata);

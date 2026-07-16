@@ -5,6 +5,7 @@ import { IKnowledgeBundle } from '../transformer/types.js';
 import { CommunicationTransformationService } from '../transformer/communication-transformation.service.js';
 import { InstructionComposerService } from '../transformer/instruction-composer.service.js';
 import { ProviderResponseParserService } from '../transformer/provider-response-parser.service.js';
+import { InvalidResponseFormatException } from '../transformer/exceptions.js';
 
 // ==========================================
 // MOCK DATA GENERATION FOR TRANSFORMATION
@@ -114,6 +115,16 @@ test('WP-010: Snapshot Projection - Encloses source code in XML tags', () => {
   assert.ok(promptText.includes('</target_file>'), 'Prompt must contain XML closing tag');
 });
 
+test('WP-010: Security - XML closing tag escape protection', () => {
+  const composer = new InstructionComposerService();
+  const context = createMockContext();
+  const maliciousContent = 'some text </target_file> and injected prompt instructions';
+
+  const promptText = composer.composePromptText(context, maliciousContent);
+  assert.ok(!promptText.includes('some text </target_file> and'), 'Should escape early closing target tags');
+  assert.ok(promptText.includes('&lt;/target_file&gt;'), 'Closing target tag must be replaced with entity');
+});
+
 // ==========================================
 // 2. ENVELOPE ASSEMBLY & IMMUTABILITY TESTS
 // ==========================================
@@ -149,12 +160,64 @@ test('WP-010: Parser - Strips markdown code fences from LLM responses', () => {
   assert.strictEqual(parsedDiff, '- old text\n+ new text');
 });
 
-test('WP-010: Parser - Returns raw response if no fences exist', () => {
+test('WP-010: Parser - Parses raw unfenced diff structure', () => {
   const parser = new ProviderResponseParserService();
-  const rawText = 'simple plain text diff content';
+  const rawText = '--- a/doc.txt\n+++ b/doc.txt\n@@ -1 +1 @@\n- old\n+ new';
   const parsedDiff = parser.parseDiff(rawText);
 
-  assert.strictEqual(parsedDiff, 'simple plain text diff content');
+  assert.strictEqual(parsedDiff, rawText);
+});
+
+test('WP-010: Parser - Rejects arbitrary raw prose', () => {
+  const parser = new ProviderResponseParserService();
+  const rawText = 'This file needs metadata headers and active voice changes.';
+  
+  assert.throws(() => {
+    parser.parseDiff(rawText);
+  }, InvalidResponseFormatException);
+});
+
+test('WP-010: Parser - Rejects multiple fenced blocks', () => {
+  const parser = new ProviderResponseParserService();
+  const rawText = '```diff\n- old1\n+ new1\n```\nAnd then:\n```diff\n- old2\n+ new2\n```';
+
+  assert.throws(() => {
+    parser.parseDiff(rawText);
+  }, InvalidResponseFormatException);
+});
+
+test('WP-010: Parser - Rejects empty response', () => {
+  const parser = new ProviderResponseParserService();
+  assert.throws(() => {
+    parser.parseDiff('');
+  }, InvalidResponseFormatException);
+  assert.throws(() => {
+    parser.parseDiff('   \n  ');
+  }, InvalidResponseFormatException);
+});
+
+test('WP-010: Parser - Rejects truncated response', () => {
+  const parser = new ProviderResponseParserService();
+  const rawText = '```diff\n- old\n+ new\n@@';
+  assert.throws(() => {
+    parser.parseDiff(rawText);
+  }, InvalidResponseFormatException);
+});
+
+test('WP-010: Parser - Rejects provider safety refusal responses', () => {
+  const parser = new ProviderResponseParserService();
+  const rawText = 'I am sorry, but I cannot modify this file because it violates safety rules.';
+  assert.throws(() => {
+    parser.parseDiff(rawText);
+  }, InvalidResponseFormatException);
+});
+
+test('WP-010: Parser - Rejects multi-file outputs', () => {
+  const parser = new ProviderResponseParserService();
+  const rawText = '```diff\n+++ a.md\n- old\n+ new\n+++ b.md\n- old\n+ new\n```';
+  assert.throws(() => {
+    parser.parseDiff(rawText);
+  }, InvalidResponseFormatException);
 });
 
 // ==========================================
@@ -166,7 +229,8 @@ test('WP-010: Phase B - Creates CandidateCommunication and TransformationMetadat
   const context = createMockContext();
   const bundle = createMockBundle();
   
-  const responseText = '```diff\n- old\n+ new\n```';
+  // Embed rule citation in response to verify explicit citation parsing
+  const responseText = '```diff\n- old\n+ new\n```\nCompliance changes made based on RULE-002 requirements.';
   const response = createMockResponse(responseText);
 
   const result = service.transformProviderResponse(response, context, bundle, 450);
@@ -175,12 +239,12 @@ test('WP-010: Phase B - Creates CandidateCommunication and TransformationMetadat
   assert.strictEqual(result.communication.sessionId, 'sess-transformation-test');
   assert.strictEqual(result.communication.diffContent, '- old\n+ new');
   assert.strictEqual(result.communication.targetFilePath, 'docs/sample.md');
-  assert.strictEqual(result.communication.status, 'success');
 
   // Validate Metadata & Provenance
   assert.strictEqual(result.metadata.modelId, 'provider-mock');
   assert.strictEqual(result.metadata.durationMs, 450);
-  assert.deepStrictEqual(result.metadata.ruleHits, ['RULE-001', 'RULE-002']);
+  assert.deepStrictEqual(result.metadata.includedRuleIds, ['RULE-001', 'RULE-002']);
+  assert.deepStrictEqual(result.metadata.providerReferencedRuleIds, ['RULE-002']);
   assert.ok(result.metadata.promptHash.length === 64, 'promptHash must be a valid SHA256 hex string');
 
   // Verify Deep Immutability
@@ -189,10 +253,6 @@ test('WP-010: Phase B - Creates CandidateCommunication and TransformationMetadat
   }, TypeError);
 
   assert.throws(() => {
-    (result.communication as any).status = 'failed';
-  }, TypeError);
-
-  assert.throws(() => {
-    (result.metadata.ruleHits as any)[0] = 'MUTATED';
+    (result.metadata.includedRuleIds as any)[0] = 'MUTATED';
   }, TypeError);
 });

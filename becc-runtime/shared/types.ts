@@ -108,12 +108,12 @@ export interface CandidateCommunication {
   readonly sessionId: string;
   readonly diffContent: string;
   readonly targetFilePath: string;
-  readonly status: 'success' | 'failed';
 }
 
 export interface TransformationMetadata {
   readonly promptHash: string;
   readonly modelId: string;
   readonly durationMs: number;
-  readonly ruleHits: readonly string[];
+  readonly includedRuleIds: readonly string[];
+  readonly providerReferencedRuleIds: readonly string[];
 }

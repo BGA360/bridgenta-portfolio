@@ -52,7 +52,8 @@ export interface ITransformationMetadataBuilder {
     promptText: string,
     modelId: string,
     durationMs: number,
-    ruleIds: readonly string[]
+    includedRuleIds: readonly string[],
+    providerReferencedRuleIds: readonly string[]
   ): TransformationMetadata;
 }
 

@@ -41,7 +41,14 @@ export class CommunicationTransformationService implements ITransformationEngine
       context.targetDocument.path
     );
 
-    const ruleIds = bundle.rules.map(r => r.id);
+    const includedRuleIds = bundle.rules.map(r => r.id);
+    const providerReferencedRuleIds: string[] = [];
+    for (const rule of bundle.rules) {
+      if (response.text.includes(rule.id)) {
+        providerReferencedRuleIds.push(rule.id);
+      }
+    }
+
     const promptText = `Generate a unified diff for the following target file to make it comply with the rules:
 Path: ${context.targetDocument.path}
 Session ID: ${context.assessmentId}
@@ -54,7 +61,8 @@ Target File Content:
       promptText,
       response.providerId,
       durationMs,
-      ruleIds
+      includedRuleIds,
+      providerReferencedRuleIds
     );
 
     const result = {

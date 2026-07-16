@@ -7,13 +7,10 @@ export class CandidateCommunicationBuilderService implements ICandidateCommunica
     diffContent: string,
     targetFilePath: string
   ): CandidateCommunication {
-    const status = diffContent.length > 0 ? 'success' : 'failed';
-
     const communication: CandidateCommunication = {
       sessionId,
       diffContent,
-      targetFilePath,
-      status
+      targetFilePath
     };
 
     return Object.freeze(communication);
