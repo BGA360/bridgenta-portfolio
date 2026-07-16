@@ -12,7 +12,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Implementation Branch**: feature/wp-008-provider-broker
 *   **Pull Request**: #131
 *   **Baseline Commit**: 6462e1d946c451ee4e1e8861bc8faccb8d406b8a
-*   **Completion Commit**: a5d8c73e7dabf1332b59712cb75c4cd1b0c13df0
+*   **Completion Commit**: 6ab72118b935e3afcdf280c9a75963be456c3998
 *   **Certificate Date**: 2026-07-16
 *   **Certificate Status**: WP-008 COMPLETE — MERGE AUTHORIZED
 
@@ -71,7 +71,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 *   **Markdown Link Validation**: `npm run check-links` -> Passed successfully (exit code 0)
 *   **Astro Build**: `npm run build` -> Successful (exit code 0)
 *   **HTML Link Audit**: `node tooling/audit_links.cjs` -> Passed successfully (exit code 0)
-*   **Remote CI**: Green on Pull Request #131
+*   **Remote CI**: Green on main branch (all checks green)
 
 ---
 
@@ -137,7 +137,7 @@ Confirm the absence of:
 
 ## 10. Successor Authorization
 
-*   **Authorization**: **SUCCESSOR WORK PACKAGE MAY BE PLANNED**
+*   **Authorization**: **SUCCESSOR WORK PACKAGE MAY BE PLANNED (Planning Phase Only; no implementation is authorized)**
 *   **Successor Name**: WP-009 — Provider Adapter
 
 ---
@@ -162,3 +162,11 @@ The orchestrator (WP-005) routes the following inputs to WP-009:
 *   **Selected Provider ID** (routes execution adapter).
 *   **Credentials** (loaded inside WP-009 secure environment).
 *   WP-008 does not invoke WP-009 or share API tokens.
+
+---
+
+## 14. Open Observations
+
+*   **OBS-WP008-001 — Provider compatibility is currently evaluated structurally through static capability declarations. Future BECC versions should evaluate whether provider capability negotiation should evolve into an explicit constitutional capability contract, allowing new provider features to be introduced without modifying Provider Broker selection logic.**
+    *   *Category*: Architecture Evolution
+    *   *Recommendation*: Review during BECC v2.1 architecture planning.
