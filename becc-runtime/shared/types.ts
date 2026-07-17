@@ -117,3 +117,47 @@ export interface TransformationMetadata {
   readonly includedRuleIds: readonly string[];
   readonly providerReferencedRuleIds: readonly string[];
 }
+
+export interface ValidationSummary {
+  readonly status: 'passed' | 'failed' | 'warnings_present';
+  readonly errorCount: number;
+  readonly warningCount: number;
+  readonly infoCount: number;
+  readonly evaluatedRuleCount: number;
+  readonly nonEvaluableRuleCount: number;
+}
+
+export interface AffectedLocation {
+  readonly coordinateSystem: 'baseline' | 'candidate' | 'diff';
+  readonly filePath: string;
+  readonly startLine?: number;
+  readonly endLine?: number;
+  readonly startColumn?: number;
+  readonly endColumn?: number;
+}
+
+export interface ValidationFinding {
+  readonly id: string;
+  readonly category: 'Constitutional' | 'Engineering' | 'Terminology' | 'Vocabulary' | 'Structure' | 'Provenance' | 'Metadata' | 'References' | 'Integrity' | 'Completeness';
+  readonly severity: 'error' | 'warning' | 'info';
+  readonly message: string;
+  readonly affectedLocation?: AffectedLocation;
+  readonly originatingRuleId?: string;
+  readonly recommendation?: string;
+}
+
+export interface ValidationEvidence {
+  readonly findingId: string;
+  readonly location: AffectedLocation;
+  readonly expectedCondition: string;
+  readonly observedCondition: string;
+  readonly excerptHash: string;
+  readonly excerpt?: string;
+}
+
+export interface ValidationResultReport {
+  readonly sessionId: string;
+  readonly summary: ValidationSummary;
+  readonly findings: readonly ValidationFinding[];
+  readonly evidence: readonly ValidationEvidence[];
+}
