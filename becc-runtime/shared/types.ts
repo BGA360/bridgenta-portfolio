@@ -155,9 +155,32 @@ export interface ValidationEvidence {
   readonly excerpt?: string;
 }
 
+export type HumanReviewResponseType =
+  | 'boolean'
+  | 'choice'
+  | 'bounded_text'
+  | 'acknowledgement'
+  | 'evidence_reference';
+
+export interface HumanReviewObligationDefinition {
+  readonly obligationId: string;
+  readonly ruleId: string;
+  readonly question: string;
+  readonly responseType: HumanReviewResponseType;
+  readonly allowedValues?: readonly string[];
+  readonly blocking: boolean;
+  readonly rationaleRequired: boolean;
+  readonly evidenceRequired: boolean;
+}
+
+export interface ApplicableHumanReviewObligation extends HumanReviewObligationDefinition {
+  readonly applicabilityEvidence: readonly string[];
+}
+
 export interface ValidationResultReport {
   readonly sessionId: string;
   readonly summary: ValidationSummary;
   readonly findings: readonly ValidationFinding[];
   readonly evidence: readonly ValidationEvidence[];
+  readonly applicableObligations: readonly ApplicableHumanReviewObligation[];
 }

@@ -118,7 +118,7 @@ export class RuntimeOrchestrator {
       );
 
       // Stage the review page draft
-      await this.reviewEngine.stageReview(context, validationReport);
+      await this.reviewEngine.stageReview(context, validationReport, bundle, diff);
 
     } catch (err) {
       await this.handleFailure(sessionId, err, connectorResult?.repositoryDetails?.commitHash);
@@ -129,7 +129,11 @@ export class RuntimeOrchestrator {
   /**
    * Processes the Human Review decision outcome.
    */
-  public async handleReviewDecision(sessionId: string, approved: boolean, validationReport: any): Promise<void> {
+  public async handleReviewDecision(
+    sessionId: string,
+    decision: 'APPROVED' | 'REJECTED' | 'REVISION_REQUIRED' | 'ESCALATION_REQUESTED' | boolean,
+    validationReport: any
+  ): Promise<void> {
     const stateMachine = this.sessions.get(sessionId);
     if (!stateMachine) {
       throw new SessionNotFoundException(sessionId);
@@ -142,18 +146,42 @@ export class RuntimeOrchestrator {
       this.globalTimers.delete(sessionId);
     }
 
-    if (approved) {
+    if (decision === true || decision === 'APPROVED') {
       stateMachine.transitionTo('Completed');
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.HumanApproved, null));
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.RuntimeCompleted, { outcome: 'Approved' }));
-    } else {
+    } else if (decision === false || decision === 'REJECTED') {
       stateMachine.transitionTo('Completed');
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.HumanRejected, null));
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.RuntimeCompleted, { outcome: 'Rejected' }));
       console.warn(`[Orchestrator] Session ${sessionId} rejected. External remediation is required.`);
+    } else if (decision === 'REVISION_REQUIRED') {
+      stateMachine.transitionTo('RevisionRequested');
+      await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.HumanReviewRevisionRequired, null));
+      await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.RuntimeCompleted, { outcome: 'RevisionRequested' }));
+    } else if (decision === 'ESCALATION_REQUESTED') {
+      // Escalation request blocks routing but maintains the waiting state for further admin review.
+      await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.HumanReviewRequested, { escalated: true }));
     }
 
     this.cleanupSession(sessionId);
+  }
+
+  /**
+   * Loads or restores a session state machine from persisted storage.
+   */
+  public loadSessionState(sessionId: string, state: OrchestratorState): void {
+    const stateMachine = new RuntimeStateMachine();
+    if (state !== 'Pending') {
+      stateMachine.transitionTo('Initializing');
+    }
+    if (state !== 'Pending' && state !== 'Initializing') {
+      stateMachine.transitionTo('Running');
+    }
+    if (state !== 'Pending' && state !== 'Initializing' && state !== 'Running') {
+      stateMachine.transitionTo(state);
+    }
+    this.sessions.set(sessionId, stateMachine);
   }
 
   /**

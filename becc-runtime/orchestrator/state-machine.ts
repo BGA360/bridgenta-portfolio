@@ -27,7 +27,9 @@ export class RuntimeStateMachine {
       case 'Running':
         return to === 'Waiting' || to === 'Failed' || to === 'Cancelled';
       case 'Waiting':
-        return to === 'Completed' || to === 'Failed' || to === 'Cancelled';
+        return to === 'Completed' || to === 'Failed' || to === 'Cancelled' || to === 'RevisionRequested';
+      case 'RevisionRequested':
+        return to === 'Pending' || to === 'Failed' || to === 'Cancelled';
       case 'Completed':
       case 'Failed':
       case 'Cancelled':

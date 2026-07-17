@@ -1,10 +1,12 @@
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { IKnowledgeBundle, IBundleConfig } from './types.js';
 import { IResolvedKnowledge } from '../resolver/types.js';
 import { BundleAssemblerService } from './bundle-assembler.service.js';
 import { BundleValidatorService } from './bundle-validator.service.js';
 import { BundleIntegrityService } from './bundle-integrity.service.js';
-import { MissingResolvedKnowledgeException, OversizedBundleException } from './exceptions.js';
+import { MissingResolvedKnowledgeException, OversizedBundleException, InvalidObligationMetadataException } from './exceptions.js';
+import { HumanReviewObligationDefinition } from '../shared/types.js';
 
 export class KnowledgeBundleBuilderService {
   private readonly assembler: BundleAssemblerService;
@@ -44,6 +46,66 @@ export class KnowledgeBundleBuilderService {
 
     this.validator.validate(rules, vocabulary, evidence);
 
+    const obligations: HumanReviewObligationDefinition[] = [];
+    for (const rule of rules) {
+      const match = rule.content.match(/<!--\s*HUMAN_REVIEW_OBLIGATION\r?\n([\s\S]*?)\r?\n\s*-->/);
+      if (match) {
+        const block = match[1];
+        const lines = block.split(/\r?\n/);
+        const meta: any = { ruleId: rule.ruleId };
+        for (const line of lines) {
+          const colonIdx = line.indexOf(':');
+          if (colonIdx !== -1) {
+            const key = line.substring(0, colonIdx).trim();
+            const val = line.substring(colonIdx + 1).trim();
+            if (val === 'true') {
+              meta[key] = true;
+            } else if (val === 'false') {
+              meta[key] = false;
+            } else if (val.startsWith('[') && val.endsWith(']')) {
+              try {
+                meta[key] = JSON.parse(val.replace(/'/g, '"'));
+              } catch {
+                meta[key] = val;
+              }
+            } else {
+              meta[key] = val.replace(/^["']|["']$/g, '');
+            }
+          }
+        }
+
+        // Validate obligation metadata
+        if (!meta.question) {
+          throw new InvalidObligationMetadataException(rule.ruleId, 'Missing required field: question');
+        }
+        if (!meta.responseType) {
+          throw new InvalidObligationMetadataException(rule.ruleId, 'Missing required field: responseType');
+        }
+        const validTypes = ['boolean', 'choice', 'bounded_text', 'acknowledgement', 'evidence_reference'];
+        if (!validTypes.includes(meta.responseType)) {
+          throw new InvalidObligationMetadataException(rule.ruleId, `Invalid responseType: ${meta.responseType}`);
+        }
+        if (meta.blocking === undefined) {
+          throw new InvalidObligationMetadataException(rule.ruleId, 'Missing required field: blocking');
+        }
+
+        const obligationId = createHash('sha256')
+          .update(`${rule.ruleId}:${meta.question}`)
+          .digest('hex');
+
+        obligations.push({
+          obligationId,
+          ruleId: rule.ruleId,
+          question: meta.question,
+          responseType: meta.responseType as any,
+          allowedValues: meta.allowedValues || undefined,
+          blocking: meta.blocking,
+          rationaleRequired: meta.rationaleRequired !== undefined ? meta.rationaleRequired : true,
+          evidenceRequired: meta.evidenceRequired !== undefined ? meta.evidenceRequired : false
+        });
+      }
+    }
+
     const bundleHash = this.integrity.calculateHash(resolved.sessionId, rules, vocabulary, evidence);
 
     const tempBundle = {
@@ -52,6 +114,7 @@ export class KnowledgeBundleBuilderService {
       rules,
       vocabulary,
       resolutionEvidence: evidence,
+      obligations,
       integrity: { bundleHash },
       buildMetadata: {
         timestamp: new Date().toISOString(),
@@ -73,6 +136,7 @@ export class KnowledgeBundleBuilderService {
       rules: Object.freeze(rules.map(r => Object.freeze(r))),
       vocabulary: Object.freeze(vocabulary.map(v => Object.freeze(v))),
       resolutionEvidence: Object.freeze(evidence.map(e => Object.freeze(e))),
+      obligations: Object.freeze(obligations.map(o => Object.freeze(o))),
       integrity: Object.freeze({ bundleHash }),
       buildMetadata: Object.freeze({
         timestamp: new Date().toISOString(),

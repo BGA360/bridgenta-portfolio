@@ -1,5 +1,12 @@
 import { randomUUID } from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
 import { RuntimeConfig, LogEvent, HealthReport } from '../shared/types.js';
+import { FileReviewStateAdapter } from '../human-review/adapters/file-review-state.adapter.js';
+import { HumanReviewService } from '../human-review/human-review.service.js';
+import { IReviewerIdentityPort } from '../human-review/ports/reviewer-identity.port.js';
+import { IClockPort } from '../human-review/ports/clock.port.js';
+import { VerifiedReviewer } from '../human-review/types.js';
 
 // 1. Initial State
 let isShuttingDown = false;
@@ -124,7 +131,34 @@ Commands:
 
 const VERSION_TEXT = '2.0.0-GA';
 
-export function run(args: string[]) {
+class CliReviewerIdentityPort implements IReviewerIdentityPort {
+  public async verify(assertion: string, context: Record<string, unknown>): Promise<VerifiedReviewer> {
+    try {
+      const claim = JSON.parse(assertion);
+      return {
+        reviewerId: claim.reviewerId || context.reviewerId || 'mock-reviewer',
+        role: claim.role || 'Reviewer',
+        projectIds: claim.projectIds || ['*'],
+        classifications: claim.classifications || ['*']
+      };
+    } catch {
+      return {
+        reviewerId: context.reviewerId as string || assertion || 'mock-reviewer',
+        role: 'Reviewer',
+        projectIds: ['*'],
+        classifications: ['*']
+      };
+    }
+  }
+}
+
+class CliClockPort implements IClockPort {
+  public now(): string {
+    return new Date().toISOString();
+  }
+}
+
+export async function run(args: string[]) {
   log('info', 'RuntimeStarted');
 
   if (args.length === 0) {
@@ -176,6 +210,56 @@ export function run(args: string[]) {
     return shutdown('StatusReported', 0);
   }
 
+  if (primaryArg === 'review') {
+    const subArg = args[1];
+    const sessionDir = process.env.BECC_SESSION_DIR || path.join(process.cwd(), '.sessions');
+    const repository = new FileReviewStateAdapter(sessionDir);
+    const identityPort = new CliReviewerIdentityPort();
+    const clock = new CliClockPort();
+    const reviewService = new HumanReviewService(repository, identityPort, clock);
+
+    if (subArg === 'show') {
+      const reviewRequestId = args[2];
+      if (!reviewRequestId) {
+        return shutdown('InvalidCommandParameters', 1, { error: 'Missing reviewRequestId parameter for review show' });
+      }
+      try {
+        const record = await repository.loadPreparedReview(reviewRequestId);
+        if (!record) {
+          return shutdown('ReviewNotFound', 1, { error: `Review package not found: ${reviewRequestId}` });
+        }
+        process.stdout.write(JSON.stringify(record.reviewPackage, null, 2) + '\n');
+        return shutdown('ReviewDisplayed', 0);
+      } catch (err: any) {
+        return shutdown('CommandFailed', 1, { error: err.message });
+      }
+    }
+
+    if (subArg === 'submit') {
+      const submissionPath = args[2];
+      if (!submissionPath) {
+        return shutdown('InvalidCommandParameters', 1, { error: 'Missing submissionPath parameter for review submit' });
+      }
+      try {
+        const resolvedPath = path.resolve(submissionPath);
+        if (!fs.existsSync(resolvedPath)) {
+          return shutdown('FileNotFound', 1, { error: `Submission file not found: ${submissionPath}` });
+        }
+        const submissionContent = fs.readFileSync(resolvedPath, 'utf8');
+        const submission = JSON.parse(submissionContent);
+
+        const continuation = await reviewService.submitDecision(submission);
+
+        process.stdout.write(JSON.stringify(continuation, null, 2) + '\n');
+        return shutdown('ReviewSubmitted', 0);
+      } catch (err: any) {
+        return shutdown('CommandFailed', 1, { error: err.message });
+      }
+    }
+
+    return shutdown('UnknownCommand', 1, { error: `Unknown review subcommand: ${subArg}` });
+  }
+
   // Reject all other commands/options
   return shutdown('UnknownCommand', 1, { error: `Unknown command or option: ${primaryArg}` });
 }
@@ -183,5 +267,8 @@ export function run(args: string[]) {
 // Auto-run if executed directly as the entry point script
 const isMainModule = import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('becc.js');
 if (isMainModule && process.env.BECC_TEST_INTERCEPT_EXIT !== 'true') {
-  run(process.argv.slice(2));
+  run(process.argv.slice(2)).catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
 }

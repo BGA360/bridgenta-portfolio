@@ -2,7 +2,8 @@ import {
   ValidationResultReport,
   ValidationFinding,
   ValidationEvidence,
-  ValidationSummary
+  ValidationSummary,
+  ApplicableHumanReviewObligation
 } from '../shared/types.js';
 
 export class FindingAggregatorService {
@@ -11,7 +12,8 @@ export class FindingAggregatorService {
     rawFindings: readonly ValidationFinding[],
     rawEvidence: readonly ValidationEvidence[],
     evaluatedRuleCount: number,
-    nonEvaluableRuleCount: number
+    nonEvaluableRuleCount: number,
+    applicableObligations: readonly ApplicableHumanReviewObligation[] = []
   ): ValidationResultReport {
     // 1. Deduplicate findings by finding ID
     const uniqueFindingsMap = new Map<string, ValidationFinding>();
@@ -74,7 +76,8 @@ export class FindingAggregatorService {
       sessionId,
       summary,
       findings: Object.freeze(deduplicatedFindings),
-      evidence: Object.freeze(deduplicatedEvidence)
+      evidence: Object.freeze(deduplicatedEvidence),
+      applicableObligations: Object.freeze(applicableObligations.map(o => Object.freeze(o)))
     };
 
     return Object.freeze(report);

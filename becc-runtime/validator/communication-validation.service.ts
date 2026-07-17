@@ -104,13 +104,19 @@ export class CommunicationValidationService implements IValidationEngine {
       r => r.content.toLowerCase().includes('clarity') || r.content.toLowerCase().includes('appropriate')
     ).length;
 
+    const applicableObligations = (bundle.obligations || []).map(ob => ({
+      ...ob,
+      applicabilityEvidence: [`Rule [${ob.ruleId}] is active in Knowledge Bundle.`]
+    }));
+
     // Aggregate findings to compile the final report
     return this.aggregator.aggregate(
       context.assessmentId,
       allFindings,
       allEvidence,
       evaluatedRuleCount,
-      nonEvaluableRuleCount
+      nonEvaluableRuleCount,
+      applicableObligations
     );
   }
 
