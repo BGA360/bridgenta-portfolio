@@ -55,6 +55,7 @@ const createMockBundle = (sizeBytes = 1024): IKnowledgeBundle => ({
   rules: [],
   vocabulary: [],
   resolutionEvidence: [],
+  obligations: [],
   integrity: {
     bundleHash: 'a'.repeat(64) // Valid SHA-256 string
   },

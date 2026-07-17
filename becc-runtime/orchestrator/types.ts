@@ -6,6 +6,7 @@ export type OrchestratorState =
   | 'Initializing'
   | 'Running'
   | 'Waiting'
+  | 'RevisionRequested'
   | 'Completed'
   | 'Cancelled'
   | 'Failed';
@@ -22,6 +23,7 @@ export enum RuntimeEventType {
   HumanReviewRequested = 'HumanReviewRequested',
   HumanApproved = 'HumanApproved',
   HumanRejected = 'HumanRejected',
+  HumanReviewRevisionRequired = 'HumanReviewRevisionRequired',
   RuntimeCancelled = 'RuntimeCancelled',
   RuntimeFailed = 'RuntimeFailed',
   RuntimeCompleted = 'RuntimeCompleted'
@@ -73,5 +75,5 @@ export interface IValidationEngine {
 }
 
 export interface IHumanReviewEngine {
-  stageReview(context: AssessmentContext, validationReport: any): Promise<any>;
+  stageReview(context: AssessmentContext, validationReport: any, bundle?: any, diff?: any): Promise<any>;
 }

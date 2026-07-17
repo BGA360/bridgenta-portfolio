@@ -60,3 +60,11 @@ export class OversizedBundleException extends Error {
     this.name = 'OversizedBundleException';
   }
 }
+
+export class InvalidObligationMetadataException extends Error {
+  constructor(ruleId: string, details: string) {
+    super(`Invalid obligation metadata in rule ${ruleId}: ${details}`);
+    this.name = 'InvalidObligationMetadataException';
+  }
+}
+

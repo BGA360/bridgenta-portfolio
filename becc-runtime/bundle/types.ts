@@ -1,3 +1,5 @@
+import { HumanReviewObligationDefinition } from '../shared/types.js';
+
 export interface ICompiledRule {
   readonly ruleId: string;
   readonly heading: string;
@@ -35,12 +37,14 @@ export interface IBuildMetadata {
   readonly environment: string;
 }
 
+
 export interface IKnowledgeBundle {
   readonly sessionId: string;
   readonly schemaVersion: string;
   readonly rules: readonly ICompiledRule[];
   readonly vocabulary: readonly IVocabularyTerm[];
   readonly resolutionEvidence: readonly IResolutionEvidence[];
+  readonly obligations: readonly HumanReviewObligationDefinition[];
   readonly integrity: IBundleIntegrity;
   readonly buildMetadata: IBuildMetadata;
 }
