@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { canonicalizeRawStringify } from '../shared/canonicalize.js';
 
 export class BundleIntegrityService {
   /**
@@ -12,7 +13,7 @@ export class BundleIntegrityService {
       evidence: this.deepSortKeys(evidence)
     };
 
-    const canonicalString = this.canonicalSerialize(semanticObject);
+    const canonicalString = canonicalizeRawStringify(semanticObject);
     return crypto.createHash('sha256').update(canonicalString).digest('hex');
   }
 
@@ -31,13 +32,5 @@ export class BundleIntegrityService {
       return sortedObj;
     }
     return value;
-  }
-
-  /**
-   * Normalizes newlines and serializes sorting-friendly JSON.
-   */
-  private canonicalSerialize(obj: any): string {
-    const json = JSON.stringify(obj);
-    return json.replace(/\r\n/g, '\\n').replace(/\r/g, '\\n');
   }
 }

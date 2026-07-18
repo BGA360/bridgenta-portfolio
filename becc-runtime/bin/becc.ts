@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { RuntimeConfig, LogEvent, HealthReport } from '../shared/types.js';
@@ -7,6 +8,11 @@ import { HumanReviewService } from '../human-review/human-review.service.js';
 import { IReviewerIdentityPort } from '../human-review/ports/reviewer-identity.port.js';
 import { IClockPort } from '../human-review/ports/clock.port.js';
 import { VerifiedReviewer } from '../human-review/types.js';
+import { FileLedgerStorageAdapter } from '../evidence/adapters/file-ledger-storage.adapter.js';
+import { NodeCryptoAsymmetricSignatureAdapter } from '../evidence/adapters/node-crypto-asymmetric-signature.adapter.js';
+import { ConfiguredTrustResolverAdapter } from '../evidence/adapters/configured-trust-resolver.adapter.js';
+import { LedgerVerificationService } from '../evidence/ledger-verification.service.js';
+import { LedgerStatus, TrustStatus } from '../evidence/types.js';
 
 // 1. Initial State
 let isShuttingDown = false;
@@ -159,6 +165,7 @@ class CliClockPort implements IClockPort {
 }
 
 export async function run(args: string[]) {
+  resetShutdownState();
   log('info', 'RuntimeStarted');
 
   if (args.length === 0) {
@@ -258,6 +265,283 @@ export async function run(args: string[]) {
     }
 
     return shutdown('UnknownCommand', 1, { error: `Unknown review subcommand: ${subArg}` });
+  }
+
+  if (primaryArg === 'evidence') {
+    const subArg = args[1];
+    if (!subArg) {
+      return shutdown('InvalidCommandParameters', 9, { error: 'Missing evidence subcommand. Use one of: show, verify, export, status' });
+    }
+
+    const repositoryRoot = process.env.BECC_REPO_ROOT || process.cwd();
+    const storage = new FileLedgerStorageAdapter(repositoryRoot);
+    const signatureProvider = new NodeCryptoAsymmetricSignatureAdapter();
+    const defaultKeyRef = process.env.BECC_SIGNING_KEY_REF || 'default-key';
+    const trustResolver = {
+      verifyKeyTrust: async (keyReference: string, projectId: string) => {
+        if (keyReference === defaultKeyRef) {
+          return TrustStatus.KEY_TRUSTED;
+        }
+        return TrustStatus.KEY_UNKNOWN;
+      }
+    };
+    const artifactResolver = {
+      verifyArtifactHash: async (id: string, expected: string): Promise<'ARTIFACTS_VALID' | 'ARTIFACTS_INVALID' | 'NOT_VERIFIED'> => {
+        const fullPath = path.resolve(repositoryRoot, id);
+        if (!fs.existsSync(fullPath)) {
+          return 'NOT_VERIFIED';
+        }
+        try {
+          const content = fs.readFileSync(fullPath);
+          const actual = crypto.createHash('sha256').update(content).digest('hex');
+          return actual === expected ? 'ARTIFACTS_VALID' : 'ARTIFACTS_INVALID';
+        } catch {
+          return 'NOT_VERIFIED';
+        }
+      }
+    };
+
+    const verifier = new LedgerVerificationService(signatureProvider, trustResolver, artifactResolver);
+
+    const getProjectIds = (): string[] => {
+      const dir = path.join(repositoryRoot, '.becc', 'evidence');
+      if (!fs.existsSync(dir)) {
+        return [];
+      }
+      const files = fs.readdirSync(dir);
+      const projectIds: string[] = [];
+      for (const file of files) {
+        const match = file.match(/^ledger-(.+)\.jsonl$/);
+        if (match && !file.endsWith('.lock') && !file.endsWith('.tmp')) {
+          projectIds.push(match[1]);
+        }
+      }
+      return projectIds;
+    };
+
+    if (subArg === 'show') {
+      const option = args[2];
+      const value = args[3];
+      if (option !== '--entry' && option !== '--session') {
+        return shutdown('InvalidCommandParameters', 9, { error: 'Invalid show option. Use --entry <entryId> or --session <sessionId>.' });
+      }
+      if (!value) {
+        return shutdown('InvalidCommandParameters', 9, { error: `Missing value for show ${option}` });
+      }
+
+      try {
+        const projectIds = getProjectIds();
+        let foundRecord = null;
+        for (const pid of projectIds) {
+          const records = await storage.readLedger(pid);
+          const r = records.find(x => x.payload.entryId === value || x.payload.sessionId === value);
+          if (r) {
+            foundRecord = r;
+            break;
+          }
+        }
+
+        if (!foundRecord) {
+          process.stderr.write(`Evidence entry not found: ${value}\n`);
+          return shutdown('EntryNotFound', 7);
+        }
+
+        process.stdout.write(JSON.stringify(foundRecord, null, 2) + '\n');
+        return shutdown('EvidenceDisplayed', 0);
+      } catch (err: any) {
+        if (err instanceof SyntaxError) {
+          process.stderr.write(`Malformed ledger: ${err.message}\n`);
+          return shutdown('MalformedLedger', 8);
+        }
+        process.stderr.write(`Failed to show evidence: ${err.message}\n`);
+        return shutdown('OperationalFailure', 9);
+      }
+    }
+
+    if (subArg === 'verify') {
+      const option = args[2];
+      const value = args[3];
+
+      try {
+        const projectIds = getProjectIds();
+        if (projectIds.length === 0) {
+          process.stderr.write('No ledger file found.\n');
+          return shutdown('NoLedger', 6);
+        }
+
+        if (option === '--entry') {
+          if (!value) {
+            return shutdown('InvalidCommandParameters', 9, { error: 'Missing entryId value for verify --entry' });
+          }
+          let foundRecord = null;
+          let foundProjectId = '';
+          for (const pid of projectIds) {
+            const records = await storage.readLedger(pid);
+            const r = records.find(x => x.payload.entryId === value);
+            if (r) {
+              foundRecord = r;
+              foundProjectId = pid;
+              break;
+            }
+          }
+
+          if (!foundRecord) {
+            process.stderr.write(`Entry not found: ${value}\n`);
+            return shutdown('EntryNotFound', 7);
+          }
+
+          const records = await storage.readLedger(foundProjectId);
+          const result = await verifier.verifyLedger(foundProjectId, records);
+          const entryResult = result.records.find(r => r.entryId === value);
+          if (!entryResult) {
+            process.stderr.write(`Entry not found in verified ledger: ${value}\n`);
+            return shutdown('EntryNotFound', 7);
+          }
+
+          process.stdout.write(JSON.stringify(entryResult, null, 2) + '\n');
+          
+          if (entryResult.signatureStatus === 'SIGNATURE_INVALID') {
+            return shutdown('InvalidSignature', 1);
+          }
+          if (entryResult.trustStatus === TrustStatus.KEY_REVOKED || entryResult.trustStatus === TrustStatus.KEY_UNKNOWN) {
+            return shutdown('UnknownTrust', 4);
+          }
+          if (entryResult.artifactStatus === 'ARTIFACTS_INVALID') {
+            return shutdown('OperationalFailure', 9);
+          }
+          return shutdown('EntryVerified', 0);
+        }
+
+        if (option === '--ledger') {
+          let combinedStatus = LedgerStatus.LEDGER_VALID;
+          const allResults: any[] = [];
+
+          for (const pid of projectIds) {
+            const records = await storage.readLedger(pid);
+            const result = await verifier.verifyLedger(pid, records);
+            allResults.push(result);
+
+            if (result.ledgerStatus === LedgerStatus.LEDGER_INVALID) {
+              combinedStatus = LedgerStatus.LEDGER_INVALID;
+            } else if (result.ledgerStatus === LedgerStatus.LEDGER_VALID_PREFIX_WITH_INCOMPLETE_TAIL && combinedStatus !== LedgerStatus.LEDGER_INVALID) {
+              combinedStatus = LedgerStatus.LEDGER_VALID_PREFIX_WITH_INCOMPLETE_TAIL;
+            } else if (result.ledgerStatus === LedgerStatus.LEDGER_TRUST_UNKNOWN && combinedStatus === LedgerStatus.LEDGER_VALID) {
+              combinedStatus = LedgerStatus.LEDGER_TRUST_UNKNOWN;
+            } else if (result.ledgerStatus === LedgerStatus.LEDGER_ARTIFACTS_UNAVAILABLE && combinedStatus === LedgerStatus.LEDGER_VALID) {
+              combinedStatus = LedgerStatus.LEDGER_ARTIFACTS_UNAVAILABLE;
+            }
+          }
+
+          process.stdout.write(JSON.stringify(allResults.length === 1 ? allResults[0] : allResults, null, 2) + '\n');
+
+          if (combinedStatus === LedgerStatus.LEDGER_VALID) {
+            return shutdown('LedgerValid', 0);
+          }
+          if (combinedStatus === LedgerStatus.LEDGER_VALID_PREFIX_WITH_INCOMPLETE_TAIL) {
+            return shutdown('IncompleteTail', 3);
+          }
+          if (combinedStatus === LedgerStatus.LEDGER_INVALID) {
+            const hasInvalidSig = allResults.some(res => res.records.some((r: any) => r.signatureStatus === 'SIGNATURE_INVALID'));
+            if (hasInvalidSig) {
+              return shutdown('InvalidSignature', 1);
+            }
+            return shutdown('BrokenChain', 2);
+          }
+          if (combinedStatus === LedgerStatus.LEDGER_TRUST_UNKNOWN) {
+            return shutdown('UnknownTrust', 4);
+          }
+          if (combinedStatus === LedgerStatus.LEDGER_ARTIFACTS_UNAVAILABLE) {
+            return shutdown('ArtifactUnavailable', 5);
+          }
+          return shutdown('OperationalFailure', 9);
+        }
+
+        return shutdown('InvalidCommandParameters', 9, { error: 'Invalid verify option. Use --entry <entryId> or --ledger.' });
+      } catch (err: any) {
+        if (err instanceof SyntaxError) {
+          process.stderr.write(`Malformed ledger: ${err.message}\n`);
+          return shutdown('MalformedLedger', 8);
+        }
+        process.stderr.write(`Verification failed: ${err.message}\n`);
+        return shutdown('OperationalFailure', 9);
+      }
+    }
+
+    if (subArg === 'export') {
+      const option = args[2];
+      const value = args[3];
+      const exportPath = args[4];
+
+      if (option !== '--project') {
+        return shutdown('InvalidCommandParameters', 9, { error: 'Invalid export option. Use --project <projectId> <exportPath>.' });
+      }
+      if (!value) {
+        return shutdown('InvalidCommandParameters', 9, { error: 'Missing projectId for export --project' });
+      }
+      if (!exportPath) {
+        return shutdown('InvalidCommandParameters', 9, { error: 'Missing exportPath parameter' });
+      }
+
+      const resolvedExport = path.resolve(exportPath);
+      if (fs.existsSync(resolvedExport)) {
+        process.stderr.write(`Export path already exists: ${exportPath}\n`);
+        return shutdown('ExportPathExists', 9);
+      }
+
+      try {
+        const exists = await storage.ledgerExists(value);
+        if (!exists) {
+          process.stderr.write(`No ledger file found for project: ${value}\n`);
+          return shutdown('NoLedger', 6);
+        }
+        const records = await storage.readLedger(value);
+        const serialized = records.map(r => JSON.stringify(r)).join('\n') + '\n';
+        fs.writeFileSync(resolvedExport, serialized, { mode: 0o600 });
+        return shutdown('EvidenceExported', 0);
+      } catch (err: any) {
+        if (err instanceof SyntaxError) {
+          process.stderr.write(`Malformed ledger: ${err.message}\n`);
+          return shutdown('MalformedLedger', 8);
+        }
+        process.stderr.write(`Export failed: ${err.message}\n`);
+        return shutdown('OperationalFailure', 9);
+      }
+    }
+
+    if (subArg === 'status') {
+      try {
+        const projectIds = getProjectIds();
+        if (projectIds.length === 0) {
+          process.stdout.write('Ledger status: NOT_FOUND\n');
+          return shutdown('LedgerNotFound', 6);
+        }
+
+        let combinedStatus = LedgerStatus.LEDGER_VALID;
+        for (const pid of projectIds) {
+          const status = await storage.getLedgerStatus(pid);
+          if (status === LedgerStatus.LEDGER_INVALID) {
+            combinedStatus = LedgerStatus.LEDGER_INVALID;
+          } else if (status === LedgerStatus.LEDGER_VALID_PREFIX_WITH_INCOMPLETE_TAIL && combinedStatus !== LedgerStatus.LEDGER_INVALID) {
+            combinedStatus = LedgerStatus.LEDGER_VALID_PREFIX_WITH_INCOMPLETE_TAIL;
+          }
+        }
+
+        process.stdout.write(`Ledger status: ${combinedStatus}\n`);
+        
+        if (combinedStatus === LedgerStatus.LEDGER_VALID) {
+          return shutdown('StatusReported', 0);
+        }
+        if (combinedStatus === LedgerStatus.LEDGER_VALID_PREFIX_WITH_INCOMPLETE_TAIL) {
+          return shutdown('StatusReported', 3);
+        }
+        return shutdown('StatusReported', 8);
+      } catch (err: any) {
+        process.stderr.write(`Status check failed: ${err.message}\n`);
+        return shutdown('OperationalFailure', 9);
+      }
+    }
+
+    return shutdown('UnknownCommand', 9, { error: `Unknown evidence subcommand: ${subArg}` });
   }
 
   // Reject all other commands/options

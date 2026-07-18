@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
 import { AssessmentRequest, AssessmentContext } from '../shared/types.js';
 import { ProjectConnectorResult } from '../connector/types.js';
 import { AssessmentContextBuilder } from '../context/assessment-context.builder.js';
@@ -26,6 +29,8 @@ export class RuntimeOrchestrator {
   private readonly sessions = new Map<string, RuntimeStateMachine>();
   private readonly globalTimers = new Map<string, NodeJS.Timeout>();
   private readonly activeContexts = new Map<string, AssessmentContext>();
+  private readonly activeBundles = new Map<string, any>();
+  private readonly activeDiffs = new Map<string, any>();
 
   constructor(
     private readonly eventBus: IEventBus,
@@ -35,7 +40,8 @@ export class RuntimeOrchestrator {
     private readonly broker: IProviderBroker,
     private readonly transformer: ITransformationEngine,
     private readonly validator: IValidationEngine,
-    private readonly reviewEngine: IHumanReviewEngine
+    private readonly reviewEngine: IHumanReviewEngine,
+    private readonly evidenceService?: any
   ) {}
 
   /**
@@ -85,6 +91,7 @@ export class RuntimeOrchestrator {
       const bundle = await this.runWithTimeout(sessionId, 'builder', 2000, () =>
         this.builder.build(resolvedKnowledge)
       );
+      this.activeBundles.set(sessionId, bundle);
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.BundleCompiled, null));
 
       // 5. Provider Broker Route (Timeout: 5s)
@@ -103,6 +110,7 @@ export class RuntimeOrchestrator {
       const diff = await this.runWithTimeout(sessionId, 'transform', 10000, () =>
         this.transformer.transform(context, providerResponse)
       );
+      this.activeDiffs.set(sessionId, diff);
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.TransformationCompleted, null));
 
       // 8. Validation Engine (Timeout: 5s)
@@ -146,6 +154,92 @@ export class RuntimeOrchestrator {
       this.globalTimers.delete(sessionId);
     }
 
+    if (this.evidenceService) {
+      const policy = this.evidenceService.config?.recordingPolicy || 'REQUIRED';
+      if (policy !== 'DISABLED') {
+        const context = this.activeContexts.get(sessionId);
+        const bundle = this.activeBundles.get(sessionId);
+        const diff = this.activeDiffs.get(sessionId);
+
+        let humanReviewResultId: string | undefined;
+        let humanReviewResultHash: string | undefined;
+        let reviewerId: string | undefined;
+
+        const sessionDir = process.env.BECC_SESSION_DIR || path.join(process.cwd(), '.sessions');
+        const resultFile = path.join(sessionDir, `result-pkg-${sessionId}.json`);
+        if (fs.existsSync(resultFile)) {
+          try {
+            const content = fs.readFileSync(resultFile, 'utf8');
+            const result = JSON.parse(content);
+            humanReviewResultId = result.reviewRequestId;
+            humanReviewResultHash = result.integrityDigest;
+            reviewerId = result.reviewer?.reviewerId;
+          } catch {
+            // Ignore
+          }
+        }
+
+        const projectId = context?.projectIdentity?.id || 'mock-project';
+        const targetDocumentPath = context?.targetDocument?.path || 'mock-doc.md';
+        const baselineHash = context?.targetDocument?.hash || '0'.repeat(64);
+        const candidateId = diff?.communication?.candidateId || 'mock-candidate';
+        const candidateHash = diff?.communication?.candidateHash || '0'.repeat(64);
+        const knowledgeBundleHash = bundle?.metadata?.bundleHash || '0'.repeat(64);
+        const validationResultId = validationReport?.sessionId || sessionId;
+        const validationResultHash = validationReport
+          ? crypto.createHash('sha256').update(JSON.stringify(validationReport)).digest('hex')
+          : '0'.repeat(64);
+        const validationStatus = validationReport?.summary?.status || 'passed';
+        const finalOutcome =
+          decision === true || decision === 'APPROVED'
+            ? 'Approved'
+            : decision === false || decision === 'REJECTED'
+            ? 'Rejected'
+            : String(decision);
+
+        try {
+          await this.evidenceService.recordEvidence({
+            sessionId,
+            assessmentId: sessionId,
+            projectId,
+            targetDocumentPath,
+            baselineHash,
+            candidateId,
+            candidateHash,
+            knowledgeBundleHash,
+            validationResultId,
+            validationResultHash,
+            validationStatus,
+            humanReviewResultId,
+            humanReviewResultHash,
+            reviewerId,
+            finalOutcome,
+            humanDecision:
+              decision === true || decision === 'APPROVED'
+                ? 'APPROVED'
+                : decision === false || decision === 'REJECTED'
+                ? 'REJECTED'
+                : decision === 'REVISION_REQUIRED'
+                ? 'REVISION_REQUIRED'
+                : 'ESCALATION_REQUESTED'
+          });
+        } catch (err: any) {
+          if (policy === 'REQUIRED') {
+            stateMachine.transitionTo('Failed');
+            await this.eventBus.publish(
+              this.createEvent(sessionId, RuntimeEventType.RuntimeFailed, {
+                message: `Evidence recording failed: ${err.message}`
+              })
+            );
+            this.cleanupSession(sessionId);
+            throw err;
+          } else if (policy === 'OPTIONAL') {
+            console.warn(`[Orchestrator] Warning: Evidence recording failed: ${err.message}`);
+          }
+        }
+      }
+    }
+
     if (decision === true || decision === 'APPROVED') {
       stateMachine.transitionTo('Completed');
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.HumanApproved, null));
@@ -160,7 +254,6 @@ export class RuntimeOrchestrator {
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.HumanReviewRevisionRequired, null));
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.RuntimeCompleted, { outcome: 'RevisionRequested' }));
     } else if (decision === 'ESCALATION_REQUESTED') {
-      // Escalation request blocks routing but maintains the waiting state for further admin review.
       await this.eventBus.publish(this.createEvent(sessionId, RuntimeEventType.HumanReviewRequested, { escalated: true }));
     }
 
