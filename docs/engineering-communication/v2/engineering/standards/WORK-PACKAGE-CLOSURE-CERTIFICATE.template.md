@@ -62,7 +62,7 @@ This document serves as the official **Work Package Closure Certificate** for WP
 
 ## 6. Changed-File Traceability
 
-*   **[`[path/to/file]`](file:///c:/antigravity/statichtmlpro/fdrefs/[path/to/file])**:
+*   **[`[path/to/file]`]([path/to/file])**:
     *   *WP Responsibility*: [Role of file]
     *   *Acceptance Criterion Served*: [Criterion ID]
     *   *Test/Validation Evidence*: [Test name or build run]

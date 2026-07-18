@@ -18,3 +18,10 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local-only workspace and scratch directories
+/bridgenta-workspace/
+/scratch/
+/docs/engineering-communication.zip
+/docs/engineering-communication/v2/research/rkf-reference/docs/
+
