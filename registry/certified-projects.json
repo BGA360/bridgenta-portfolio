@@ -1,0 +1,78 @@
+{
+  "$schema": "https://raw.githubusercontent.com/BGA360/bridgenta-portfolio/main/registry/certified-projects.schema.json",
+  "registry_version": "v2.3",
+  "status": "OPERATIONAL",
+  "last_updated": "2026-07-20T03:22:28Z",
+  "total_certified_projects": 2,
+  "projects": [
+    {
+      "certificate_id": "BECC-CERT-2026-001",
+      "project_name": "bridgenta-portfolio",
+      "repository_url": "https://github.com/BGA360/bridgenta-portfolio",
+      "evaluated_commit_sha": "ae103abf4027bc991a027e1f40958a032d90956b",
+      "project_version": "v1.0.0",
+      "framework_version": "BECC v2.2 GA",
+      "certification_scope": "Full Documentation Suite & Core Runtime API Specifications",
+      "certification_status": "Certified",
+      "issue_date": "2026-07-19",
+      "valid_until": "2027-07-19",
+      "reassessment_date": "2027-06-19",
+      "certification_authority": "BridGenta Governance Board",
+      "evidence_package": "docs/engineering-communication/stewardship/operations/AC-001/",
+      "historical_notes": [
+        {
+          "timestamp": "2026-07-19T10:00:00Z",
+          "action": "ISSUED",
+          "details": "Initial BECC v2.2 GA certification granted following adoption audit."
+        },
+        {
+          "timestamp": "2026-07-19T19:37:05Z",
+          "action": "REGISTERED",
+          "details": "Established as Registry Entry #001 in BECC Certified Project Registry."
+        }
+      ]
+    },
+    {
+      "certificate_id": "BECC-CERT-2026-002",
+      "project_name": "lumina-praxis",
+      "repository_url": "https://github.com/BGA360/bridgenta-portfolio",
+      "evaluated_commit_sha": "ae103abf4027bc991a027e1f40958a032d90956b",
+      "project_version": "v1.0.0",
+      "framework_version": "BECC v2.3",
+      "certification_scope": "Public Case Study, Medical Web Portal Architecture & Accessibility Specifications",
+      "certification_status": "Certified",
+      "issue_date": "2026-07-20",
+      "valid_until": "2027-07-20",
+      "reassessment_date": "2027-06-20",
+      "certification_authority": "BECC Certification Authority & Governance Board",
+      "evidence_package": "BECC-LUMINA-PRAXIS-FINAL-CERTIFICATION.md",
+      "historical_notes": [
+        {
+          "timestamp": "2026-07-20T00:19:00Z",
+          "action": "ASSESSED",
+          "details": "Completed OP-002 Independent Assessment; logged findings FIND-LP-001 through FIND-LP-004."
+        },
+        {
+          "timestamp": "2026-07-20T00:47:00Z",
+          "action": "PLANNED",
+          "details": "Formulated OP-003 Improvement Implementation Plan with Work Packages WP-LP-001 through WP-LP-004."
+        },
+        {
+          "timestamp": "2026-07-20T00:55:00Z",
+          "action": "REMEDIATED",
+          "details": "Executed documentation remediations adding mandatory Validation, Risks, and References sections."
+        },
+        {
+          "timestamp": "2026-07-20T01:00:00Z",
+          "action": "VERIFIED",
+          "details": "Completed OP-004 Independent Verification Report; confirmed 100% compliance."
+        },
+        {
+          "timestamp": "2026-07-20T03:22:28Z",
+          "action": "CERTIFIED",
+          "details": "Issued BECC Constitutional Certification BECC-CERT-2026-002; registered as Entry #002."
+        }
+      ]
+    }
+  ]
+}
