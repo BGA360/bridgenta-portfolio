@@ -11,9 +11,9 @@ CEP is an engineering platform designed to operationalize constitutional enginee
 | Metadata Attribute | Current Status |
 | :--- | :--- |
 | **Project Status** | Constitution Engineering |
-| **Lifecycle Stage** | Stage A — Constitution Engineering |
-| **Completed Sprints** | Sprint A1 (Project Constitution), Sprint A2 (Constitutional Architecture) |
-| **Current / Next Authorized Sprint** | Sprint A3 — Constitutional Decision Architecture |
+| **Lifecycle Stage** | Stage A — Constitution Engineering (**CONCLUDED**) |
+| **Completed Sprints** | Sprint A1 (Project Constitution), Sprint A2 (Constitutional Architecture), Sprint A3 (Constitutional Decision Architecture) |
+| **Next Authorized Sprint** | **Stage B — Platform Engineering / Sprint B1 — CEP Domain Model** |
 | **Implementation Status** | **No Runtime Code** (Specification & Architecture Only) |
 
 ---
@@ -57,14 +57,23 @@ docs/
 │   ├── CEP-NON-GOALS.md                # Mandatory explicit non-goals
 │   ├── CEP-ENGINEERING-PRINCIPLES.md   # Justified engineering principles
 │   └── CEP-GLOSSARY.md                 # Architectural terminology & definitions
-└── architecture/                       # Constitutional Architecture (Sprint A2)
-    ├── CEP-CONSTITUTIONAL-ARCHITECTURE.md # Platform hierarchy & layer separation
-    ├── CEF-ARCHITECTURAL-ROLE.md       # CEF meta-framework role & authority
-    ├── FRAMEWORK-COMPOSITION.md        # Composition rules & conflict resolution
-    ├── AUTHORITY-BOUNDARIES.md         # Responsibility matrix & authority owners
-    ├── COMPONENT-SPECIFICATION-STANDARD.md # Mandatory component spec template
-    ├── ARCHITECTURAL-ASSUMPTIONS.md    # Evidence-backed assumptions & validation
-    └── SYSTEM-CONTEXT.md               # Highest-level conceptual architecture
+├── architecture/                       # Constitutional Architecture (Sprint A2)
+│   ├── CEP-CONSTITUTIONAL-ARCHITECTURE.md # Platform hierarchy & layer separation
+│   ├── CEF-ARCHITECTURAL-ROLE.md       # CEF meta-framework role & authority
+│   ├── FRAMEWORK-COMPOSITION.md        # Composition rules & conflict resolution
+│   ├── AUTHORITY-BOUNDARIES.md         # Responsibility matrix & authority owners
+│   ├── COMPONENT-SPECIFICATION-STANDARD.md # Mandatory component spec template
+│   ├── ARCHITECTURAL-ASSUMPTIONS.md    # Evidence-backed assumptions & validation
+│   └── SYSTEM-CONTEXT.md               # Highest-level conceptual architecture
+└── decisions/                          # Decision Architecture (Sprint A3)
+    ├── CONSTITUTIONAL-DECISION-ARCHITECTURE.md # Decision system authority & structure
+    ├── DECISION-LIFECYCLE.md           # 8-Stage lifecycle with entry/exit criteria
+    ├── CONSTITUTIONAL-AMENDMENT-PROCESS.md # Amendment classes & impact thresholds
+    ├── AUTHORITY-TRANSFER-PROTOCOL.md   # Protocol for transferring domain ownership
+    ├── GENERALIZATION-REVIEW-STANDARD.md # Pattern extraction & decision matrix
+    ├── EVIDENCE-GATE-STANDARD.md       # 5 measurable constitutional gates
+    ├── GOVERNANCE-LEVELS.md            # Proportional governance levels 0 to 5
+    └── DECISION-RECORD-STANDARD.md     # Mandatory CDR specification template
 ```
 
 ---
@@ -73,8 +82,8 @@ docs/
 
 CEP is constitutionally structured into three isolated operational planes:
 
-1. **Constitutional Plane**: Contains the meta-constitutional kernel (CEF) and domain frameworks (RKF, BGCF, BECC, BPGA). Defines rules, authority models, and assessment standards.
-2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, and adapter boundaries. Operationalizes rules without redefining domain authority.
+1. **Constitutional Plane**: Contains the meta-constitutional kernel (CEF) and domain frameworks (RKF, BGCF, BECC, BPGA). Defines rules, authority models, assessment standards, and decision architectures.
+2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, and adapter boundaries. Operationalizes rules without redefining domain authority.
 3. **Project Plane**: Target software repositories and application code bases undergoing constitutional governance, assessment, and certification.
 
 ---
@@ -83,10 +92,10 @@ CEP is constitutionally structured into three isolated operational planes:
 
 | Stage | Focus Area | Status | Key Deliverables |
 | :--- | :--- | :--- | :--- |
-| **Stage A** | **Constitution Engineering** | **Active (A1 & A2 Complete)** | Project Vision, Mission, Scope, Principles, Glossary, Architecture, Composition & Authority Boundaries |
-| **Stage B** | Core Platform Architecture & Specs | Planned (Future) | Subsystem specs, schema definitions, pipeline specs, contract interfaces |
+| **Stage A** | **Constitution Engineering** | **CONCLUDED (A1, A2, A3 Complete)** | Project Vision, Mission, Scope, Principles, Glossary, Architecture, Composition, Authority Boundaries & Decision Architecture |
+| **Stage B** | Core Platform Architecture & Specs | **Next Authorized Stage (B1)** | Subsystem specs, domain models, schema definitions, pipeline contracts |
 | **Stage C** | Verification & Evidence Engines | Planned (Future) | Evidence collection specifications, assessment engine contracts, audit verifiers |
 | **Stage D** | Ecosystem & Generalization | Planned (Future) | Multi-repository orchestration, multi-provider abstraction specifications |
 
 > [!NOTE]
-> All future platform capabilities outlined in Stages B–D represent planned architectural evolution. CEP currently resides strictly in Stage A (Constitution Engineering).
+> Stage A (Constitution Engineering) is formally completed with the conclusion of Sprint A3. Stage B (Platform Engineering) is authorized to commence in Sprint B1.
