@@ -1,7 +1,7 @@
 {
-  "name": "@cep/assessment-core",
+  "name": "@cep/rule-engine",
   "version": "0.1.0",
-  "description": "Assessment Core Foundation module for the Constitutional Engineering Platform (CEP)",
+  "description": "Rule Evaluation Engine Foundation module for the Constitutional Engineering Platform (CEP)",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -9,11 +9,16 @@
     "build": "tsc",
     "test": "node --test dist/tests/**/*.test.js"
   },
+  "dependencies": {
+    "@cep/assessment-core": "file:../assessment-core",
+    "@cep/evidence-manager": "file:../evidence-manager"
+  },
   "keywords": [
     "cep",
     "constitutional-engineering",
-    "assessment-core",
-    "governance"
+    "rule-engine",
+    "findings",
+    "evaluation"
   ],
   "author": "BridGenta CEP Platform Team",
   "license": "UNLICENSED",

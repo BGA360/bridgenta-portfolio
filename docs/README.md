@@ -12,9 +12,9 @@ CEP is an engineering platform designed to operationalize constitutional enginee
 | :--- | :--- |
 | **Project Status** | Platform Implementation |
 | **Lifecycle Stage** | Stage C — Platform Implementation |
-| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Contracts), Sprint B3 (Runtime Architecture), Sprint B4 (Implementation Strategy), Sprint C1 (Assessment Core Foundation), Sprint C2 (Evidence Manager Foundation) |
-| **Next Authorized Sprint** | **Sprint C3 — Rule Evaluation Engine Foundation** |
-| **Implementation Status** | **Executable Modules Implemented**: `@cep/assessment-core`, `@cep/evidence-manager` |
+| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Contracts), Sprint B3 (Runtime Architecture), Sprint B4 (Implementation Strategy), Sprint C1 (Assessment Core Foundation), Sprint C2 (Evidence Manager Foundation), Sprint C3 (Rule Evaluation Engine Foundation) |
+| **Next Authorized Sprint** | **Sprint C4 — Policy Resolution Foundation** |
+| **Implementation Status** | **Executable Modules Implemented**: `@cep/assessment-core`, `@cep/evidence-manager`, `@cep/rule-engine` |
 
 ---
 
@@ -57,7 +57,8 @@ A fundamental architectural distinction exists between **CEF** and **CEP**:
 │   └── implementation/                 # Technical Strategy & Governance (Sprint B4)
 └── packages/                           # Implementation Modules (Stage C)
     ├── assessment-core/                # @cep/assessment-core (Sprint C1)
-    └── evidence-manager/               # @cep/evidence-manager (Sprint C2)
+    ├── evidence-manager/               # @cep/evidence-manager (Sprint C2)
+    └── rule-engine/                    # @cep/rule-engine (Sprint C3)
 ```
 
 ---
@@ -67,7 +68,7 @@ A fundamental architectural distinction exists between **CEF** and **CEP**:
 CEP is constitutionally structured into three isolated operational planes:
 
 1. **Constitutional Plane**: Contains the meta-constitutional kernel (CEF) and domain frameworks (RKF, BGCF, BECC, BPGA). Defines rules, authority models, assessment standards, and decision architectures.
-2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, runtime components, technical standards, and executable modules (`@cep/assessment-core`, `@cep/evidence-manager`). Operationalizes rules without redefining domain authority.
+2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, runtime components, technical standards, and executable modules (`@cep/assessment-core`, `@cep/evidence-manager`, `@cep/rule-engine`). Operationalizes rules without redefining domain authority.
 3. **Project Plane**: Target software repositories and application code bases undergoing constitutional governance, assessment, and certification.
 
 ---
@@ -78,8 +79,8 @@ CEP is constitutionally structured into three isolated operational planes:
 | :--- | :--- | :--- | :--- |
 | **Stage A** | **Constitution Engineering** | **CONCLUDED** | Project Vision, Mission, Scope, Principles, Glossary, Architecture, Composition, Authority Boundaries & Decision Architecture |
 | **Stage B** | **Platform Engineering** | **CONCLUDED** | Domain Model, Ubiquitous Language, Contracts, Component Specs, Execution Flows, Event Models, Tech Specs & Implementation Strategy |
-| **Stage C** | **Platform Implementation** | **Active (C1, C2 Complete)** | `@cep/assessment-core` (C1), `@cep/evidence-manager` (C2), Rule Engine (C3), Certification Engine (C4) |
+| **Stage C** | **Platform Implementation** | **Active (C1, C2, C3 Complete)**| `@cep/assessment-core` (C1), `@cep/evidence-manager` (C2), `@cep/rule-engine` (C3), Policy Resolver (C4) |
 | **Stage D** | Ecosystem & Generalization | Planned (Future) | Multi-repository orchestration, multi-provider abstraction specifications |
 
 > [!NOTE]
-> Stage A and Stage B are concluded. Stage C (Platform Implementation) is active. Sprints C1 and C2 are complete; Sprint C3 (Rule Evaluation Engine Foundation) is authorized next.
+> Stage A and Stage B are concluded. Stage C (Platform Implementation) is active. Sprints C1, C2, and C3 are complete; Sprint C4 (Policy Resolution Foundation) is authorized next.
