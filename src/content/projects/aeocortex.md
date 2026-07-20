@@ -19,6 +19,8 @@ sidebar:
     - Claude
     - ChatGPT Search
     - Antigravity
+  evaluatedCommitSha: "ae103abf4027bc991a027e1f40958a032d90956b"
+  evaluationBaseline: "BECC v2.3 GA Baseline / Release v1.0.0"
 ---
 
 ## Executive Summary
@@ -191,7 +193,6 @@ graph LR
 ---
 
 ## Validation
-*(Verweis: Assessment AC-001, Finding FIN-AC-001, Arbeitsauftrag RM-001)*
 
 Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Parser erfolgt auf Basis vordefinierter Testverfahren:
 - **Automatisierte Schema-Prüfung**: JSON-LD-Strukturen werden gegen die offiziellen Schema.org-Spezifikationen abgeglichen, um Syntaxfehler und fehlende Relationen zu erkennen.
@@ -215,8 +216,7 @@ Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generative
 
 ---
 
-## Risks
-*(Verweis: Assessment AC-001, Finding FIN-AC-002, Arbeitsauftrag RM-001)*
+## Risks & Mitigations
 
 Die automatisierte Analyse von Webinhalten für KI-Suchmaschinen birgt technische und operative Risiken, die durch gezielte Absicherungsmaßnahmen (Mitigations) minimiert werden:
 
@@ -238,9 +238,9 @@ Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte dir
 ---
 
 ## References
-*(Verweis: Assessment AC-001, Finding FIN-AC-003, Arbeitsauftrag RM-001)*
 
 * **Astro Static Site Generator**: [Astro-Dokumentation](https://docs.astro.build/) — Framework für das Berichts-Dashboard.
 * **Cheerio HTML Parser**: [Cheerio API-Referenz](https://cheerio.js.org/) — Kernbibliothek für schnelles HTML-Parsing im Speicher.
 * **Schema.org Spezifikationen**: [Schema.org-Standards](https://schema.org/) — Referenz für strukturierte Metadaten.
 * **BECC-Bewertungsrichtlinien**: Referenz auf die [BECC-Matrix](https://github.com/BGA360/bridgenta-portfolio/blob/main/docs/engineering-communication/stewardship/BECC-ASSESSMENT-MATRIX.md) für Konformitätsbewertungen im Repository.
+
