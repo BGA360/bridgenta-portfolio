@@ -1,0 +1,22 @@
+{
+  "name": "@cep/evidence-manager",
+  "version": "0.1.0",
+  "description": "Evidence Manager Foundation module for the Constitutional Engineering Platform (CEP)",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/**/*.test.js"
+  },
+  "keywords": [
+    "cep",
+    "constitutional-engineering",
+    "evidence-manager",
+    "provenance",
+    "governance"
+  ],
+  "author": "BridGenta CEP Platform Team",
+  "license": "UNLICENSED",
+  "private": true
+}
