@@ -1,0 +1,28 @@
+{
+  "name": "@cep/certification-engine",
+  "version": "0.1.0",
+  "description": "Certification Engine Foundation module for the Constitutional Engineering Platform (CEP)",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/**/*.test.js"
+  },
+  "dependencies": {
+    "@cep/assessment-core": "file:../assessment-core",
+    "@cep/evidence-manager": "file:../evidence-manager",
+    "@cep/rule-engine": "file:../rule-engine",
+    "@cep/policy-resolver": "file:../policy-resolver"
+  },
+  "keywords": [
+    "cep",
+    "constitutional-engineering",
+    "certification-engine",
+    "attestation",
+    "trust"
+  ],
+  "author": "BridGenta CEP Platform Team",
+  "license": "UNLICENSED",
+  "private": true
+}
