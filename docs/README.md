@@ -2,7 +2,7 @@
 
 Welcome to the central documentation repository for the **Constitutional Engineering Platform (CEP)**.
 
-CEP is an engineering platform designed to operationalize constitutional engineering across the software project lifecycle. By embedding formal governance rules, evidence collection, automated rule evaluation, policy resolution, certification, and multi-provider repository inspection into development workflows, CEP ensures that architectural policies are deterministically specified, assessed, and verified.
+CEP is an engineering platform designed to operationalize constitutional engineering across the software project lifecycle. By embedding formal governance rules, evidence collection, automated rule evaluation, policy resolution, certification, multi-provider repository inspection, and multi-provider AI abstraction into development workflows, CEP ensures that architectural policies are deterministically specified, assessed, and verified.
 
 ---
 
@@ -12,9 +12,9 @@ CEP is an engineering platform designed to operationalize constitutional enginee
 | :--- | :--- |
 | **Project Status** | Platform Implementation |
 | **Lifecycle Stage** | Stage C — Platform Implementation |
-| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Contracts), Sprint B3 (Runtime Architecture), Sprint B4 (Implementation Strategy), Sprint C1 (Assessment Core Foundation), Sprint C2 (Evidence Manager Foundation), Sprint C3 (Rule Evaluation Engine Foundation), Sprint C5 (Certification Engine Foundation), Sprint C6 (Platform Integration & Orchestration Foundation), Sprint C7 (Repository Gateway Foundation) |
-| **Next Authorized Sprint** | **Sprint C8 — AI Provider Gateway Foundation** |
-| **Implementation Status** | **Executable Modules Implemented**: `@cep/assessment-core`, `@cep/evidence-manager`, `@cep/rule-engine`, `@cep/policy-resolver`, `@cep/certification-engine`, `@cep/platform-orchestrator`, `@cep/repository-gateway` |
+| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Contracts), Sprint B3 (Runtime Architecture), Sprint B4 (Implementation Strategy), Sprint C1 (Assessment Core Foundation), Sprint C2 (Evidence Manager Foundation), Sprint C3 (Rule Evaluation Engine Foundation), Sprint C5 (Certification Engine Foundation), Sprint C6 (Platform Integration & Orchestration Foundation), Sprint C7 (Repository Gateway Foundation), Sprint C8 (AI Provider Gateway Foundation) |
+| **Next Authorized Sprint** | **Sprint C9 — Platform API & SDK Foundation** |
+| **Implementation Status** | **Executable Modules Implemented**: `@cep/assessment-core`, `@cep/evidence-manager`, `@cep/rule-engine`, `@cep/policy-resolver`, `@cep/certification-engine`, `@cep/platform-orchestrator`, `@cep/repository-gateway`, `@cep/provider-gateway` |
 
 ---
 
@@ -23,7 +23,7 @@ CEP is an engineering platform designed to operationalize constitutional enginee
 A fundamental architectural distinction exists between **CEF** and **CEP**:
 
 - **CEF (Constitutional Engineering Framework)**: The independent constitutional meta-framework that defines meta-rules, rule resolution protocols, assessment criteria, and certification semantics. CEF serves as the **constitutional kernel** embedded within CEP.
-- **CEP (Constitutional Engineering Platform)**: The operational platform that hosts, composes, and orchestrates CEF and related domain frameworks (RKF, BGCF, BECC, BPGA). CEP provides the orchestration, repository abstraction, evidence pipeline management, and verification environments required to enforce constitutional discipline on target projects.
+- **CEP (Constitutional Engineering Platform)**: The operational platform that hosts, composes, and orchestrates CEF and related domain frameworks (RKF, BGCF, BECC, BPGA). CEP provides the orchestration, repository abstraction, AI provider abstraction, evidence pipeline management, and verification environments required to enforce constitutional discipline on target projects.
 
 ```
 +-------------------------------------------------------------------+
@@ -62,7 +62,8 @@ A fundamental architectural distinction exists between **CEF** and **CEP**:
     ├── policy-resolver/                # @cep/policy-resolver (Supporting Foundation)
     ├── certification-engine/           # @cep/certification-engine (Sprint C5)
     ├── platform-orchestrator/          # @cep/platform-orchestrator (Sprint C6)
-    └── repository-gateway/             # @cep/repository-gateway (Sprint C7)
+    ├── repository-gateway/             # @cep/repository-gateway (Sprint C7)
+    └── provider-gateway/               # @cep/provider-gateway (Sprint C8)
 ```
 
 ---
@@ -72,7 +73,7 @@ A fundamental architectural distinction exists between **CEF** and **CEP**:
 CEP is constitutionally structured into three isolated operational planes:
 
 1. **Constitutional Plane**: Contains the meta-constitutional kernel (CEF) and domain frameworks (RKF, BGCF, BECC, BPGA). Defines rules, authority models, assessment standards, and decision architectures.
-2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, runtime components, technical standards, and executable modules (`@cep/assessment-core`, `@cep/evidence-manager`, `@cep/rule-engine`, `@cep/policy-resolver`, `@cep/certification-engine`, `@cep/platform-orchestrator`, `@cep/repository-gateway`). Operationalizes rules without redefining domain authority.
+2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, runtime components, technical standards, and executable modules (`@cep/assessment-core`, `@cep/evidence-manager`, `@cep/rule-engine`, `@cep/policy-resolver`, `@cep/certification-engine`, `@cep/platform-orchestrator`, `@cep/repository-gateway`, `@cep/provider-gateway`). Operationalizes rules without redefining domain authority.
 3. **Project Plane**: Target software repositories and application code bases undergoing constitutional governance, assessment, and certification.
 
 ---
@@ -83,8 +84,8 @@ CEP is constitutionally structured into three isolated operational planes:
 | :--- | :--- | :--- | :--- |
 | **Stage A** | **Constitution Engineering** | **CONCLUDED** | Project Vision, Mission, Scope, Principles, Glossary, Architecture, Composition, Authority Boundaries & Decision Architecture |
 | **Stage B** | **Platform Engineering** | **CONCLUDED** | Domain Model, Ubiquitous Language, Contracts, Component Specs, Execution Flows, Event Models, Tech Specs & Implementation Strategy |
-| **Stage C** | **Platform Implementation** | **Active (C1-C3, C5-C7 Complete)**| `@cep/assessment-core` (C1), `@cep/evidence-manager` (C2), `@cep/rule-engine` (C3), Policy Resolver, Certification Engine (C5), Platform Orchestrator (C6), Repository Gateway (C7) |
+| **Stage C** | **Platform Implementation** | **Active (C1-C3, C5-C8 Complete)**| `@cep/assessment-core` (C1), `@cep/evidence-manager` (C2), `@cep/rule-engine` (C3), Policy Resolver, Certification Engine (C5), Platform Orchestrator (C6), Repository Gateway (C7), Provider Gateway (C8) |
 | **Stage D** | Ecosystem & Generalization | Planned (Future) | Multi-repository orchestration, multi-provider abstraction specifications |
 
 > [!NOTE]
-> Stage A and Stage B are concluded. Stage C (Platform Implementation) is active. Sprints C1, C2, C3, C5, C6, and C7 are complete; Sprint C8 is authorized next.
+> Stage A and Stage B are concluded. Stage C (Platform Implementation) is active. Sprints C1, C2, C3, C5, C6, C7, and C8 are complete; Sprint C9 is authorized next.
