@@ -180,13 +180,14 @@ Registry operations enforce strict separation of duties and maintenance workflow
 
 ## 9. Initial Certified Projects
 
-The initial Certified Project Registry records **BridGenta** (`bridgenta-portfolio`) as **Registry Entry #001**, establishing the baseline for ecosystem adoption.
+The Certified Project Registry records **BridGenta** (`bridgenta-portfolio`) as **Registry Entry #001** and **Lumina Praxis** (`lumina-praxis`) as **Registry Entry #002**, establishing the foundation for multi-project ecosystem certification.
 
 ### Certified Project Summary Table
 
 | Certificate ID | Project | Framework | Status | Certified On | Valid Until |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `BECC-CERT-2026-001` | `bridgenta-portfolio` | `BECC v2.2 GA` | `Certified` | `2026-07-19` | `2027-07-19` |
+| `BECC-CERT-2026-002` | `lumina-praxis` | `BECC v2.3` | `Certified` | `2026-07-20` | `2027-07-20` |
 
 ### Detailed Record: Registry Entry #001
 
@@ -207,6 +208,27 @@ The initial Certified Project Registry records **BridGenta** (`bridgenta-portfol
 - Historical Notes:
   - 2026-07-19: Initial certification granted following GA adoption audit.
   - 2026-07-19: Registered as Reference Implementation #001 in BECC Registry.
+```
+
+### Detailed Record: Registry Entry #002
+
+```markdown
+- Certificate ID: BECC-CERT-2026-002
+- Project Name: lumina-praxis
+- Repository URL: https://github.com/BGA360/bridgenta-portfolio
+- Evaluated Commit SHA: ae103abf4027bc991a027e1f40958a032d90956b
+- Project Version: v1.0.0
+- Framework Version: BECC v2.3
+- Certification Scope: Public Case Study, Medical Web Portal Architecture & Accessibility Specifications
+- Certification Status: Certified
+- Certification Date: 2026-07-20
+- Valid Until: 2027-07-20
+- Reassessment Date: 2027-06-20
+- Certification Authority: BECC Certification Authority & Governance Board
+- Evidence Package: BECC-LUMINA-PRAXIS-FINAL-CERTIFICATION.md
+- Historical Notes:
+  - 2026-07-20: Completed OP-002 Assessment, OP-003 Plan, Remediation & OP-004 Verification.
+  - 2026-07-20: Granted BECC Constitutional Certification as Registry Entry #002.
 ```
 
 ---
