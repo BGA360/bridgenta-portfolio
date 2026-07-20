@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@cep/assessment-core": ["../assessment-core/dist/src/index.d.ts"],
+      "@cep/evidence-manager": ["../evidence-manager/dist/src/index.d.ts"],
+      "@cep/rule-engine": ["../rule-engine/dist/src/index.d.ts"],
+      "@cep/policy-resolver": ["../policy-resolver/dist/src/index.d.ts"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
