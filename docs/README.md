@@ -12,9 +12,9 @@ CEP is an engineering platform designed to operationalize constitutional enginee
 | :--- | :--- |
 | **Project Status** | Platform Engineering |
 | **Lifecycle Stage** | Stage B — Platform Engineering |
-| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Platform Contracts) |
-| **Next Authorized Sprint** | **Sprint B3 — Runtime Architecture & Component Design** |
-| **Implementation Status** | **No Runtime Code** (Specification, Domain Model & Contract Specs Only) |
+| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Contracts), Sprint B3 (Runtime Architecture) |
+| **Next Authorized Sprint** | **Sprint B4 — Platform Implementation Strategy & Technical Architecture** |
+| **Implementation Status** | **No Runtime Code** (Specification, Domain Model, Contracts & Component Architecture Only) |
 
 ---
 
@@ -83,15 +83,24 @@ docs/
 │   ├── DOMAIN-INVARIANTS.md            # Mandatory domain invariants & sources
 │   ├── DOMAIN-OWNERSHIP.md             # Domain ownership & escalation paths
 │   └── TRACEABILITY-MATRIX.md          # Traceability matrix mapping back to Stage A
-└── contracts/                          # Platform Contracts & Interfaces (Sprint B2)
-    ├── PLATFORM-CONTRACTS.md           # 9 major platform contracts specification
-    ├── CONTRACT-CATALOG.md             # Authoritative contract catalog & index
-    ├── INTERFACE-SPECIFICATIONS.md     # Conceptual inter-context interface contracts
-    ├── REQUEST-RESPONSE-MODELS.md      # Canonical request and response information models
-    ├── VALIDATION-CONTRACTS.md         # Contract compliance verification & invariants
-    ├── ERROR-CONTRACTS.md              # 7 conceptual error models & escalation paths
-    ├── CONTRACT-LIFECYCLES.md          # Contract state machine & governance
-    └── CONTRACT-TRACEABILITY.md        # Complete Stage A & B traceability matrix
+├── contracts/                          # Platform Contracts & Interfaces (Sprint B2)
+│   ├── PLATFORM-CONTRACTS.md           # 9 major platform contracts specification
+│   ├── CONTRACT-CATALOG.md             # Authoritative contract catalog & index
+│   ├── INTERFACE-SPECIFICATIONS.md     # Conceptual inter-context interface contracts
+│   ├── REQUEST-RESPONSE-MODELS.md      # Canonical request and response information models
+│   ├── VALIDATION-CONTRACTS.md         # Contract compliance verification & invariants
+│   ├── ERROR-CONTRACTS.md              # 7 conceptual error models & escalation paths
+│   ├── CONTRACT-LIFECYCLES.md          # Contract state machine & governance
+│   └── CONTRACT-TRACEABILITY.md        # Complete Stage A & B traceability matrix
+└── runtime/                            # Runtime Architecture & Components (Sprint B3)
+    ├── RUNTIME-ARCHITECTURE.md         # Execution layers & component hierarchy
+    ├── COMPONENT-CATALOG.md            # 11 core runtime components specification
+    ├── COMPONENT-RESPONSIBILITY-MATRIX.md # Single-owner runtime responsibility matrix
+    ├── EXECUTION-FLOWS.md              # 5 conceptual execution flows
+    ├── EVENT-MODEL.md                  # 9 conceptual platform events
+    ├── STATE-MANAGEMENT.md             # Transient & persistent state management
+    ├── DEPENDENCY-ARCHITECTURE.md      # Dependency inversion & isolation rules
+    └── IMPLEMENTATION-ROADMAP.md       # 8 sequential engineering waves
 ```
 
 ---
@@ -101,7 +110,7 @@ docs/
 CEP is constitutionally structured into three isolated operational planes:
 
 1. **Constitutional Plane**: Contains the meta-constitutional kernel (CEF) and domain frameworks (RKF, BGCF, BECC, BPGA). Defines rules, authority models, assessment standards, and decision architectures.
-2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, and adapter boundaries. Operationalizes rules without redefining domain authority.
+2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, runtime components, and adapter boundaries. Operationalizes rules without redefining domain authority.
 3. **Project Plane**: Target software repositories and application code bases undergoing constitutional governance, assessment, and certification.
 
 ---
@@ -111,9 +120,9 @@ CEP is constitutionally structured into three isolated operational planes:
 | Stage | Focus Area | Status | Key Deliverables |
 | :--- | :--- | :--- | :--- |
 | **Stage A** | **Constitution Engineering** | **CONCLUDED (A1, A2, A3 Complete)** | Project Vision, Mission, Scope, Principles, Glossary, Architecture, Composition, Authority Boundaries & Decision Architecture |
-| **Stage B** | **Platform Engineering** | **Active (B1 & B2 Complete)** | Domain Model, Ubiquitous Language, Platform Contracts, Interface Specs, Models, Validation & Error Contracts |
+| **Stage B** | **Platform Engineering** | **Active (B1, B2, B3 Complete)** | Domain Model, Ubiquitous Language, Contracts, Component Specs, Execution Flows, Event Models, Dependency Architecture & 8-Wave Roadmap |
 | **Stage C** | Verification & Evidence Engines | Planned (Future) | Evidence collection specifications, assessment engine contracts, audit verifiers |
 | **Stage D** | Ecosystem & Generalization | Planned (Future) | Multi-repository orchestration, multi-provider abstraction specifications |
 
 > [!NOTE]
-> Stage A is concluded. Stage B (Platform Engineering) is actively under engineering. Sprint B1 and Sprint B2 are complete; Sprint B3 (Runtime Architecture & Component Design) is authorized next.
+> Stage A is concluded. Stage B (Platform Engineering) is actively under engineering. Sprints B1, B2, and B3 are complete; Sprint B4 (Platform Implementation Strategy & Technical Architecture) is authorized next.
