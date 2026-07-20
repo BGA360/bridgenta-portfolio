@@ -10,11 +10,12 @@ CEP is an engineering platform designed to operationalize constitutional enginee
 
 | Metadata Attribute | Current Status |
 | :--- | :--- |
-| **Project Status** | Platform Engineering |
-| **Lifecycle Stage** | Stage B — Platform Engineering |
-| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Contracts), Sprint B3 (Runtime Architecture) |
-| **Next Authorized Sprint** | **Sprint B4 — Platform Implementation Strategy & Technical Architecture** |
-| **Implementation Status** | **No Runtime Code** (Specification, Domain Model, Contracts & Component Architecture Only) |
+| **Project Status** | Platform Engineering (**CONCLUDED**) |
+| **Lifecycle Stage** | Stage B — Platform Engineering (**CONCLUDED**) |
+| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Contracts), Sprint B3 (Runtime Architecture), Sprint B4 (Implementation Strategy) |
+| **Next Authorized Stage** | **Stage C — Platform Implementation** |
+| **Next Authorized Sprint** | **Sprint C1 — Assessment Core Foundation** |
+| **Implementation Status** | **No Production Code** (Full Stage A & Stage B Architecture Blueprints Complete) |
 
 ---
 
@@ -92,15 +93,26 @@ docs/
 │   ├── ERROR-CONTRACTS.md              # 7 conceptual error models & escalation paths
 │   ├── CONTRACT-LIFECYCLES.md          # Contract state machine & governance
 │   └── CONTRACT-TRACEABILITY.md        # Complete Stage A & B traceability matrix
-└── runtime/                            # Runtime Architecture & Components (Sprint B3)
-    ├── RUNTIME-ARCHITECTURE.md         # Execution layers & component hierarchy
-    ├── COMPONENT-CATALOG.md            # 11 core runtime components specification
-    ├── COMPONENT-RESPONSIBILITY-MATRIX.md # Single-owner runtime responsibility matrix
-    ├── EXECUTION-FLOWS.md              # 5 conceptual execution flows
-    ├── EVENT-MODEL.md                  # 9 conceptual platform events
-    ├── STATE-MANAGEMENT.md             # Transient & persistent state management
-    ├── DEPENDENCY-ARCHITECTURE.md      # Dependency inversion & isolation rules
-    └── IMPLEMENTATION-ROADMAP.md       # 8 sequential engineering waves
+├── runtime/                            # Runtime Architecture & Components (Sprint B3)
+│   ├── RUNTIME-ARCHITECTURE.md         # Execution layers & component hierarchy
+│   ├── COMPONENT-CATALOG.md            # 11 core runtime components specification
+│   ├── COMPONENT-RESPONSIBILITY-MATRIX.md # Single-owner runtime responsibility matrix
+│   ├── EXECUTION-FLOWS.md              # 5 conceptual execution flows
+│   ├── EVENT-MODEL.md                  # 9 conceptual platform events
+│   ├── STATE-MANAGEMENT.md             # Transient & persistent state management
+│   ├── DEPENDENCY-ARCHITECTURE.md      # Dependency inversion & isolation rules
+│   └── IMPLEMENTATION-ROADMAP.md       # 8 sequential engineering waves
+└── implementation/                     # Technical Strategy & Governance (Sprint B4)
+    ├── TECHNICAL-ARCHITECTURE.md       # Application structure & layering strategy
+    ├── IMPLEMENTATION-STANDARDS.md     # Mandatory code standards & review rules
+    ├── MODULE-ARCHITECTURE.md          # 11 module architecture specifications
+    ├── TECHNOLOGY-DECISION-RECORD.md   # Technology selection rationale & impact
+    ├── ENGINEERING-CONVENTIONS.md      # Repository conventions & branching strategy
+    ├── TESTING-ARCHITECTURE.md         # Multi-tier testing philosophy & strategy
+    ├── OBSERVABILITY-ARCHITECTURE.md   # Logging, audit, metrics & tracing strategy
+    ├── SECURITY-ARCHITECTURE.md        # Trust boundaries, least privilege & auditability
+    ├── PERFORMANCE-ARCHITECTURE.md     # Scalability, latency & extensibility targets
+    └── IMPLEMENTATION-GOVERNANCE.md    # Compliance review process & Stage C clearance
 ```
 
 ---
@@ -110,7 +122,7 @@ docs/
 CEP is constitutionally structured into three isolated operational planes:
 
 1. **Constitutional Plane**: Contains the meta-constitutional kernel (CEF) and domain frameworks (RKF, BGCF, BECC, BPGA). Defines rules, authority models, assessment standards, and decision architectures.
-2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, runtime components, and adapter boundaries. Operationalizes rules without redefining domain authority.
+2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, runtime components, technical standards, and adapter boundaries. Operationalizes rules without redefining domain authority.
 3. **Project Plane**: Target software repositories and application code bases undergoing constitutional governance, assessment, and certification.
 
 ---
@@ -120,9 +132,9 @@ CEP is constitutionally structured into three isolated operational planes:
 | Stage | Focus Area | Status | Key Deliverables |
 | :--- | :--- | :--- | :--- |
 | **Stage A** | **Constitution Engineering** | **CONCLUDED (A1, A2, A3 Complete)** | Project Vision, Mission, Scope, Principles, Glossary, Architecture, Composition, Authority Boundaries & Decision Architecture |
-| **Stage B** | **Platform Engineering** | **Active (B1, B2, B3 Complete)** | Domain Model, Ubiquitous Language, Contracts, Component Specs, Execution Flows, Event Models, Dependency Architecture & 8-Wave Roadmap |
-| **Stage C** | Verification & Evidence Engines | Planned (Future) | Evidence collection specifications, assessment engine contracts, audit verifiers |
+| **Stage B** | **Platform Engineering** | **CONCLUDED (B1, B2, B3, B4 Complete)**| Domain Model, Ubiquitous Language, Contracts, Component Specs, Execution Flows, Event Models, Tech Specs & Implementation Strategy |
+| **Stage C** | **Platform Implementation** | **Next Authorized Stage (C1)** | Assessment Core Foundation, Evidence Manager, Rule Engine, Certification Engine |
 | **Stage D** | Ecosystem & Generalization | Planned (Future) | Multi-repository orchestration, multi-provider abstraction specifications |
 
 > [!NOTE]
-> Stage A is concluded. Stage B (Platform Engineering) is actively under engineering. Sprints B1, B2, and B3 are complete; Sprint B4 (Platform Implementation Strategy & Technical Architecture) is authorized next.
+> Stage A and Stage B are formally concluded. Stage C (Platform Implementation) is authorized to commence in Sprint C1 (Assessment Core Foundation).
