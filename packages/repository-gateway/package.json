@@ -1,0 +1,31 @@
+{
+  "name": "@cep/repository-gateway",
+  "version": "0.1.0",
+  "description": "Repository Gateway Foundation module for the Constitutional Engineering Platform (CEP)",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/**/*.test.js"
+  },
+  "dependencies": {
+    "@cep/assessment-core": "file:../assessment-core",
+    "@cep/evidence-manager": "file:../evidence-manager",
+    "@cep/rule-engine": "file:../rule-engine",
+    "@cep/platform-orchestrator": "file:../platform-orchestrator"
+  },
+  "keywords": [
+    "cep",
+    "constitutional-engineering",
+    "repository-gateway",
+    "scm",
+    "git",
+    "github",
+    "gitlab",
+    "azure-devops"
+  ],
+  "author": "BridGenta CEP Platform Team",
+  "license": "UNLICENSED",
+  "private": true
+}
