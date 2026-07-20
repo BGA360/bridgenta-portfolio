@@ -1,6 +1,12 @@
 # build output
 dist/
 .astro/
+packages/*/dist/
+packages/*/**/*.js
+packages/*/**/*.js.map
+packages/*/**/*.d.ts
+packages/*/**/*.d.ts.map
+!packages/rule-engine/src/node.d.ts
 
 # dependencies
 node_modules/
@@ -24,4 +30,3 @@ Thumbs.db
 /scratch/
 /docs/engineering-communication.zip
 /docs/engineering-communication/v2/research/rkf-reference/docs/
-
