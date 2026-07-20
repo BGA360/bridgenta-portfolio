@@ -1,0 +1,27 @@
+{
+  "name": "@cep/api-sdk",
+  "version": "0.1.0",
+  "description": "Platform API & SDK Foundation module for the Constitutional Engineering Platform (CEP)",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/**/*.test.js"
+  },
+  "dependencies": {
+    "@cep/platform-orchestrator": "file:../platform-orchestrator",
+    "@cep/repository-gateway": "file:../repository-gateway",
+    "@cep/provider-gateway": "file:../provider-gateway"
+  },
+  "keywords": [
+    "cep",
+    "constitutional-engineering",
+    "api",
+    "sdk",
+    "developer-interface"
+  ],
+  "author": "BridGenta CEP Platform Team",
+  "license": "UNLICENSED",
+  "private": true
+}
