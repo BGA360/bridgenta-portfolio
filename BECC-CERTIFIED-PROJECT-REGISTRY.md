@@ -180,7 +180,7 @@ Registry operations enforce strict separation of duties and maintenance workflow
 
 ## 9. Initial Certified Projects
 
-The Certified Project Registry records **BridGenta** (`bridgenta-portfolio`) as **Registry Entry #001**, **Lumina Praxis** (`lumina-praxis`) as **Registry Entry #002**, **StarCleaners** (`starcleaners`) as **Registry Entry #003**, and **Rooted Reality Gardens** (`rootedrealitygarden`) as **Registry Entry #004**, establishing multi-project ecosystem certification.
+The Certified Project Registry records **BridGenta** (`bridgenta-portfolio`) as **Registry Entry #001**, **Lumina Praxis** (`lumina-praxis`) as **Registry Entry #002**, **StarCleaners** (`starcleaners`) as **Registry Entry #003**, **Rooted Reality Gardens** (`rootedrealitygarden`) as **Registry Entry #004**, and **AEOcortex** (`aeocortex`) as **Registry Entry #005**, establishing complete public portfolio certification.
 
 ### Certified Project Summary Table
 
@@ -190,6 +190,7 @@ The Certified Project Registry records **BridGenta** (`bridgenta-portfolio`) as 
 | `BECC-CERT-2026-002` | `lumina-praxis` | `BECC v2.3` | `Certified` | `2026-07-20` | `2027-07-20` |
 | `BECC-CERT-2026-003` | `starcleaners` | `BECC v2.3` | `Certified` | `2026-07-20` | `2027-07-20` |
 | `BECC-CERT-2026-004` | `rootedrealitygarden` | `BECC v2.3` | `Certified` | `2026-07-20` | `2027-07-20` |
+| `BECC-CERT-2026-005` | `aeocortex` | `BECC v2.3` | `Certified` | `2026-07-20` | `2027-07-20` |
 
 ### Detailed Record: Registry Entry #001
 
@@ -273,6 +274,27 @@ The Certified Project Registry records **BridGenta** (`bridgenta-portfolio`) as 
 - Historical Notes:
   - 2026-07-20: Completed OP-002 Assessment, OP-003 Plan, Remediation & OP-004 Verification.
   - 2026-07-20: Granted BECC Constitutional Certification as Registry Entry #004.
+```
+
+### Detailed Record: Registry Entry #005
+
+```markdown
+- Certificate ID: BECC-CERT-2026-005
+- Project Name: aeocortex
+- Repository URL: https://github.com/BGA360/bridgenta-portfolio
+- Evaluated Commit SHA: ae103abf4027bc991a027e1f40958a032d90956b
+- Project Version: v1.0.0
+- Framework Version: BECC v2.3
+- Certification Scope: Public Case Study, AI Search Engine Optimization (AEO/GEO) & Node.js Parser Specifications
+- Certification Status: Certified
+- Certification Date: 2026-07-20
+- Valid Until: 2027-07-20
+- Reassessment Date: 2027-06-20
+- Certification Authority: BECC Certification Authority & Governance Board
+- Evidence Package: BECC-AEOCORTEX-FINAL-CERTIFICATION.md
+- Historical Notes:
+  - 2026-07-20: Completed OP-002 Assessment, OP-003 Plan, Remediation & OP-004 Verification.
+  - 2026-07-20: Granted BECC Constitutional Certification as Registry Entry #005.
 ```
 
 ---

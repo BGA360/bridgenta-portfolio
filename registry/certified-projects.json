@@ -2,8 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/BGA360/bridgenta-portfolio/main/registry/certified-projects.schema.json",
   "registry_version": "v2.3",
   "status": "OPERATIONAL",
-  "last_updated": "2026-07-20T04:23:23Z",
-  "total_certified_projects": 4,
+  "last_updated": "2026-07-20T07:54:23Z",
+  "total_certified_projects": 5,
   "projects": [
     {
       "certificate_id": "BECC-CERT-2026-001",
@@ -155,6 +155,48 @@
           "timestamp": "2026-07-20T04:23:23Z",
           "action": "CERTIFIED",
           "details": "Issued BECC Constitutional Certification BECC-CERT-2026-004; registered as Entry #004."
+        }
+      ]
+    },
+    {
+      "certificate_id": "BECC-CERT-2026-005",
+      "project_name": "aeocortex",
+      "repository_url": "https://github.com/BGA360/bridgenta-portfolio",
+      "evaluated_commit_sha": "ae103abf4027bc991a027e1f40958a032d90956b",
+      "project_version": "v1.0.0",
+      "framework_version": "BECC v2.3",
+      "certification_scope": "Public Case Study, AI Search Engine Optimization (AEO/GEO) & Node.js Parser Specifications",
+      "certification_status": "Certified",
+      "issue_date": "2026-07-20",
+      "valid_until": "2027-07-20",
+      "reassessment_date": "2027-06-20",
+      "certification_authority": "BECC Certification Authority & Governance Board",
+      "evidence_package": "BECC-AEOCORTEX-FINAL-CERTIFICATION.md",
+      "historical_notes": [
+        {
+          "timestamp": "2026-07-20T07:16:00Z",
+          "action": "ASSESSED",
+          "details": "Completed OP-002 Independent Assessment; logged findings FIND-AEO-001 through FIND-AEO-003."
+        },
+        {
+          "timestamp": "2026-07-20T07:28:00Z",
+          "action": "PLANNED",
+          "details": "Formulated OP-003 Improvement Implementation Plan with Work Packages WP-AEO-001 through WP-AEO-003."
+        },
+        {
+          "timestamp": "2026-07-20T07:43:00Z",
+          "action": "REMEDIATED",
+          "details": "Executed documentation remediations standardizing heading to Risks & Mitigations, adding commit SHA metadata, and removing pilot annotations."
+        },
+        {
+          "timestamp": "2026-07-20T07:49:00Z",
+          "action": "VERIFIED",
+          "details": "Completed OP-004 Independent Verification Report; confirmed 100% compliance."
+        },
+        {
+          "timestamp": "2026-07-20T07:54:23Z",
+          "action": "CERTIFIED",
+          "details": "Issued BECC Constitutional Certification BECC-CERT-2026-005; registered as Entry #005."
         }
       ]
     }
