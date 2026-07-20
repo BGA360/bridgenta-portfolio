@@ -1,0 +1,25 @@
+{
+  "name": "@cep/policy-resolver",
+  "version": "0.1.0",
+  "description": "Policy Resolver Foundation module for the Constitutional Engineering Platform (CEP)",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/**/*.test.js"
+  },
+  "dependencies": {
+    "@cep/assessment-core": "file:../assessment-core",
+    "@cep/rule-engine": "file:../rule-engine"
+  },
+  "keywords": [
+    "cep",
+    "constitutional-engineering",
+    "policy-resolver",
+    "governance"
+  ],
+  "author": "BridGenta CEP Platform Team",
+  "license": "UNLICENSED",
+  "private": true
+}
