@@ -12,9 +12,9 @@ CEP is an engineering platform designed to operationalize constitutional enginee
 | :--- | :--- |
 | **Project Status** | Platform Engineering |
 | **Lifecycle Stage** | Stage B — Platform Engineering |
-| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model) |
-| **Next Authorized Sprint** | **Sprint B2 — Platform Contracts & Interface Specifications** |
-| **Implementation Status** | **No Runtime Code** (Specification & Domain Architecture Only) |
+| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Platform Contracts) |
+| **Next Authorized Sprint** | **Sprint B3 — Runtime Architecture & Component Design** |
+| **Implementation Status** | **No Runtime Code** (Specification, Domain Model & Contract Specs Only) |
 
 ---
 
@@ -74,15 +74,24 @@ docs/
 │   ├── EVIDENCE-GATE-STANDARD.md       # 5 measurable constitutional gates
 │   ├── GOVERNANCE-LEVELS.md            # Proportional governance levels 0 to 5
 │   └── DECISION-RECORD-STANDARD.md     # Mandatory CDR specification template
-└── domain/                             # Domain Model & Vocabulary (Sprint B1)
-    ├── DOMAIN-MODEL.md                 # 23 core domain concepts specification
-    ├── UBIQUITOUS-LANGUAGE.md          # Canonical vocabulary & prohibited synonyms
-    ├── DOMAIN-BOUNDARIES.md            # 7 bounded contexts & boundaries
-    ├── DOMAIN-RELATIONSHIPS.md         # Conceptual domain entity relationships
-    ├── DOMAIN-LIFECYCLES.md            # Entity lifecycle state models
-    ├── DOMAIN-INVARIANTS.md            # Mandatory domain invariants & sources
-    ├── DOMAIN-OWNERSHIP.md             # Domain ownership & escalation paths
-    └── TRACEABILITY-MATRIX.md          # Traceability matrix mapping back to Stage A
+├── domain/                             # Domain Model & Vocabulary (Sprint B1)
+│   ├── DOMAIN-MODEL.md                 # 23 core domain concepts specification
+│   ├── UBIQUITOUS-LANGUAGE.md          # Canonical vocabulary & prohibited synonyms
+│   ├── DOMAIN-BOUNDARIES.md            # 7 bounded contexts & boundaries
+│   ├── DOMAIN-RELATIONSHIPS.md         # Conceptual domain entity relationships
+│   ├── DOMAIN-LIFECYCLES.md            # Entity lifecycle state models
+│   ├── DOMAIN-INVARIANTS.md            # Mandatory domain invariants & sources
+│   ├── DOMAIN-OWNERSHIP.md             # Domain ownership & escalation paths
+│   └── TRACEABILITY-MATRIX.md          # Traceability matrix mapping back to Stage A
+└── contracts/                          # Platform Contracts & Interfaces (Sprint B2)
+    ├── PLATFORM-CONTRACTS.md           # 9 major platform contracts specification
+    ├── CONTRACT-CATALOG.md             # Authoritative contract catalog & index
+    ├── INTERFACE-SPECIFICATIONS.md     # Conceptual inter-context interface contracts
+    ├── REQUEST-RESPONSE-MODELS.md      # Canonical request and response information models
+    ├── VALIDATION-CONTRACTS.md         # Contract compliance verification & invariants
+    ├── ERROR-CONTRACTS.md              # 7 conceptual error models & escalation paths
+    ├── CONTRACT-LIFECYCLES.md          # Contract state machine & governance
+    └── CONTRACT-TRACEABILITY.md        # Complete Stage A & B traceability matrix
 ```
 
 ---
@@ -92,7 +101,7 @@ docs/
 CEP is constitutionally structured into three isolated operational planes:
 
 1. **Constitutional Plane**: Contains the meta-constitutional kernel (CEF) and domain frameworks (RKF, BGCF, BECC, BPGA). Defines rules, authority models, assessment standards, and decision architectures.
-2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, and adapter boundaries. Operationalizes rules without redefining domain authority.
+2. **Platform Plane**: Contains the platform orchestration services, evidence verification pipelines, component specs, decision evaluation engines, domain models, platform contracts, and adapter boundaries. Operationalizes rules without redefining domain authority.
 3. **Project Plane**: Target software repositories and application code bases undergoing constitutional governance, assessment, and certification.
 
 ---
@@ -102,9 +111,9 @@ CEP is constitutionally structured into three isolated operational planes:
 | Stage | Focus Area | Status | Key Deliverables |
 | :--- | :--- | :--- | :--- |
 | **Stage A** | **Constitution Engineering** | **CONCLUDED (A1, A2, A3 Complete)** | Project Vision, Mission, Scope, Principles, Glossary, Architecture, Composition, Authority Boundaries & Decision Architecture |
-| **Stage B** | **Platform Engineering** | **Active (B1 Complete)** | Domain Model, Ubiquitous Language, Bounded Contexts, Lifecycles, Invariants, Traceability Matrix |
+| **Stage B** | **Platform Engineering** | **Active (B1 & B2 Complete)** | Domain Model, Ubiquitous Language, Platform Contracts, Interface Specs, Models, Validation & Error Contracts |
 | **Stage C** | Verification & Evidence Engines | Planned (Future) | Evidence collection specifications, assessment engine contracts, audit verifiers |
 | **Stage D** | Ecosystem & Generalization | Planned (Future) | Multi-repository orchestration, multi-provider abstraction specifications |
 
 > [!NOTE]
-> Stage A is concluded. Stage B (Platform Engineering) is actively under engineering. Sprint B1 is complete; Sprint B2 (Platform Contracts & Interface Specifications) is authorized next.
+> Stage A is concluded. Stage B (Platform Engineering) is actively under engineering. Sprint B1 and Sprint B2 are complete; Sprint B3 (Runtime Architecture & Component Design) is authorized next.
