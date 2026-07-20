@@ -1,0 +1,75 @@
+{
+  "release_id": "CEP-v1.0-RC1",
+  "version": "1.0.0-rc.1",
+  "release_date": "2026-07-20T21:57:49Z",
+  "status": "RELEASE_CANDIDATE",
+  "monorepo": {
+    "git_branch": "feature/sprint-c10-release-candidate",
+    "compiler": "TypeScript 5.x",
+    "target": "ES2022",
+    "module_system": "NodeNext"
+  },
+  "packages": [
+    {
+      "name": "@cep/assessment-core",
+      "version": "0.1.0",
+      "contract": "CTR-001",
+      "test_pass_count": 12
+    },
+    {
+      "name": "@cep/evidence-manager",
+      "version": "0.1.0",
+      "contract": "CTR-002",
+      "test_pass_count": 12
+    },
+    {
+      "name": "@cep/rule-engine",
+      "version": "0.1.0",
+      "contract": "CTR-003",
+      "test_pass_count": 10
+    },
+    {
+      "name": "@cep/policy-resolver",
+      "version": "0.1.0",
+      "contract": "CTR-004",
+      "test_pass_count": 9
+    },
+    {
+      "name": "@cep/certification-engine",
+      "version": "0.1.0",
+      "contract": "CTR-005",
+      "test_pass_count": 9
+    },
+    {
+      "name": "@cep/platform-orchestrator",
+      "version": "0.1.0",
+      "contract": "CTR-006",
+      "test_pass_count": 6
+    },
+    {
+      "name": "@cep/repository-gateway",
+      "version": "0.1.0",
+      "contract": "CTR-007",
+      "test_pass_count": 9
+    },
+    {
+      "name": "@cep/provider-gateway",
+      "version": "0.1.0",
+      "contract": "CTR-008",
+      "test_pass_count": 10
+    },
+    {
+      "name": "@cep/api-sdk",
+      "version": "0.1.0",
+      "contract": "CTR-009",
+      "test_pass_count": 7
+    }
+  ],
+  "total_test_pass_count": 75,
+  "total_test_suite_count": 40,
+  "verification": {
+    "build_status": "CLEAN",
+    "circular_dependencies": 0,
+    "prag_validation_gate": "PASSED"
+  }
+}
