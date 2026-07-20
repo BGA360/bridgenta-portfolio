@@ -10,11 +10,13 @@ CEP is an engineering platform designed to operationalize constitutional enginee
 
 | Metadata Attribute | Current Status |
 | :--- | :--- |
-| **Project Status** | Independent Engineering Verification |
-| **Lifecycle Stage** | Stage D — General Availability Governance (**Independent Engineering Audit Completed: GO Decision Approved**) |
-| **Completed Sprints** | Sprint A1 (Constitution), Sprint A2 (Architecture), Sprint A3 (Decision Architecture), Sprint B1 (Domain Model), Sprint B2 (Contracts), Sprint B3 (Runtime Architecture), Sprint B4 (Implementation Strategy), Sprint C1 (Assessment Core Foundation), Sprint C2 (Evidence Manager Foundation), Sprint C3 (Rule Evaluation Engine Foundation), Sprint C5 (Certification Engine Foundation), Sprint C6 (Platform Integration & Orchestration Foundation), Sprint C7 (Repository Gateway Foundation), Sprint C8 (AI Provider Gateway Foundation), Sprint C9 (Platform API & SDK Foundation), Sprint C10 (Platform Hardening & RC1), Sprint C11 (Independent Constitutional Audit, External Engineering Review & GA Readiness) |
-| **Next Authorized Sprint** | **Sprint C12 — CEP v1.0 General Availability (GA) Release & Long-Term Stewardship** |
-| **Implementation Status** | **CEP v1.0 GA Audited Package Catalog**: `@cep/assessment-core`, `@cep/evidence-manager`, `@cep/rule-engine`, `@cep/policy-resolver`, `@cep/certification-engine`, `@cep/platform-orchestrator`, `@cep/repository-gateway`, `@cep/provider-gateway`, `@cep/api-sdk` |
+| **Project Status** | **General Availability (GA)** |
+| **Lifecycle Stage** | **Stage E — Long-Term Platform Stewardship** |
+| **Release Version** | **CEP v1.0 GA (Supported & Frozen Architecture)** |
+| **Completed Stages** | Stage A (Constitution), Stage B (Platform Architecture & Contracts), Stage C (Platform Implementation), Stage D (Independent Engineering Verification: **GO Decision Approved**) |
+| **Completed Sprints** | Sprints A1-A3, Sprints B1-B4, Sprints C1-C12 Complete |
+| **Next Authorized Stage** | **Stage F — Platform Evolution (Governed Constitutional Amendments & Versioned Roadmap)** |
+| **Implementation Status** | **CEP v1.0 GA Supported Package Catalog**: `@cep/assessment-core`, `@cep/evidence-manager`, `@cep/rule-engine`, `@cep/policy-resolver`, `@cep/certification-engine`, `@cep/platform-orchestrator`, `@cep/repository-gateway`, `@cep/provider-gateway`, `@cep/api-sdk` |
 
 ---
 
@@ -55,14 +57,24 @@ A fundamental architectural distinction exists between **CEF** and **CEP**:
 │   ├── contracts/                      # Platform Contracts & Models (Sprint B2)
 │   ├── runtime/                        # Runtime Architecture & Components (Sprint B3)
 │   ├── implementation/                 # Technical Strategy & Governance (Sprint B4)
-│   ├── releases/                       # Release Candidate Artifacts (Sprint C10)
-│   └── audit/                          # Independent Audit & GA Governance Artifacts (Sprint C11)
-│       ├── CEP-v1.0-INDEPENDENT-CONSTITUTIONAL-AUDIT.md # Constitutional & Authority Audit
-│       ├── CEP-v1.0-ENGINEERING-REVIEW.md               # Technical & Architectural Deep-Dive
-│       ├── CEP-v1.0-RISK-ASSESSMENT.md                  # Classified Risk Register
-│       ├── CEP-v1.0-GA-READINESS.md                     # General Availability Readiness Report
-│       └── CEP-v1.0-FINAL-GO-DECISION.md                # Final GO Decision & 10-Tier Scorecard
-└── packages/                           # Implementation Modules (Stage C/D Package Catalog)
+│   ├── releases/                       # Release Artifacts & GA Declaration (Sprint C10/C12)
+│   │   ├── CEP-v1.0-RC1.md             # RC1 Release Specification
+│   │   ├── release-manifest.json       # Machine-Readable Release Manifest
+│   │   └── CEP-v1.0-GENERAL-AVAILABILITY.md # Official GA Declaration
+│   ├── audit/                          # Independent Audit & Governance (Sprint C11)
+│   │   ├── CEP-v1.0-INDEPENDENT-CONSTITUTIONAL-AUDIT.md
+│   │   ├── CEP-v1.0-ENGINEERING-REVIEW.md
+│   │   ├── CEP-v1.0-RISK-ASSESSMENT.md
+│   │   ├── CEP-v1.0-GA-READINESS.md
+│   │   └── CEP-v1.0-FINAL-GO-DECISION.md
+│   └── governance/                     # Long-Term Stewardship Policies (Sprint C12)
+│       ├── CEP-STEWARDSHIP-POLICY.md   # Stewardship & Ownership
+│       ├── CEP-VERSIONING-POLICY.md    # SemVer 2.0.0 & Release Governance
+│       ├── CEP-COMPATIBILITY-GUARANTEE.md # API & Contract Compatibility Guarantees
+│       ├── CEP-SECURITY-POLICY.md      # Security Disclosure & Patch SLA
+│       ├── CEP-SUPPORT-LIFECYCLE.md    # Support Phases (Active/Maintenance/EOL)
+│       └── CEP-CONTRIBUTION-GOVERNANCE.md # Contribution & Amendment Rules
+└── packages/                           # Implementation Modules (CEP v1.0 GA Catalog)
     ├── assessment-core/                # @cep/assessment-core (Sprint C1)
     ├── evidence-manager/               # @cep/evidence-manager (Sprint C2)
     ├── rule-engine/                    # @cep/rule-engine (Sprint C3)
@@ -92,8 +104,10 @@ CEP is constitutionally structured into three isolated operational planes:
 | :--- | :--- | :--- | :--- |
 | **Stage A** | **Constitution Engineering** | **CONCLUDED** | Project Vision, Mission, Scope, Principles, Glossary, Architecture, Composition, Authority Boundaries & Decision Architecture |
 | **Stage B** | **Platform Engineering** | **CONCLUDED** | Domain Model, Ubiquitous Language, Contracts, Component Specs, Execution Flows, Event Models, Tech Specs & Implementation Strategy |
-| **Stage C** | **Platform Implementation** | **CONCLUDED (Sprints C1-C10 Complete)**| `@cep/assessment-core` (C1), `@cep/evidence-manager` (C2), `@cep/rule-engine` (C3), Policy Resolver, Certification Engine (C5), Platform Orchestrator (C6), Repository Gateway (C7), Provider Gateway (C8), API & SDK (C9), Release Candidate RC1 (C10) |
-| **Stage D** | **General Availability Governance** | **Active (Sprint C11 Complete)** | Independent Constitutional Audit (C11: **GO Decision Approved**), GA Release (C12 Authorized Next) |
+| **Stage C** | **Platform Implementation** | **CONCLUDED** | `@cep/assessment-core` (C1), `@cep/evidence-manager` (C2), `@cep/rule-engine` (C3), Policy Resolver, Certification Engine (C5), Platform Orchestrator (C6), Repository Gateway (C7), Provider Gateway (C8), API & SDK (C9), RC1 (C10) |
+| **Stage D** | **General Availability Governance** | **CONCLUDED** | Independent Constitutional Audit (C11: **GO Approved**) |
+| **Stage E** | **Long-Term Platform Stewardship** | **ACTIVE** | CEP v1.0 GA Declaration, Stewardship, Compatibility, Versioning, Security & Support Lifecycle Policies (Sprint C12) |
+| **Stage F** | Platform Evolution | Authorized Next | Governed Constitutional Amendments & Versioned Releases (v1.1, v1.2, v2.0) |
 
 > [!NOTE]
-> Stages A, B, and C are concluded. Stage D (General Availability Governance) is active. Sprint C11 is complete with an approved **GO** recommendation; Sprint C12 is authorized next.
+> Stages A, B, C, and D are concluded. Stage E (Long-Term Platform Stewardship) is active with **CEP v1.0 GA** formally declared. Stage F (Platform Evolution) is authorized next.
