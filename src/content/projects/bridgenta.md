@@ -28,7 +28,7 @@ BridGenta ist eine Rekonstruktionsplattform für Altsysteme, die bestehende Soft
 
 Während moderne Codegeneratoren Benutzeroberflächen schnell erstellen können, liegt die eigentliche Herausforderung nicht im Schreiben von Code, sondern in der präzisen Aufbereitung und Verifikation des Wissens aus Altsystemen. Der Geltungsbereich dieses Berichts umfasst die architektonischen Schutzschichten (Preservation Layers), den strukturierten Rekonstruktions-Workflow sowie die quantitativen Validierungsergebnisse des Pilotprojekts.
 
-BridGenta erstellt hierzu strukturierte Modelle und erzeugt ein Reconstruction Package, das das erfasste Systemwissen für die KI-gestützte Weiterentwicklung konsolidiert. Die Plattform demonstriert, wie Entwickler veraltete Software beschleunigt migrieren können, während gleichzeitig ein lückenloser Datenschutz gewahrt bleibt.
+BridGenta erstellt hierzu strukturierte Modelle und erzeugt ein Reconstruction Package, das das erfasste Systemwissen für die KI-gestützte Weiterentwicklung konsolidiert. Die Plattform demonstriert, wie Entwickler veraltete Software beschleunigt migrieren können, während gleichzeitig der Schutz sensibler Daten im Pilotprojekt gewahrt blieb.
 
 ---
 
@@ -279,7 +279,7 @@ Durch den strukturierten Prozess wurden im Rahmen des Testlaufs messbare quantit
     </div>
     <div class="result-card__content">
       <h3>Handoff-Stabilität</h3>
-      <p>100% der Code-Übergaben wurden über isolierte Branches konfliktfrei integriert.</p>
+      <p>100% der Code-Übergaben im Pilotlauf wurden über isolierte Branches konfliktfrei integriert.</p>
     </div>
   </div>
   <div class="result-card">
@@ -288,7 +288,7 @@ Durch den strukturierten Prozess wurden im Rahmen des Testlaufs messbare quantit
     </div>
     <div class="result-card__content">
       <h3>Sicherheit</h3>
-      <p>Die Gateway-gestützte Schichtentrennung verhinderte jeglichen Abfluss sensibler Daten (Null-Leak-Szenario).</p>
+      <p>Die Gateway-gestützte Schichtentrennung verhinderte jeglichen Abfluss sensibler Daten im Pilotlauf.</p>
     </div>
   </div>
   <div class="result-card">
