@@ -1,36 +1,39 @@
-# CEP v1.0 — Final GO Recommendation & Independent Audit Scorecard
+# CEP v1.0 — Final Audit Decision & Scorecard (Portfolio Readiness)
 
 ---
 
 | Governance Attribute | Audit Verification |
 | :--- | :--- |
-| **Audit Target** | Constitutional Engineering Platform (CEP) v1.0 RC1 |
+| **Audit Target** | Constitutional Engineering Platform (CEP) v1.0 |
 | **Auditing Body** | Independent Engineering Review Board |
-| **Audit Date** | `2026-07-20` |
-| **Final Recommendation** | **GO** |
-| **Target Sprint Next** | **Sprint C12 — CEP v1.0 General Availability (GA) Release & Long-Term Stewardship** |
+| **Audit Date** | `2026-07-22` |
+| **Final Recommendation** | **CONDITIONAL GO** |
 
 ---
 
-## 1. 10-Category Audit Scorecard
+## 1. 10-Category Audit Scorecard (Portfolio Readiness Focus)
 
-| Evaluation Dimension | Score (1-10) | Detailed Audit Justification |
+| Evaluation Dimension | Score (1-10) | Detailed Justification |
 | :--- | :---: | :--- |
-| **1. Architecture** | **10 / 10** | Strict 3-plane separation (Constitutional, Platform, Project). Clean modular monorepo (`packages/`) with zero circular dependencies and linear pipeline orchestration (`@cep/platform-orchestrator`). |
-| **2. Engineering** | **10 / 10** | High package cohesion, low coupling, branded value objects, strong type safety, 100% loss-free canonical JSON roundtrip serialization. |
-| **3. Governance** | **10 / 10** | 100% alignment with CEF constitutional kernel. Unbypassable governance level checks (0-5), pure deterministic rule evaluation, legal certification state machine. |
-| **4. Maintainability** | **10 / 10** | Standardized package structure (`src/`, `tests/`, `README.md`, `package.json`, `tsconfig.json`), explicit contract versioning (`CTR-001` to `CTR-009`), mandatory JSDoc headers. |
-| **5. Scalability** | **9 / 10** | Asynchronous-ready pipeline orchestration and provider-independent gateway abstractions enable effortless addition of future SCM adapters and AI models. |
-| **6. Security** | **10 / 10** | Zero credential persistence, zero secret exposure, read-only SCM snapshot isolation, sanitized error translators (`ERR-API-*`) preventing callstack leaks. |
-| **7. Documentation** | **10 / 10** | SSOT documentation core (`docs/`), complete package READMEs, release specifications (`docs/releases/`), and audit artifacts (`docs/audit/`). |
-| **8. API Design** | **10 / 10** | Technology-neutral `PlatformAPI` interface, semantic versioning metadata (`1.0.0`, `CTR-009`), hiding internal module boundaries from SDK consumers. |
-| **9. Developer Experience** | **10 / 10** | Fluent request builders (`PipelineRequestBuilder`, `AssessmentRequestBuilder`, `EvidenceRequestBuilder`), simple `CEPClient` instantiation, intuitive event subscriptions. |
-| **10. Operational Readiness** | **9 / 10** | 75/75 passing test cases across 5 test tiers (Unit, Contract, Compliance, Regression, Acceptance); clean monorepo build; verified GitHub Actions CI pipeline. |
+| **1. Architecture** | **9 / 10** | Strong 3-plane separation, but lacks a dedicated validator for publication assets within the orchestrator. |
+| **2. Engineering** | **10 / 10** | Clean, decoupled ES modules; robust type safety; excellent package isolation. |
+| **3. Governance** | **8 / 10** | Lacks a constitutional enforcement mechanism to prevent unpublished/immature projects from showing up on sitemaps. |
+| **4. Maintainability** | **10 / 10** | Highly structured and documented, allowing easy integration of new rules. |
+| **5. Scalability** | **9 / 10** | Acyclic dependency graph allows the addition of the new PRR validator without affecting existing modules. |
+| **6. Security** | **10 / 10** | Excellent PICS asset classification and secret isolation. |
+| **7. Documentation** | **9 / 10** | The German `portfolio-readiness-rule.md` needs to be translated and formalized into a platform specification. |
+| **8. API Design** | **10 / 10** | Stable and clean `PlatformAPI` / `CEPClient` design. |
+| **9. Developer Experience** | **10 / 10** | High-quality builders and clear integration workflow rules. |
+| **10. Operational Readiness** | **9 / 10** | 100% test pass rate across 75 tests, but lacks coverage for publication validation rules. |
+| **Average Score** | **9.4 / 10** | **HIGH READINESS WITH KEY GAPS** |
 
 ---
 
 ## 2. Final Audit Recommendation
 
-### **RECOMMENDATION: GO FOR GENERAL AVAILABILITY (GA)**
+### **RECOMMENDATION: CONDITIONAL GO**
 
-The Independent Engineering Review Board unanimously recommends that **Constitutional Engineering Platform (CEP) v1.0** be approved for **General Availability (GA)** release under **Sprint C12**.
+The Independent Engineering Review Board approves the General Availability (GA) release of CEP v1.0 **on the condition** that:
+1. The **Portfolio Readiness Rule (PRR)** is formalized as a core constitutional rule under the **BPGA (Publication Governance)** framework.
+2. A new validation contract (`CTR-010`) is added to define the schema-based evidence package required to clear the publication gate.
+3. The platform orchestrator is extended in the next minor version release (`v1.1.0`) to automatically enforce route deactivation and sitemap exclusion for projects failing the PRR checks.

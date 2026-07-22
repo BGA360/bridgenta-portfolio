@@ -1,18 +1,17 @@
-# CEP v1.0 — General Availability (GA) Readiness Report
+# CEP v1.0 — General Availability (GA) Readiness Report (Portfolio Readiness)
 
 ---
 
 | Readiness Category | Status | Evaluation Summary |
 | :--- | :---: | :--- |
-| **Constitutional Readiness** | **READY** | 100% CEF kernel alignment; zero governance bypass. |
-| **Architecture Readiness** | **READY** | 9 modular packages; zero circular dependencies; clean layering. |
-| **Contract Readiness** | **READY** | `CTR-001` to `CTR-009` validated with 100% test pass rate. |
-| **Operational Readiness** | **READY** | Deterministic pipeline execution, loss-free JSON serialization. |
-| **Documentation Readiness** | **READY** | SSOT docs, package READMEs, release notes, and audit reports complete. |
-| **Quality Readiness** | **READY** | 75/75 passing test cases across 40 test suites; clean monorepo build. |
+| **Constitutional Readiness** | **CONDITIONAL** | Core CEF and platform frameworks are ready, but publication governance (BPGA) requires formal PRR rules. |
+| **Architecture Readiness** | **READY** | Direct acyclic dependency graph (`CEF -> BGCF/BECC -> BPGA`) is fully prepared to host the new PRR validator. |
+| **Contract Readiness** | **CONDITIONAL** | Existing contracts `CTR-001` through `CTR-009` are stable, but a new `CTR-010` Portfolio Readiness contract is recommended. |
+| **Operational Readiness** | **READY** | Platform orchestration and build engines compile cleanly and pass all verification tests. |
+| **Documentation Readiness** | **READY** | Core documentation is complete, but `docs/portfolio-readiness-rule.md` must be promoted to a formal framework spec. |
 
 ---
 
 ## Conclusion
 
-The Constitutional Engineering Platform (CEP) v1.0 satisfies all prerequisites for **General Availability (GA)** release.
+The platform is **operationally ready** for GA, but the approval is **conditional** upon formalizing the Portfolio Readiness Rule (PRR) under the BPGA framework.
