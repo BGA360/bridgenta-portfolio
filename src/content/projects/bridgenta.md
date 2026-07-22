@@ -28,7 +28,7 @@ BridGenta ist eine Rekonstruktionsplattform für Altsysteme, die bestehende Soft
 
 Während moderne Codegeneratoren Benutzeroberflächen schnell erstellen können, liegt die eigentliche Herausforderung nicht im Schreiben von Code, sondern in der präzisen Aufbereitung und Verifikation des Wissens aus Altsystemen. Der Geltungsbereich dieses Berichts umfasst die architektonischen Schutzschichten (Preservation Layers), den strukturierten Rekonstruktions-Workflow sowie die quantitativen Validierungsergebnisse des Pilotprojekts.
 
-BridGenta erstellt hierzu strukturierte Modelle und erzeugt ein Reconstruction Package, welches das erfasste Systemwissen für die KI-gestützte Weiterentwicklung konsolidiert. Die Plattform demonstriert, wie Entwickler veraltete Software beschleunigt migrieren können, während gleichzeitig ein lückenloser Datenschutz gewahrt bleibt.
+BridGenta erstellt hierzu strukturierte Modelle und erzeugt ein Reconstruction Package, das das erfasste Systemwissen für die KI-gestützte Weiterentwicklung konsolidiert. Die Plattform demonstriert, wie Entwickler veraltete Software beschleunigt migrieren können, während gleichzeitig ein lückenloser Datenschutz gewahrt bleibt.
 
 ---
 
@@ -41,7 +41,7 @@ BridGenta kartiert bestehende Architekturen, sichert das implizite Systemwissen 
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">Künstliche Intelligenz beschleunigt die Code-Generierung erheblich, erfordert jedoch präzisen Kontext. Die methodische Wissenserfassung muss daher zwingend der Code-Erstellung vorgeschaltet werden.</p>
+  <p class="engineering-insight__text">Künstliche Intelligenz beschleunigt die Codegenerierung erheblich, erfordert jedoch präzisen Kontext. Die methodische Wissenserfassung muss daher zwingend der Codegenerierung vorgeschaltet werden.</p>
 </div>
 
 ---
@@ -67,18 +67,18 @@ Die Realisierung von BridGenta unterliegt strengen technischen und operativen Ra
     <p class="evidence-card__value">Um den unbefugten Zugriff von KI-Modellen auf sensible Kundendaten oder kryptografische Schlüssel zu verhindern, wird das Frontend logisch und physisch von den Gateways isoliert.</p>
   </div>
   <div class="evidence-card">
-    <h4 class="evidence-card__title">Manuelle Qualitätssicherung (Gating)</h4>
-    <p class="evidence-card__value">Da generative KI fehlerhaften Code erzeugen kann, ist eine automatisierte Übernahme in den Hauptzweig (main branch) ausgeschlossen; jede Codeänderung erfordert ein manuelles Review durch einen menschlichen Prüfer.</p>
+    <h4 class="evidence-card__title">Manuelle Qualitätssicherung (Branch-Gating)</h4>
+    <p class="evidence-card__value">Da generative KI fehlerhaften Code erzeugen kann, ist eine automatisierte Übernahme in den Main Branch ausgeschlossen; jede Codeänderung erfordert ein manuelles Review durch einen menschlichen Prüfer.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title">Architekturkonsistenz</h4>
-    <p class="evidence-card__value">Die Anwendung basiert auf einer konsequent modularen Architektur. Dadurch bleiben durch KI generierte Änderungen lokal isoliert und haben keine unerwünschten Nebeneffekte auf andere Systemkomponenten.</p>
+    <p class="evidence-card__value">Die Anwendung basiert auf einer konsequent modularen Architektur. Dadurch bleiben KI-generierte Änderungen lokal isoliert und haben keine unerwünschten Nebeneffekte auf andere Systemkomponenten.</p>
   </div>
 </div>
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">Sicherheits- und Datenschutzgrenzen müssen als feste infrastrukturelle Schranken implementiert werden. Sie dürfen nicht von der Zuverlässigkeit des KI-Modells abhängen, sondern müssen durch den Workflow und die Systemarchitektur erzwungen werden.</p>
+  <p class="engineering-insight__text">Sicherheits- und Datenschutzgrenzen müssen als feste technische Schutzgrenzen implementiert werden. Sie dürfen nicht von der Zuverlässigkeit des KI-Modells abhängen, sondern müssen durch den Workflow und die Systemarchitektur erzwungen werden.</p>
 </div>
 
 ---
@@ -109,13 +109,13 @@ Die Methode von BridGenta unterteilt die Modernisierung in sechs Phasen, wodurch
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title"><span class="evidence-card__label">Phase 6:</span> Übergabe</h4>
-    <p class="evidence-card__value">Der geprüfte Code wird kontrolliert in das Hauptrepository integriert.</p>
+    <p class="evidence-card__value">Der geprüfte Code wird kontrolliert in das Repository integriert.</p>
   </div>
 </div>
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">Die Phasenstruktur minimiert Projektrisiken, indem sie die Analyse des Altsystems strikt von der Code-Generierung trennt und die KI auf klar definierte Vorgaben beschränkt.</p>
+  <p class="engineering-insight__text">Die Phasenstruktur minimiert Projektrisiken, indem sie die Analyse des Altsystems strikt von der Codegenerierung trennt und die KI auf klar definierte Vorgaben beschränkt.</p>
 </div>
 
 ---
@@ -123,13 +123,13 @@ Die Methode von BridGenta unterteilt die Modernisierung in sechs Phasen, wodurch
 ## Technische Überlegungen
 Die Modernisierung geschäftskritischer Systeme scheitert selten an mangelnder Entwicklungsgeschwindigkeit, sondern meist an unkontrollierter Komplexität. Ein vollständiger Neubau (Greenfield-Ansatz) führt mangels ausreichender Dokumentation häufig zum Verlust historisch gewachsener Geschäftslogik. BridGenta setzt daher auf eine kontrollierte, inkrementelle Rekonstruktion statt auf eine risikoreiche Komplettablösung.
 
-Der Prozess folgt der Leitlinie: **Zuerst verstehen, danach rekonstruieren.** Der Code-Generierung geht stets eine detaillierte Dekonstruktion und Modularisierung der Altsystem-Logik voraus.
+Der Prozess folgt der Leitlinie: **Zuerst verstehen, danach rekonstruieren.** Der Codegenerierung geht stets eine detaillierte Dekonstruktion und Modularisierung der Altsystem-Logik voraus.
 
-Die KI fungiert als Entwicklungsbeschleuniger, nicht als Systemarchitekt: Während sie isolierte Bausteine hocheffizient implementieren kann, fehlt ihr der globale Systemüberblick. Um Architecture Drift und Sicherheitsrisiken zu vermeiden, führt der menschliche Architekt den Prozess und setzt die Einhaltung architektonischer Vorgaben durch. So wird verhindert, dass die KI mangelhaften Code oder Sicherheitsrisiken einbaut.
+Die KI fungiert als Entwicklungsbeschleuniger, nicht als Systemarchitekt: Während sie isolierte Bausteine effizient implementieren kann, fehlt ihr der globale Systemüberblick. Um Architecture Drift und Sicherheitsrisiken zu vermeiden, führt der menschliche Architekt den Prozess und setzt die Einhaltung architektonischer Vorgaben durch. So wird verhindert, dass die KI mangelhaften Code oder Sicherheitsrisiken einbaut.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">Eine erfolgreiche Rekonstruktion entkoppelt die Systemanalyse von der eigentlichen Implementierung: Die Definition der Schnittstellen durch den Architekten bildet die zwingende Voraussetzung für die anschließende KI-gestützte Code-Generierung.</p>
+  <p class="engineering-insight__text">Eine erfolgreiche Rekonstruktion entkoppelt die Systemanalyse von der eigentlichen Implementierung: Die Definition der Schnittstellen durch den Architekten bildet die zwingende Voraussetzung für die anschließende KI-gestützte Codegenerierung.</p>
 </div>
 
 ---
@@ -137,11 +137,11 @@ Die KI fungiert als Entwicklungsbeschleuniger, nicht als Systemarchitekt: Währe
 ## Fähigkeitsbereiche und Intelligence Domains
 Die Plattform stützt sich auf sieben funktionale Domänen (Intelligence Domains), die den Rekonstruktionsprozess präzise steuern:
 
-- **Source Intelligence (Quellcode-Analyse):** Analysiert den Altcode statisch, um technische Schulden, veraltete Bibliotheken und verdeckte Systemabhängigkeiten zu identifizieren.
+- **Source Intelligence (Quellcodeanalyse):** Analysiert den Altcode statisch, um technische Schulden, veraltete Bibliotheken und verdeckte Systemabhängigkeiten zu identifizieren.
 - **Reconstruction Intelligence (Schnittstellendesign):** Modelliert zukünftige Systemschnittstellen und definiert präzise Datenflüsse auf Basis der Analyseergebnisse.
 - **Preservation Intelligence (Verhaltenserhaltung):** Spezifiziert und konserviert das funktionale Verhalten des Altsystems über mehrere Abstraktionsebenen hinweg.
 - **Cross-Layer Intelligence (Schichtenverifikation):** Validiert Daten- und Logikkonsistenz über alle Anwendungsschichten hinweg, um Integrationsfehler frühzeitig zu blockieren.
-- **Human Review (Manuelle Freigabe):** Visualisiert Codeänderungen für den Systemarchitekten, um die Letztentscheidung und Freigabegewalt beim Menschen zu belassen.
+- **Human Review (Manuelle Freigabe):** Visualisiert Codeänderungen für den Systemarchitekten, um die endgültige Entscheidung und Freigabeverantwortung beim Menschen zu belassen.
 - **Governance (Regelwerksprüfung):** Überwacht Qualitätsmetriken und erzwingt Sicherheits- sowie Compliance-Richtlinien vor der Code-Integration.
 - **Export Intelligence (Paket-Ausgabe):** Bündelt die rekonstruierten Datenmodelle und Metadaten in ein standardisiertes Übergabepaket für nachgelagerte Entwicklungsumgebungen.
 
@@ -154,7 +154,7 @@ Die Softwarearchitektur ist konsequent modular aufgebaut, wobei die Analyseumgeb
 - **Experience Preservation Layer (EPL, Verhaltensebene):** Spezifiziert und dokumentiert das dynamische Laufzeitverhalten, Benutzerpfade und Zustandsübergänge der Anwendung.
 - **Design Preservation Layer (DPL, Gestaltungsebene):** Konserviert die visuelle Identität der Benutzeroberfläche durch systematische Erfassung von CSS-Klassen, Layout-Rastern und Design-Tokens.
 
-Die Kombination dieser drei Schichten liefert ein holistisches Abbild des Altsystems und dient als fundiertes Reconstruction Package zur Vermeidung von KI-Generierungsfehlern.
+Die Kombination dieser drei Schichten liefert ein vollständiges Abbild des Altsystems und dient als fundiertes Reconstruction Package zur Vermeidung von KI-Generierungsfehlern.
 
 ---
 
@@ -203,7 +203,7 @@ Im Vorfeld der Entwicklung wurden kritische Architekturentscheidungen getroffen,
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Jeder von der KI generierte Code wird vor der Integration einem manuellen Review unterzogen.</p>
+      <p class="decision-card__text">Jeder KI-generierte Code wird vor der Integration einem manuellen Review unterzogen.</p>
     </div>
   </div>
 </div>
@@ -214,21 +214,21 @@ Im Vorfeld der Entwicklung wurden kritische Architekturentscheidungen getroffen,
 Um die Vorteile der KI-gestützten Entwicklung mit den Qualitätsansprüchen professioneller Softwareentwicklung zu vereinen, wurde ein mehrstufiger, qualitätsgesicherter Workflow innerhalb der Entwicklungsplattform etabliert:
 
 ### Arbeitsbereich: Systemanalyse und Isolierung
-Der Workspace bildet den Einstieg für jede Rekonstruktion: Über die Kernmodule im Verzeichnis `/src/workspace/` erfassen wir bestehende Systemkomponenten und kartieren deren Abhängigkeiten mithilfe statischer Analysetools unter `/tooling/analyzer/`. Durch diese Datenstrom-Isolierung analysieren wir die Altanwendung und definieren präzise Schnittstellen. Die visuelle Isolation im Workspace verhindert unbeabsichtigte Nebeneffekte und stellt eine gezielte, modulweise Modernisierung sicher.
+Der Workspace bildet den Einstieg für jede Rekonstruktion: Über die Kernmodule im Verzeichnis `/src/workspace/` erfassen wir bestehende Systemkomponenten und kartieren deren Abhängigkeiten mithilfe statischer Analysetools unter `/tooling/analyzer/`. Durch diese Datenflussisolierung analysieren wir die Altanwendung und definieren präzise Schnittstellen. Die visuelle Isolation im Workspace verhindert unbeabsichtigte Nebeneffekte und stellt eine gezielte, modulweise Modernisierung sicher.
 
 <div class="architecture-note">
   <strong>Kernaussage:</strong> Die visuelle Isolation im Workspace verhindert unbeabsichtigte Nebeneffekte und stellt eine gezielte, modulweise Modernisierung sicher.
 </div>
 
 ### Arbeitsablauf: Strukturierte Codegenerierung
-Der Modernisierungs-Workflow steuert den Code-Generierungsprozess mittels der in `/src/workflow/` hinterlegten Skripte und Prompts. Der generierte Code wird über dedizierte Handoff-Branches in die unter `.github/workflows/` konfigurierten CI/CD-Pipelines eingespeist, wo automatisierte Tests und manuelle Reviews stattfinden.
+Der Modernisierungs-Workflow steuert die Codegenerierung mittels der in `/src/workflow/` hinterlegten Skripte und Prompts. Der generierte Code wird über dedizierte Handoff-Branches in die unter `.github/workflows/` konfigurierten CI/CD-Pipelines eingespeist, wo automatisierte Tests und manuelle Reviews stattfinden.
 
 <div class="architecture-note">
   <strong>Kernaussage:</strong> Das kontrollierte Handoff-Verfahren verhindert Scope Creep und sichert die visuelle und strukturelle Konsistenz des Gesamtsystems.
 </div>
 
 ### Governance: Validierung und Qualitätskontrolle
-Die Governance-Ebene verifiziert jede Codeänderung vor der Freigabe anhand der unter `/backend/app/policies/` und `/tooling/governance/` definierte Richtlinien. Nach Überprüfung von Lizenzen, Datenschutzvorgaben und Sicherheitsregeln sowie erfolgreichem Testlauf und Review durch den Architekten erfolgt die Produktionsfreigabe. Ein restriktives Regelwerk verhindert Datenabfluss und schützt die Codebasis vor logischen Fehlern der KI.
+Die Governance-Ebene verifiziert jede Codeänderung vor der Freigabe anhand der unter `/backend/app/policies/` und `/tooling/governance/` definierten Richtlinien. Nach Überprüfung von Lizenzen, Datenschutzvorgaben und Sicherheitsregeln sowie erfolgreichem Testlauf und Review durch den Architekten erfolgt die Produktionsfreigabe. Ein restriktives Regelwerk verhindert Datenabfluss und schützt die Codebasis vor logischen Fehlern der KI.
 
 <div class="architecture-note">
   <strong>Kernaussage:</strong> Ein restriktives Regelwerk verhindert Datenabfluss und schützt die Codebasis vor logischen Fehlern der KI.
@@ -237,9 +237,9 @@ Die Governance-Ebene verifiziert jede Codeänderung vor der Freigabe anhand der 
 ## Validierung
 Die Qualitätssicherung und Validierung der rekonstruierten Module folgt einer Teststrategie, die automatisierte Prüfschleifen mit manuellen Kontrollen kombiniert. Dies stellt sicher, dass der generierte Code stabil, performant und regelkonform ist.
 
-- **Automatische Verifikation**: Jedes rekonstruierte Modul wird in einer isolierten Sandbox-Umgebung automatisch kompiliert und gegen vordefinierte Unit-Tests geprüft. Linter und statische Code-Analysen sichern die Code-Qualität und die Einhaltung von Programmierstandards.
+- **Automatische Verifikation**: Jedes rekonstruierte Modul wird in einer isolierten Sandbox-Umgebung automatisch kompiliert und gegen vordefinierte Unit-Tests geprüft. Linter und statische Code-Analysen sichern die Codequalität und die Einhaltung von Programmierstandards.
 - **Sicherheits-Audits**: Automatisierte Scanner prüfen den Quellcode auf Schwachstellen, hartcodierte Passwörter oder unsichere API-Aufrufe.
-- **Manueller Review (Architecture Gate)**: Ein erfahrener Systemarchitekt unterzieht Quellcode und Design vor der Integration in das Hauptrepository einem manuellen Review, um logische Fehler oder Abweichungen von den Design-Vorgaben auszuschließen.
+- **Manueller Review (Architecture Gate)**: Ein erfahrener Systemarchitekt unterzieht Quellcode und Design vor der Integration in das Repository einem manuellen Review, um logische Fehler oder Abweichungen von den Design-Vorgaben auszuschließen.
 
 ---
 
@@ -247,7 +247,7 @@ Die Qualitätssicherung und Validierung der rekonstruierten Module folgt einer T
 
 <figure>
   <img src="/images/bga-portfolio/BG-PA02-Workspace.webp" alt="BridGenta Workspace Interface" loading="lazy" width="1600" height="900" />
-  <figcaption><strong>Workspace-Interface</strong> – Visualisiert die Systemstruktur und unterstützt den Architekten bei der Festlegung technischer Systemgrenzen vor Beginn der Code-Generierung.</figcaption>
+  <figcaption><strong>Workspace-Interface</strong> – Visualisiert die Systemstruktur und unterstützt den Architekten bei der Festlegung technischer Systemgrenzen vor Beginn der Codegenerierung.</figcaption>
 </figure>
 
 <figure>
@@ -270,7 +270,7 @@ Durch den strukturierten Prozess wurden im Rahmen des Testlaufs messbare quantit
 | **Modernisierungs-Beschleunigung** | > 30% Zeitersparnis | **45% Zeitersparnis** | Übertroffen |
 | **Handoff-Stabilität** | 100% konfliktfreie Integration | **100% konfliktfreie Integration** | Erreicht |
 | **Sicherheits-Compliance** | 0 Leaks sensibler Daten | **0 Leaks sensibler Daten** | Erreicht |
-| **Code-Qualität (SonarQube Gate)** | Quality Gate A (bestanden) | **Quality Gate A (bestanden)** | Erreicht |
+| **Codequalität (SonarQube Gate)** | Quality Gate A (bestanden) | **Quality Gate A (bestanden)** | Erreicht |
 
 <div class="results-grid">
   <div class="result-card">
@@ -320,7 +320,7 @@ Die Verwendung künstlicher Intelligenz zur Rekonstruktion birgt verbleibende Re
 ## Erkenntnisse aus der Entwicklung
 Die Ergebnisse der KI-gestützten Validierung zeigen, dass die Kombination aus hoher Entwicklungsgeschwindigkeit und bewährten Kontrollmechanismen stabile Softwareprodukte sichert: Während die KI Routineaufgaben beschleunigt, bleibt die Letztkontrolle durch menschliche Prüfer unerlässlich, um Qualitätsmängel und Code Bloat zu vermeiden.
 
-Strikte Git-Workflows und automatisierte Testabläufe sind unerlässlich, um die Code-Qualität dauerhaft zu sichern und sensible Daten zu schützen.
+Strikte Git-Workflows und automatisierte Testabläufe sind unerlässlich, um die Codequalität dauerhaft zu sichern und sensible Daten zu schützen.
 
 Zukünftig soll die Schnittstellenspezifikation weiter präzisiert werden: Ein konsequent betriebenes Contract-First-Design erleichtert der KI die fehlerfreie Generierung von Benutzeroberflächen.
 
@@ -329,7 +329,7 @@ Zukünftig soll die Schnittstellenspezifikation weiter präzisiert werden: Ein k
 ## Nächste Entwicklungsschritte
 Für die Weiterentwicklung der Plattform sind folgende Ausbaustufen geplant, um die statische Analyse zu vertiefen und den Datenexport zu optimieren:
 
-- **Erweiterung der Quellcode-Analyse**: Automatisierte Erkennung und Klassifizierung historischer Entwurfsmuster.
+- **Erweiterung der Quellcodeanalyse**: Automatisierte Erkennung und Klassifizierung historischer Entwurfsmuster.
 - **API-Formalisierung**: Erweiterung des Schnittstellendesigns und automatisierte Generierung von Schema-Dateien.
 - **Optimierung der Datenpakete**: Optimierung der Exportformate zur Verbesserung der maschinellen Lesbarkeit für KI-Modelle.
 - **Automatisierte Validierung**: Integration erweiterter Sicherheits- und Compliance-Prüfungen in die automatisierten Pipelines.

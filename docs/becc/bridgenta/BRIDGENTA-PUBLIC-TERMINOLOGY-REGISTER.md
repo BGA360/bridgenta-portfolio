@@ -1,5 +1,5 @@
 # BridGenta Public Terminology Register
-## BECC Reference Maturity Standard v1.0
+## BECC Reference Maturity Programme
 
 This register defines the vocabulary and terminology boundaries for the BridGenta public-facing German documentation. It classifies terminology into distinct categories to preserve technical precision while enforcing B2–C1 German language rules.
 
@@ -15,19 +15,20 @@ This register defines the vocabulary and terminology boundaries for the BridGent
 
 ## 2. Terminology Mapping Registry
 
-| Concept | Approved Public Term | Category / Classification | Usage Rules |
-| :--- | :--- | :--- | :--- |
-| **Code generation** | Codegenerierung | German Public Terminology | Always use the standard German noun. Capitalize correctly. |
-| **Main branch** | Main Branch | Canonical Git Terminology | Keep English, capitalized as a German proper noun group. |
-| **Repository** | Repository | Canonical Git Terminology | Keep English, capitalized. Never translate as *Archiv*. |
-| **Branch** | Branch / Branches | Canonical Git Terminology | Keep English, capitalized. Never translate as *Zweig*. |
-| **Manual review** | manuelles Review | Approved Project Terminology | German adjective with English noun. Used to describe human-in-the-loop steps. |
-| **AI-generated code** | KI-generierter Code | German Public Terminology | Standard German compound with German capitalization rules. |
-| **Reconstruction Package** | Reconstruction Package | Canonical BridGenta Concept | Proprietary project concept. Must not be translated. |
-| **Intelligence Domains** | Intelligence Domains | Canonical BridGenta Architecture Term | Core platform domain names (e.g. *Source Intelligence*). Never translate. |
-| **Preservation Layers** | Preservation Layers | Canonical BridGenta Architecture Term | Core platform architectural layers (e.g. *Visibility Preservation Layer*). |
-| **Workspace** | Workspace / Arbeitsbereich | Context-Dependent | Use **Arbeitsbereich** in public section headings; use **Workspace** in technical prose. |
-| **Workflow** | Workflow / Arbeitsablauf | Context-Dependent | Use **Arbeitsablauf** in public section headings; use **Workflow** in technical prose. |
+| Concept | Approved Public Term | Prohibited / Discouraged Alternatives | Category / Classification | Usage Context and Rules |
+| :--- | :--- | :--- | :--- | :--- |
+| **Code generation** | Codegenerierung | Code-Generierung, Code-Erstellung, Generierung von Code | German Public Terminology | Default technical compound. Always use the standard German noun. Capitalize correctly. |
+| **Main branch** | Main Branch | Hauptzweig, main branch | Canonical Git Terminology | Keep English, capitalized as a German proper noun group. |
+| **Repository** | Repository | Hauptarchiv, Archiv | Canonical Git Terminology | Keep English, capitalized. Never translate as *Archiv*. |
+| **Branch** | Branch / Branches | Zweig / Zweige | Canonical Git Terminology | Keep English, capitalized. Never translate as *Zweig*. |
+| **Manual review** | manuelles Review | Code-Prüfung, menschliche Abnahme | Approved Project Terminology | German adjective with English noun. Used to describe human-in-the-loop steps. |
+| **AI-generated code** | KI-generierter Code | von der KI generierter Code | German Public Terminology | Standard German compound with German capitalization rules. |
+| **AI-generated changes** | KI-generierte Änderungen | durch KI generierte Änderungen | German Public Terminology | Use as the preferred compound when describing changes introduced by generative models. |
+| **Reconstruction Package** | Reconstruction Package | Rekonstruktionspaket | Canonical BridGenta Concept | Proprietary project concept. Must not be translated. |
+| **Intelligence Domains** | Intelligence Domains | Intelligenzbereiche | Canonical BridGenta Architecture Term | Core platform domain names (e.g. *Source Intelligence*). Never translate. |
+| **Preservation Layers** | Preservation Layers | Schutzschichten | Canonical BridGenta Architecture Term | Core platform architectural layers (e.g. *Visibility Preservation Layer*). |
+| **Workspace** | Workspace / Arbeitsbereich | Workspace (in headings) | Context-Dependent | Use **Arbeitsbereich** in public section headings; use **Workspace** in technical prose. |
+| **Workflow** | Workflow / Arbeitsablauf | Workflow (in headings) | Context-Dependent | Use **Arbeitsablauf** in public section headings; use **Workflow** in technical prose. |
 
 ---
 

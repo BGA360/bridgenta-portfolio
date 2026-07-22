@@ -1,5 +1,5 @@
 # BridGenta Reference Maturity Change Register
-## BECC Reference Maturity Standard v1.0
+## BECC Reference Maturity Programme
 
 This register tracks all structural, grammatical, cognitive, terminology, and evidence modifications applied to the BridGenta public project page during the BECC Reference Maturity sprints.
 
@@ -39,3 +39,28 @@ This register tracks all structural, grammatical, cognitive, terminology, and ev
 | **BRM-028** | Sprint 1 | Subheading | `## Lessons Learned` | `## Erkenntnisse aus der Entwicklung` | Heading | Translate structure heading to German (Heading Policy A1). | Yes | None | Verified |
 | **BRM-029** | Sprint 1 | Subheading | `## Next Evolution` | `## Nächste Entwicklungsschritte` | Heading | Translate structure heading to German (Heading Policy A1). | Yes | None | Verified |
 | **BRM-030** | Sprint 1 | Subheading | `## References` | `## Quellen und Referenzen` | Heading | Translate structure heading to German (Heading Policy A1). | Yes | None | Verified |
+| **BRM-031** | Sprint 2 | Executive Summary (Prose) | `ein Reconstruction Package, welches das` | `ein Reconstruction Package, das das` | Naturalness | Prefer relative pronoun "das" over "welches" for flow. | Yes | None | Verified |
+| **BRM-032** | Sprint 2 | Why This Project Exists | `die Code-Generierung` | `die Codegenerierung` | Terminology | Standardize to approved German compound "Codegenerierung". | Yes | None | Verified |
+| **BRM-033** | Sprint 2 | Why This Project Exists | `der Code-Erstellung` | `der Codegenerierung` | Terminology | Standardize to approved German compound "Codegenerierung". | Yes | None | Verified |
+| **BRM-034** | Sprint 2 | Constraints (Evidence Grid) | `Manuelle Qualitätssicherung (Gating)` | `Manuelle Qualitätssicherung (Branch-Gating)` | Terminology | Standardize Git terminology to "Branch-Gating". | Yes | None | Verified |
+| **BRM-035** | Sprint 2 | Constraints (Evidence Grid) | `in den Hauptzweig (main branch) ausgeschlossen` | `in den Main Branch ausgeschlossen` | Terminology | Standardize Git terminology, removing parenthetical English translation. | Yes | None | Verified |
+| **BRM-036** | Sprint 2 | Constraints (Evidence Grid) | `durch KI generierte Änderungen` | `KI-generierte Änderungen` | Terminology | Standardize on preferred German technical compound. | Yes | None | Verified |
+| **BRM-037** | Sprint 2 | Constraints (Insight Box) | `infrastrukturelle Schranken` | `technische Schutzgrenzen` | Naturalness | Replace artificially elevated wording with natural German phrasing. | Yes | None | Verified |
+| **BRM-038** | Sprint 2 | Reconstruction Strategy | `in das Hauptrepository integriert.` | `in das Repository integriert.` | Terminology | Standardize Git terminology to "Repository" per register mapping. | Yes | None | Verified |
+| **BRM-039** | Sprint 2 | Reconstruction Strategy | `von der Code-Generierung trennt` | `von der Codegenerierung trennt` | Terminology | Standardize to approved German compound "Codegenerierung". | Yes | None | Verified |
+| **BRM-040** | Sprint 2 | Engineering Thinking | `Der Code-Generierung geht stets` | `Der Codegenerierung geht stets` | Terminology | Standardize to approved German compound "Codegenerierung". | Yes | None | Verified |
+| **BRM-041** | Sprint 2 | Engineering Thinking | `hocheffizient` | `effizient` | Naturalness | Prune artificially elevated wording to natural German phrasing. | Yes | None | Verified |
+| **BRM-042** | Sprint 2 | Engineering Thinking | `KI-gestützte Code-Generierung.` | `KI-gestützte Codegenerierung.` | Terminology | Standardize to approved German compound "Codegenerierung". | Yes | None | Verified |
+| **BRM-043** | Sprint 2 | Capabilities | `Quellcode-Analyse` | `Quellcodeanalyse` | Compound consistency | Standardize compound capitalization and styling. | Yes | None | Verified |
+| **BRM-044** | Sprint 2 | Capabilities | `Letztentscheidung und Freigabegewalt` | `endgültige Entscheidung und Freigabeverantwortung` | Naturalness | Prune artificially elevated/academic wording to natural German phrasing. | Yes | None | Verified |
+| **BRM-045** | Sprint 2 | Architecture Layers | `ein holistisches Abbild` | `ein vollständiges Abbild` | Naturalness | Prune artificially elevated/academic wording to natural German phrasing. | Yes | None | Verified |
+| **BRM-046** | Sprint 2 | Engineering Decisions | `Jeder von der KI generierte Code` | `Jeder KI-generierte Code` | Terminology | Standardize on preferred German technical compound. | Yes | None | Verified |
+| **BRM-047** | Sprint 2 | Implementation (Workspace) | `Datenstrom-Isolierung` | `Datenflussisolierung` | Terminology | Standardize on approved German compound "Datenflussisolierung". | Yes | None | Verified |
+| **BRM-048** | Sprint 2 | Implementation (Workflow) | `steuert den Code-Generierungsprozess` | `steuert die Codegenerierung` | Terminology | Standardize on approved German compound "Codegenerierung" and simplify phrasing. | Yes | None | Verified |
+| **BRM-049** | Sprint 2 | Implementation (Governance) | `definierte Richtlinien.` | `definierten Richtlinien.` | Declension | Correct adjective declension following plural dative. | Yes | None | Verified |
+| **BRM-050** | Sprint 2 | Validation | `Code-Qualität` | `Codequalität` | Compound consistency | Standardize compound capitalization and styling. | Yes | None | Verified |
+| **BRM-051** | Sprint 2 | Validation | `in das Hauptrepository` | `in das Repository` | Terminology | Standardize Git terminology to "Repository" per register mapping. | Yes | None | Verified |
+| **BRM-052** | Sprint 2 | Public Artifacts | `Code-Generierung.` | `Codegenerierung.` | Terminology | Standardize to approved German compound "Codegenerierung". | Yes | None | Verified |
+| **BRM-053** | Sprint 2 | Results | `Code-Qualität (SonarQube Gate)` | `Codequalität (SonarQube Gate)` | Compound consistency | Standardize compound capitalization and styling. | Yes | None | Verified |
+| **BRM-054** | Sprint 2 | Lessons Learned | `Code-Qualität` | `Codequalität` | Compound consistency | Standardize compound capitalization and styling. | Yes | None | Verified |
+| **BRM-055** | Sprint 2 | Next Evolution | `Quellcode-Analyse` | `Quellcodeanalyse` | Compound consistency | Standardize compound capitalization and styling. | Yes | None | Verified |
