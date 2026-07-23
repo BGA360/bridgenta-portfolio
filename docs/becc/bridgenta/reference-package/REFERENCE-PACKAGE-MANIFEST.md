@@ -1,7 +1,7 @@
 # BridGenta BECC Reference Package Manifest
 ## Sealed Cryptographic Ledger
 
-This manifest registers, describes, and seals the 20 project-specific maturity documents that comprise the BridGenta Reference Maturity Package.
+This manifest registers, describes, and seals the 23 project-specific maturity documents that comprise the BridGenta Reference Maturity Package.
 
 ---
 
@@ -28,7 +28,10 @@ This manifest registers, describes, and seals the 20 project-specific maturity d
 | **BRIDGENTA-SPRINT-6-BUILD-RENDER-CERTIFICATION-REPORT.md** | `../BRIDGENTA-SPRINT-6-BUILD-RENDER-CERTIFICATION-REPORT.md` | Multi-viewport and 200% zoom certification records. | `cb351588e3b45da045fcfaad72a04f1764ff657d4bd3a221708499867d7ab911` |
 | **BRIDGENTA-SPRINT-7-PRODUCTION-DEPLOYMENT-VERIFICATION-REPORT.md** | `../BRIDGENTA-SPRINT-7-PRODUCTION-DEPLOYMENT-VERIFICATION-REPORT.md` | Log of squash merges, workflow deployment runs, and fixes. | `d6f8894e98a22f00328be16274bb6ae927c65829f86a142caf91b3c2653d8325` |
 | **BRIDGENTA-SPRINT-8-INDEPENDENT-PUBLISHED-PAGE-CERTIFICATION-REPORT.md** | `../BRIDGENTA-SPRINT-8-INDEPENDENT-PUBLISHED-PAGE-CERTIFICATION-REPORT.md` | Formal auditor evaluation report and certification decision. | `51b0ce93f1d87c7b34b8304662a47d6be4792818b06299e738dc79e19f568d74` |
-| **BRIDGENTA-BECC-PROGRAMME-CLOSURE-REPORT.md** | `../BRIDGENTA-BECC-PROGRAMME-CLOSURE-REPORT.md` | History log and lessons learned of the complete programme. | `36953487d01548a6437542093ff639c381294e802bdeee426355fbfb90118745` |
+| **REFERENCE-PACKAGE-STEWARDSHIP.md** | `REFERENCE-PACKAGE-STEWARDSHIP.md` | Stewardship guidelines, public/private boundary check, and closure. | `173293cd3023eb4ad97e4b75859a0cd96a9b635069a28adeb22a5705725d4037` |
+| **BRIDGENTA-SPRINT-9-PACKAGE-SEALING-CLOSURE-REPORT.md** | `BRIDGENTA-SPRINT-9-PACKAGE-SEALING-CLOSURE-REPORT.md` | Sealing and closure report for Sprint 9. | `fd1317196a64fcdd0624cb66123d289bf85c569777973eef2368ebf116f349e3` |
+| **BRIDGENTA-REFERENCE-CASE-NARRATIVE.md** | `BRIDGENTA-REFERENCE-CASE-NARRATIVE.md` | Narrative detailing methodology application and lessons learned. | `87115ad13a6522f66b7a35ab2aba083fe0067cef5387381071172a28219de987` |
+| **BRIDGENTA-FORMAL-CLOSURE-DECLARATION.md** | `BRIDGENTA-FORMAL-CLOSURE-DECLARATION.md` | Formal governance declaration of program closure. | `c7db0b5ae7eeed6822d334db303c65c7f664851045532063f7b0962055b8706c` |
 
 ---
 

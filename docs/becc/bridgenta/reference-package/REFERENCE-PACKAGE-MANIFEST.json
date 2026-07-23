@@ -11,7 +11,7 @@
   "deploymentCommit": "a330ce677ec5329cf329158c54c34cb94cb6fef5",
   "certificationDate": "2026-07-23",
   "closureDate": "2026-07-23",
-  "generatedAt": "2026-07-23T20:01:00Z",
+  "generatedAt": "2026-07-23T20:22:55Z",
   "acceptedObservations": [
     "Stale browser assets loaded initially due to a PWA cache-first navigation policy in public/service-worker.js. Corrected by bumping the service worker cache version to bridgenta-portfolio-v21, invalidating client-side caches. Residual risk remains for users with offline state."
   ],
@@ -131,16 +131,10 @@
       "sha256": "51b0ce93f1d87c7b34b8304662a47d6be4792818b06299e738dc79e19f568d74"
     },
     {
-      "path": "docs/becc/bridgenta/BRIDGENTA-BECC-PROGRAMME-CLOSURE-REPORT.md",
-      "purpose": "History log and lessons learned of the complete programme.",
-      "type": "AUTHORITATIVE",
-      "sha256": "7b4e92c23f89ac0e1aace284680e138771056f59ba44ed11d33ccd2e0bcc6537"
-    },
-    {
       "path": "docs/becc/bridgenta/reference-package/REFERENCE-PACKAGE-MANIFEST.md",
       "purpose": "Markdown human-readable sealed manifest companion.",
       "type": "HUMAN-READABLE COMPANION",
-      "sha256": "4b2e0fea605569a83def8360b13272a3805359f3b5d515e302b995d010988f50"
+      "sha256": "7fdca959defa447dad5fcb4027bb7a7abf656e6241785d3af5a075eac37af4f8"
     },
     {
       "path": "docs/becc/bridgenta/reference-package/REFERENCE-PACKAGE-STEWARDSHIP.md",
@@ -153,6 +147,18 @@
       "purpose": "Sealing and closure report for Sprint 9.",
       "type": "AUTHORITATIVE",
       "sha256": "fd1317196a64fcdd0624cb66123d289bf85c569777973eef2368ebf116f349e3"
+    },
+    {
+      "path": "docs/becc/bridgenta/reference-package/BRIDGENTA-REFERENCE-CASE-NARRATIVE.md",
+      "purpose": "Narrative detailing methodology application and lessons learned.",
+      "type": "AUTHORITATIVE",
+      "sha256": "87115ad13a6522f66b7a35ab2aba083fe0067cef5387381071172a28219de987"
+    },
+    {
+      "path": "docs/becc/bridgenta/reference-package/BRIDGENTA-FORMAL-CLOSURE-DECLARATION.md",
+      "purpose": "Formal governance declaration of program closure.",
+      "type": "AUTHORITATIVE",
+      "sha256": "c7db0b5ae7eeed6822d334db303c65c7f664851045532063f7b0962055b8706c"
     }
   ]
 }
