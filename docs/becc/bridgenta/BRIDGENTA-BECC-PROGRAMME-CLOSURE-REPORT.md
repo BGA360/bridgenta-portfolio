@@ -10,7 +10,7 @@ This report documents the final closure of the BridGenta Reference Maturity Prog
 * **Live Production URL:** `https://bridgenta.de/project-bridgenta/`
 * **Maturity Standard:** CEFR B2–C1 professional German register with strict heading alignment, claim-to-evidence validation, and responsive rendering constraints.
 * **Current Deployed Commit:** `a330ce677ec5329cf329158c54c34cb94cb6fef5`
-* **Current Status:** **`PROGRAMME CLOSED`**
+* **Current Status:** **`PROGRAMME CLOSED WITH OBSERVATIONS`**
 
 ---
 
@@ -49,4 +49,4 @@ The programme has successfully extracted the following reusable templates for fu
 
 ---
 
-**PROGRAMME CLOSED SUCCESSFULLY**
+**PROGRAMME CLOSED WITH OBSERVATIONS**

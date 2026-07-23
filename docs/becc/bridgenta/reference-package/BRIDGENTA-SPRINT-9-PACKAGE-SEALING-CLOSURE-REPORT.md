@@ -91,4 +91,4 @@ With the completion of Sprint 9 sealing operations, the BridGenta Reference Matu
 
 **SPRINT 9 COMPLETE**
 
-**PROGRAMME CLOSED SUCCESSFULLY**
+**PROGRAMME CLOSED WITH OBSERVATIONS**
