@@ -158,6 +158,7 @@ English phase names may remain in internal technical documentation but are exclu
   - `BECC-PUBLIC-TERMINOLOGY-POLICY.md`
   - `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md`
   - `BECC-PUBLIC-PAGE-ROLLOUT-GUIDE.md`
+* **Status:** **`COMPLETE`** (All 8 standards extracted; BridGenta-specific reference package sealed with manifest and stewardship policies under `docs/becc/bridgenta/reference-package/`).
 
 ---
 
