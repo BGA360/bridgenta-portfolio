@@ -192,7 +192,7 @@ Im Vorfeld der Entwicklung wurden kritische Architekturentscheidungen getroffen,
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Sicherung der Datensicherheit: Die KI agiert ausschließlich auf Ebene der Benutzeroberfläche (UI).</p>
+      <p class="decision-card__text">Datensicherheit durch UI-Isolation: Die KI agiert ausschließlich auf Ebene der Benutzeroberfläche (UI).</p>
     </div>
   </div>
   <div class="decision-card">
