@@ -50,3 +50,50 @@ This document maps all quantitative performance, security, and quality claims on
 * **Measurement Method:** Code coverage analysis (>80%), duplications (<3%), and zero open blocker/critical vulnerabilities.
 * **Evidence Trace Link:** `CPL-PILOT-LOG-QUALITY.json#L3`
 * **Test Record ID:** `TR-QUAL-003`
+
+---
+
+## 3. Scoped Design & Operational Claims
+
+### 5. Datensicherheit im Pilotlauf
+* **Claimed Metric:** "während gleichzeitig der Schutz sensibler Daten im Pilotprojekt gewahrt blieb."
+* **Definition:** Bounded assertion confirming privacy was maintained during pilot execution.
+* **Test Environment:** Closed network sandbox with outbound proxy checking.
+* **Evidence Trace Link:** `CPL-PILOT-LOG-SECURITY.json#L89`
+* **Test Record ID:** `TR-SECU-089`
+
+### 6. Stabilität und Datensicherheit (Entscheidungsgrundlage)
+* **Claimed Metric:** "um die Stabilität und Datensicherheit der Plattform zu sichern"
+* **Definition:** Design objectives directing platform architecture layer partitioning.
+* **Test Environment:** Design phase review.
+* **Evidence Trace Link:** Scoped to platform design blueprint documents.
+* **Test Record ID:** `N/A` (Design Constraint)
+
+### 7. Ausfallsicherheit (Pilotlauf)
+* **Claimed Metric:** "Wir modernisieren das System schrittweise; im Pilotbetrieb traten keine Ausfälle auf."
+* **Definition:** Scoped operational result validating that zero outages occurred during the pilot run.
+* **Test Environment:** Developer workspace and staging migration logs.
+* **Evidence Trace Link:** `CPL-PILOT-LOG-TIME.json#L45` and pilot runtime logs.
+* **Test Record ID:** `TR-TIME-012`
+
+### 8. UI-Schnittstellenisolation (Sicherung)
+* **Claimed Metric:** "Sicherung der Datensicherheit: Die KI agiert ausschließlich auf Ebene der Benutzeroberfläche (UI)."
+* **Definition:** Bounded structural design restriction keeping the AI generator isolated from backend logic.
+* **Test Environment:** Architecture validation.
+* **Evidence Trace Link:** Scoped to modular path configuration `/src/workspace/` and gateway filters.
+* **Test Record ID:** `N/A` (Design Constraint)
+
+### 9. Qualitätssicherung (Verifikation)
+* **Claimed Metric:** "Dies dient der Verifikation, dass der generierte Code stabil, performant und regelkonform ist."
+* **Definition:** Scope statement declaring the intent of the automated testing suite and manual check loops.
+* **Test Environment:** CI/CD test harness.
+* **Evidence Trace Link:** Scoped to test runner logs and SonarQube gate criteria.
+* **Test Record ID:** `N/A` (Verification Process Statement)
+
+### 10. Wartbarkeit und Modulkomplexität
+* **Claimed Metric:** "Manuelle Reviews sicherten das Bestehen von Quality Gate A und hielten die Modulkomplexität im Pilotlauf auf einem niedrigen Niveau."
+* **Definition:** Scoped assertion showing that reviews successfully maintained the Quality Gate A status and kept complexity values inside acceptable boundaries.
+* **Test Environment:** Git commit and code review log records.
+* **Evidence Trace Link:** `CPL-PILOT-LOG-QUALITY.json#L3` and reviewer approvals.
+* **Test Record ID:** `TR-QUAL-003`
+

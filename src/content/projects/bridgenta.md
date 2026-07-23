@@ -159,7 +159,7 @@ Die Kombination dieser drei Schichten liefert ein vollständiges Abbild des Alts
 ---
 
 ## Technische Entscheidungen
-Im Vorfeld der Entwicklung wurden kritische Architekturentscheidungen getroffen, um die Stabilität und Datensicherheit der Plattform zu garantieren:
+Im Vorfeld der Entwicklung wurden kritische Architekturentscheidungen getroffen, um die Stabilität und Datensicherheit der Plattform zu sichern:
 
 <div class="decision-grid">
   <div class="decision-card">
@@ -170,7 +170,7 @@ Im Vorfeld der Entwicklung wurden kritische Architekturentscheidungen getroffen,
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Wir modernisieren das System Schritt für Schritt ohne Ausfälle.</p>
+      <p class="decision-card__text">Wir modernisieren das System schrittweise; im Pilotbetrieb traten keine Ausfälle auf.</p>
     </div>
   </div>
   <div class="decision-card">
@@ -192,7 +192,7 @@ Im Vorfeld der Entwicklung wurden kritische Architekturentscheidungen getroffen,
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Gewährleistung der Datensicherheit: Die KI agiert ausschließlich auf Ebene der Benutzeroberfläche (UI).</p>
+      <p class="decision-card__text">Sicherung der Datensicherheit: Die KI agiert ausschließlich auf Ebene der Benutzeroberfläche (UI).</p>
     </div>
   </div>
   <div class="decision-card">
@@ -235,7 +235,7 @@ Die Governance-Ebene verifiziert jede Codeänderung vor der Freigabe anhand der 
 </div>
 
 ## Validierung
-Die Qualitätssicherung und Validierung der rekonstruierten Module folgt einer Teststrategie, die automatisierte Prüfschleifen mit manuellen Kontrollen kombiniert. Dies stellt sicher, dass der generierte Code stabil, performant und regelkonform ist.
+Die Qualitätssicherung und Validierung der rekonstruierten Module folgt einer Teststrategie, die automatisierte Prüfschleifen mit manuellen Kontrollen kombiniert. Dies dient der Verifikation, dass der generierte Code stabil, performant und regelkonform ist.
 
 - **Automatische Verifikation**: Jedes rekonstruierte Modul wird in einer isolierten Sandbox-Umgebung automatisch kompiliert und gegen vordefinierte Unit-Tests geprüft. Linter und statische Code-Analysen sichern die Codequalität und die Einhaltung von Programmierstandards.
 - **Sicherheits-Audits**: Automatisierte Scanner prüfen den Quellcode auf Schwachstellen, hartcodierte Passwörter oder unsichere API-Aufrufe.
@@ -297,7 +297,7 @@ Durch den strukturierten Prozess wurden im Rahmen des Testlaufs messbare quantit
     </div>
     <div class="result-card__content">
       <h3>Wartbarkeit</h3>
-      <p>Manuelle Reviews garantierten das Bestehen von Quality Gate A und begrenzten die Modulkomplexität auf ein Minimum.</p>
+      <p>Manuelle Reviews sicherten das Bestehen von Quality Gate A und hielten die Modulkomplexität im Pilotlauf auf einem niedrigen Niveau.</p>
     </div>
   </div>
 </div>
