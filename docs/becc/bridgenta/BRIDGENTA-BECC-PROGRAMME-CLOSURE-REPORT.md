@@ -38,14 +38,14 @@ This report documents the final closure of the BridGenta Reference Maturity Prog
 
 ## 4. Reusable Reference Standards
 The programme has successfully extracted the following reusable templates for future portfolio page assessment under the `/docs/becc/standards/` directory:
-1. [BECC Public Page Reference Standard v1.0](standards/BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.0.md)
-2. [BECC Public Page Assessment Checklist](standards/BECC-PUBLIC-PAGE-ASSESSMENT-CHECKLIST.md)
-3. [BECC Public Page Finding Register Template](standards/BECC-PUBLIC-PAGE-FINDING-REGISTER-TEMPLATE.md)
-4. [BECC Public Page Remediation Register Template](standards/BECC-PUBLIC-PAGE-REMEDIATION-REGISTER-TEMPLATE.md)
-5. [BECC Published-Page Certification Template](standards/BECC-PUBLISHED-PAGE-CERTIFICATION-TEMPLATE.md)
-6. [BECC Public Terminology Policy](standards/BECC-PUBLIC-TERMINOLOGY-POLICY.md)
-7. [BECC Public Claim Evidence Map Template](standards/BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md)
-8. [BECC Public Page Rollout Guide](standards/BECC-PUBLIC-PAGE-ROLLOUT-GUIDE.md)
+1. [BECC Public Page Reference Standard v1.0](../standards/BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.0.md)
+2. [BECC Public Page Assessment Checklist](../standards/BECC-PUBLIC-PAGE-ASSESSMENT-CHECKLIST.md)
+3. [BECC Public Page Finding Register Template](../standards/BECC-PUBLIC-PAGE-FINDING-REGISTER-TEMPLATE.md)
+4. [BECC Public Page Remediation Register Template](../standards/BECC-PUBLIC-PAGE-REMEDIATION-REGISTER-TEMPLATE.md)
+5. [BECC Published-Page Certification Template](../standards/BECC-PUBLISHED-PAGE-CERTIFICATION-TEMPLATE.md)
+6. [BECC Public Terminology Policy](../standards/BECC-PUBLIC-TERMINOLOGY-POLICY.md)
+7. [BECC Public Claim Evidence Map Template](../standards/BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md)
+8. [BECC Public Page Rollout Guide](../standards/BECC-PUBLIC-PAGE-ROLLOUT-GUIDE.md)
 
 ---
 
