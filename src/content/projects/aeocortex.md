@@ -191,7 +191,7 @@ graph LR
 
 ---
 
-## Validation
+## Validierung
 *(Verweis: Assessment AC-001, Finding FIN-AC-001, Arbeitsauftrag RM-001)*
 
 Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Parser erfolgt auf Basis vordefinierter Testverfahren:
@@ -216,7 +216,7 @@ Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generative
 
 ---
 
-## Risks
+## Risiken
 *(Verweis: Assessment AC-001, Finding FIN-AC-002, Arbeitsauftrag RM-001)*
 
 Die automatisierte Analyse von Webinhalten für KI-Suchmaschinen birgt technische und operative Risiken, die durch gezielte Absicherungsmaßnahmen (Mitigations) minimiert werden:
