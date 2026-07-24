@@ -107,10 +107,13 @@ All 14 validation points were traced in our matrix:
 * **Corrections applied:** 0
 * **Rollbacks triggered:** 0
 
-## 9. Production Mismatch Investigation & Resolution (Sprint 7 Corrective Action)
+**SPRINT 7 BLOCKED — PRODUCTION SOURCE MISMATCH UNDER INVESTIGATION**
 
-* **Root Cause Identified:** A PWA cache-first navigation strategy in `public/service-worker.js` was intercepting traffic and serving stale cached assets to browser clients from the `bridgenta-portfolio-v20` cache version, even though the host server was serving the correct updated assets.
-* **Correction Applied:** Bumped `CACHE_NAME` in `public/service-worker.js` to `bridgenta-portfolio-v21` (PR #184) and successfully squash-merged/deployed to `main`.
-* **Verification:** Verified that `https://bridgenta.de/service-worker.js` is live at version `bridgenta-portfolio-v21` and client browsers fetch fresh assets from the network.
-
-**SPRINT 7 COMPLETE WITH OBSERVATIONS**
+```text
+Workflow execution: Reported successful
+HTTP availability: 200
+Correct production content verified: No
+Source-to-live match: Failed or not yet reproducibly established
+Published-page certification: Not eligible
+Sprint 8 authorization: Not granted
+```
