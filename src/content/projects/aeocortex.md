@@ -21,12 +21,12 @@ sidebar:
     - Antigravity
 ---
 
-## Executive Summary
-AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung und Erprobung von Suchmechanismen in KI-gestützten Systemen (Answer Engine Optimization — AEO und Generative Engine Optimization — GEO). Ziel des Projekts ist es, Web-Inhalte systematisch auf Entity-Klarheit, strukturierte Daten und Lesbarkeit hin zu analysieren. Dadurch soll die Sichtbarkeit und korrekte Zitierbarkeit von Webinhalten in modernen KI-Suchmaschinen wie Perplexity, ChatGPT Search und Google Gemini bewertet und optimiert werden.
+## Kurzfassung
+AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung von Suchmechanismen in KI-gestützten Systemen. Der Fokus liegt auf der Answer Engine Optimization (AEO) und der Generative Engine Optimization (GEO). Ziel des Projekts ist es, Web-Inhalte systematisch auf Entity-Klarheit, strukturierte Daten und Lesbarkeit hin zu analysieren. Dadurch soll die Sichtbarkeit und korrekte Zitierbarkeit von Webinhalten in modernen KI-Suchmaschinen wie Perplexity, ChatGPT Search und Google Gemini bewertet und optimiert werden.
 
 ---
 
-## Context
+## Ausgangssituation
 Klassische Suchmaschinen bewerten Webseiten vorwiegend nach Keywords und Backlinks. Moderne KI-Suchmaschinen und Large Language Models (LLMs) interpretieren Webinhalte hingegen kontextuell und greifen auf strukturierte Wissensgraphen zurück. Für Betreiber von Webseiten bedeutet dieser Wandel, dass reine Textoptimierung nicht mehr ausreicht, um in KI-generierten Antworten als Quelle aufzutauchen. Es bedarf einer präzisen Deklaration von Entitäten und klaren logischen Bezügen im HTML-Markup.
 
 <div class="engineering-insight">
@@ -36,12 +36,12 @@ Klassische Suchmaschinen bewerten Webseiten vorwiegend nach Keywords und Backlin
 
 ---
 
-## Problem
+## Problemstellung
 Klassischen Webseiten fehlt oft die semantische Tiefe, die für das fehlerfreie Parsing durch LLM-Crawler erforderlich ist. Ohne strukturierte Validierung kommt es häufig zu unentdeckten Fehlern in der JSON-LD-Struktur, robots.txt-Konflikten oder unklaren Entity-Beziehungen. Dies führt dazu, dass generative Suchmaschinen die Inhalte nicht korrekt einordnen können und sie folglich nicht in ihren Antworten zitieren. Es fehlt eine automatisierte Testinfrastruktur, um die Auslesbarkeit von Webinhalten für KI-Systeme zu messen und zu bewerten.
 
 ---
 
-## Constraints
+## Rahmenbedingungen
 Das Projekt unterliegt logischen und technischen Rahmenbedingungen, die den Analyseumfang eingrenzen:
 - **Ressourcen und Ratenbegrenzung**: Da die Analyse-Skripte externe Validierungs-APIs aufrufen, müssen Ratenbegrenzungen (Rate Limits) berücksichtigt werden, um Blockaden zu vermeiden.
 - **Datenintegrität**: Die analysierten Daten dürfen keine sensiblen oder persönlichen Informationen enthalten (Privacy-by-Design).
@@ -54,12 +54,12 @@ Das Projekt unterliegt logischen und technischen Rahmenbedingungen, die den Anal
 
 ---
 
-## Engineering Thinking
+## Technische Überlegungen
 Das Kernkonzept von AEOcortex beruht auf der Annahme, dass KI-Modelle bei der Informationssuche deterministischen Pfaden folgen. Anstatt darauf zu hoffen, dass ein LLM unstrukturierte HTML-Seiten richtig interpretiert, deklarieren wir Datenmodelle explizit. Das Tool prüft Webseiten daher gezielt auf maschinenlesbare Schnittstellen (JSON-LD, Dublin Core) und berechnet die Verständlichkeit des Fließtexts anhand linguistischer Heuristiken.
 
 ---
 
-## Architecture
+## Architektur
 Die Plattform ist modular aufgebaut, um Analyse-Logik und Präsentationsschicht strikt voneinander zu trennen. Ein Node.js-basierter Parser lädt das HTML der Zielwebseite, extrahiert die semantischen Metadaten und führt strukturierte Validierungsprüfungen durch. Die Ergebnisse werden in einer lokalen JSON-Struktur abgelegt, welche anschließend von Astro eingelesen wird, um das statische Berichts-Dashboard zu generieren.
 
 <div class="engineering-insight">
@@ -69,7 +69,7 @@ Die Plattform ist modular aufgebaut, um Analyse-Logik und Präsentationsschicht 
 
 ---
 
-## Engineering Decisions
+## Technische Entscheidungen
 Im Rahmen des Projekts wurden wesentliche Designentscheidungen getroffen, um die Effizienz der Analyse zu sichern:
 
 <div class="decision-grid">
@@ -99,12 +99,12 @@ Im Rahmen des Projekts wurden wesentliche Designentscheidungen getroffen, um die
 
 ---
 
-## Implementation
+## Umsetzung
 Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nutzt Cheerio zur Extraktion der Metadaten und prüft diese gegen die offiziellen Schema.org-Spezifikationen. Ein weiteres Modul berechnet die Lesbarkeit von Texten mithilfe von Algorithmen wie dem Flesch-Reading-Ease-Index, um die Verständlichkeit für LLM-Parsing-Prozesse zu bewerten.
 
 ---
 
-## Public Artifacts
+## Öffentliche Projekteinblicke
 
 <figure>
   <pre><code>
@@ -112,8 +112,8 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 |             AEOcortex             |
 |                                   |
 |   [ URL-Analyse: bridgenta.de ]   |
-|   > Entity-Score: 95%             |
-|   > AEO-Auslesbarkeit: Hoch       |
+|   > Entity-Score: 95% (Pilotlauf) |
+|   > AEO-Auslesbarkeit: Hoch*      |
 |                                   |
 |   Empfehlungen:                   |
 |   * robots.txt Direktive korrigiert|
@@ -122,6 +122,7 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
   </code></pre>
   <figcaption><strong>Artefakt 1: Konzeptionelles Berichts-Layout</strong> – Zweck: Visuelle Darstellung der Analyseergebnisse und der automatischen Optimierungsempfehlungen.</figcaption>
 </figure>
+<p class="footnote">*Hinweis: Basierend auf Flesch-Readability-Index >60 im Pilotlauf.</p>
 
 <figure>
 
@@ -151,12 +152,12 @@ graph LR
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">100% automatisierte Erkennung fehlerhafter Graphstrukturen.</p>
+        <p class="evidence-card__value">Automatisierte Erkennung fehlerhafter Graphstrukturen im Rahmen der Testumgebung.</p>
       </div>
     </div>
   </div>
   <div class="evidence-card">
-    <h4 class="evidence-card__title">robots.txt Konflikte</h4>
+    <h4 class="evidence-card__title">robots.txt-Konflikte</h4>
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Manuelle Prüfung</span>
@@ -169,7 +170,7 @@ graph LR
     </div>
   </div>
   <div class="evidence-card">
-    <h4 class="evidence-card__title">LLM-Crawler Barrieren</h4>
+    <h4 class="evidence-card__title">LLM-Crawler-Barrieren</h4>
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Manuelle Prüfung</span>
@@ -177,7 +178,7 @@ graph LR
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">Detaillierte Analyse der Auslesbarkeit für alle großen LLM-Parser.</p>
+        <p class="evidence-card__value">Strukturierte Analyse von Metadaten und Lesbarkeits-Metriken im Parser.</p>
       </div>
     </div>
   </div>
@@ -203,15 +204,15 @@ Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Par
 
 ---
 
-## Results
-- **Entity-Prüfung**: Zuverlässige Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Build-Prozess.
-- **Lesbarkeits-Indikator**: Funktionierende Heuristik zur Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle.
-- **Prozess-Optimierung**: Erfolgreiche Beseitigung struktureller Crawling-Barrieren bei realen Testprojekten.
+## Ergebnisse
+- **Entity-Prüfung**: Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Testlauf des Build-Prozesses.
+- **Lesbarkeits-Indikator**: Heuristische Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle im Testlauf.
+- **Prozess-Optimierung**: Beseitigung identifizierter struktureller Crawling-Barrieren im Rahmen der Testprojekte.
 
 ---
 
-## Lessons Learned
-Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generativer Suchmaschinen und semantischer Parsing-Modelle vertieft. Die Analyse von Entity-Beziehungen zeigt deutlich, dass präzise deklarierte und validierte Metadaten die Grundlage für die maschinelle Erfassung komplexer Kontexte bilden. Zudem wurde verdeutlicht, wie wichtig automatisierte Prüfverfahren im Entwicklungsprozess sind. Die manuelle Verifizierung strukturierter Daten ist fehleranfällig; automatisierte Validierungsskripte sparen wertvolle Zeit und garantieren die Einhaltung aktueller Web-Standards.
+## Erkenntnisse aus der Entwicklung
+Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generativer Suchmaschinen und semantischer Parsing-Modelle vertieft. Die Analyse von Entity-Beziehungen zeigt deutlich, dass präzise deklarierte und validierte Metadaten die Grundlage für die maschinelle Erfassung komplexer Kontexte bilden. Zudem wurde verdeutlicht, wie wichtig automatisierte Prüfverfahren im Entwicklungsprozess sind. Die manuelle Verifizierung strukturierter Daten ist fehleranfällig; automatisierte Validierungsskripte sparen wertvolle Zeit und unterstützen die Einhaltung aktueller Web-Standards.
 
 ---
 
@@ -227,7 +228,7 @@ Die automatisierte Analyse von Webinhalten für KI-Suchmaschinen birgt technisch
 
 ---
 
-## Future Evolution
+## Nächste Entwicklungsschritte
 Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte direkt in CI/CD-Pipelines (z. B. GitHub Actions) geplant. Dadurch sollen Schema- und Lesbarkeitsprüfungen bei jedem Commit automatisch ausgeführt werden. Weiterhin soll ein interaktives Dashboard zur Live-Validierung beliebiger URLs aufgebaut werden, um die Benutzerfreundlichkeit des Tools zu erhöhen.
 
 <div class="engineering-insight">
@@ -237,7 +238,7 @@ Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte dir
 
 ---
 
-## References
+## Quellen und Referenzen
 *(Verweis: Assessment AC-001, Finding FIN-AC-003, Arbeitsauftrag RM-001)*
 
 * **Astro Static Site Generator**: [Astro-Dokumentation](https://docs.astro.build/) — Framework für das Berichts-Dashboard.
