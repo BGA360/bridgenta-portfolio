@@ -38,8 +38,13 @@ const getBadgeClass = (status) => {
 
 const badgeClass = getBadgeClass(entry.data.sidebar.status);
 
-// Set hero image for BridGenta
-const heroImage = entry.slug === 'bridgenta' ? '/images/bga-portfolio/BG-PA01-Hero.webp' : undefined;
+// Set hero image for BridGenta and AEOcortex
+const heroImage = 
+  entry.slug === 'bridgenta' 
+    ? '/images/bga-portfolio/BG-PA01-Hero.webp' 
+    : entry.slug === 'aeocortex'
+      ? '/images/aeocortex-portfolio/AEO-HERO-01-Platform-Overview.webp'
+      : undefined;
 ---
 
 <Layout 
