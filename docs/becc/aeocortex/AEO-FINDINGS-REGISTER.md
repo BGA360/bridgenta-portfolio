@@ -13,6 +13,7 @@ This register logs all baseline defects and compliance issues identified during 
 | **AEO-FIND-003** | Claims & Evidence | `100% automatisierte Erkennung` is stated as an absolute warranty. | Claim lacks environmental bounding. | **High** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Closed** |
 | **AEO-FIND-004** | Claims & Evidence | `Entity-Score: 95%` is stated without context. | Metric lacks test-run qualification. | **High** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Open** |
 | **AEO-FIND-005** | Terminology / Claims | Use of prohibited guarantee verb `garantieren` on line 214. | Violates prohibited guarantees policy. | **High** | `BECC-PUBLIC-TERMINOLOGY-POLICY.md` Section 3 | **Closed** |
+| **AEO-FIND-006** | Claims & Evidence | `Detaillierte Analyse der Auslesbarkeit für alle großen LLM-Parser` is over-scoped. | Tool cannot simulate proprietary crawl logics. | **High** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Open** |
 
 ---
 
