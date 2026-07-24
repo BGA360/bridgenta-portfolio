@@ -9,7 +9,7 @@ This register serves as the authoritative ledger tracking BECC reference maturit
 | Project Name | Source File Path | Pilot Phase | Target Path | Kickoff Date | Closure Date | Certification Verdict | Status |
 | :--- | :--- | :---: | :--- | :---: | :---: | :--- | :--- |
 | **BridGenta** | `src/content/projects/bridgenta.md` | Pilot 1 | Tier 1 (9 Sprints) | 2026-07-20 | 2026-07-23 | `CERTIFIED WITH OBSERVATIONS` | **Closed** |
-| **AEOcortex** | `src/content/projects/aeocortex.md` | Pilot 2 | Tier 1 (9 Sprints) | 2026-07-23 | Pending | Pending | **Kickoff** |
+| **AEOcortex** | `src/content/projects/aeocortex.md` | Pilot 2 | Tier 1 (9 Sprints) | 2026-07-23 | Pending | Pending | **Phase 3 Complete** |
 | **Lumina Praxis** | `src/content/projects/luminapraxisds.md` | Pilot 3 | Tier 2 (4 Phases) | Pending | Pending | Pending | **Candidate** |
 | **Rooted Reality** | `src/content/projects/rootedrealitygarden.md` | Pilot 4 | Tier 2 (4 Phases) | Pending | Pending | Pending | **Candidate** |
 | **StarCleaners** | `src/content/projects/starcleaners.md` | Pilot 5 | Tier 2 (4 Phases) | Pending | Pending | Pending | **Candidate** |
