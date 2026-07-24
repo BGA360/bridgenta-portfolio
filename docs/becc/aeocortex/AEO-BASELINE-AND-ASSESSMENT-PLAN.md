@@ -34,9 +34,9 @@ This document establishes the kickoff parameters, baseline state, and evidence-s
 
 ### Technical Baseline (Architecture & Integrity)
 * **Crawler Technology:** Cheerio HTML parsing in a Node.js runtime.
-* **Dashboard:** Static Astro build rendering.
 * **Metrics:** Flesch Reading Ease calculations.
-* **Integrity Gate:** Must protect the Cheerio parser boundaries and AST/crawler heuristics from dilution.
+* **Integrity Gate:** Must protect the Cheerio parser boundaries and entity heuristics from dilution.
+* **Portfolio Publication Layer:** Astro is utilized solely on the `bridgenta.de` site to render and publish the static HTML report generated from the AEOcortex parser output.
 
 ---
 

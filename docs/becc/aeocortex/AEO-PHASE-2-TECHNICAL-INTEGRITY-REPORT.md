@@ -8,8 +8,8 @@ This report presents the technical integrity and architectural preservation revi
 
 The technical descriptions in `src/content/projects/aeocortex.md` have been evaluated against the actual codebase parameters:
 
-* **Separation of Concerns:** The page accurately describes the separation between the HTML parser logic (implemented in Node.js/Cheerio) and the static presentation layer (implemented in Astro).
-* **Dependency Mapping:** Verified that Cheerio, Astro, and standard Node.js module declarations match the actual project package dependencies (`package.json`).
+* **Separation of Concerns:** The parser logic is implemented in Node.js/Cheerio, while Astro renders the static portfolio pages for `bridgenta.de` to publish the results.
+* **Dependency Mapping:** Cheerio represents the core product library, whereas Astro serves as the publication framework defined in the portfolio's `package.json`.
 * **Linguistic Heuristics:** The description of the Flesch-Reading-Ease-Index calculation reflects the actual codebase implementation.
 
 ---
