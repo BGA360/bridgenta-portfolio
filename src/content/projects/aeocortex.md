@@ -112,8 +112,8 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 |             AEOcortex             |
 |                                   |
 |   [ URL-Analyse: bridgenta.de ]   |
-|   > Entity-Score: 95%             |
-|   > AEO-Auslesbarkeit: Hoch       |
+|   > Entity-Score: 95% (Pilotlauf) |
+|   > AEO-Auslesbarkeit: Hoch*      |
 |                                   |
 |   Empfehlungen:                   |
 |   * robots.txt Direktive korrigiert|
@@ -122,6 +122,7 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
   </code></pre>
   <figcaption><strong>Artefakt 1: Konzeptionelles Berichts-Layout</strong> – Zweck: Visuelle Darstellung der Analyseergebnisse und der automatischen Optimierungsempfehlungen.</figcaption>
 </figure>
+<p class="footnote">*Hinweis: Basierend auf Flesch-Readability-Index >60 im Pilotlauf.</p>
 
 <figure>
 
@@ -177,7 +178,7 @@ graph LR
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">Detaillierte Analyse der Auslesbarkeit für alle großen LLM-Parser.</p>
+        <p class="evidence-card__value">Strukturierte Analyse von Metadaten und Lesbarkeits-Metriken im Parser.</p>
       </div>
     </div>
   </div>
@@ -204,9 +205,9 @@ Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Par
 ---
 
 ## Ergebnisse
-- **Entity-Prüfung**: Zuverlässige Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Build-Prozess.
-- **Lesbarkeits-Indikator**: Funktionierende Heuristik zur Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle.
-- **Prozess-Optimierung**: Erfolgreiche Beseitigung struktureller Crawling-Barrieren bei realen Testprojekten.
+- **Entity-Prüfung**: Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Testlauf des Build-Prozesses.
+- **Lesbarkeits-Indikator**: Heuristische Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle im Testlauf.
+- **Prozess-Optimierung**: Beseitigung identifizierter struktureller Crawling-Barrieren im Rahmen der Testprojekte.
 
 ---
 
