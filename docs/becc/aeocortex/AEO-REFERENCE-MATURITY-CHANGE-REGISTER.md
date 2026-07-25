@@ -27,3 +27,5 @@ This register logs all modifications, wording replacements, and corrections appl
 | **ARM-016** | Phase 2 | Einblicke | `Vergleichsmatrix (Ergebnis-Nachweis)` / `AEO-Auslesbarkeit: Hoch` | `Vergleichsmatrix (Fähigkeits-Nachweis)` / `Text-Lesbarkeit (interner Flesch-Wert)` | Classifications | Align comparison matrix and readability to internal classifications. | Yes |
 | **ARM-017** | Phase 2 | Validierung | `maximal 100 HTTP-Anfragen pro Minute` | `restriktive Ratenbegrenzungen gemäß interner Konfigurationsvorgaben` | Wording | Replace numerical rate limit with non-numerical bounded wording. | Yes |
 | **ARM-018** | Phase 2 | Risiken | (None) | Added two-dimensional risk matrix rubric explanation | Rubric | Add risk impact and likelihood methodology. | Yes |
+| **ARM-019** | Phase 5.1 | Problem / Technik | `bekannten Crawler-Spezifikationen` / `syntaktische Spezifikationen` | `dokumentierten technischen Kriterien und öffentlich deklarierten Crawler-Regeln` | Wording | Remediation of remaining wording gap (AEO-OBS-001) for narrow evidence bounding. | Yes |
+

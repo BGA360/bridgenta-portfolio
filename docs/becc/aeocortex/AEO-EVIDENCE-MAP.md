@@ -22,4 +22,4 @@ This map registers, scopes, and traces all quantitative, technical, and outcome-
 To preserve technical integrity, the assessment establishes clear boundaries:
 * **Implemented Heuristics:** The system parses HTML structures in memory using Cheerio and computes standard readability metrics.
 * **Non-Implemented Crawlers:** The tool does not execute JavaScript payloads or run headless browsers.
-* **Causality Limit:** The page must not claim that using JSON-LD *guarantees* high search ranking or citation rates, but rather that it *improves* compliance with crawler specifications.
+* **Causality Limit:** The page must not claim that using JSON-LD *guarantees* high search ranking or citation rates, but rather that it *improves* compliance with documented technical criteria and publicly declared crawler rules.
