@@ -36,7 +36,7 @@ Klassische Suchmaschinen bewerten Webseiten vorwiegend nach Keywords und Backlin
 ---
 
 ## Problemstellung
-Klassischen Webseiten fehlt oft die semantische Tiefe, die für das fehlerfreie Parsing durch LLM-Crawler erforderlich ist. Ohne strukturierte Validierung kommt es häufig zu unentdeckten Fehlern in der JSON-LD-Struktur, robots.txt-Konflikten oder unklaren Entity-Beziehungen. Dies kann dazu führen, dass generative Suchmaschinen die Inhalte nicht korrekt einordnen können. Im Rahmen dieses Projekts wird eine automatisierte Testumgebung erprobt, um die Übereinstimmung mit bekannten Crawler-Spezifikationen systematisch zu prüfen.
+Klassischen Webseiten fehlt oft die semantische Tiefe, die für das fehlerfreie Parsing durch LLM-Crawler erforderlich ist. Ohne strukturierte Validierung kommt es häufig zu unentdeckten Fehlern in der JSON-LD-Struktur, robots.txt-Konflikten oder unklaren Entity-Beziehungen. Dies kann dazu führen, dass generative Suchmaschinen die Inhalte nicht korrekt einordnen können. Im Rahmen dieses Projekts wird eine automatisierte Testumgebung erprobt, um die Übereinstimmung mit dokumentierten technischen Kriterien und öffentlich deklarierten Crawler-Regeln systematisch zu prüfen.
 
 ---
 
@@ -54,7 +54,7 @@ Das Projekt unterliegt logischen und technischen Rahmenbedingungen, die den Anal
 ---
 
 ## Technische Überlegungen
-Das Kernkonzept von AEOcortex beruht auf der Arbeitshypothese, dass strukturierte Datenmodelle und klar segmentierte Texte die maschinelle Verarbeitung erleichtern können. Während die tatsächlichen Such- und Zitiermechanismen externer KI-Plattformen hochgradig variabel und nicht-deterministisch sind, zielt unser interner Analyseansatz darauf ab, definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse zu bewerten. Hierzu werden Webseiten lokal auf bekannte Schnittstellen (JSON-LD, Dublin Core) und syntaktische Spezifikationen hin geprüft.
+Das Kernkonzept von AEOcortex beruht auf der Arbeitshypothese, dass strukturierte Datenmodelle und klar segmentierte Texte die maschinelle Verarbeitung erleichtern können. Während die tatsächlichen Such- und Zitiermechanismen externer KI-Plattformen hochgradig variabel und nicht-deterministisch sind, zielt unser interner Analyseansatz darauf ab, definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse zu bewerten. Hierzu werden Webseiten lokal auf bekannte Schnittstellen (JSON-LD, Dublin Core) sowie dokumentierte technische Kriterien und öffentlich deklarierte Crawler-Regeln hin geprüft.
 
 ---
 

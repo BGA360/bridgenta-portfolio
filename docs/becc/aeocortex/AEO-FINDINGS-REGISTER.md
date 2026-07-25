@@ -18,6 +18,7 @@ This register logs all baseline defects and compliance issues identified during 
 | **AEO-FIND-008** | Readability | Readability classified as AEO-Auslesbarkeit without Flesch limitations. | Flesch index lacks qualification on machine indexing. | **High** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Closed** |
 | **AEO-FIND-009** | Claims & Bounding | Hardcoded `100 HTTP-Anfragen` limit lacks context. | Numerical claim requires internal spec bounding. | **Medium** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Closed** |
 | **AEO-FIND-010** | Architecture / Stack | Astro listed in project stack of AEOcortex and BridGenta. | Astro is publication infrastructure, not project stack. | **High** | `BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.0.md` Section 2 | **Closed** |
+| **AEO-FIND-011** | Terminology / Bounding | Broad references to "known specifications" on lines 39 and 57 of the public page. | Wording requires narrow bounding to documented criteria and public crawler rules. | **Medium** | `BECC-PUBLIC-TERMINOLOGY-POLICY.md` Section 3 | **Closed** |
 
 ---
 

@@ -104,19 +104,26 @@ The project case study successfully reconciles all steps from assessment kickoff
 ---
 
 ## 13. Remaining Observations
-- **AEO-OBS-001 (Wording Gap):** The public page `aeocortex.md` contains broad references to "known specifications" ("bekannten Spezifikationen") on lines 39 and 57.
-- **Remediation Action:** These broad references must be replaced with the narrow phrasing: *"dokumentierten technischen Kriterien und öffentlich deklarierten Crawler-Regeln"* in a future remediation cycle.
+- **AEO-OBS-001 (Wording Gap):** **Resolved and Closed**. Broad references to "known specifications" on lines 39 and 57 of the public page were replaced with the narrow phrasing: *"dokumentierten technischen Kriterien und öffentlich deklarierten Crawler-Regeln"* in Phase 5.1.
+- **Verification Status:** Fully verified. All gaps resolved.
 
 ---
 
 ## 14. Final Certification Decision
 
-`AEOcortex PUBLIC CERTIFICATION — GO WITH OBSERVATIONS`
+`AEOcortex PUBLIC CERTIFICATION — GO`
 
 ---
 
 ## 15. Modification Record
-- **Date:** 2026-07-25
-- **Modified Files:** None (Phase 5 did not modify existing codebase or source files, only published this authoritative report).
-- **PR:** #191
-- **Deployment Status:** Live and verified.
+- **Phase 5.0 Audit Publication:**
+  - **Date:** 2026-07-25
+  - **Modified Files:** None (Phase 5.0 did not modify existing codebase or source files, only published the authoritative report).
+  - **PR:** #192
+  - **Deployment Status:** Live and verified.
+- **Phase 5.1 Observation Remediation:**
+  - **Date:** 2026-07-25
+  - **Modified Files:** `src/content/projects/aeocortex.md`, `docs/becc/aeocortex/AEO-EVIDENCE-MAP.md`, `docs/becc/aeocortex/AEO-REFERENCE-MATURITY-CHANGE-REGISTER.md`, `docs/becc/aeocortex/AEO-FINDINGS-REGISTER.md`, `docs/becc/aeocortex/AEO-PHASE-5-INDEPENDENT-PUBLIC-CERTIFICATION.md`.
+  - **Reason:** Resolved remaining wording gap `AEO-OBS-001`.
+  - **PR:** #193
+  - **Deployment Status:** Pending merge and deploy.
