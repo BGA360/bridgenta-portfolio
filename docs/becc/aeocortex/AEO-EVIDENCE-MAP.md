@@ -8,12 +8,12 @@ This map registers, scopes, and traces all quantitative, technical, and outcome-
 
 | Claim ID | Section | Public Claim / Statement | Classification | Scope / Bounding | Evidence Reference |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **AEO-CLM-001** | `Öffentliche Projekteinblicke` | `Entity-Score: 95%` | Pilot Result / Calculated Score | Bounded to the pilot run on `bridgenta.de` under test run date 2026-01-15. | Test log `/tests/aeo_score.test.js` |
-| **AEO-CLM-002** | `Öffentliche Projekteinblicke` | `AEO-Auslesbarkeit: Hoch` | Calculated Score | Based on Flesch-Reading-Ease score > 60 and zero structural schema warnings. | Readability index calculation logic in `/src/utils/readability.js` |
+| **AEO-CLM-001** | `Öffentliche Projekteinblicke` | `Entity-Score (in figcaption qualified)` | Internal Local-Test Metric | Bounded to internal local-test evaluation of metadata density, not an external success probability. | Test log `/tests/aeo_score.test.js` |
+| **AEO-CLM-002** | `Öffentliche Projekteinblicke` | `Text-Lesbarkeit (interner Flesch-Wert)` | Calculated Score | Based on Flesch-Reading-Ease score > 60 in local test runs. Does not measure external visibility. | Readability index calculation logic in `/src/utils/readability.js` |
 | **AEO-CLM-003** | `Öffentliche Projekteinblicke` | `Automatisierte Erkennung fehlerhafter Graphstrukturen im Rahmen der Testumgebung.` | Tested Capability / Observed Result | Limited to syntax validation checks against Schema.org draft specifications. | Validator script `/src/workflow/validator.js` |
-| **AEO-CLM-004** | `Öffentliche Projekteinblicke` | `Sofortige Warnmeldung bei blockierten Hauptentitäten.` | Observed Result | Based on crawler script identifying `Disallow` rules in robots.txt matching target canonical URLs. | Robots test `/tests/robots.test.js` |
-| **AEO-CLM-005** | `Öffentliche Projekteinblicke` | `Detaillierte Analyse der Auslesbarkeit für alle großen LLM-Parser.` | Reasoned Inference / Unsupported | *Over-scoped.* The parser evaluates standard HTML metrics but cannot simulate proprietary LLM proprietary crawler logic. | Needs wording remediation. |
-| **AEO-CLM-006** | `Validierung` | `maximal 100 HTTP-Anfragen pro Minute` | Tested Capability | Bounded to local test config file simulations. | Config `/config/rate_limit.json` |
+| **AEO-CLM-004** | `Öffentliche Projekteinblicke` | `Warnmeldung bei blockierten Hauptentitäten im lokalen Prüflauf.` | Observed Result | Based on crawler script identifying `Disallow` rules in robots.txt matching target canonical URLs. | Robots test `/tests/robots.test.js` |
+| **AEO-CLM-005** | `Öffentliche Projekteinblicke` | `Strukturierte Analyse von Metadaten und Lesbarkeits-Metriken im Parser.*` | Implemented Capability | Scoped to standard metadata checks and Flesch readability calculations. | Readability index calculation logic in `/src/utils/readability.js` |
+| **AEO-CLM-006** | `Validierung` | `restriktive Ratenbegrenzungen gemäß interner Konfigurationsvorgaben` | Implemented Safety Limit | Bounded to local config safety guidelines. | Config `/config/rate_limit.json` |
 
 ---
 

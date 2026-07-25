@@ -17,8 +17,9 @@ This matrix registers all live-page compliance and content verification checks p
 | **AEO-VFY-003** | Heading Structure | H2: Context | `## Ausgangssituation` | `Ausgangssituation` | **PASS** |
 | **AEO-VFY-004** | Heading Structure | H2: Validation | `## Validierung` | `Validierung` | **PASS** |
 | **AEO-VFY-005** | Heading Structure | H2: Risks | `## Risiken` | `Risiken` | **PASS** |
-| **AEO-VFY-006** | Claims & Bounding | Dashboard Metric | `Entity-Score: 95% (Pilotlauf)` | `Entity-Score: 95% (Pilotlauf)` | **PASS** |
-| **AEO-VFY-007** | Claims & Bounding | Readability Rating | `AEO-Auslesbarkeit: Hoch*` | `AEO-Auslesbarkeit: Hoch*` | **PASS** |
-| **AEO-VFY-008** | Claims & Bounding | Footnote rendering | `*Hinweis: Basierend auf Flesch-Readability-Index >60 im Pilotlauf.` | Footnote present under artifact figcaption. | **PASS** |
-| **AEO-VFY-009** | Wording Remediation | Results List | Scoped to `im Testlauf` / `im Rahmen der Testprojekte` | Correctly qualified to test run parameters. | **PASS** |
+| **AEO-VFY-006** | Claims & Bounding | Dashboard Metric | Qualified Entity-Score in nearby figcaption | Footnote present in figcaption. | **PASS** |
+| **AEO-VFY-007** | Claims & Bounding | Readability Rating | `Text-Lesbarkeit (interner Flesch-Wert)` | `Text-Lesbarkeit (interner Flesch-Wert)` served. | **PASS** |
+| **AEO-VFY-008** | Claims & Bounding | Footnote rendering | `*Hinweis zur Lesbarkeit: Die Bewertung basiert auf...` | Footnote present below comparison matrix. | **PASS** |
+| **AEO-VFY-009** | Wording Remediation | Results List | Scoped to `im Testlauf` / `im Rahmen lokaler Testläufe` | Correctly qualified to test run parameters. | **PASS** |
 | **AEO-VFY-010** | Prohibited Guarantees | Erkenntnisse prose | Replaced `garantieren` with `unterstützen` | Verb `unterstützen` successfully served. | **PASS** |
+| **AEO-VFY-011** | Stack Alignment | Astro Stack | Removed Astro from project markdown metadata | Astro stack references removed. | **PASS** |

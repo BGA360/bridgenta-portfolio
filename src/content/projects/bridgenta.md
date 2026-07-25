@@ -10,7 +10,6 @@ sidebar:
   technologies: "Lovable (AI Builder), Produktarchitektur, AI-assisted Development"
   devStack:
     - TypeScript
-    - Astro
     - Node.js
     - Static Analysis
     - GitHub Actions
@@ -335,7 +334,6 @@ Für die Weiterentwicklung der Plattform sind folgende Ausbaustufen geplant, um 
 - **Automatisierte Validierung**: Integration erweiterter Sicherheits- und Compliance-Prüfungen in die automatisierten Pipelines.
 
 ## Quellen und Referenzen
-*   **Astro Framework**: Offizielle Dokumentation des statischen Site-Builders. [Astro Docs](https://astro.build/)
 *   **Lovable AI Builder**: Spezifikation für KI-gestützte Entwicklungsabläufe. [Lovable Platform](https://lovable.dev/)
 *   **GitHub Actions**: Dokumentation zur kontinuierlichen Integration und CI/CD-Pipelines. [GitHub Actions Guide](https://docs.github.com/actions)
 *   **BridGenta Engineering Communication Constitution (BECC)**: Das zugrunde liegende Framework für technische Erklärbarkeit und Governance. [BECC Portal](https://github.com/BGA360/bridgenta-portfolio/blob/main/docs/engineering-communication/README.md)

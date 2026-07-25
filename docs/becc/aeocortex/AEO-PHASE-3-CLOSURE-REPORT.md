@@ -7,9 +7,9 @@ This report presents the final claim, accessibility, and publication-gate reconc
 ## 1. Reconciled Evidence & Bounded Claims
 
 All claims and metrics from `AEO-EVIDENCE-MAP.md` are resolved:
-* **Metric Bounding:** `Entity-Score: 95% (Pilotlauf)` and `AEO-Auslesbarkeit: Hoch*` are scoped to the pilot context, with footnotes linking to standard Flesch scoring metrics.
-* **Scope Reduction:** Over-scoped crawler simulator assertions were resolved by phrasing the Mitigations as `Strukturierte Analyse von Metadaten und Lesbarkeits-Metriken im Parser`.
-* **Results Bounded:** Wording in results lists was qualified to `im Testlauf des Build-Prozesses` and `im Rahmen der Testprojekte` to prevent unqualified public guarantees.
+* **Metric Bounding:** The `Entity-Score` (visualized in images) is qualified in the nearby figcaption as an internal local-test metric. `AEO-Auslesbarkeit` is renamed to a text-readability classification (`Text-Lesbarkeit`), with Flesch human readability limitations and threshold methodology explicitly defined.
+* **Scope Reduction:** Over-scoped crawler simulator assertions were resolved by phrasing the Mitigations as `Strukturierte Analyse von Metadaten und Lesbarkeits-Metriken im Parser.*`.
+* **Results Bounded:** Wording in results lists was qualified to `im Testlauf des Build-Prozesses` and `im Rahmen lokaler Testläufe` to prevent unqualified public guarantees.
 
 ---
 
