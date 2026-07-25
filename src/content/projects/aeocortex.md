@@ -12,7 +12,6 @@ sidebar:
     - JavaScript
     - Node.js
     - Cheerio
-    - Astro
     - JSON-LD
     - Schema.org
   aiBuilders:
@@ -22,7 +21,7 @@ sidebar:
 ---
 
 ## Kurzfassung
-AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung von Suchmechanismen in KI-gestützten Systemen. Der Fokus liegt auf der Answer Engine Optimization (AEO) und der Generative Engine Optimization (GEO). Ziel des Projekts ist es, Web-Inhalte systematisch auf Entity-Klarheit, strukturierte Daten und Lesbarkeit hin zu analysieren. Dadurch soll die Sichtbarkeit und korrekte Zitierbarkeit von Webinhalten in modernen KI-Suchmaschinen wie Perplexity, ChatGPT Search und Google Gemini bewertet und optimiert werden.
+AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung von Suchmechanismen in KI-gestützten Systemen. Der Fokus liegt auf der Answer Engine Optimization (AEO) und der Generative Engine Optimization (GEO). Ziel des Projekts ist es, Web-Inhalte systematisch auf Entity-Klarheit, strukturierte Daten und Lesbarkeit hin zu analysieren. Dadurch soll die technische Auslesbarkeit von Webinhalten für KI-Suchmaschinen auf Basis definierter Kriterien im Rahmen einer Testumgebung analysiert und bewertet werden.
 
 ---
 
@@ -37,7 +36,7 @@ Klassische Suchmaschinen bewerten Webseiten vorwiegend nach Keywords und Backlin
 ---
 
 ## Problemstellung
-Klassischen Webseiten fehlt oft die semantische Tiefe, die für das fehlerfreie Parsing durch LLM-Crawler erforderlich ist. Ohne strukturierte Validierung kommt es häufig zu unentdeckten Fehlern in der JSON-LD-Struktur, robots.txt-Konflikten oder unklaren Entity-Beziehungen. Dies führt dazu, dass generative Suchmaschinen die Inhalte nicht korrekt einordnen können und sie folglich nicht in ihren Antworten zitieren. Es fehlt eine automatisierte Testinfrastruktur, um die Auslesbarkeit von Webinhalten für KI-Systeme zu messen und zu bewerten.
+Klassischen Webseiten fehlt oft die semantische Tiefe, die für das fehlerfreie Parsing durch LLM-Crawler erforderlich ist. Ohne strukturierte Validierung kommt es häufig zu unentdeckten Fehlern in der JSON-LD-Struktur, robots.txt-Konflikten oder unklaren Entity-Beziehungen. Dies kann dazu führen, dass generative Suchmaschinen die Inhalte nicht korrekt einordnen können. Im Rahmen dieses Projekts wird eine automatisierte Testumgebung erprobt, um die Übereinstimmung mit bekannten Crawler-Spezifikationen systematisch zu prüfen.
 
 ---
 
@@ -55,16 +54,16 @@ Das Projekt unterliegt logischen und technischen Rahmenbedingungen, die den Anal
 ---
 
 ## Technische Überlegungen
-Das Kernkonzept von AEOcortex beruht auf der Annahme, dass KI-Modelle bei der Informationssuche deterministischen Pfaden folgen. Anstatt darauf zu hoffen, dass ein LLM unstrukturierte HTML-Seiten richtig interpretiert, deklarieren wir Datenmodelle explizit. Das Tool prüft Webseiten daher gezielt auf maschinenlesbare Schnittstellen (JSON-LD, Dublin Core) und berechnet die Verständlichkeit des Fließtexts anhand linguistischer Heuristiken.
+Das Kernkonzept von AEOcortex beruht auf der Arbeitshypothese, dass strukturierte Datenmodelle und klar segmentierte Texte die maschinelle Verarbeitung erleichtern können. Während die tatsächlichen Such- und Zitiermechanismen externer KI-Plattformen hochgradig variabel und nicht-deterministisch sind, zielt unser interner Analyseansatz darauf ab, definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse zu bewerten. Hierzu werden Webseiten lokal auf bekannte Schnittstellen (JSON-LD, Dublin Core) und syntaktische Spezifikationen hin geprüft.
 
 ---
 
 ## Architektur
-Die Plattform ist modular aufgebaut, um Analyse-Logik und Präsentationsschicht strikt voneinander zu trennen. Ein Node.js-basierter Parser lädt das HTML der Zielwebseite, extrahiert die semantischen Metadaten und führt strukturierte Validierungsprüfungen durch. Die Ergebnisse werden in einer lokalen JSON-Struktur abgelegt, welche anschließend von Astro eingelesen wird, um das statische Berichts-Dashboard zu generieren.
+Die Plattform ist modular aufgebaut, um Analyse-Logik und Präsentationsschicht strikt voneinander zu trennen. Ein Node.js-basierter Parser lädt das HTML der Zielwebseite, extrahiert die semantischen Metadaten und führt strukturierte Validierungsprüfungen durch. Die Ergebnisse werden in einer lokalen JSON-Struktur abgelegt, welche anschließend von der Präsentationsschicht eingelesen wird, um das statische Berichts-Dashboard zu generieren.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Die Trennung von Parser-Logik (Node.js/Cheerio) und Präsentationsschicht (Astro) ermöglicht eine performante, statische Berichtsgenerierung ohne serverseitigen Overhead.</p>
+  <p class="engineering-insight__text">Die Trennung von Parser-Logik (Node.js/Cheerio) und Präsentationsschicht ermöglicht eine performante, statische Berichtsgenerierung ohne serverseitigen Overhead.</p>
 </div>
 
 ---
@@ -100,7 +99,7 @@ Im Rahmen des Projekts wurden wesentliche Designentscheidungen getroffen, um die
 ---
 
 ## Umsetzung
-Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nutzt Cheerio zur Extraktion der Metadaten und prüft diese gegen die offiziellen Schema.org-Spezifikationen. Ein weiteres Modul berechnet die Lesbarkeit von Texten mithilfe von Algorithmen wie dem Flesch-Reading-Ease-Index, um die Verständlichkeit für LLM-Parsing-Prozesse zu bewerten.
+Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nutzt Cheerio zur Extraktion der Metadaten und prüft diese gegen die offiziellen Schema.org-Spezifikationen. Ein weiteres Modul berechnet die Lesbarkeit von Texten mithilfe von Algorithmen wie dem Flesch-Reading-Ease-Index, um definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse zu bewerten.
 
 ---
 
@@ -113,7 +112,7 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 
 <figure>
   <img src="/images/aeocortex-portfolio/AEO-PA02-Question-Portfolio.webp" alt="AEOcortex Fragenportfolio und Beobachtungsstruktur der Suchanfragen" loading="lazy" width="1593" height="900" />
-  <figcaption><strong>Artefakt 2: Fragenportfolio und Beobachtungsstruktur</strong> – Zweck: Darstellung des Fragenmanagements, der Quellen-Zuordnung und der protokollierten Antwort-Beobachtungen.</figcaption>
+  <figcaption><strong>Artefakt 2: Fragenportfolio und Beobachtungsstruktur</strong> – Zweck: Darstellung des Fragenmanagements, der Quellen-Zuordnung und der protokollierten Antwort-Beobachtungen.<br /><small>*Hinweis zur Metrik: Der im Interface visualisierte „Entity-Score“ (z. B. 95 %) ist eine rein interne Metrik der lokalen Testumgebung zur Bewertung der Metadatendichte. Er stellt keine Erfolgs- oder Platzierungswahrscheinlichkeit in externen KI-Suchmaschinen dar.</small></figcaption>
 </figure>
 
 <figure>
@@ -122,7 +121,7 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 </figure>
 
 <div class="architecture-note">
-  <strong>Vergleichsmatrix (Ergebnis-Nachweis)</strong> – Zweck: Vergleich manueller Prüfungen mit den automatisierten Analyseergebnissen der Testumgebung.
+  <strong>Vergleichsmatrix (Fähigkeits-Nachweis)</strong> – Zweck: Gegenüberstellung manueller Stichproben und der in der Testumgebung automatisierten Prüfschritte.
 </div>
 
 <div class="evidence-grid">
@@ -148,7 +147,7 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">Sofortige Warnmeldung bei blockierten Hauptentitäten.</p>
+        <p class="evidence-card__value">Warnmeldung bei blockierten Hauptentitäten im lokalen Prüflauf.</p>
       </div>
     </div>
   </div>
@@ -167,7 +166,7 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
   </div>
 </div>
 
-<p class="footnote">*Hinweis: Basierend auf Flesch-Readability-Index >60 im Pilotlauf.</p>
+<p class="footnote">*Hinweis zur Lesbarkeit: Die Bewertung basiert auf der schulintegrativen Klassifizierung des Flesch-Reading-Ease-Index (Schwellenwert >60 für Standardlesbarkeit). Dieser Wert ist ein rein statistisches Maß für menschliche Lesbarkeit und misst nicht die tatsächliche maschinelle Verarbeitung, Indizierung, Zitierung oder Sichtbarkeit in externen Systemen.</p>
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
@@ -177,22 +176,22 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 ---
 
 ## Validierung
-*(Verweis: Assessment AC-001, Finding FIN-AC-001, Arbeitsauftrag RM-001)*
+*(Interner Qualitätssicherungs-Verweis: Assessment AC-001, Finding FIN-AC-001, Arbeitsauftrag RM-001)*
 
 Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Parser erfolgt auf Basis vordefinierter Testverfahren:
 - **Automatisierte Schema-Prüfung**: JSON-LD-Strukturen werden gegen die offiziellen Schema.org-Spezifikationen abgeglichen, um Syntaxfehler und fehlende Relationen zu erkennen.
-- **Lesbarkeits-Kalkulation**: Textinhalte werden über standardisierte Metriken (wie den Flesch-Reading-Ease-Index) auf ihre Eindeutigkeit für LLM-Crawler hin analysiert.
+- **Lesbarkeits-Kalkulation**: Textinhalte werden über standardisierte Metriken (wie den Flesch-Reading-Ease-Index) auf definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse hin untersucht.
 
 ### Testparameter und Umgebung
 * **Mock-Dokumente**: Für Tests werden präparierte HTML-Dokumente mit typischen Markup-Fehlern (z. B. unvollständige Entity-Verschachtelungen) verwendet, um die Erkennungsgenauigkeit des Parsers zu validieren.
-* **Rate-Limit-Checks**: Zugriffssimulationen auf Zielwebseiten erfolgen mit Ratenbegrenzungen (maximal 100 HTTP-Anfragen pro Minute), um die Stabilität bei Webserver-Restriktionen zu testen.
+* **Rate-Limit-Checks**: Zugriffssimulationen auf Zielwebseiten erfolgen mit restriktiven Ratenbegrenzungen gemäß interner Konfigurationsvorgaben, um die Stabilität bei Webserver-Restriktionen im Testlauf zu untersuchen.
 
 ---
 
 ## Ergebnisse
 - **Entity-Prüfung**: Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Testlauf des Build-Prozesses.
 - **Lesbarkeits-Indikator**: Heuristische Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle im Testlauf.
-- **Prozess-Optimierung**: Beseitigung identifizierter struktureller Crawling-Barrieren im Rahmen der Testprojekte.
+- **Prozess-Optimierung**: Identifizierung und Behebung potenzieller struktureller Crawling-Barrieren im Rahmen lokaler Testläufe.
 
 ---
 
@@ -202,7 +201,9 @@ Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generative
 ---
 
 ## Risiken
-*(Verweis: Assessment AC-001, Finding FIN-AC-002, Arbeitsauftrag RM-001)*
+*(Interner Qualitätssicherungs-Verweis: Assessment AC-001, Finding FIN-AC-002, Arbeitsauftrag RM-001)*
+
+Die Bewertung erfolgt auf Basis einer vereinfachten zweidimensionalen Risikomatrix. Die Schadensklasse (Schadensausmaß bei Eintritt: Hoch/Mittel/Gering) und die Eintrittswahrscheinlichkeit (Eintrittschance innerhalb eines Betriebsjahres: Hoch/Mittel/Gering) bestimmen gemeinsam die Priorisierung der Gegenmaßnahmen.
 
 Die automatisierte Analyse von Webinhalten für KI-Suchmaschinen birgt technische und operative Risiken, die durch gezielte Absicherungsmaßnahmen (Mitigations) minimiert werden:
 
@@ -218,15 +219,14 @@ Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte dir
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Die Integration semantischer Prüfungen in den CI/CD-Prozess verhindert, dass fehlerhafte Metadaten oder Crawling-Barrieren in die Produktionsumgebung gelangen.</p>
+  <p class="engineering-insight__text">Die Integration semantischer Prüfungen in den CI/CD-Prozess soll dazu beitragen, das Einschleusen fehlerhafter Metadaten oder potenzieller Crawling-Barrieren in die Produktionsumgebung zu minimieren.</p>
 </div>
 
 ---
 
 ## Quellen und Referenzen
-*(Verweis: Assessment AC-001, Finding FIN-AC-003, Arbeitsauftrag RM-001)*
+*(Interner Qualitätssicherungs-Verweis: Assessment AC-001, Finding FIN-AC-003, Arbeitsauftrag RM-001)*
 
-* **Astro Static Site Generator**: [Astro-Dokumentation](https://docs.astro.build/) — Framework für das Berichts-Dashboard.
 * **Cheerio HTML Parser**: [Cheerio API-Referenz](https://cheerio.js.org/) — Kernbibliothek für schnelles HTML-Parsing im Speicher.
 * **Schema.org Spezifikationen**: [Schema.org-Standards](https://schema.org/) — Referenz für strukturierte Metadaten.
-* **BECC-Bewertungsrichtlinien**: Referenz auf die [BECC-Matrix](https://github.com/BGA360/bridgenta-portfolio/blob/main/docs/engineering-communication/stewardship/BECC-ASSESSMENT-MATRIX.md) für Konformitätsbewertungen im Repository.
+* **BECC-Bewertungsrichtlinien**: Interne Referenz auf die [BECC-Matrix](https://github.com/BGA360/bridgenta-portfolio/blob/main/docs/engineering-communication/stewardship/BECC-ASSESSMENT-MATRIX.md) für Konformitätsbewertungen im Repository.

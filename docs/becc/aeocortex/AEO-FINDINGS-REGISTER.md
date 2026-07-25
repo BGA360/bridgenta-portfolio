@@ -14,6 +14,10 @@ This register logs all baseline defects and compliance issues identified during 
 | **AEO-FIND-004** | Claims & Evidence | `Entity-Score: 95%` is stated without context. | Metric lacks test-run qualification. | **High** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Closed** |
 | **AEO-FIND-005** | Terminology / Claims | Use of prohibited guarantee verb `garantieren` on line 214. | Violates prohibited guarantees policy. | **High** | `BECC-PUBLIC-TERMINOLOGY-POLICY.md` Section 3 | **Closed** |
 | **AEO-FIND-006** | Claims & Evidence | `Detaillierte Analyse der Auslesbarkeit für alle großen LLM-Parser` is over-scoped. | Tool cannot simulate proprietary crawl logics. | **High** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Closed** |
+| **AEO-FIND-007** | Claims & Bounding | Deterministic path claim for external AI engines. | Implies external search follows static deterministic paths. | **High** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Closed** |
+| **AEO-FIND-008** | Readability | Readability classified as AEO-Auslesbarkeit without Flesch limitations. | Flesch index lacks qualification on machine indexing. | **High** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Closed** |
+| **AEO-FIND-009** | Claims & Bounding | Hardcoded `100 HTTP-Anfragen` limit lacks context. | Numerical claim requires internal spec bounding. | **Medium** | `BECC-PUBLIC-CLAIM-EVIDENCE-TEMPLATE.md` Section 2 | **Closed** |
+| **AEO-FIND-010** | Architecture / Stack | Astro listed in project stack of AEOcortex and BridGenta. | Astro is publication infrastructure, not project stack. | **High** | `BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.0.md` Section 2 | **Closed** |
 
 ---
 

@@ -20,9 +20,10 @@ The live page served at [https://bridgenta.de/project-aeocortex/](https://bridge
 * **Headers Check:** Verified HTTP status is `200 OK`.
 * **Content Quality Audit:** All H2 headings (e.g. `Kurzfassung`, `Ausgangssituation`, `Validierung`, `Risiken`) are served in German.
 * **Evidence Scoping Verification:**
-  - `Entity-Score: 95% (Pilotlauf)` renders in the ASCII mock card.
-  - Footnote `*Hinweis: Basierend auf Flesch-Readability-Index >60 im Pilotlauf.` is displayed correctly.
-  - No occurrences of prohibited guarantee verbs (`garantieren` removed).
+  - `Entity-Score` is qualified in the nearby figcaption as a local-test metric.
+  - Footnote `*Hinweis zur Lesbarkeit: Die Bewertung basiert auf...` is displayed correctly.
+  - Astro stack references removed from all project files (`aeocortex.md` and `bridgenta.md`).
+  - No occurrences of prohibited guarantee verbs.
 
 ---
 
