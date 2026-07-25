@@ -126,4 +126,10 @@ The project case study successfully reconciles all steps from assessment kickoff
   - **Modified Files:** `src/content/projects/aeocortex.md`, `docs/becc/aeocortex/AEO-EVIDENCE-MAP.md`, `docs/becc/aeocortex/AEO-REFERENCE-MATURITY-CHANGE-REGISTER.md`, `docs/becc/aeocortex/AEO-FINDINGS-REGISTER.md`, `docs/becc/aeocortex/AEO-PHASE-5-INDEPENDENT-PUBLIC-CERTIFICATION.md`.
   - **Reason:** Resolved remaining wording gap `AEO-OBS-001`.
   - **PR:** #193
+  - **Deployment Status:** Live and verified.
+- **Phase 5.2 Final Governance Closure & Project Seal:**
+  - **Date:** 2026-07-25
+  - **Modified Files:** `docs/becc/aeocortex/AEO-EVIDENCE-MAP.md`, `docs/becc/aeocortex/AEO-REFERENCE-MATURITY-CHANGE-REGISTER.md`, `docs/becc/aeocortex/AEO-PHASE-5-INDEPENDENT-PUBLIC-CERTIFICATION.md`.
+  - **Reason:** Removed remaining comparative wording risk (replaced "improves compliance" with "is designed to align with") in boundaries and formally sealed the certification lifecycle.
+  - **PR:** #194
   - **Deployment Status:** Pending merge and deploy.
