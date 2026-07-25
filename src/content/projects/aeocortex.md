@@ -107,39 +107,22 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 ## Öffentliche Projekteinblicke
 
 <figure>
-  <pre><code>
-+-----------------------------------+
-|             AEOcortex             |
-|                                   |
-|   [ URL-Analyse: bridgenta.de ]   |
-|   > Entity-Score: 95% (Pilotlauf) |
-|   > AEO-Auslesbarkeit: Hoch*      |
-|                                   |
-|   Empfehlungen:                   |
-|   * robots.txt Direktive korrigiert|
-|   * Dublin-Core Tags hinzufügen   |
-+-----------------------------------+
-  </code></pre>
-  <figcaption><strong>Artefakt 1: Konzeptionelles Berichts-Layout</strong> – Zweck: Visuelle Darstellung der Analyseergebnisse und der automatischen Optimierungsempfehlungen.</figcaption>
+  <img src="/images/aeocortex-portfolio/AEO-PA01-Entity-Graph.webp" alt="AEOcortex Entity-Graph zur Visualisierung semantischer Entitäten" loading="lazy" width="1890" height="966" />
+  <figcaption><strong>Artefakt 1: Entity-Graph und Beziehungsanalyse</strong> – Zweck: Visuelle Darstellung der erfassten Entitäten und ihrer Beziehungen sowie erkannte Themen, Beziehungen und kontextuelle Verbindungen innerhalb eines analysierten Projekts.</figcaption>
 </figure>
-<p class="footnote">*Hinweis: Basierend auf Flesch-Readability-Index >60 im Pilotlauf.</p>
 
 <figure>
+  <img src="/images/aeocortex-portfolio/AEO-PA02-Question-Portfolio.webp" alt="AEOcortex Fragenportfolio und Beobachtungsstruktur der Suchanfragen" loading="lazy" width="1593" height="900" />
+  <figcaption><strong>Artefakt 2: Fragenportfolio und Beobachtungsstruktur</strong> – Zweck: Darstellung des Fragenmanagements, der Quellen-Zuordnung und der protokollierten Antwort-Beobachtungen.</figcaption>
+</figure>
 
-```mermaid
-graph LR
-    HTML[Webseiten-HTML] --> Parser[HTML-Parser]
-    Parser --> SchemaCheck[Schema- & Entity-Prüfung]
-    Parser --> TextCheck[Lesbarkeits-Kalkulation]
-    SchemaCheck --> Report[Berichts-Generierung]
-    TextCheck --> Report
-```
-
-  <figcaption><strong>Artefakt 2: High-Level Ablaufdiagramm</strong> – Zweck: Veranschaulichung des Datenflusses von der HTML-Eingabe bis zur Berichtsgenerierung.</figcaption>
+<figure>
+  <img src="/images/aeocortex-portfolio/AEO-PA03-Measurement-Workflow.webp" alt="AEOcortex Mess- und Analyseworkflow von der Projekteinrichtung bis zur Ergebnisbereitstellung" loading="lazy" width="1672" height="941" />
+  <figcaption><strong>Artefakt 3: Mess- und Analyseworkflow</strong> – Zweck: Veranschaulichung des Datenflusses von der Projekteinrichtung über kontrollierte Messungen und interne Bewertung bis zur Ergebnisbereitstellung.</figcaption>
 </figure>
 
 <div class="architecture-note">
-  <strong>Artefakt 3: Ergebnis-Nachweis (Validierungs-Matrix)</strong> – Zweck: Vergleich der Fehlererkennungsrate vor und nach dem Einsatz der AEOcortex-Module.
+  <strong>Vergleichsmatrix (Ergebnis-Nachweis)</strong> – Zweck: Vergleich manueller Prüfungen mit den automatisierten Analyseergebnissen der Testumgebung.
 </div>
 
 <div class="evidence-grid">
@@ -178,11 +161,13 @@ graph LR
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">Strukturierte Analyse von Metadaten und Lesbarkeits-Metriken im Parser.</p>
+        <p class="evidence-card__value">Strukturierte Analyse von Metadaten und Lesbarkeits-Metriken im Parser.*</p>
       </div>
     </div>
   </div>
 </div>
+
+<p class="footnote">*Hinweis: Basierend auf Flesch-Readability-Index >60 im Pilotlauf.</p>
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
