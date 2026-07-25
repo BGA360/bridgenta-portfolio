@@ -5,9 +5,9 @@ This plan outlines the controlled merge, production deployment, and live-page ve
 ---
 
 ## 1. Controlled Merge Strategy
-* **Branch Source:** `feature/prr-constitutional-audit`
+* **Branch Source:** `feature/aeocortex-visual-integration`
 * **Branch Target:** `main`
-* **Pull Request:** [#185](https://github.com/BGA360/bridgenta-portfolio/pull/185)
+* **Pull Request:** [#191](https://github.com/BGA360/bridgenta-portfolio/pull/191)
 * **Preconditions for Merge:**
   1. Automated test runs (lints, link checks) must pass.
   2. The Pull Request must receive human approval.
@@ -28,5 +28,5 @@ This plan outlines the controlled merge, production deployment, and live-page ve
 Once deployed, the following live checks must be executed:
 * **HTTP Status Check:** Confirm the page returns `200 OK` at `https://bridgenta.de/project-aeocortex/`.
 * **Metadata & Headings Audit:** Verify H2 headings are successfully served in German (e.g. `Kurzfassung`, `Ausgangssituation`).
-* **Evidence Scoping Audit:** Verify the bounded `Entity-Score: 95% (Pilotlauf)` and the Flesch index footnote render correctly.
+* **Evidence Scoping Audit:** Verify the qualified Entity-Score in figcaption, the Flesch index footnote, and the removal of Astro stack references.
 * **No Unresolved Warnings:** Inspect the live browser console for any Javascript or asset load errors.

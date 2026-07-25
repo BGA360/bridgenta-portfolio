@@ -45,6 +45,7 @@ The update refines all claims, scores, and classifications to clearly present th
 - **AEO-READINESS-RECORD.md:** Updated eligibility details.
 - **AEO-REFERENCE-MATURITY-CHANGE-REGISTER.md:** Documented change IDs (ARM-011 to ARM-018).
 - **AEO-PHASE-3-CLOSURE-REPORT.md:** Reconciled final metrics.
+- **AEO-PHASE-4-DEPLOYMENT-PLAN.md:** Updated target PR and verification parameters.
 - **AEO-PHASE-4-PRODUCTION-VERIFICATION-REPORT.md:** Updated verification live audits.
 - **AEO-PRODUCTION-VERIFICATION-MATRIX.md:** Updated verification ledger checks.
 
