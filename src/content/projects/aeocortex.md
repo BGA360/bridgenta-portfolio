@@ -36,7 +36,7 @@ Klassische Suchmaschinen bewerten Webseiten vorwiegend nach Kriterien wie Keywor
 ---
 
 ## Problemstellung
-Bei Webseiten ohne strukturierte Metadaten treten im HTML-Markup häufig technische Unklarheiten auf. Ohne eine strukturierte Validierung bleiben syntaktische Fehler in der JSON-LD-Struktur, Abweichungen in den robots.txt-Pfadvorgaben oder unvollständige Beziehungen zwischen Entitäten oft unentdeckt. Im Rahmen dieses Projekts wird eine automatisierte Testumgebung erprobt, um solche Fehler und Abweichungen systematisch zu identifizieren.
+Bei Webseiten ohne strukturierte Metadaten können im HTML-Markup technische Unklarheiten auftreten. Ohne eine strukturierte Validierung können syntaktische Fehler in JSON-LD-Strukturen, Abweichungen in robots.txt-Pfadvorgaben oder unvollständige Beziehungen zwischen Entitäten unentdeckt bleiben. Im Rahmen dieses Projekts wird eine automatisierte Testumgebung erprobt, um solche Fehler und Abweichungen systematisch zu identifizieren.
 
 ---
 
@@ -54,7 +54,7 @@ Das Projekt unterliegt logischen und technischen Rahmenbedingungen, die den Anal
 ---
 
 ## Technische Überlegungen
-Das Kernkonzept von AEOcortex beruht auf der Arbeitshypothese, dass strukturierte Datenmodelle und klar segmentierte Texte die maschinelle Verarbeitung erleichtern können. Während die tatsächlichen Such- und Zitiermechanismen externer KI-Plattformen hochgradig variabel und nicht-deterministisch sind, zielt unser interner Analyseansatz darauf ab, definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse zu bewerten. Hierzu werden Webseiten lokal auf bekannte Datenformate und Metadaten-Standards (JSON-LD, Dublin Core) sowie dokumentierte technische Kriterien und öffentlich deklarierte Crawler-Regeln hin geprüft.
+Das Kernkonzept von AEOcortex beruht auf der Arbeitshypothese, dass strukturierte Datenmodelle und klar segmentierte Texte die maschinelle Verarbeitung erleichtern können. Während die tatsächlichen Such- und Zitiermechanismen externer KI-Plattformen hochgradig variabel und nicht-deterministisch sind, zielt unser interner Analyseansatz darauf ab, definierte Struktur- und Metadatenmerkmale sowie statistische Merkmale der menschlichen Textlesbarkeit zu bewerten. Hierzu werden Webseiten lokal auf bekannte Datenformate und Metadaten-Standards (JSON-LD, Dublin Core) sowie dokumentierte technische Kriterien und öffentlich deklarierte Crawler-Regeln hin geprüft.
 
 ---
 
@@ -99,7 +99,7 @@ Im Rahmen des Projekts wurden wesentliche Designentscheidungen getroffen, um die
 ---
 
 ## Umsetzung
-Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nutzt Cheerio zur Extraktion der Metadaten und prüft diese gegen die offiziellen Spezifikationen. Ein weiteres Modul bewertet die menschliche Lesbarkeit von Texten mithilfe des Flesch-Reading-Ease-Index, um neben den strukturellen Metadaten auch statistische Merkmale der menschlichen Textlesbarkeit als zusätzliche Heuristik für die Analyse zu erfassen.
+Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nutzt Cheerio zur Extraktion der Metadaten und prüft ausgewählte Merkmale der extrahierten JSON-LD-Strukturen anhand dokumentierter Schema.org-Kriterien. Ein weiteres Modul bewertet die menschliche Lesbarkeit von Texten mithilfe des Flesch-Reading-Ease-Index, um neben den strukturellen Metadaten auch statistische Merkmale der menschlichen Textlesbarkeit als zusätzliche Heuristik für die Analyse zu erfassen.
 
 ---
 
@@ -134,7 +134,7 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">Automatisierter syntaktischer Abgleich extrahierter JSON-LD-Strukturen im Testlauf gegen Schema-Spezifikationen.</p>
+        <p class="evidence-card__value">Automatisierter syntaktischer Abgleich extrahierter JSON-LD-Strukturen im Testlauf gegen dokumentierte Schema.org-Kriterien.</p>
       </div>
     </div>
   </div>
@@ -170,7 +170,7 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">Visualisierungen komplexer Beziehungen zwischen Entitäten und strukturierte Datenvergleiche erleichtern die Fehleridentifikation in der Metadatenstruktur erheblich.</p>
+  <p class="engineering-insight__text">Visualisierungen komplexer Beziehungen zwischen Entitäten und strukturierte Datenvergleiche unterstützen die Fehleridentifikation in der Metadatenstruktur.</p>
 </div>
 
 ---
@@ -178,8 +178,8 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 ## Validierung
 
 Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Parser erfolgt auf Basis vordefinierter Testverfahren:
-- **Automatisierte Schema-Prüfung**: JSON-LD-Strukturen werden gegen die offiziellen Spezifikationen abgeglichen, um Syntaxfehler und fehlende Relationen zu erkennen.
-- **Lesbarkeits-Kalkulation**: Textinhalte werden über standardisierte Metriken (wie den Flesch-Reading-Ease-Index) auf definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse hin untersucht.
+- **Automatisierte Schema-Prüfung**: JSON-LD-Strukturen werden anhand ausgewählter dokumentierter Schema.org-Kriterien auf Syntaxfehler und fehlende Relationen geprüft.
+- **Lesbarkeits-Kalkulation**: Textinhalte werden mithilfe des Flesch-Reading-Ease-Index auf statistische Merkmale der menschlichen Lesbarkeit untersucht.
 
 ### Testparameter und Umgebung
 * **Mock-Dokumente**: Für Tests werden präparierte HTML-Dokumente mit typischen Markup-Fehlern (z. B. unvollständige Entity-Verschachtelungen) verwendet, um die Erkennungsgenauigkeit des Parsers zu validieren.

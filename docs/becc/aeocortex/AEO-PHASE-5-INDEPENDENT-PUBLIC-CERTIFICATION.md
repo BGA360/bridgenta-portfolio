@@ -41,7 +41,7 @@ Implemented capability ≠ Demonstrated external AEO effectiveness
 
 - **Core Wording:** The page has been successfully remediated to remove absolute guarantees. Wording presents crawler processing and indexing limits as hypotheses rather than demonstrated external results.
 - **Deterministic Paths:** Replaced claims of deterministic external AI citation behavior with a working hypothesis framework, acknowledging that external platform search and citation behaviors are variable and non-deterministic.
-- **Signal Evaluation:** Avoids claims of machine "understanding", preferring: *"definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse bewerten"*.
+- **Signal Evaluation:** Avoids claims of machine "understanding", preferring: *"definierte Struktur- und Metadatenmerkmale sowie statistische Merkmale der menschlichen Textlesbarkeit zu bewerten"*.
 - **HTTP Rate Limit:** The hardcoded `100 HTTP-Anfragen` limit is replaced with non-numerical bounded safety limit wording: *"restriktive Ratenbegrenzungen gemäß interner Konfigurationsvorgaben"*.
 
 ---
