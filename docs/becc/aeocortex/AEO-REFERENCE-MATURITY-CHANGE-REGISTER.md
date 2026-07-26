@@ -29,4 +29,6 @@ This register logs all modifications, wording replacements, and corrections appl
 | **ARM-018** | Phase 2 | Risiken | (None) | Added two-dimensional risk matrix rubric explanation | Rubric | Add risk impact and likelihood methodology. | Yes |
 | **ARM-019** | Phase 5.1 | Problem / Technik | `bekannten Crawler-Spezifikationen` / `syntaktische Spezifikationen` | `dokumentierten technischen Kriterien und öffentlich deklarierten Crawler-Regeln` | Wording | Remediation of remaining wording gap (AEO-OBS-001) for narrow evidence bounding. | Yes |
 | **ARM-020** | Phase 5.2 | Evidence Map | `improves compliance...` | `is designed to align with...` | Wording | Replaced "improves compliance" to eliminate comparative wording risk in boundaries. | Yes |
+| **ARM-021** | Phase 5.4 | Multiple Sections | Various public texts (overgeneralizations, requirements, Flesch metrics, references, and headings) | Corrected to be evidence-aligned, German proper terminology, and removed public QA notes. Included "Engineering Insight" -> "Technische Erkenntnis" translation. | Wording / Terminology | Post-seal claim-integrity remediation: consistent German public terminology, B2-C1 readability, and removal of opaque public notes. Visual structure unchanged, project stack unchanged. | Yes |
+
 

@@ -4,7 +4,8 @@ This report documents the claim-integrity adjustments applied to the AEOcortex c
 
 ## 1. Context and Purpose
 During the visual integration phase of the four final approved WebP assets, an audit was conducted to align the page's technical wording with the **Core Evidence Principle**:
-$$\text{Implemented capability} \neq \text{Demonstrated external AEO effectiveness}$$
+Implemented capability ≠ Demonstrated external AEO effectiveness
+
 
 The update refines all claims, scores, and classifications to clearly present them as local test-run observations, internal heuristics, or working hypotheses, rather than proven real-world external effectiveness.
 
