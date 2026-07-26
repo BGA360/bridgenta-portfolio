@@ -21,22 +21,22 @@ sidebar:
 ---
 
 ## Kurzfassung
-AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung von Suchmechanismen in KI-gestützten Systemen. Der Fokus liegt auf der Answer Engine Optimization (AEO) und der Generative Engine Optimization (GEO). Ziel des Projekts ist es, Web-Inhalte systematisch auf Entity-Klarheit, strukturierte Daten und Lesbarkeit hin zu analysieren. Dadurch soll die technische Auslesbarkeit von Webinhalten für KI-Suchmaschinen auf Basis definierter Kriterien im Rahmen einer Testumgebung analysiert und bewertet werden.
+AEOcortex ist ein persönliches Entwicklungsprojekt zur praktischen Untersuchung von Suchmechanismen in KI-gestützten Systemen. Der Fokus liegt auf der Answer Engine Optimization (AEO) und der Generative Engine Optimization (GEO). Ziel des Projekts ist es, Web-Inhalte systematisch hinsichtlich der eindeutigen Deklaration von Entitäten, strukturierter Daten und menschlicher Lesbarkeit zu analysieren. Dadurch soll die technische Auslesbarkeit von Webinhalten für KI-Suchmaschinen auf Basis definierter Kriterien im Rahmen einer Testumgebung analysiert und bewertet werden.
 
 ---
 
 ## Ausgangssituation
-Klassische Suchmaschinen bewerten Webseiten vorwiegend nach Keywords und Backlinks. Moderne KI-Suchmaschinen und Large Language Models (LLMs) interpretieren Webinhalte hingegen kontextuell und greifen auf strukturierte Wissensgraphen zurück. Für Betreiber von Webseiten bedeutet dieser Wandel, dass reine Textoptimierung nicht mehr ausreicht, um in KI-generierten Antworten als Quelle aufzutauchen. Es bedarf einer präzisen Deklaration von Entitäten und klaren logischen Bezügen im HTML-Markup.
+Klassische Suchmaschinen bewerten Webseiten vorwiegend nach Kriterien wie Keywords und Backlinks. KI-gestützte Such- und Antwortsysteme können Webinhalte kontextuell auswerten und dabei unter anderem strukturierte Daten, Entitäten und semantische Beziehungen berücksichtigen. Neben der Textgestaltung gewinnt die Deklaration von Beziehungen zwischen Entitäten im HTML-Markup an Bedeutung, um Inhalte für automatisierte technische Analyseprozesse klarer zu strukturieren.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Der Übergang von klassischen Suchmaschinen zu generativen Antwortdiensten erfordert eine Verschiebung des Fokus von Keywords hin zur eindeutigen Deklaration semantischer Entitäten im Code.</p>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
+  <p class="engineering-insight__text">Der Übergang von klassischen Suchmaschinen zu generativen Antwortdiensten legt nahe, den Fokus von Keywords hin zur Deklaration von Beziehungen zwischen Entitäten im Code zu erweitern.</p>
 </div>
 
 ---
 
 ## Problemstellung
-Klassischen Webseiten fehlt oft die semantische Tiefe, die für das fehlerfreie Parsing durch LLM-Crawler erforderlich ist. Ohne strukturierte Validierung kommt es häufig zu unentdeckten Fehlern in der JSON-LD-Struktur, robots.txt-Konflikten oder unklaren Entity-Beziehungen. Dies kann dazu führen, dass generative Suchmaschinen die Inhalte nicht korrekt einordnen können. Im Rahmen dieses Projekts wird eine automatisierte Testumgebung erprobt, um die Übereinstimmung mit dokumentierten technischen Kriterien und öffentlich deklarierten Crawler-Regeln systematisch zu prüfen.
+Bei Webseiten ohne strukturierte Metadaten treten im HTML-Markup häufig technische Unklarheiten auf. Ohne eine strukturierte Validierung bleiben syntaktische Fehler in der JSON-LD-Struktur, Abweichungen in den robots.txt-Pfadvorgaben oder unvollständige Beziehungen zwischen Entitäten oft unentdeckt. Im Rahmen dieses Projekts wird eine automatisierte Testumgebung erprobt, um solche Fehler und Abweichungen systematisch zu identifizieren.
 
 ---
 
@@ -47,14 +47,14 @@ Das Projekt unterliegt logischen und technischen Rahmenbedingungen, die den Anal
 - **Statische Präsentation**: Die Dokumentation der Analyseergebnisse muss ohne Datenbankabfragen auf einem statischen Webserver lauffähig sein.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
   <p class="engineering-insight__text">Automatisierte Analyse-Tools müssen externe API-Grenzen respektieren und lokale Caching-Mechanismen nutzen, um eine zuverlässige und blockierungsfreie Validierung zu gewährleisten.</p>
 </div>
 
 ---
 
 ## Technische Überlegungen
-Das Kernkonzept von AEOcortex beruht auf der Arbeitshypothese, dass strukturierte Datenmodelle und klar segmentierte Texte die maschinelle Verarbeitung erleichtern können. Während die tatsächlichen Such- und Zitiermechanismen externer KI-Plattformen hochgradig variabel und nicht-deterministisch sind, zielt unser interner Analyseansatz darauf ab, definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse zu bewerten. Hierzu werden Webseiten lokal auf bekannte Schnittstellen (JSON-LD, Dublin Core) sowie dokumentierte technische Kriterien und öffentlich deklarierte Crawler-Regeln hin geprüft.
+Das Kernkonzept von AEOcortex beruht auf der Arbeitshypothese, dass strukturierte Datenmodelle und klar segmentierte Texte die maschinelle Verarbeitung erleichtern können. Während die tatsächlichen Such- und Zitiermechanismen externer KI-Plattformen hochgradig variabel und nicht-deterministisch sind, zielt unser interner Analyseansatz darauf ab, definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse zu bewerten. Hierzu werden Webseiten lokal auf bekannte Datenformate und Metadaten-Standards (JSON-LD, Dublin Core) sowie dokumentierte technische Kriterien und öffentlich deklarierte Crawler-Regeln hin geprüft.
 
 ---
 
@@ -62,7 +62,7 @@ Das Kernkonzept von AEOcortex beruht auf der Arbeitshypothese, dass strukturiert
 Die Plattform ist modular aufgebaut, um Analyse-Logik und Präsentationsschicht strikt voneinander zu trennen. Ein Node.js-basierter Parser lädt das HTML der Zielwebseite, extrahiert die semantischen Metadaten und führt strukturierte Validierungsprüfungen durch. Die Ergebnisse werden in einer lokalen JSON-Struktur abgelegt, welche anschließend von der Präsentationsschicht eingelesen wird, um das statische Berichts-Dashboard zu generieren.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
   <p class="engineering-insight__text">Die Trennung von Parser-Logik (Node.js/Cheerio) und Präsentationsschicht ermöglicht eine performante, statische Berichtsgenerierung ohne serverseitigen Overhead.</p>
 </div>
 
@@ -99,7 +99,7 @@ Im Rahmen des Projekts wurden wesentliche Designentscheidungen getroffen, um die
 ---
 
 ## Umsetzung
-Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nutzt Cheerio zur Extraktion der Metadaten und prüft diese gegen die offiziellen Schema.org-Spezifikationen. Ein weiteres Modul berechnet die Lesbarkeit von Texten mithilfe von Algorithmen wie dem Flesch-Reading-Ease-Index, um definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse zu bewerten.
+Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nutzt Cheerio zur Extraktion der Metadaten und prüft diese gegen die offiziellen Spezifikationen. Ein weiteres Modul bewertet die menschliche Lesbarkeit von Texten mithilfe des Flesch-Reading-Ease-Index, um neben den strukturellen Metadaten auch statistische Merkmale der menschlichen Textlesbarkeit als zusätzliche Heuristik für die Analyse zu erfassen.
 
 ---
 
@@ -126,15 +126,15 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
 
 <div class="evidence-grid">
   <div class="evidence-card">
-    <h4 class="evidence-card__title">JSON-LD Validierung</h4>
+    <h4 class="evidence-card__title">JSON-LD-Validierung</h4>
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Manuelle Prüfung</span>
-        <p class="evidence-card__value">Nur sporadische und fehleranfällige Entdeckung von Schema-Fehlern.</p>
+        <p class="evidence-card__value">Punktuelle Überprüfung einzelner Seiten über externe Online-Validierungswerkzeuge.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">Automatisierte Erkennung fehlerhafter Graphstrukturen im Rahmen der Testumgebung.</p>
+        <p class="evidence-card__value">Automatisierter syntaktischer Abgleich extrahierter JSON-LD-Strukturen im Testlauf gegen Schema-Spezifikationen.</p>
       </div>
     </div>
   </div>
@@ -143,43 +143,42 @@ Die Implementierung erfolgte in Form von modularen Skripten. Das Parser-Modul nu
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Manuelle Prüfung</span>
-        <p class="evidence-card__value">Schwer auffindbare Blockaden in komplexen Verzeichnissen.</p>
+        <p class="evidence-card__value">Stichprobenartige Sichtprüfung von robots.txt-Pfadregeln.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">Warnmeldung bei blockierten Hauptentitäten im lokalen Prüflauf.</p>
+        <p class="evidence-card__value">Automatisierte Prüfung von URL-Pfadvorgaben gegen blockierte Pfadmuster in der robots.txt.</p>
       </div>
     </div>
   </div>
   <div class="evidence-card">
-    <h4 class="evidence-card__title">LLM-Crawler-Barrieren</h4>
+    <h4 class="evidence-card__title">Lokale Regelprüfung</h4>
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Manuelle Prüfung</span>
-        <p class="evidence-card__value">Unbekannte Blockaden für neue KI-Crawler (z.B. OAI-SearchBot).</p>
+        <p class="evidence-card__value">Stichprobenartiger Abgleich von Webseitenelementen.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit AEOcortex</span>
-        <p class="evidence-card__value">Strukturierte Analyse von Metadaten und Lesbarkeits-Metriken im Parser.*</p>
+        <p class="evidence-card__value">Extraktion hinterlegter Metadaten und Berechnung des Flesch-Reading-Ease-Index im Parser.*</p>
       </div>
     </div>
   </div>
 </div>
 
-<p class="footnote">*Hinweis zur Lesbarkeit: Die Bewertung basiert auf der schulintegrativen Klassifizierung des Flesch-Reading-Ease-Index (Schwellenwert >60 für Standardlesbarkeit). Dieser Wert ist ein rein statistisches Maß für menschliche Lesbarkeit und misst nicht die tatsächliche maschinelle Verarbeitung, Indizierung, Zitierung oder Sichtbarkeit in externen Systemen.</p>
+<p class="footnote">*Hinweis zur Lesbarkeit: Die Bewertung basiert auf dem Flesch-Reading-Ease-Index. Ein Wert über 60 wird in der internen Testumgebung als Hinweis auf allgemein gut lesbare Texte eingeordnet. Dieser Wert ist ein rein statistisches Maß für menschliche Lesbarkeit und misst nicht die tatsächliche maschinelle Verarbeitung, Indizierung, Zitierung oder Sichtbarkeit in externen Systemen.</p>
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Visualisierungen komplexer Entitätsbeziehungen und strukturierte Datenvergleiche erleichtern die Fehleridentifikation in der Metadatenstruktur erheblich.</p>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
+  <p class="engineering-insight__text">Visualisierungen komplexer Beziehungen zwischen Entitäten und strukturierte Datenvergleiche erleichtern die Fehleridentifikation in der Metadatenstruktur erheblich.</p>
 </div>
 
 ---
 
 ## Validierung
-*(Interner Qualitätssicherungs-Verweis: Assessment AC-001, Finding FIN-AC-001, Arbeitsauftrag RM-001)*
 
 Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Parser erfolgt auf Basis vordefinierter Testverfahren:
-- **Automatisierte Schema-Prüfung**: JSON-LD-Strukturen werden gegen die offiziellen Schema.org-Spezifikationen abgeglichen, um Syntaxfehler und fehlende Relationen zu erkennen.
+- **Automatisierte Schema-Prüfung**: JSON-LD-Strukturen werden gegen die offiziellen Spezifikationen abgeglichen, um Syntaxfehler und fehlende Relationen zu erkennen.
 - **Lesbarkeits-Kalkulation**: Textinhalte werden über standardisierte Metriken (wie den Flesch-Reading-Ease-Index) auf definierte Struktur-, Metadaten- und Lesbarkeitssignale für automatisierte Analyseprozesse hin untersucht.
 
 ### Testparameter und Umgebung
@@ -189,19 +188,18 @@ Die Validierung der Metadaten-Extraktion und der Textauswertung im AEOcortex-Par
 ---
 
 ## Ergebnisse
-- **Entity-Prüfung**: Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Testlauf des Build-Prozesses.
-- **Lesbarkeits-Indikator**: Heuristische Bewertung der Eindeutigkeit von Textpassagen für generative Sprachmodelle im Testlauf.
-- **Prozess-Optimierung**: Identifizierung und Behebung potenzieller struktureller Crawling-Barrieren im Rahmen lokaler Testläufe.
+- Entity-Prüfung: Erkennung unvollständiger oder fehlerhafter JSON-LD-Graphstrukturen im Testlauf des Build-Prozesses.
+- Lesbarkeits-Indikator: Erfassung statistischer Merkmale der menschlichen Textlesbarkeit (Flesch-Reading-Ease) im lokalen Testlauf.
+- Strukturierte Validierung: Automatisierte Überprüfung von robots.txt-Pfaden und Vorhandensein definierter Metadaten-Felder im Testlauf.
 
 ---
 
 ## Erkenntnisse aus der Entwicklung
-Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generativer Suchmaschinen und semantischer Parsing-Modelle vertieft. Die Analyse von Entity-Beziehungen zeigt deutlich, dass präzise deklarierte und validierte Metadaten die Grundlage für die maschinelle Erfassung komplexer Kontexte bilden. Zudem wurde verdeutlicht, wie wichtig automatisierte Prüfverfahren im Entwicklungsprozess sind. Die manuelle Verifizierung strukturierter Daten ist fehleranfällig; automatisierte Validierungsskripte sparen wertvolle Zeit und unterstützen die Einhaltung aktueller Web-Standards.
+Dieses Forschungsprojekt hat das Verständnis für die Funktionsweise generativer Suchmaschinen und semantischer Parsing-Modelle vertieft. Die Analyse von Beziehungen zwischen Entitäten hat gezeigt, dass präzise deklarierte und validierte Metadaten die technische Prüfung strukturierter Zusammenhänge unterstützen. Zudem wurde verdeutlicht, wie wichtig automatisierte Prüfverfahren im Entwicklungsprozess sind. Die manuelle Überprüfung strukturierter Daten ist aufwendig; automatisierte Validierungsskripte können die Wiederholbarkeit der Tests sichern und eine konsistente Einhaltung definierter Kriterien unterstützen.
 
 ---
 
 ## Risiken
-*(Interner Qualitätssicherungs-Verweis: Assessment AC-001, Finding FIN-AC-002, Arbeitsauftrag RM-001)*
 
 Die Bewertung erfolgt auf Basis einer vereinfachten zweidimensionalen Risikomatrix. Die Schadensklasse (Schadensausmaß bei Eintritt: Hoch/Mittel/Gering) und die Eintrittswahrscheinlichkeit (Eintrittschance innerhalb eines Betriebsjahres: Hoch/Mittel/Gering) bestimmen gemeinsam die Priorisierung der Gegenmaßnahmen.
 
@@ -218,14 +216,13 @@ Die automatisierte Analyse von Webinhalten für KI-Suchmaschinen birgt technisch
 Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte direkt in CI/CD-Pipelines (z. B. GitHub Actions) geplant. Dadurch sollen Schema- und Lesbarkeitsprüfungen bei jedem Commit automatisch ausgeführt werden. Weiterhin soll ein interaktives Dashboard zur Live-Validierung beliebiger URLs aufgebaut werden, um die Benutzerfreundlichkeit des Tools zu erhöhen.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Die Integration semantischer Prüfungen in den CI/CD-Prozess soll dazu beitragen, das Einschleusen fehlerhafter Metadaten oder potenzieller Crawling-Barrieren in die Produktionsumgebung zu minimieren.</p>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
+  <p class="engineering-insight__text">Die Integration semantischer Prüfungen in den CI/CD-Prozess soll dazu beitragen, das Einschleusen fehlerhafter Metadaten oder syntaktischer Fehler in robots.txt-Dateien in die Produktionsumgebung zu minimieren.</p>
 </div>
 
 ---
 
 ## Quellen und Referenzen
-*(Interner Qualitätssicherungs-Verweis: Assessment AC-001, Finding FIN-AC-003, Arbeitsauftrag RM-001)*
 
 * **Cheerio HTML Parser**: [Cheerio API-Referenz](https://cheerio.js.org/) — Kernbibliothek für schnelles HTML-Parsing im Speicher.
 * **Schema.org Spezifikationen**: [Schema.org-Standards](https://schema.org/) — Referenz für strukturierte Metadaten.

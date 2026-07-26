@@ -37,7 +37,7 @@ The certification was conducted as an independent, multi-stage audit:
 
 ## 5. Claim-Integrity Result
 Public text was evaluated against the core evidence principle:
-$$\text{Implemented capability} \neq \text{Demonstrated external AEO effectiveness}$$
+Implemented capability ≠ Demonstrated external AEO effectiveness
 
 - **Core Wording:** The page has been successfully remediated to remove absolute guarantees. Wording presents crawler processing and indexing limits as hypotheses rather than demonstrated external results.
 - **Deterministic Paths:** Replaced claims of deterministic external AI citation behavior with a working hypothesis framework, acknowledging that external platform search and citation behaviors are variable and non-deterministic.
@@ -138,6 +138,12 @@ The project case study successfully reconciles all steps from assessment kickoff
   - **Modified Files:** `docs/becc/aeocortex/AEO-PHASE-5-INDEPENDENT-PUBLIC-CERTIFICATION.md`.
   - **Reason:** Reconciled stale deployment records and published final seal confirmation.
   - **PR:** #195
+  - **Deployment Status:** Live and verified (Merge commit `2b17014e56fab6ea7e40ced0271c400d351a21c8`).
+- **Phase 5.4 Post-Seal Claim-Integrity Remediation & Resealing:**
+  - **Date:** 2026-07-26
+  - **Modified Files:** `src/content/projects/aeocortex.md`, `docs/becc/aeocortex/AEO-PHASE-5-INDEPENDENT-PUBLIC-CERTIFICATION.md`, `docs/becc/aeocortex/AEO-REFERENCE-MATURITY-CHANGE-REGISTER.md`, `docs/becc/aeocortex/AEO-FINDINGS-REGISTER.md`, `docs/becc/aeocortex/AEO-EVIDENCE-MAP.md`.
+  - **Reason:** Corrected remaining public wording to resolve overgeneralizations, unverified crawler requirements, terminology misuse, human-machine readability conflation, and opaque internal references. Reopened and resealed the certification record.
+  - **PR:** [To be created]
   - **Deployment Status:** Pending merge and deploy.
 
 ---
@@ -147,6 +153,7 @@ The AEOcortex project certification lifecycle is hereby formally declared comple
 
 - **Maturity Level:** Verified compliant with BECC standards.
 - **Active Remediation Status:** **REMOVED** (The project has been successfully validated, certified, and removed from active remediation).
-- **Final Certified Hash:** `b2800bda907c5c1e51592636d61dee7f285de44d`
+- **Previous Certified Hash:** `b2800bda907c5c1e51592636d61dee7f285de44d`
+- **Reopened and Resealed:** 2026-07-26 (Claim-integrity remediation completed. The new final certified hash will be recorded upon merge of the remediation PR).
 
 *This document serves as the permanent digital seal of compliance and readiness for the AEOcortex public page.*
