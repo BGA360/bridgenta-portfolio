@@ -144,7 +144,7 @@ The project case study successfully reconciles all steps from assessment kickoff
   - **Modified Files:** `src/content/projects/aeocortex.md`, `docs/becc/aeocortex/AEO-PHASE-5-INDEPENDENT-PUBLIC-CERTIFICATION.md`, `docs/becc/aeocortex/AEO-REFERENCE-MATURITY-CHANGE-REGISTER.md`, `docs/becc/aeocortex/AEO-FINDINGS-REGISTER.md`, `docs/becc/aeocortex/AEO-EVIDENCE-MAP.md`.
   - **Reason:** Corrected remaining public wording to resolve overgeneralizations, unverified crawler requirements, terminology misuse, human-machine readability conflation, and opaque internal references. Reopened and resealed the certification record.
   - **PR:** #198
-  - **Deployment Status:** Live and verified (Merge commit `e87c1f72cf8bf1219cd4d7d1306b3f7f45c85116`).
+  - **Deployment Status:** Live and verified (PR #198 merge commit: `e87c1f7ab3185959445473cc92370a1b07f4a05d` / Phase 5.4 administrative reseal record merge: `cf84765dd6a53d281b1fc4212821fcf8a9585cff`).
 
 ---
 
@@ -154,6 +154,6 @@ The AEOcortex project certification lifecycle is hereby formally declared comple
 - **Maturity Level:** Verified compliant with BECC standards.
 - **Active Remediation Status:** **REMOVED** (The project has been successfully validated, certified, and removed from active remediation).
 - **Previous Certified Hash:** `b2800bda907c5c1e51592636d61dee7f285de44d`
-- **Reopened and Resealed:** 2026-07-26 (Claim-integrity remediation completed. Resealed under merge commit hash `e87c1f72cf8bf1219cd4d7d1306b3f7f45c85116`).
+- **Reopened and Resealed:** 2026-07-26 (Claim-integrity remediation completed. Resealed under merge commit hash `e87c1f7ab3185959445473cc92370a1b07f4a05d`).
 
 *This document serves as the permanent digital seal of compliance and readiness for the AEOcortex public page.*
