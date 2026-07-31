@@ -34,7 +34,7 @@ BridGenta erstellt hierzu strukturierte Modelle und erzeugt ein Reconstruction P
 ## Warum dieses Projekt entstand
 Die rasante Verbreitung generativer KI-Werkzeuge verändert die Softwareentwicklung grundlegend: Obwohl einfache Logikbausteine heute in kürzester Zeit generiert werden können, stehen Entwicklungsteams vor der Hürde, diesen Code sicher in bestehende Legacy-Systeme zu integrieren.
 
-Klassische Modernisierungsprojekte scheitern häufig an unvollständiger Dokumentation, unkalkulierbaren Migrationskosten und neu entstehenden Sicherheitsrisiken. Künstliche Intelligenz kann diese Prozesse zwar beschleunigen, erfordert jedoch eine strikte Governance, um strukturelle Probleme wie Code Bloat und Architecture Drift systematisch zu verhindern.
+Klassische Modernisierungsprojekte scheitern häufig an unvollständiger Dokumentation, unkalkulierbaren Migrationskosten und neu entstehenden Sicherheitsrisiken. Künstliche Intelligenz kann diese Prozesse zwar beschleunigen, erfordert jedoch eine strikte Governance, um strukturelle Probleme wie Code Bloat und Architecture Drift systematisch zu reduzieren.
 
 BridGenta kartiert bestehende Architekturen, sichert das implizite Systemwissen und stellt dieses als strukturiertes Datenmodell für die generative KI-Entwicklung bereit.
 
@@ -63,7 +63,7 @@ Die Realisierung von BridGenta unterliegt strengen technischen und operativen Ra
 <div class="evidence-grid">
   <div class="evidence-card">
     <h4 class="evidence-card__title">Datensicherheit und Geheimnisschutz</h4>
-    <p class="evidence-card__value">Um den unbefugten Zugriff von KI-Modellen auf sensible Kundendaten oder kryptografische Schlüssel zu verhindern, wird das Frontend logisch und physisch von den Gateways isoliert.</p>
+    <p class="evidence-card__value">Um das Risiko eines unbefugten Zugriffs von KI-Modellen auf sensible Kundendaten oder kryptografische Schlüssel zu reduzieren, wird das Frontend logisch und physisch von den Gateways isoliert.</p>
   </div>
   <div class="evidence-card">
     <h4 class="evidence-card__title">Manuelle Qualitätssicherung (Branch-Gating)</h4>
@@ -153,7 +153,7 @@ Die Softwarearchitektur ist konsequent modular aufgebaut, wobei die Analyseumgeb
 - **Experience Preservation Layer (EPL):** Spezifiziert und dokumentiert das dynamische Laufzeitverhalten, Benutzerpfade und Zustandsübergänge der Anwendung.
 - **Design Preservation Layer (DPL):** Konserviert die visuelle Identität der Benutzeroberfläche durch systematische Erfassung von CSS-Klassen, Layout-Rastern und Design-Tokens.
 
-Die Kombination dieser drei Schichten liefert ein vollständiges Abbild des Altsystems und dient als fundiertes Reconstruction Package zur Risikominimierung von KI-Generierungsfehlern.
+Die Kombination dieser drei Schichten unterstützt ein strukturiertes Abbild der im Analyseumfang erfassten Systemeigenschaften und dient als Grundlage für das Reconstruction Package.
 
 ---
 
@@ -268,7 +268,7 @@ Durch den strukturierten Prozess wurden im Rahmen des Testlaufs messbare quantit
 | :--- | :--- | :--- | :--- |
 | **Modernisierungs-Beschleunigung** | > 30% Zeitersparnis | **45% Zeitersparnis** | Übertroffen |
 | **Handoff-Stabilität** | 100% konfliktfreie Integration | **100% konfliktfreie Integration** | Erreicht |
-| **Sicherheits-Compliance** | 0 Leaks sensibler Daten | **0 Leaks sensibler Daten** | Erreicht |
+| **Datenflussprüfung** | Keine Übertragung außerhalb der definierten Gateway-Regeln festgestellt | **Im Pilotumfang beobachtet** | Dokumentierter Prüflauf |
 | **Codequalität (SonarQube Gate)** | Quality Gate A (bestanden) | **Quality Gate A (bestanden)** | Erreicht |
 
 *Hinweis zu den Metriken: Die quantitativen Werte wurden innerhalb des dokumentierten Pilotprojekts mit zehn Modulen und rund 50.000 Zeilen Quellcode in einer kontrollierten Testumgebung ermittelt. Sie beschreiben diesen konkreten Testumfang und stellen keine allgemeine Leistungs-, Sicherheits- oder Qualitätsgarantie für andere Projekte dar. In den protokollierten Prüfungen der kontrollierten Pilotumgebung wurden keine Datenübertragungen außerhalb der definierten Gateway-Regeln festgestellt. Diese Beobachtung ist auf die erfassten Datenflüsse, Regeln und Prüfprotokolle der Pilotumgebung begrenzt.*
@@ -298,7 +298,7 @@ Durch den strukturierten Prozess wurden im Rahmen des Testlaufs messbare quantit
     </div>
     <div class="result-card__content">
       <h3>Wartbarkeit</h3>
-      <p>Manuelle Reviews sicherten das Bestehen von Quality Gate A und hielten die Modulkomplexität im Pilotlauf auf einem niedrigen Niveau.</p>
+      <p>Manuelle Reviews begleiteten die Prüfung, in deren dokumentiertem Pilotlauf Quality Gate A bestanden wurde und die Modulkomplexität innerhalb des erfassten Prüfumfangs bewertet wurde.</p>
     </div>
   </div>
 </div>
@@ -317,7 +317,7 @@ Die Verwendung künstlicher Intelligenz zur Rekonstruktion birgt verbleibende Re
 ## Erkenntnisse aus der Entwicklung
 Die Ergebnisse der KI-gestützten Validierung zeigen, dass die Kombination aus hoher Entwicklungsgeschwindigkeit und bewährten Kontrollmechanismen stabile Softwareprodukte unterstützen kann: Während die KI Routineaufgaben beschleunigt, bleibt die Letztkontrolle durch menschliche Prüfer unerlässlich, um Qualitätsmängel und Code Bloat zu vermeiden.
 
-Strikte Git-Workflows und automatisierte Testabläufe sind unerlässlich, um die Codequalität dauerhaft zu sichern und sensible Daten zu schützen.
+Strikte Git-Workflows und automatisierte Testabläufe tragen dazu bei, Codequalität überprüfbar zu machen und das Risiko eines unsachgemäßen Umgangs mit sensiblen Daten zu reduzieren.
 
 Zukünftig soll die Schnittstellenspezifikation weiter präzisiert werden: Ein konsequent betriebenes Contract-First-Design soll der KI die Generierung von Benutzeroberflächen erleichtern.
 

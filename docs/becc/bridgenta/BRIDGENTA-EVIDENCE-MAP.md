@@ -91,7 +91,7 @@ This document maps all quantitative performance, security, and quality claims on
 * **Test Record ID:** `N/A` (Verification Process Statement)
 
 ### 10. Wartbarkeit und Modulkomplexität
-* **Claimed Metric:** "Manuelle Reviews sicherten das Bestehen von Quality Gate A und hielten die Modulkomplexität im Pilotlauf auf einem niedrigen Niveau."
+* **Claimed Metric:** "Manuelle Reviews begleiteten die Prüfung, in deren dokumentiertem Pilotlauf Quality Gate A bestanden wurde und die Modulkomplexität innerhalb des erfassten Prüfumfangs bewertet wurde."
 * **Definition:** Scoped assertion showing that reviews successfully maintained the Quality Gate A status and kept complexity values inside acceptable boundaries.
 * **Test Environment:** Git commit and code review log records.
 * **Evidence Trace Link:** `CPL-PILOT-LOG-QUALITY.json#L3` and reviewer approvals.

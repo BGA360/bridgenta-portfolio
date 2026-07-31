@@ -85,5 +85,10 @@ This register tracks all structural, grammatical, cognitive, terminology, and ev
 | **BRM-074** | Sprint 9 | Results (L273) | `Quality Gate A (bestanden)` | `Quality Gate A (bestanden)` + Pilot metrics footnote | Evidence | Append complete metric footnote scoping results to pilot. | Yes | Footnote added | Pending Verification |
 | **BRM-075** | Sprint 9 | Risks (L304-316) | Risks bullet list | Risks public table | Table format | Convert risks bullets to public table; map to internal IDs privately. | Yes | Table updated | Pending Verification |
 | **BRM-076** | Sprint 9 | Insights (L319-326) | `sichert stabile Softwareprodukte` / `fehlerfreie Generierung` | `unterstützen kann` / `Generierung... erleichtern` | Claim Integrity | Qualify absolute stability and generation claims. | Yes | None | Pending Verification |
+| **BRM-077** | Sprint 9 | Results Table (L271) | `0 Leaks sensibler Daten` | `Datenflussprüfung` row (Im Pilotumfang beobachtet) | Claim Integrity | Replaced absolute security compliance leak metric with bounded observational wording. | Yes | Metrics updated | Pending Verification |
+| **BRM-078** | Sprint 9 | Evidence Card (L66) | `zu verhindern` (unbefugten Zugriff) | `zu reduzieren` (unbefugten Zugriff) | Claim Integrity | Qualified absolute accessibility prevention claim to risk reduction. | Yes | None | Pending Verification |
+| **BRM-079** | Sprint 9 | Prose (L156) | `ein vollständiges Abbild` | `unterstützt ein strukturiertes Abbild` | Claim Integrity | Bounded "vollständiges Abbild" to avoid implying complete representation. | Yes | None | Pending Verification |
+| **BRM-080** | Sprint 9 | Results Grid (L301) | `sicherten das Bestehen von Quality Gate A` | `Manuelle Reviews begleiteten die Prüfung...` | Claim Integrity | Qualified manual review claim in results grid and evidence records. | Yes | Snippets updated | Pending Verification |
+| **BRM-081** | Sprint 9 | Lessons Learned (L320) | `dauerhaft zu sichern` | `tragen dazu bei, Codequalität...` | Claim Integrity | Bounded final git workflow lesson to avoid absolute warranty. | Yes | None | Pending Verification |
 
 

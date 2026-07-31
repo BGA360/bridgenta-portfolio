@@ -61,7 +61,7 @@ Verified that absolute guarantees are removed and scoped to the pilot context:
 4. **Results Grid - Card 2 (Security):**
    `In den protokollierten Prüfungen der kontrollierten Pilotumgebung wurden keine Datenübertragungen außerhalb der definierten Gateway-Regeln festgestellt.`
 5. **Results Grid - Card 3 (Maintainability):**
-   `Manuelle Reviews sicherten das Bestehen von Quality Gate A und hielten die Modulkomplexität im Pilotlauf auf einem niedrigen Niveau.`
+   `Manuelle Reviews begleiteten die Prüfung, in deren dokumentiertem Pilotlauf Quality Gate A bestanden wurde und die Modulkomplexität innerhalb des erfassten Prüfumfangs bewertet wurde.`
 
 ---
 
