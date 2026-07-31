@@ -1,0 +1,225 @@
+{
+  "source_commit": "09bddacc4b103fed6e74f53d9670d60451b9bf6c",
+  "scan_timestamp": "2026-07-31T21:47:57.443344+00:00",
+  "registry_version_hash": "efe2d8b6f30e5917e78ccdef7cd28b73a9587efcc82bc1317b46cec02513bdf5",
+  "validator_version_hash": "133007d3591f7a77329ff4de315ad205e4527c991dcd634b25a63002538c30b5",
+  "files_scanned": [
+    "src/content/projects/aeocortex.md",
+    "src/content/projects/bridgenta.md",
+    "src/content/projects/builddaddy.md",
+    "src/content/projects/fdess.md",
+    "src/content/projects/luminapraxisds.md",
+    "src/content/projects/rootedrealitygarden.md",
+    "src/content/projects/starcleaners.md"
+  ],
+  "completion_status": "SUCCESS",
+  "ordered_lexical_candidates": [
+    {
+      "candidate_id": "BECC-CAN-001",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/bridgenta.md",
+      "line": 95,
+      "matched_text": "alle",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-002",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/bridgenta.md",
+      "line": 142,
+      "matched_text": "alle",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-003",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/bridgenta.md",
+      "line": 150,
+      "matched_text": "alle",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-004",
+      "pattern_id": "BECC-REG-005",
+      "file": "src/content/projects/bridgenta.md",
+      "line": 172,
+      "matched_text": "keine Ausf\u00e4lle",
+      "category": "absence_of_event",
+      "classification": "PROHIBITED"
+    },
+    {
+      "candidate_id": "BECC-CAN-005",
+      "pattern_id": "BECC-REG-003",
+      "file": "src/content/projects/bridgenta.md",
+      "line": 270,
+      "matched_text": "100%",
+      "category": "absolute_magnitude",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-006",
+      "pattern_id": "BECC-REG-003",
+      "file": "src/content/projects/bridgenta.md",
+      "line": 270,
+      "matched_text": "100%",
+      "category": "absolute_magnitude",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-007",
+      "pattern_id": "BECC-REG-003",
+      "file": "src/content/projects/bridgenta.md",
+      "line": 281,
+      "matched_text": "100%",
+      "category": "absolute_magnitude",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-008",
+      "pattern_id": "BECC-REG-002",
+      "file": "src/content/projects/bridgenta.md",
+      "line": 324,
+      "matched_text": "fehlerfrei",
+      "category": "absolute_claim",
+      "classification": "PROHIBITED"
+    },
+    {
+      "candidate_id": "BECC-CAN-009",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/luminapraxisds.md",
+      "line": 51,
+      "matched_text": "vollst\u00e4ndig",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-010",
+      "pattern_id": "BECC-REG-001",
+      "file": "src/content/projects/luminapraxisds.md",
+      "line": 57,
+      "matched_text": "garantiert",
+      "category": "absolute_warranty",
+      "classification": "PROHIBITED"
+    },
+    {
+      "candidate_id": "BECC-CAN-011",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/luminapraxisds.md",
+      "line": 57,
+      "matched_text": "Alle",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-012",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/luminapraxisds.md",
+      "line": 62,
+      "matched_text": "vollst\u00e4ndig",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-013",
+      "pattern_id": "BECC-REG-003",
+      "file": "src/content/projects/luminapraxisds.md",
+      "line": 151,
+      "matched_text": "100%",
+      "category": "absolute_magnitude",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-014",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/luminapraxisds.md",
+      "line": 185,
+      "matched_text": "alle",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-015",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/luminapraxisds.md",
+      "line": 191,
+      "matched_text": "vollst\u00e4ndig",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-016",
+      "pattern_id": "BECC-REG-002",
+      "file": "src/content/projects/rootedrealitygarden.md",
+      "line": 39,
+      "matched_text": "fehlerfrei",
+      "category": "absolute_claim",
+      "classification": "PROHIBITED"
+    },
+    {
+      "candidate_id": "BECC-CAN-017",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/rootedrealitygarden.md",
+      "line": 39,
+      "matched_text": "alle",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-018",
+      "pattern_id": "BECC-REG-002",
+      "file": "src/content/projects/rootedrealitygarden.md",
+      "line": 191,
+      "matched_text": "Fehlerfrei",
+      "category": "absolute_claim",
+      "classification": "PROHIBITED"
+    },
+    {
+      "candidate_id": "BECC-CAN-019",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/rootedrealitygarden.md",
+      "line": 191,
+      "matched_text": "vollst\u00e4ndig",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-020",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/starcleaners.md",
+      "line": 24,
+      "matched_text": "vollst\u00e4ndig",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-021",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/starcleaners.md",
+      "line": 66,
+      "matched_text": "vollst\u00e4ndig",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-022",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/starcleaners.md",
+      "line": 102,
+      "matched_text": "alle",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "candidate_id": "BECC-CAN-023",
+      "pattern_id": "BECC-REG-004",
+      "file": "src/content/projects/starcleaners.md",
+      "line": 178,
+      "matched_text": "vollst\u00e4ndig",
+      "category": "high_risk_quantifier",
+      "classification": "REVIEW_CANDIDATE"
+    }
+  ]
+}

@@ -85,6 +85,7 @@ Die BECC wird als stabiles Regelwerk gepflegt und kontrolliert weiterentwickelt.
 - **Entwicklungsplan**: [Roadmap](RELEASES/ROADMAP.md)
 - **Governance**: [Release-Richtlinie](RELEASES/RELEASE_POLICY.md)
 - **Versionsdetails**: [Release Notes](RELEASES/RELEASE_NOTES.md)
+- **Amendment Candidate**: [BECC Public-Page Standard v1.1 Candidate](stewardship/amendments/BECC-AMENDMENT-CANDIDATE-v1.1.md) (`PROPOSED — PENDING REVIEW`)
 
 Als lebendes Framework wird die BECC in aufeinanderfolgenden, kontrollierten Sprints weiterentwickelt. Zukünftige Sprints werden spezifische Richtlinien wie Schreibstandards, Fachterminologien und Qualitätsprüfungen einführen, welche sich nahtlos in diese konstitutionelle Grundlage einfügen müssen.
 

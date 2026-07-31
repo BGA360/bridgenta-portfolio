@@ -2,6 +2,17 @@
 
 Dieses Dokument erfasst alle konstitutionellen Meilensteine und Versionsfreigaben der BECC im BridGenta-Ökosystem.
 
+## [1.1.0-Candidate] — 2026-07-31
+
+### Hinzugefügt (Amendment Proposal — Proposed / Pending Review)
+- **Public-Page Standard v1.1**: Erstellung der `BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.1.md` zur Richtungsweisung für öffentliche Projektseiten.
+- **Terminology-Policy v1.1**: Erstellung der `BECC-PUBLIC-TERMINOLOGY-POLICY-v1.1.md` zur Definition von Schreibregeln und proper nouns.
+- **Prüfwerkzeuge & Validierung (WP-A)**: Einführung des Python-basierten Standalone-Scanners `validator.py`, der Registry `claim_registry.json` und der Testsuiten.
+- **Evidenzberichte**: Erzeugung des automatischen Scan-Befundes `machine_lexical_scan_v1.1_2026-07-31.json` und des Baseline-Berichts `human_cross_project_baseline_report_v1.1_2026-07-31.md`.
+- **Manuelle Semantic Audit Records**: Erste Audits für BridGenta und AEOcortex abgeschlossen und als completed evidence erfasst.
+
+---
+
 ## [1.0.0-Stewardship-Pilot-1] — 2026-07-10
 
 ### Hinzugefügt

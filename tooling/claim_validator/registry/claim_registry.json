@@ -1,0 +1,53 @@
+{
+  "registry_version": "1.1",
+  "patterns": [
+    {
+      "pattern_id": "BECC-REG-001",
+      "regex": "(?i)(?:garantieren|garantiert|gewährleistung|gewährleistet|warrant|guarantee)",
+      "category": "absolute_warranty",
+      "governing_rule": "BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.1 Section 2.2",
+      "guidance": "Absolute warranties are prohibited on public pages. Use bounded terms (e.g., 'unterstützt', 'angestrebt').",
+      "classification": "PROHIBITED"
+    },
+    {
+      "pattern_id": "BECC-REG-002",
+      "regex": "(?i)(?:fehlerfrei|lückenlos|bug-free|error-free|perfect)",
+      "category": "absolute_claim",
+      "governing_rule": "BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.1 Section 2.2",
+      "guidance": "Claims of absolute correctness are prohibited. Reword to reflect testing limits.",
+      "classification": "PROHIBITED"
+    },
+    {
+      "pattern_id": "BECC-REG-003",
+      "regex": "(?i)(?:100%|hundert prozent|one hundred percent)",
+      "category": "absolute_magnitude",
+      "governing_rule": "BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.1 Section 2.2",
+      "guidance": "100% magnitude claims are review candidates. Bounding or exception disclosures required.",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "pattern_id": "BECC-REG-004",
+      "regex": "(?i)\\b(?:alle|vollständig|all|complete|completely)\\b",
+      "category": "high_risk_quantifier",
+      "governing_rule": "BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.1 Section 2.3",
+      "guidance": "Universal quantifiers are review candidates. Safe only when referencing a bounded, documented list.",
+      "classification": "REVIEW_CANDIDATE"
+    },
+    {
+      "pattern_id": "BECC-REG-005",
+      "regex": "(?i)(?:keine fehler|keine ausfälle|no bugs|no downtime|downtime-free|zero vulnerability)",
+      "category": "absence_of_event",
+      "governing_rule": "BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.1 Section 2.2",
+      "guidance": "Absence-of-event claims are prohibited unless bounded to a specific pilot run.",
+      "classification": "PROHIBITED"
+    },
+    {
+      "pattern_id": "BECC-REG-006",
+      "regex": "(?i)(?:[a-z]:[\\\\/](?:users|antigravity|tmp|home|var|usr)|\\\\b(?:c|d):\\\\\\\\[a-z]|\\\\b(?:usr|home|tmp|var)[\\\\/][a-z])",
+      "category": "path_leakage",
+      "governing_rule": "BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.1 Section 1.1",
+      "guidance": "Internal absolute paths (e.g., C:\\Users, /home/) are prohibited on public pages to prevent information disclosure.",
+      "classification": "PROHIBITED"
+    }
+  ]
+}

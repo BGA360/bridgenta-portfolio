@@ -46,3 +46,12 @@ To progress from kickoff to closure, every project must pass five gates:
 3. **Verification Gate:** Audits specs against code base, runs lints, and checks responsive render.
 4. **Deployment Gate:** Squash-merges to `main`, deploys to target server, and invalidates Service Worker caches.
 5. **Audit Gate:** Independent third-party audit of live production site, followed by manifest sealing.
+
+---
+
+## 4. Active Audit Standards
+* **Active Framework Version**: BECC v2.0.0-GA
+* **Active Public-Page Standard**: BECC Public-Page Standard v1.0 (Generation 1 Templates)
+* **Proposed Standard Amendment**: BECC Public-Page Standard v1.1 Candidate (Generation 2 Templates)
+* **Standard Status**: `PROPOSED — PENDING REVIEW`
+* **Rationale for Change**: Under Work Package A, the v1.1 standard is introduced as an amendment candidate. This metadata block registers the candidate standard and standard generation reference.

@@ -41,6 +41,11 @@ For every release, the following standard set of publication artifacts is genera
     *   [RC2 Remediation Plan](./BECC-v1.0-RC2-REMEDIATION-PLAN.md)
     *   [RC2 Verification Report](./BECC-v1.0-RC2-VERIFICATION-REPORT.md)
 
+### 3.2. BECC Public-Page Standard v1.1 Candidate
+*   **Active Status**: `PROPOSED — PENDING REVIEW`
+*   **Amendment Proposal**: [BECC-AMENDMENT-CANDIDATE-v1.1.md](../stewardship/amendments/BECC-AMENDMENT-CANDIDATE-v1.1.md)
+*   **Rationale**: Introduces terminology policy, lexical checks, and semantic fresh-reader review gates.
+
 ---
 
 ## 4. Release Lifecycle & Future Guidance

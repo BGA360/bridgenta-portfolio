@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BECCClaimRegistry",
+  "type": "object",
+  "properties": {
+    "registry_version": {
+      "type": "string"
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pattern_id": {
+            "type": "string",
+            "pattern": "^BECC-REG-[0-9]{3}$"
+          },
+          "regex": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "governing_rule": {
+            "type": "string"
+          },
+          "guidance": {
+            "type": "string"
+          },
+          "classification": {
+            "type": "string",
+            "enum": ["PROHIBITED", "REVIEW_CANDIDATE"]
+          }
+        },
+        "required": ["pattern_id", "regex", "category", "governing_rule", "guidance", "classification"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["registry_version", "patterns"],
+  "additionalProperties": false
+}
