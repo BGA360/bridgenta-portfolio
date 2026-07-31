@@ -18,7 +18,7 @@ This document maps all quantitative performance, security, and quality claims on
 ### 1. Modernisierungs-Beschleunigung (45% Zeitersparnis)
 * **Claimed Metric:** "45% Zeitersparnis" (compared to historical manual baseline)
 * **Definition:** Reduction in developer hours required to complete reconstruction phases (Observe, Understand, Map, Reconstruct, Validate, Handoff) for pilot components.
-* **Test Environment:** Closed developer workspace running static analysis and AI code-generation pipelines.
+* **Test Environment:** Closed developer workspace running static analysis and AI code-generation pipelines. (Observed in the controlled pilot environment; not production evidence.)
 * **Sample Size:** 10 legacy web application modules (totaling approx. 50,000 lines of legacy code).
 * **Measurement Method:** Time-tracking logs compared to the average historical migration baseline (120 developer hours per module manual vs. 66 hours average with BridGenta).
 * **Evidence Trace Link:** `CPL-PILOT-LOG-TIME.json#L45`
@@ -27,7 +27,7 @@ This document maps all quantitative performance, security, and quality claims on
 ### 2. Handoff-Stabilität (100% konfliktfreie Integration)
 * **Claimed Metric:** "100% der Code-Übergaben im Pilotlauf wurden über isolierte Branches konfliktfrei integriert."
 * **Definition:** Zero manual merge conflicts requiring developer intervention when merging pilot Handoff branches into the staging branch.
-* **Test Environment:** Staging environment CI/CD pipelines (GitHub Actions runners).
+* **Test Environment:** Staging environment CI/CD pipelines (GitHub Actions runners). (Observed in the controlled pilot environment; not production evidence.)
 * **Sample Size:** 10/10 successfully merged pilot Handoff branches.
 * **Measurement Method:** Automated git merge exit status checking (zero conflict exits).
 * **Evidence Trace Link:** `CPL-PILOT-LOG-MERGE.json#L12`
@@ -36,7 +36,7 @@ This document maps all quantitative performance, security, and quality claims on
 ### 3. Sicherheits-Compliance (0 Leaks sensibler Daten / kein Datenabfluss)
 * **Claimed Metric:** "0 Leaks sensibler Daten" / "verhinderte jeglichen Abfluss sensibler Daten im Pilotlauf."
 * **Definition:** Outbound data sanitization audits verifying that zero secrets, PII, or database credentials were sent to LLM endpoints.
-* **Test Environment:** Closed network sandbox with outbound proxy scanning.
+* **Test Environment:** Closed network sandbox with outbound proxy scanning. (Observed in the controlled pilot environment; not production evidence.)
 * **Sample Size:** All API requests generated during the 10-module reconstruction run.
 * **Measurement Method:** Regex matching and entropy analysis of outbound proxy logs against project secret pattern lists.
 * **Evidence Trace Link:** `CPL-PILOT-LOG-SECURITY.json#L89`
@@ -76,8 +76,8 @@ This document maps all quantitative performance, security, and quality claims on
 * **Evidence Trace Link:** `CPL-PILOT-LOG-TIME.json#L45` and pilot runtime logs.
 * **Test Record ID:** `TR-TIME-012`
 
-### 8. UI-Schnittstellenisolation (Sicherung)
-* **Claimed Metric:** "Sicherung der Datensicherheit: Die KI agiert ausschließlich auf Ebene der Benutzeroberfläche (UI)."
+### 8. UI-Schnittstellenisolation (Risikominimierung)
+* **Claimed Metric:** "Risikominimierung durch UI-Isolation: Die KI agiert ausschließlich auf der UI-Ebene."
 * **Definition:** Bounded structural design restriction keeping the AI generator isolated from backend logic.
 * **Test Environment:** Architecture validation.
 * **Evidence Trace Link:** Scoped to modular path configuration `/src/workspace/` and gateway filters.
@@ -91,9 +91,20 @@ This document maps all quantitative performance, security, and quality claims on
 * **Test Record ID:** `N/A` (Verification Process Statement)
 
 ### 10. Wartbarkeit und Modulkomplexität
-* **Claimed Metric:** "Manuelle Reviews sicherten das Bestehen von Quality Gate A und hielten die Modulkomplexität im Pilotlauf auf einem niedrigen Niveau."
+* **Claimed Metric:** "Manuelle Reviews begleiteten die Prüfung, in deren dokumentiertem Pilotlauf Quality Gate A bestanden wurde und die Modulkomplexität innerhalb des erfassten Prüfumfangs bewertet wurde."
 * **Definition:** Scoped assertion showing that reviews successfully maintained the Quality Gate A status and kept complexity values inside acceptable boundaries.
 * **Test Environment:** Git commit and code review log records.
 * **Evidence Trace Link:** `CPL-PILOT-LOG-QUALITY.json#L3` and reviewer approvals.
 * **Test Record ID:** `TR-QUAL-003`
+
+---
+
+## 4. Risks Traceability Map
+
+| Public Risk | Internal ID | Evidence Source | Mitigation Owner | Current State | Required Verification |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Veralteter KI-Kontext** | `RISK-BG-001` | [REFERENCE-PACKAGE-MANIFEST.json](./reference-package/REFERENCE-PACKAGE-MANIFEST.json) | Lead Architect | `Active — mitigation implemented, verification pending` | Independent build retest validation |
+| **Unentdeckter Code Bloat** | `RISK-BG-002` | [BRIDGENTA-COGNITIVE-LOAD-REVIEW.md](./BRIDGENTA-COGNITIVE-LOAD-REVIEW.md) | Human Reviewer | `Active — mitigation implemented, verification pending` | Reviewer approval log check |
+| **Unvollständige Testabdeckung** | `RISK-BG-003` | [BRIDGENTA-PRODUCTION-VERIFICATION-MATRIX.md](./BRIDGENTA-PRODUCTION-VERIFICATION-MATRIX.md) | Verification Team | `Active — mitigation implemented, verification pending` | Test execution trace audit |
+
 

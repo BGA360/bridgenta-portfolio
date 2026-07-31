@@ -19,10 +19,22 @@ This matrix documents the independent audit checks performed on the live BridGen
 | **BG-CERT-009** | Privacy & Security Wording | Inspected security wording for absolute safety claims. | `Clean` | Obsolete terms like `lückenloser Datenschutz` are replaced by scoped terms. | **PASS** |
 | **BG-CERT-010** | Deployment Freshness | Verified service worker version in production. | `Verified` | The live service worker uses the updated cache name `bridgenta-portfolio-v21`, preventing stale asset loads. | **PASS** |
 | **BG-CERT-011** | Governance Completeness | Audited branch for the presence of all 13 required BECC records and matrices. | `Complete` | All roadmap files, change registers, matrices, and reports exist on branch and match. | **PASS** |
+| **BG-CERT-012** | Accessibility Assurance | Checked keyboard, focus, contrast, and reflow in local browser. | `Pending` | Local audits executed; results compiled in accessibility report. | **PENDING** |
 
 ---
 
-## 2. Auditor Decision
+## 2. Auditor Decision (Historical Sprint 8)
 🏆 **`CERTIFIED WITH OBSERVATIONS`**
 * **Trace Commit:** `a330ce677ec5329cf329158c54c34cb94cb6fef5`
 * **Audit Signature:** Independent BECC Auditor
+* **Historical Status:** Preserved as the result recorded during Sprint 8.
+
+---
+
+## 3. Current Status & Remediation Event Log
+* **Current Reliance Status:** `NOT RELIED UPON PENDING RECONCILIATION`
+* **Accessibility Evidence Reference:** [BRIDGENTA-ACCESSIBILITY-REPORT.md](./BRIDGENTA-ACCESSIBILITY-REPORT.md)
+
+### Verification & Remediation Log
+* **2026-07-31 (Event BRM-REMED-01):** Post-AEOcortex wording and governance remediation implemented on branch `feature/bridgenta-claim-integrity-remediation`. Verification checks pending independent post-remediation review.
+
