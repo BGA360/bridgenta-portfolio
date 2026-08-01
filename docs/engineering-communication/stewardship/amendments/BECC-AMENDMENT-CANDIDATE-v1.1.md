@@ -4,6 +4,15 @@
 *   **Version**: `1.1-Candidate`
 *   **Release Gate**: Framework-Only Amendment Candidate
 *   **Effective Date**: Pending Authorization
+
+> [!CAUTION]
+> **Remediation & Integrity Status Block**
+> *   **Human Fresh-Reader Evidence**: `INCOMPLETE`
+> *   **Identity Provenance Gate**: `FAILED`
+> *   **GOV-FIND-002 Status**: `CONFIRMED — REMEDIATION IN PROGRESS`
+> *   **Amendment Approval Status**: `BLOCKED`
+> *   **Activation Status**: `NOT AUTHORIZED`
+> *   **Supersession Status**: `NOT AUTHORIZED`
 *   **Verified Base Branch**: `origin/main`
 *   **Base Commit SHA**: `09bddacc4b103fed6e74f53d9670d60451b9bf6c`
 
