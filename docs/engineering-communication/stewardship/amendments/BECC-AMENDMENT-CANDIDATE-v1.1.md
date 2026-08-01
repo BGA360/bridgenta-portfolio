@@ -57,7 +57,7 @@ The following table records the SHA-256 checksums of all created and modified ar
 | `docs/becc/bridgenta/BRIDGENTA-SEMANTIC-FRESH-READER-RECORD.md` | `9a97fac64db7fd982bcfcb5e32b53292cff1004bb5994c874b2bd96baa48c1a7` |
 | `docs/becc/aeocortex/AEO-SEMANTIC-FRESH-READER-RECORD.md` | `a19a7ccf5e94843ecf8459f62b510bbd9eb4946124720ca3fa08d0e53879a08a` |
 | `docs/becc/governance/GOV-FIND-001-RECORD.md` | `5c3c5025a6f9e0bcd0552d66a727d4b9d7cf7d592224c3102ed50adf1f6d05ec` |
-| `docs/becc/governance/GOV-FIND-002-AI-GENERATED-HUMAN-EVIDENCE.md` | `809862a8d9cdd666ded7679faa3566144688c614ed6f72b49f40076c54a19313` |
+| `docs/becc/governance/GOV-FIND-002-AI-GENERATED-HUMAN-EVIDENCE.md` | `aca0dd6dbbf98f5e971b33ab9963353f12d425cc137fe008ba3427a5d706d70d` |
 
 ### 2.2 Modified Artifacts
 | File Path | SHA-256 Checksum |
