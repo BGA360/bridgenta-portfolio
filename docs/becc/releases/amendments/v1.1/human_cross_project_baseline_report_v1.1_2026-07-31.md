@@ -10,8 +10,8 @@ This report aggregates the baseline lexical and semantic audit results for the B
 
 ## 1. Executive Summary
 An automated lexical scan and manual semantic reviews were executed across the seven indexed project markdown files.
-- **BridGenta**: 8 lexical findings identified. Semantic review completed. Remediation required for absolute claims.
-- **AEOcortex**: 0 lexical findings identified. Semantic review completed. Fully compliant with v1.1.
+- **BridGenta**: 8 lexical findings identified. Semantic review record created as draft. Human fresh-reader review pending.
+- **AEOcortex**: 0 lexical findings identified. Semantic review record created as draft. Human fresh-reader review pending.
 - **Lumina Praxis**: 7 lexical findings identified.
 - **Rooted Reality**: 4 lexical findings identified.
 - **StarCleaners**: 4 lexical findings identified.
