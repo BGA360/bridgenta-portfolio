@@ -26,7 +26,7 @@ This document is the fresh-reader record template for AEOcortex.
 
 | Finding ID | Section / Line | Observed Wording | Standard Rule Reference | Auditor Adjudication | Adjudication Status |
 | :--- | :--- | :--- | :--- | :--- | :---: |
-| *(None)* | | *(Zero lexical findings)* | | Manual fresh-reading confirms the text is fully compliant. | `PENDING_HUMAN_ADJUDICATION` |
+| *(None)* | | *(Zero lexical findings)* | | No candidates were detected by the current lexical registry in the scanned content. This machine-assisted result does not establish semantic, factual, accessibility, lifecycle, governance or publication compliance. | `PENDING_HUMAN_ADJUDICATION` |
 
 ---
 

@@ -46,7 +46,7 @@ The following table records the SHA-256 checksums of all created and modified ar
 | `docs/becc/releases/amendments/v1.1/machine_lexical_scan_v1.1_2026-07-31.json` | `681e07a071b49f13f1a204adfb1a75e10962e34f3e1599f2fa75dd7186e3ffc8` |
 | `docs/becc/releases/amendments/v1.1/human_cross_project_baseline_report_v1.1_2026-07-31.md` | `8c8062079624062690d52438f74b4d853d657c5b041f2cca9f042fdb0e6b0631` |
 | `docs/becc/bridgenta/BRIDGENTA-SEMANTIC-FRESH-READER-RECORD.md` | `9a97fac64db7fd982bcfcb5e32b53292cff1004bb5994c874b2bd96baa48c1a7` |
-| `docs/becc/aeocortex/AEO-SEMANTIC-FRESH-READER-RECORD.md` | `5d1b068748c8cba55ddda3b40f8dc92d8381b230fd4d00f2d37d3feb418a2a07` |
+| `docs/becc/aeocortex/AEO-SEMANTIC-FRESH-READER-RECORD.md` | `a19a7ccf5e94843ecf8459f62b510bbd9eb4946124720ca3fa08d0e53879a08a` |
 | `docs/becc/governance/GOV-FIND-001-RECORD.md` | `5c3c5025a6f9e0bcd0552d66a727d4b9d7cf7d592224c3102ed50adf1f6d05ec` |
 | `docs/becc/governance/GOV-FIND-002-AI-GENERATED-HUMAN-EVIDENCE.md` | `809862a8d9cdd666ded7679faa3566144688c614ed6f72b49f40076c54a19313` |
 
