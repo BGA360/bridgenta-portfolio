@@ -3,7 +3,22 @@
 *   **Status**: `PROPOSED — PENDING REVIEW`
 *   **Version**: `1.1-Candidate`
 *   **Release Gate**: Framework-Only Amendment Candidate
-*   **Effective Date**: Pending Authorization
+*   **Effective Date**: PENDING AUTHORIZATION
+
+> [!IMPORTANT]
+> **Shared Status & Separation Boundary**
+> *   This policy candidate has no active enforcement, certification, publication, or supersession effect until formally approved.
+>
+> ```text
+> Machine validation
+> ≠ author or engineering self-review
+> ≠ authorized semantic fresh-reader review
+> ≠ independent certification review
+> ≠ constitutional or designated approval
+> ≠ merge authorization
+> ≠ publication authorization
+> ≠ activation
+> ```
 
 This policy governs vocabulary selection, spelling compound standards, proper nouns, and readability rules in German public engineering portfolios.
 
@@ -29,7 +44,21 @@ Any established technical term or English technical jargon must be accompanied b
 Third-party brands, tools, and libraries (e.g. `Lovable`, `Claude`, `ChatGPT`, `Astro`, `Cheerio`) must be preserved in their native forms and capitalized correctly.
 
 ### 1.6 Ordinary English Prose
-The use of ordinary English prose (non-technical vocabulary) on public German pages is prohibited.
+Untranslated ordinary English prose should not be used as the default language of German public pages, except where preserving the original wording is necessary and clearly identified.
+
+#### Bounded Exceptions:
+Linguistic check exemptions are permitted for:
+*   exact quotations
+*   official product and feature names
+*   UI labels
+*   citations
+*   evidence excerpts
+*   legally required wording
+*   source-language evidence
+*   multilingual examples
+*   accessibility labels where translation would alter meaning
+
+*Terminology examples are illustrative; the maintained terminology register controls canonical wording. Where the terminology register does not resolve a term, the wording remains pending human editorial adjudication.*
 
 ---
 
@@ -44,7 +73,7 @@ The use of ordinary English prose (non-technical vocabulary) on public German pa
 
 - **German B2–C1 Target**: Prose must align with the CEFR B2–C1 register. Style must be active, precise, and devoid of marketing superlatives.
 - **Advisory vs. Mandatory Readability Checks**:
-  * *Mandatory*: Rejection of absolute warranties (e.g. `garantieren`, `Gewährleistung`, `fehlerfrei`, `lückenloser Schutz`) and mixed-language heading structures (e.g., "Engineering Insight").
-  * *Advisory*: Readability metrics (e.g., Flesch Reading Ease score for German TECHNICAL prose). An automated score below target does not automatically fail the gate, provided the prose is clear.
+  * *Mandatory*: Rejection of absolute warranties (e.g. `garantieren`, `Gewährleistung`, `fehlerfrei`, `lückenloser Schutz`) and mixed-language heading structures (e.g., "Engineering Insight"). Absolute warranties and categorical absence-of-event claims remain impermissible even when a pilot, test, staging, or limited environment is named.
+  * *Advisory*: Readability metrics (e.g., Flesch Reading Ease score for German TECHNICAL prose). An automated score below target does not automatically fail the gate, provided the prose is clear and is treated as advisory.
 - **Exception Handling**: Historical quotations or exact quotations from third-party audits are exempt from the terminology checks.
-- **Human Approval**: Any deviations, vocabulary exemptions, or overrides of terminology checks require the written authorization of the Lead Editor.
+- **Human Approval**: Terminology deviations require authorization from the role designated by the active governing constitution. Under this v1.1 candidate, the Lead Editor role is proposed for that function but has no new authority until the amendment is approved.

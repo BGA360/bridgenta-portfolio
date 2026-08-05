@@ -4,7 +4,22 @@
 *   **Status**: `PROPOSED — PENDING REVIEW`
 *   **Version**: `1.1-Candidate`
 *   **Release Gate**: Framework-Only Amendment Candidate
-*   **Effective Date**: Pending Authorization
+*   **Effective Date**: PENDING AUTHORIZATION
+
+> [!IMPORTANT]
+> **Shared Status & Separation Boundary**
+> *   This standard candidate has no active enforcement, certification, publication, or supersession effect until formally approved.
+>
+> ```text
+> Machine validation
+> ≠ author or engineering self-review
+> ≠ authorized semantic fresh-reader review
+> ≠ independent certification review
+> ≠ constitutional or designated approval
+> ≠ merge authorization
+> ≠ publication authorization
+> ≠ activation
+> ```
 
 This standard defines the rules, validation layers, and claim-integrity constraints for publishing, auditing, and certifying public-facing project pages and portfolios under the BECC (BridGenta Engineering Communication Constitution) framework.
 
@@ -12,16 +27,16 @@ This standard defines the rules, validation layers, and claim-integrity constrai
 
 ## 1. Core Validation Layers
 
-To ensure complete verification, technical communication must satisfy three validation layers:
+To ensure structured verification within the declared BECC scope, technical communication must satisfy six validation layers:
 
-### 1.1 Lexical Validation
-Automated matching of vocabulary, spelling compound standards, proper nouns, and prohibited absolute claims. The lexical scanner detects candidate patterns and logs them as lexical findings.
+*   **Layer 1 — Machine lexical validation**: Automated matching of vocabulary, compound standards, proper nouns, and prohibited absolute claims using a deterministic registry.
+*   **Layer 2 — Author or engineering self-review**: Verification by the author or developer of layouts, evidence mapping, and readability.
+*   **Layer 3 — Authorized semantic fresh-reader review**: Human fresh-reader review of the layout context, reading complexity, and semantic clarity to resolve nuances that machine scanning cannot detect.
+*   **Layer 4 — Independent certification review**: Third-party evaluation of live pages against criteria, verifying deployed commit SHA-256 hashes and evidence manifests.
+*   **Layer 5 — Constitutional or designated approval**: Official approval of the reviewed candidate by the designated authorities.
+*   **Layer 6 — Publication or activation authorization**: Formal permission to deploy, merge, or activate the verified standard.
 
-### 1.2 Semantic Validation
-Human fresh-reader review of the layout context, reading complexity, and semantic clarity. It addresses nuances that automated lexical tools cannot detect.
-
-### 1.3 Evidence Validation
-Mapping of all quantitative and performance claims to version-controlled evidence repositories or test logs. Every published metric must refer to a specific, bounded verification run.
+*Completion of one layer does not automatically complete, authorize, or satisfy any later layer.*
 
 ---
 
@@ -34,7 +49,13 @@ All quantitative, performance, or outcome-based statements must be explicitly:
 3. Registered in a centralized evidence map.
 
 ### 2.2 Prohibited Guarantees & Absolute Claims
-Do not publish absolute claims, warranties, or complete absence-of-event claims (e.g., `garantieren`, `Gewährleistung`, `fehlerfrei`, `ohne Ausfälle`, `lückenloser Schutz`) unless they are bounded to pilot contexts.
+Absolute warranties and categorical absence-of-event claims remain impermissible. Naming a pilot, test, staging, or limited environment does not make an absolute warranty or categorical absence-of-event statement acceptable.
+
+Absolute-sounding claims such as `fehlerfrei`, `garantiert`, `ohne Ausfälle`, and `lückenloser Schutz` remain completely impermissible in any context.
+
+#### Claim Bounding Examples:
+*   **Unsafe**: "The system was failure-free during the pilot."
+*   **Potentially supportable**: "No failures were observed during the defined pilot run documented in the identified evidence record."
 
 ### 2.3 Contextual Treatment of High-Risk Terminology
 Words like `alle` (all) or `vollständig` (completely/full) are flagged as review candidates. They are permitted only when representing bounded code structures or specific verified scopes (e.g. `alle 5 Fallstudien`), and prohibited when making absolute commercial guarantees.
@@ -48,7 +69,7 @@ Technical prose must maintain a professional CEFR B2–C1 register. Authors must
 
 ### 3.2 Proper Noun and Jargon Registers
 - **Capitalized German Compounds**: Proper compounds must follow standard capitalization and naming rules (e.g. `die Branches`, `der Static-Site-Builder`).
-- **Canonical English Terms**: Standard industry technical jargon or system layers (e.g., `main branch`, `Repository`, `Workspace`, `CI/CD`) must remain in English in technical prose.
+- **Canonical English Terms**: Standard industry technical jargon or system layers (e.g., `main branch`, `Repository`, `Workspace`, `CI/CD pipeline`, `Service Worker`) must remain in English in technical prose.
 - **First-Use Rule**: Jargon or English terms must be explained on first use in German (e.g. `main branch (Hauptzweig des Repositories)`).
 
 ---
@@ -66,12 +87,29 @@ No formal WCAG conformance claim may be published unless supported by evidence a
 ## 5. Governance and Human Adjudication
 
 ### 5.1 Verification gates
-Every project page must pass through the validation gates prior to publication:
+If BECC v1.1 is formally authorized, project pages within its declared governed scope must pass through the applicable validation gates before publication authorization:
 1. **Source Check**: Lexical validation check.
 2. **Semantic Check**: Manual fresh-reader review.
 3. **Evidence Verification**: Mapping claims to evidence records.
 
-### 5.2 Human Adjudication
+### 5.2 Authorized Human Review Criteria
+An authorized human semantic fresh-reader review requires the following documented criteria:
+*   Known human reviewer identity
+*   Appointment or authorization reference
+*   Declared scope of the review
+*   Repository identity
+*   Full 40-character reviewed commit SHA
+*   Exact rendered target (URL or file)
+*   Governing standard version
+*   Review date
+*   Relationship and conflict disclosure
+*   Independence disclosure where applicable
+*   Reviewer-controlled submission
+*   Recorded limitations of the review
+
+*Project-owner review is not automatically independent assurance.*
+
+### 5.3 Human Adjudication
 Lexical scans are advisory match lists. The final adjudication of compliance, severity evaluation, and override justifications must be performed by a human reviewer.
 
 ---
