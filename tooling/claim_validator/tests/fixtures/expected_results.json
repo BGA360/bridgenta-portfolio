@@ -1,0 +1,22 @@
+{
+  "test_cases": [
+    {
+      "case_id": "CASE-VALID-PROJECT",
+      "fixture_source": "tooling/claim_validator/tests/fixtures/bounded_claims_project.md",
+      "expected_pattern_ids": ["BECC-REG-002", "BECC-REG-004", "BECC-REG-005"],
+      "expected_match_count": 4,
+      "expected_no_match_state": false,
+      "context_type": "markdown",
+      "historical_context_status": "Private Beta"
+    },
+    {
+      "case_id": "CASE-INVALID-PROJECT",
+      "fixture_source": "tooling/claim_validator/tests/fixtures/invalid_project.md",
+      "expected_pattern_ids": ["BECC-REG-001", "BECC-REG-002", "BECC-REG-003", "BECC-REG-004", "BECC-REG-005", "BECC-REG-006"],
+      "expected_match_count": 17,
+      "expected_no_match_state": false,
+      "context_type": "markdown",
+      "historical_context_status": "Abgeschlossen"
+    }
+  ]
+}
