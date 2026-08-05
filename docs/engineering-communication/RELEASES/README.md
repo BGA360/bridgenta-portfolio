@@ -6,14 +6,21 @@ This directory serves as the official release repository for the BridGenta Engin
 
 ## 1. Current Production Release
 
-*   **Version**: **BECC v2.0.0-GA**
-*   **Release Date**: 2026-07-14
-*   **Status**: **Production Baseline (General Availability)**
-*   **Manifest**: [BECC-v2.0-RELEASE-MANIFEST.json](./BECC-v2.0-RELEASE-MANIFEST.json)
+*   **Version**: **BECC v1.0.0-GA**
+*   **Status**: **Active Production Standard**
 *   **Key Documents**:
-    *   [GA Declaration](./BECC-v2.0-GA-DECLARATION.md) (Official closure statement)
-    *   [Release Notes](./BECC-v2.0-RELEASE-NOTES.md) (adoption guide for engineers)
-    *   [Changelog](./BECC-v2.0-CHANGELOG.md) (Completed v2.0 modifications)
+    *   [GA Declaration](./BECC-v1.0-GA-DECLARATION.md) (Official GA declaration statement)
+    *   [Release Standard](./BECC-v1.0-GA.md) (Core v1.0 standard text)
+
+---
+
+## 2. Proposed Amendment Candidate
+
+*   **Version**: **BECC v1.1-Candidate**
+*   **Status**: **PROPOSED — PENDING REVIEW — INACTIVE**
+*   **Key Documents**:
+    *   [Amendment Candidate](../stewardship/amendments/BECC-AMENDMENT-CANDIDATE-v1.1.md) (Pending review manifest)
+
 
 ---
 
@@ -56,4 +63,4 @@ Any future release of the BECC framework (e.g. minor updates like v2.1 or major 
 2.  **Review Board Meeting**: The PICRB must evaluate candidates against standardization thresholds.
 3.  **Architecture Freeze**: Updates to schemas or spec roadmaps must be frozen and baseline-hashes verified.
 4.  **Changelog Compilation**: All changes must be logged under the standard changelog structure.
-5.  **Release Packaging**: The manifest must include hashes computed using the standard MD5 algorithm before signing the GA Declaration.
+5.  **Release Packaging**: The manifest must include SHA-256 hashes computed against the explicitly declared repository tree or artifact state (recording the exact commit or tree state, whether raw repository bytes or a documented normalization method is used, and excluding self-referential manifest files). Cryptographic hashes serve solely for integrity verification and do not establish factual truth, approval, or certification.
