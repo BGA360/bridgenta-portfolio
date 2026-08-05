@@ -226,4 +226,5 @@ Für die nächste Phase des Projekts ist die Integration der Analyse-Skripte dir
 
 * **Cheerio HTML Parser**: [Cheerio API-Referenz](https://cheerio.js.org/) — Kernbibliothek für schnelles HTML-Parsing im Speicher.
 * **Schema.org Spezifikationen**: [Schema.org-Standards](https://schema.org/) — Referenz für strukturierte Metadaten.
-* **BECC-Bewertungsrichtlinien**: Interne Referenz auf die [BECC-Matrix](https://github.com/BGA360/bridgenta-portfolio/blob/main/docs/engineering-communication/stewardship/BECC-ASSESSMENT-MATRIX.md) für Konformitätsbewertungen im Repository.
+* **BECC-Bewertungsrichtlinien**: Interne Richtlinien unterstützen die
+  strukturierte Bewertung der öffentlichen Projektkommunikation.
