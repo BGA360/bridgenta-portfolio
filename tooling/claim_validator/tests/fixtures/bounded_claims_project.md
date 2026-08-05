@@ -7,6 +7,12 @@ sidebar:
 
 # BridGenta Test Page
 
+> [!NOTE]
+> **Fixture Declaration**
+> This fixture is structurally valid test input containing bounded claims that
+> intentionally produce lexical review candidates. It is not a match-free or
+> BECC-certified public page.
+
 Dieses Projekt wurde im Pilotbetrieb erfolgreich validiert.
 
 ## Bounded Claims
