@@ -43,7 +43,7 @@
     },
     {
       "pattern_id": "BECC-REG-006",
-      "regex": "(?i)(?:[a-z]:[\\\\/](?:users|antigravity|tmp|home|var|usr)|\\\\b(?:c|d):\\\\\\\\[a-z]|\\\\b(?:usr|home|tmp|var)[\\\\/][a-z])",
+      "regex": "(?i)(?:\\b[a-z]:[\\\\/](?:users|antigravity|tmp|home|var|usr)|\\b[a-z]:\\\\[a-z]|(?<![a-z0-9])[\\\\/](?:usr|home|tmp|var)[\\\\/][a-z])",
       "category": "path_leakage",
       "governing_rule": "BECC-PUBLIC-PAGE-REFERENCE-STANDARD-v1.1 Section 1.1",
       "guidance": "Internal absolute paths (e.g., C:\\Users, /home/) are prohibited on public pages to prevent information disclosure.",

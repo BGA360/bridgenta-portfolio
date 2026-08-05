@@ -10,7 +10,7 @@ class TestValidator(unittest.TestCase):
         self.workspace_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         self.registry_path = os.path.join(self.workspace_dir, "tooling", "claim_validator", "registry", "claim_registry.json")
         self.fixtures_dir = os.path.join(self.workspace_dir, "tooling", "claim_validator", "tests", "fixtures")
-        self.valid_fixture = os.path.join(self.fixtures_dir, "valid_project.md")
+        self.valid_fixture = os.path.join(self.fixtures_dir, "bounded_claims_project.md")
         self.invalid_fixture = os.path.join(self.fixtures_dir, "invalid_project.md")
         self.expected_results_path = os.path.join(self.fixtures_dir, "expected_results.json")
 
@@ -27,7 +27,7 @@ class TestValidator(unittest.TestCase):
         # 2. Invalid schema (not dict)
         with self.assertRaises(ValueError):
             validate_registry("not a dict")
-            
+
         # Missing fields
         bad_registry = {"patterns": []}
         with self.assertRaises(ValueError):
@@ -137,12 +137,12 @@ class TestValidator(unittest.TestCase):
         # Load expected results
         with open(self.expected_results_path, "r", encoding="utf-8") as f:
             expected_data = json.load(f)
-            
+
         for case in expected_data["test_cases"]:
             case_id = case["case_id"]
             fixture_rel = case["fixture_source"]
             fixture_abs = os.path.join(self.workspace_dir, fixture_rel)
-            
+
             # Execute scan with a mock timestamp for determinism
             scan_out = run_scan(
                 self.workspace_dir,
@@ -150,18 +150,18 @@ class TestValidator(unittest.TestCase):
                 [fixture_abs],
                 mock_timestamp="2026-07-31T00:00:00Z"
             )
-            
+
             self.assertEqual(scan_out["completion_status"], "SUCCESS")
-            
+
             # Verify match count
             actual_matches = scan_out["ordered_lexical_candidates"]
             self.assertEqual(len(actual_matches), case["expected_match_count"], f"Match count mismatch in case {case_id}")
-            
+
             # Verify matched pattern IDs are in expected pattern IDs
             matched_patterns = {x["pattern_id"] for x in actual_matches}
             for pid in matched_patterns:
                 self.assertIn(pid, case["expected_pattern_ids"], f"Unexpected pattern ID {pid} in case {case_id}")
-                
+
             # Verify sorting of output: file, line, pattern_id, candidate_id
             for i in range(len(actual_matches) - 1):
                 m1 = actual_matches[i]
@@ -184,11 +184,11 @@ class TestValidator(unittest.TestCase):
             [self.valid_fixture, self.invalid_fixture],
             mock_timestamp="2026-07-31T00:00:00Z"
         )
-        
+
         # Byte-for-byte matching JSON hashes
         payload1 = json.dumps(scan1, sort_keys=True)
         payload2 = json.dumps(scan2, sort_keys=True)
-        
+
         self.assertEqual(payload1, payload2, "Validator output is not deterministic across repeated runs.")
 
     def test_path_exposure_matches(self):
@@ -199,11 +199,11 @@ class TestValidator(unittest.TestCase):
             [self.invalid_fixture],
             mock_timestamp="2026-07-31T00:00:00Z"
         )
-        
+
         path_leakage_matches = [x for x in scan_out["ordered_lexical_candidates"] if x["pattern_id"] == "BECC-REG-006"]
         self.assertGreater(len(path_leakage_matches), 0, "Failed to match path exposure in invalid fixture.")
-        
-        # Confirm that valid project paths inside backticks are safe (not matched in valid_project.md)
+
+        # Confirm that valid project paths inside backticks are safe (not matched in bounded_claims_project.md)
         scan_valid = run_scan(
             self.workspace_dir,
             self.registry_path,
@@ -212,6 +212,60 @@ class TestValidator(unittest.TestCase):
         )
         valid_path_matches = [x for x in scan_valid["ordered_lexical_candidates"] if x["pattern_id"] == "BECC-REG-006"]
         self.assertEqual(len(valid_path_matches), 0, "False positive path exposure match in valid fixture.")
+
+    def test_path_exposure_regex_edge_cases(self):
+        # Retrieve pattern from active registry
+        with open(self.registry_path, "r", encoding="utf-8") as f:
+            registry_data = json.load(f)
+
+        pattern_006 = next(p for p in registry_data["patterns"] if p["pattern_id"] == "BECC-REG-006")
+        import re
+        compiled = re.compile(pattern_006["regex"])
+
+        self.assertEqual(pattern_006["classification"], "PROHIBITED")
+
+        # Map positive cases to their expected matched text values
+        positives = {
+            "/home/user/temp": "/home/u",
+            "/var/log/example.log": "/var/l",
+            "/usr/local/bin/example": "/usr/l",
+            "/tmp/example.txt": "/tmp/e",
+            "Path: /home/user/temp": "/home/u",
+            'Path="/home/user/temp"': "/home/u",
+            "Path='/home/user/temp'": "/home/u",
+            "(/home/user/temp)": "/home/u",
+            "[/home/user/temp]": "/home/u",
+            'Example: "/var/log/example.log"': "/var/l",
+            "[local path](/home/user/temp)": "/home/u",
+            "file:///home/user/temp": "/home/u",
+            "C:\\Users\\Example\\project": "C:\\Users",
+            "C:/Users/Example/project": "C:/Users",
+            "D:\\home\\example": "D:\\home",
+            "d:/tmp/example": "d:/tmp"
+        }
+
+        negatives = [
+            "var/assets/logo.svg",
+            "tmp/cache/icon.svg",
+            "home/index.html",
+            "usr/share.css",
+            "assets/var/logo.svg",
+            "https://example.com/home/user/temp",
+            "https://example.com/var/assets/logo.svg",
+            "http://example.org/usr/local",
+            "example.com/home/index.html",
+            "somehome/user/temp",
+            "myvar/log/example.log"
+        ]
+
+        for pos, expected_match in positives.items():
+            matches = list(compiled.finditer(pos))
+            self.assertEqual(len(matches), 1, f"Expected exactly 1 match for positive path: {pos}")
+            self.assertEqual(matches[0].group(0), expected_match, f"Match text mismatch for: {pos}")
+
+        for neg in negatives:
+            matches = list(compiled.finditer(neg))
+            self.assertEqual(len(matches), 0, f"Falsely matched safe/relative path: {neg}")
 
 if __name__ == "__main__":
     unittest.main()
