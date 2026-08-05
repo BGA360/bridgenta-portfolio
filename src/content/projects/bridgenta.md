@@ -334,4 +334,6 @@ Für die Weiterentwicklung der Plattform sind folgende Ausbaustufen geplant, um 
 ## Quellen und Referenzen
 *   **Lovable AI Builder**: Spezifikation für KI-gestützte Entwicklungsabläufe. [Lovable Platform](https://lovable.dev/)
 *   **GitHub Actions**: Dokumentation zur kontinuierlichen Integration und CI/CD-Pipelines. [GitHub Actions Guide](https://docs.github.com/actions)
-*   **BridGenta Engineering Communication Constitution (BECC)**: Das zugrunde liegende Framework für technische Erklärbarkeit und Governance. [BECC Portal](https://github.com/BGA360/bridgenta-portfolio/blob/main/docs/engineering-communication/README.md)
+* **BridGenta Engineering Communication Constitution (BECC)**: Ein internes
+  Kommunikationsframework unterstützt die nachvollziehbare, konsistente und
+  evidenzbasierte Darstellung technischer Projektarbeit.
