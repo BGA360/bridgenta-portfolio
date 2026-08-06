@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BECC Certified Projects Registry Schema",
+  "description": "Schema governing machine-readable BECC project certification records.",
+  "type": "object",
+  "required": [
+    "registry_version",
+    "status",
+    "last_updated",
+    "total_certified_projects",
+    "projects"
+  ],
+  "properties": {
+    "registry_version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["OPERATIONAL", "MAINTENANCE", "DEPRECATED"]
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "total_certified_projects": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CertifiedProject"
+      }
+    }
+  },
+  "definitions": {
+    "CertifiedProject": {
+      "type": "object",
+      "required": [
+        "certificate_id",
+        "project_name",
+        "repository_url",
+        "evaluated_commit_sha",
+        "project_version",
+        "framework_version",
+        "certification_scope",
+        "certification_status",
+        "issue_date",
+        "valid_until",
+        "reassessment_date",
+        "certification_authority",
+        "evidence_package",
+        "historical_notes"
+      ],
+      "properties": {
+        "certificate_id": {
+          "type": "string",
+          "pattern": "^BECC-CERT-[0-9]{4}-[0-9]{3}$"
+        },
+        "project_name": {
+          "type": "string"
+        },
+        "repository_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "evaluated_commit_sha": {
+          "type": "string"
+        },
+        "project_version": {
+          "type": "string"
+        },
+        "framework_version": {
+          "type": "string"
+        },
+        "certification_scope": {
+          "type": "string"
+        },
+        "certification_status": {
+          "type": "string",
+          "enum": [
+            "Draft",
+            "Pending Assessment",
+            "Under Assessment",
+            "Under Verification",
+            "Certified",
+            "Certified with Observations",
+            "Provisionally Certified",
+            "Suspended",
+            "Revoked",
+            "Expired",
+            "Archived"
+          ]
+        },
+        "issue_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date"
+        },
+        "reassessment_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "certification_authority": {
+          "type": "string"
+        },
+        "evidence_package": {
+          "type": "string"
+        },
+        "historical_notes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["timestamp", "action", "details"],
+            "properties": {
+              "timestamp": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "details": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
