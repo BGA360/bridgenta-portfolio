@@ -36,30 +36,30 @@ Biologische Zahnarztpraxen behandeln Patienten unter Berücksichtigung systemisc
 ---
 
 ## Problem
-Medizinische Aufklärungsangebote sind oft schwer verständlich und unzugänglich für Menschen mit Einschränkungen. Zudem birgt die Implementierung interaktiver Tools (wie medizinischer Rechner) Risiken für den Datenschutz. Wenn Patientendaten zur Berechnung an einen Server übermittelt werden, unterliegen diese strengen regulatorischen Vorgaben (DSGVO). Es fehlte ein Lösungsansatz, der hohe Barrierefreiheit, schnelle Ladezeiten und absoluten Datenschutz miteinander verbindet.
+Medizinische Aufklärungsangebote sind oft schwer verständlich und unzugänglich für Menschen mit Einschränkungen. Zudem birgt die Implementierung interaktiver Tools (wie medizinischer Rechner) Risiken für den Datenschutz. Wenn Patientendaten zur Berechnung an einen Server übermittelt werden, unterliegen diese strengen regulatorischen Vorgaben (DSGVO). Es fehlte ein Lösungsansatz, der hohe Barrierefreiheit, schnelle Ladezeiten und eine datenschutzorientierte, clientseitige Verarbeitung sensibler Eingaben miteinander verbindet.
 
 ---
 
 ## Constraints
 Bei der Entwicklung mussten strenge Vorgaben eingehalten werden:
 - **Barrierefreiheit (WCAG 2.1 AA)**: Kontraste, Tastaturbedienbarkeit und Screenreader-Unterstützung waren zwingend vorgeschrieben.
-- **Datenschutz (DSGVO)**: Die Verarbeitung persönlicher Gesundheitsdaten im Vitality-Score-Rechner durfte unter keinen Umständen serverseitig erfolgen.
+- **Datenschutz (DSGVO)**: Für den Vitality-Score-Rechner war keine serverseitige Verarbeitung der eingegebenen Gesundheitswerte vorgesehen.
 - **Mobile Performance**: Schnelle Ladezeiten auch bei schlechter mobiler Netzabdeckung waren für Patienten von unterwegs essenziell.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Der Ausschluss serverseitiger Datenübertragungen bei interaktiven Formularen eliminiert das Risiko von DSGVO-Verstößen im Bereich sensibler Gesundheitsdaten vollständig.</p>
+  <p class="engineering-insight__text">Der Verzicht auf eine serverseitige Verarbeitung der Eingabewerte reduziert eine mögliche Datenübertragung und begrenzt damit einen Teil der datenschutzbezogenen Risiken.</p>
 </div>
 
 ---
 
 ## Engineering Thinking
-Die Lösung basiert auf einem statischen Frontend-Ansatz (Jamstack-Philosophie) kombiniert mit clientseitiger Logik. Durch den Verzicht auf ein dynamisches Backend minimieren wir Sicherheitsrisiken und Ladezeiten. Alle interaktiven Berechnungen laufen lokal im Browser des Nutzers ab. Dies spart Serverressourcen und garantiert absolute Vertraulichkeit, da keine Gesundheitsdaten über das Netzwerk übertragen werden.
+Die Lösung basiert auf einem statischen Frontend-Ansatz (Jamstack-Philosophie) kombiniert mit clientseitiger Logik. Durch den Verzicht auf ein dynamisches Backend minimieren wir Sicherheitsrisiken und Ladezeiten. Nach dem dokumentierten Umsetzungskonzept erfolgt die Auswertung clientseitig im Browser. Dies spart Serverressourcen. Für die Berechnung ist keine Übertragung der eingegebenen Werte an einen serverseitigen Analysedienst vorgesehen.
 
 ---
 
 ## Architecture
-Die Anwendung läuft vollständig auf der Client-Seite. Die statischen Seiten werden vorgerendert bereitgestellt. Der Vitality-Score-Rechner greift über Vanilla JavaScript direkt auf die Benutzereingaben im DOM zu, berechnet das Ergebnis lokal und aktualisiert die Ansicht dynamisch. Eine Netzwerkverbindung zum Server wird nach dem Laden der Seite für die Berechnung nicht mehr benötigt.
+Das dokumentierte Architekturkonzept sieht eine clientseitige Ausführung der Anwendung vor. Die statischen Seiten werden vorgerendert bereitgestellt. Im dokumentierten Architekturkonzept verarbeitet Vanilla JavaScript die Benutzereingaben im DOM und aktualisiert die Ergebnisansicht clientseitig. Für die Berechnung ist nach dem Laden der Seite keine weitere Verbindung zu einem serverseitigen Analysedienst vorgesehen.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
@@ -128,7 +128,7 @@ Die Entwicklung erfolgte mit Fokus auf barrierefreies Markup. Formularelemente w
 graph TD
     User([Patient]) -->|Formular-Eingabe| Rechner[Clientseitiger JS-Rechner]
     Rechner -->|Lokale Kalkulation| Ergebnis[Score & Empfehlung im DOM]
-    Rechner -.->|Keine Übertragung| Server[(Webserver / Datenschutz-Sicherheit)]
+    Rechner -.->|Keine Serverübertragung vorgesehen| Server[(Webserver / Datenschutz-Sicherheit)]
 ```
 
   <figcaption><strong>Artefakt 2: High-Level Ablaufdiagramm</strong> – Zweck: Veranschaulichung der Caching- und Verarbeitungsgrenzen im Vitality-Score-Rechner.</figcaption>
@@ -144,11 +144,11 @@ graph TD
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Soll-Vorgabe</span>
-        <p class="evidence-card__value">Vollständige Einhaltung der DSGVO für medizinische Angaben.</p>
+        <p class="evidence-card__value">Datenschutzorientiertes Verarbeitungskonzept für sensible medizinische Eingaben.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Ist-Zustand</span>
-        <p class="evidence-card__value">100% clientseitige Auswertung im Browser; keine Serverübertragung.</p>
+        <p class="evidence-card__value">Clientseitige Auswertung im Browser; eine serverseitige Übertragung der Eingabewerte ist im dokumentierten Konzept nicht vorgesehen.</p>
       </div>
     </div>
   </div>
@@ -188,7 +188,7 @@ graph TD
 ---
 
 ## Results
-- **Datenschutzkonforme Interaktion**: Der Vitality-Score-Rechner läuft vollständig lokal – es findet keine Übertragung medizinischer Daten an Webserver statt.
+- **Datenschutzorientierte Interaktion**: Die vorgesehene clientseitige Auswertung vermeidet für die Berechnung eine serverseitige Verarbeitung der eingegebenen Werte.
 - **Barrierefreiheit**: Erfolgreiches Audit der Barrierefreiheit nach WCAG-Standards (Lighthouse Score 100/100).
 - **Conversion-Steigerung**: Stärkung des Patientenvertrauens und Erhöhung der Online-Terminbuchungen durch das interaktive Aufklärungskonzept.
 
