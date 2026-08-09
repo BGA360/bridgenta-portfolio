@@ -63,7 +63,7 @@ Die Web-Applikation basiert auf einer Cache-First-Strategie für statische Asset
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Der Einsatz einer Cache-First-Strategie über Service Worker entkoppelt die Verfügbarkeit von statischen Kerninhalten vollständig von der Netzqualität.</p>
+  <p class="engineering-insight__text">Die clientseitige Zwischenspeicherung reduziert für ausgewählte Kerninhalte die Abhängigkeit von einer aktiven Netzverbindung.</p>
 </div>
 
 ---
@@ -196,7 +196,7 @@ graph LR
 ---
 
 ## Lessons Learned
-Die Entwicklung von StarCleaners hat die Relevanz minimaler Ladezeiten im gehobenen Dienstleistungssektor verdeutlicht. Die Nutzung nativer Web-Technologien (Vanilla HTML/CSS/JS) anstelle schwerer Frameworks erwies sich als bester Weg zur Erreichung maximaler Ladezeiten auf Smartphones. Die clientseitige Caching-Steuerung über den Service Worker sichert zudem die ständige Erreichbarkeit und stärkt somit das Vertrauensverhältnis zum anspruchsvollen Kundenstamm.
+Die Entwicklung von StarCleaners hat die Relevanz minimaler Ladezeiten im gehobenen Dienstleistungssektor verdeutlicht. Die Nutzung nativer Web-Technologien (Vanilla HTML/CSS/JS) anstelle schwerer Frameworks erwies sich als bester Weg zur Erreichung maximaler Ladezeiten auf Smartphones. Die clientseitige Caching-Steuerung über den Service Worker unterstützt die Offline-Nutzung, indem ausgewählte Kerninhalte bei Verbindungsunterbrechungen weiterhin bereitgestellt werden können.
 
 ---
 
