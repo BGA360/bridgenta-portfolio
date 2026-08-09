@@ -169,7 +169,7 @@ Im Vorfeld der Entwicklung wurden kritische Architekturentscheidungen getroffen,
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Resultat</span>
-      <p class="decision-card__text">Wir modernisieren das System schrittweise; im Pilotbetrieb traten keine Ausfälle auf.</p>
+      <p class="decision-card__text">Wir modernisieren das System schrittweise; im Pilotbetrieb wurden keine ungeplanten Systemunterbrechungen registriert.</p>
     </div>
   </div>
   <div class="decision-card">

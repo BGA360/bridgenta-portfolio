@@ -36,7 +36,7 @@ Kleine Unternehmen in hochspezialisierten Nischen hängen stark von lokaler Auff
 ---
 
 ## Problem
-In der Permakultur und regenerativen Landschaftsplanung reicht reine Keyword-Optimierung nicht aus. Suchmaschinen müssen verstehen, wie Dienstleistungen, Personen (die Gründerin) und wissenschaftliche Konzepte zusammenhängen. Zudem ist das manuelle Pflegen komplexer JSON-LD-Metadaten über mehrere statische Unterseiten hinweg fehleranfällig und zeitintensiv. Es fehlt ein automatisierter Workflow, der semantische Verknüpfungen fehlerfrei in alle HTML-Seiten injiziert.
+In der Permakultur und regenerativen Landschaftsplanung reicht reine Keyword-Optimierung nicht aus. Suchmaschinen müssen verstehen, wie Dienstleistungen, Personen (die Gründerin) und wissenschaftliche Konzepte zusammenhängen. Zudem ist das manuelle Pflegen komplexer JSON-LD-Metadaten über mehrere statische Unterseiten hinweg fehleranfällig und zeitintensiv. Es fehlt ein automatisierter Workflow, der semantische Verknüpfungen konsistent in alle HTML-Seiten injiziert.
 
 ---
 
