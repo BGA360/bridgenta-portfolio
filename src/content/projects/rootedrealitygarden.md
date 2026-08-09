@@ -54,7 +54,7 @@ Für das Projekt galten folgende Einschränkungen:
 ---
 
 ## Engineering Thinking
-Die technische Strategie basiert auf dem Prinzip der **automatisierten semantischen Strukturierung**. Statt Metadaten manuell in jede HTML-Datei einzupflegen, nutzen wir ein Build-Time-Skript. Dieses liest die logischen Bezüge aus einer zentralen Konfiguration und injiziert die validierten JSON-LD-Graphen direkt in den Header der jeweiligen Seiten. Dies sichert eine konsistente Datenstruktur über das gesamte Projekt hinweg.
+Die technische Strategie basiert auf dem Prinzip der **automatisierten semantischen Strukturierung**. Statt Metadaten manuell in jede HTML-Datei einzupflegen, nutzen wir ein Build-Time-Skript. Dieses liest die logischen Bezüge aus einer zentralen Konfiguration und injiziert die generierten JSON-LD-Graphen direkt in den Header der jeweiligen Seiten. Dies unterstützt eine konsistente Datenstruktur über die verschiedenen Seiten hinweg.
 
 ---
 
@@ -63,7 +63,7 @@ Die Bereitstellungs-Pipeline trennt Quellcode und Metadaten-Generierung. Ein Pyt
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Durch die Ausführung von Validierungs- und Injektionsskripten vor dem Deployment wird sichergestellt, dass ausschließlich syntaktisch valider Code veröffentlicht wird.</p>
+  <p class="engineering-insight__text">Die Ausführung von Generierungs- und Prüfskripten vor dem Deployment unterstützt die Einhaltung standardisierter Datenstrukturen im veröffentlichten Code.</p>
 </div>
 
 ---
@@ -188,8 +188,8 @@ graph TD
 ---
 
 ## Results
-- **Crawler-Optimierung**: Fehlerfreie maschinelle Lesbarkeit durch vollständig validierte Entity-Verknüpfungen.
-- **Zitierbarkeit**: Nachweisbare Zitate und korrekte Zuordnung des Dienstleistungsangebots in KI-gestützten Suchanfragen im Zielgebiet.
+- **Crawler-Optimierung**: Strukturierte Schema.org-Metadaten zur Unterstützung der maschinellen Verarbeitung semantischer Informationen.
+- **Zitierbarkeit**: Strukturierte Metadaten zur Unterstützung der Zuordnung und Auffindbarkeit des Angebots in KI-gestützten Suchanfragen.
 - **Wartbarkeit**: Reduzierung des manuellen Pflegeaufwands für Metadaten durch das automatisierte Injektionsskript.
 
 ---
