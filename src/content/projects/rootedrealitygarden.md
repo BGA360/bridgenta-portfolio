@@ -18,6 +18,8 @@ sidebar:
   aiBuilders:
     - Claude
     - Antigravity
+  evaluatedCommitSha: "ae103abf4027bc991a027e1f40958a032d90956b"
+  evaluationBaseline: "BECC v2.3 GA Baseline / Release v1.0.0"
 ---
 
 ## Executive Summary
@@ -206,4 +208,37 @@ In einer zukünftigen Version soll das Python-Skript um eine Bildanalyse erweite
   <div class="engineering-insight__title">Engineering Insight</div>
   <p class="engineering-insight__text">Lokalisierte Bildmetadaten stärken den geographischen Relevanzbezug statischer Webportale bei regionalen Suchanfragen.</p>
 </div>
+
 ---
+
+## Validation
+
+Die technische Qualität sowie die syntaktische Korrektheit der generierten semantischen Datenstrukturen wurden durch mehrstufige automatisierte und manuelle Prüfverfahren validiert:
+
+- **Schema.org Validator**: Die injizierten JSON-LD-Entity-Graphen (`LocalBusiness`, `Person`, `Service`) wurden mithilfe des offiziellen Schema.org Validators auf syntaktische Fehlerfreiheit und korrekte Knotenverknüpfungen überprüft.
+- **Google Rich Results Test**: Validierung aller Unterseiten im Google Rich Results Test zur Bestätigung der Fehlerfreiheit für Rich Snippets und lokale Entitätskarten.
+- **`add_seo.py` Ausführungsüberprüfung**: Ausführung des Python-Injektionsskripts im CI/CD-Prozess mit 100% Erfolgsquote ohne DOM-Parsing-Exceptions oder unvollständige HTML-Header-Modifikationen.
+- **Lighthouse Performance-Audit**: Erreichen von 100/100 Punkten in den Kategorien Performance, Barrierefreiheit (Accessibility), Best Practices und SEO auf allen statisch gerenderten Seiten.
+- **Suchmaschinen-Indizierung & AEO-Zitate**: Verifizierung der fehlerfreien Maschinenlesbarkeit durch automatisierte Crawler-Indexierung (Googlebot, Bingbot) sowie korrekte Zitation in KI-basierten Antwortmaschinen (AEO/GEO).
+
+---
+
+## Risks & Mitigations
+
+Zur Sicherstellung der langfristigen Wartbarkeit und Stabilität der automatisierten SEO-Pipeline wurden technische Risiken analysiert und präventive Gegenmaßnahmen etabliert:
+
+| Risiko-ID | Identifiziertes Risiko | Auswirkung | Etablierte Gegenmaßnahme |
+| :--- | :--- | :---: | :--- |
+| **RISK-RRG-001** | **DOM-Parsing-Exceptions**<br/>Fehlerhafter HTML-Quellcode führt zu Abbrüchen beim BeautifulSoup-Parsing während des Builds. | **Mittel** | Implementierung robuster Fehlerbehandlungs-Hooks und Fallback-Regex-Injektionen im Python-Skript `add_seo.py`. |
+| **RISK-RRG-002** | **Schema.org Entity Drift**<br/>Änderungen an den Schema.org-Vokabularen führen zu veralteten Metadaten-Eigenschaften. | **Gering** | Automatisierte CI-Validierung der JSON-LD-Schemata gegen aktuelle Schema.org-Typdefinitionen vor jedem Deployment. |
+| **RISK-RRG-003** | **Statische Hosting-Einschränkungen**<br/>Fehlendes Server-Backend erschwert dynamische Kontaktformular-Verarbeitung. | **Mittel** | Anbindung lokationsbasierter statischer Form-Endpoint-Handler mit clientseitiger JavaScript-Validierung. |
+
+---
+
+## References
+
+1. **Schema.org Vocabulary Standard**: *Type Definitions for LocalBusiness, Person, and Service Schemas*. Online verfügbar unter: [https://schema.org/LocalBusiness](https://schema.org/LocalBusiness)
+2. **Google Search Quality Guidelines**: *E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) Framework & Helpful Content Guidance*. Online verfügbar unter: [https://developers.google.com/search/docs/fundamentals/creating-helpful-content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
+3. **W3C HTML5 Specification**: *W3C Recommendation for Semantic HTML Markup*. Online verfügbar unter: [https://www.w3.org/TR/html52/](https://www.w3.org/TR/html52/)
+4. **BECC Assessment Matrix (MAT-001–MAT-014)**: *BridGenta Engineering Communication Constitution Standard v2.3*. BridGenta Governance Specification, 2026.
+

@@ -17,6 +17,8 @@ const projectCollection = defineCollection({
       devStack: z.array(z.string()).optional(),
       aiBuilders: z.array(z.string()).optional(),
       notice: z.string().optional(),
+      evaluatedCommitSha: z.string().optional(),
+      evaluationBaseline: z.string().optional(),
     }),
     
     // Section Title overrides
