@@ -42,8 +42,14 @@ jobs:
       - name: 🔗 Check Markdown Links
         run: npm run check-links
 
+      - name: 🧪 Run Build Verifier Tests
+        run: npm run test:build-verifier
+
       - name: 🚀 Build Website
         run: npm run build
+
+      - name: 🛡️ Verify Generated Build
+        run: npm run verify:build
 
       - name: 🕵️ Audit HTML Links
         run: node tooling/audit_links.cjs

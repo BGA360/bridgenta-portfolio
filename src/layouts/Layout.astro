@@ -2,6 +2,7 @@
 import Schema from '../components/Schema.astro';
 import CookieConsent from '../components/CookieConsent.astro';
 import { getCollection, getEntry } from 'astro:content';
+import portfolioConfig from '../config/portfolio.json';
 
 interface Props {
   title: string;
@@ -22,7 +23,7 @@ const footerData = await getEntry('pages', 'footer');
 const { topTier, brand, newsletter, bottom } = footerData.data;
 
 // Fetch projects dynamically for footer listing (only active projects)
-const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+const activeProjectSlugs = portfolioConfig.activeProjectSlugs;
 const allProjects = (await getCollection('projects'))
   .filter((proj) => activeProjectSlugs.includes(proj.slug))
   .sort((a, b) => activeProjectSlugs.indexOf(a.slug) - activeProjectSlugs.indexOf(b.slug));
