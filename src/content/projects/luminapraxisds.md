@@ -21,7 +21,7 @@ sidebar:
 ---
 
 ## Executive Summary
-Lumina Praxis ist ein barrierefreies Webportal für eine biologische und ganzheitliche Zahnarztpraxis in Leverkusen. Die Anwendung kombiniert ein ansprechendes, barrierefreies Informationsangebot mit interaktiven Elementen. Ziel des Projekts war die Etablierung eines digitalen Aufklärungskonzepts, um das Patientenvertrauen in biologische Heilverfahren zu stärken und die Online-Terminbuchungen messbar zu steigern.
+Lumina Praxis ist ein Webportal, dessen Gestaltung auf gute Zugänglichkeit, verständliche Informationsvermittlung und responsive Nutzung ausgerichtet wurde. Die Anwendung kombiniert ein ansprechendes, gut lesbares Informationsangebot mit interaktiven Elementen. Ziel des Projekts war die Etablierung eines digitalen Aufklärungskonzepts, um Orientierung zu bieten, das Patientenvertrauen in biologische Heilverfahren zu stärken und die Online-Terminbuchungsprozesse zu unterstützen.
 
 ---
 
@@ -36,13 +36,13 @@ Biologische Zahnarztpraxen behandeln Patienten unter Berücksichtigung systemisc
 ---
 
 ## Problem
-Medizinische Aufklärungsangebote sind oft schwer verständlich und unzugänglich für Menschen mit Einschränkungen. Zudem birgt die Implementierung interaktiver Tools (wie medizinischer Rechner) Risiken für den Datenschutz. Wenn Patientendaten zur Berechnung an einen Server übermittelt werden, unterliegen diese strengen regulatorischen Vorgaben (DSGVO). Es fehlte ein Lösungsansatz, der hohe Barrierefreiheit, schnelle Ladezeiten und eine datenschutzorientierte, clientseitige Verarbeitung sensibler Eingaben miteinander verbindet.
+Medizinische Aufklärungsangebote sind oft schwer verständlich und unzugänglich für Menschen mit Einschränkungen. Zudem birgt die Implementierung interaktiver Tools (wie medizinischer Rechner) Risiken für den Datenschutz. Wenn Patientendaten zur Berechnung an einen Server übermittelt werden, unterliegen diese strengen regulatorischen Vorgaben (DSGVO). Es fehlte ein Lösungsansatz, der Barrierearmut, schnelle Ladezeiten und eine datenschutzorientierte, clientseitige Verarbeitung sensibler Eingaben miteinander verbindet.
 
 ---
 
 ## Constraints
 Bei der Entwicklung mussten strenge Vorgaben eingehalten werden:
-- **Barrierefreiheit (WCAG 2.1 AA)**: Kontraste, Tastaturbedienbarkeit und Screenreader-Unterstützung waren zwingend vorgeschrieben.
+- **Zugänglichkeit (WCAG 2.1 AA-Orientierung)**: Kontraste, Tastaturbedienbarkeit und Screenreader-Unterstützung wurden als Designziele vorgegeben.
 - **Datenschutz (DSGVO)**: Für den Vitality-Score-Rechner war keine serverseitige Verarbeitung der eingegebenen Gesundheitswerte vorgesehen.
 - **Mobile Performance**: Schnelle Ladezeiten auch bei schlechter mobiler Netzabdeckung waren für Patienten von unterwegs essenziell.
 
@@ -54,7 +54,7 @@ Bei der Entwicklung mussten strenge Vorgaben eingehalten werden:
 ---
 
 ## Engineering Thinking
-Die Lösung basiert auf einem statischen Frontend-Ansatz (Jamstack-Philosophie) kombiniert mit clientseitiger Logik. Durch den Verzicht auf ein dynamisches Backend minimieren wir Sicherheitsrisiken und Ladezeiten. Nach dem dokumentierten Umsetzungskonzept erfolgt die Auswertung clientseitig im Browser. Dies spart Serverressourcen. Für die Berechnung ist keine Übertragung der eingegebenen Werte an einen serverseitigen Analysedienst vorgesehen.
+Die Lösung basiert auf einem statischen Frontend-Ansatz (Jamstack-Philosophie) kombiniert mit clientseitiger Logik. Der Verzicht auf einen eigenen dynamischen Berechnungs-Backenddienst reduziert die serverseitige Angriffsfläche für diesen Verarbeitungspfad. Nach dem dokumentierten Umsetzungskonzept erfolgt die Auswertung clientseitig im Browser. Dies spart Serverressourcen. Für die Berechnung ist keine Übertragung der eingegebenen Werte an einen serverseitigen Analysedienst vorgesehen.
 
 ---
 
@@ -99,7 +99,7 @@ Wesentliche technische Entscheidungen prägten die Architektur von Lumina Praxis
 ---
 
 ## Implementation
-Die Entwicklung erfolgte mit Fokus auf barrierefreies Markup. Formularelemente wurden semantisch korrekt deklariert und mit entsprechenden ARIA-Attributen versehen. Der Vitality-Score-Rechner wurde in sauberem ES6-JavaScript geschrieben. Um die lokale Auffindbarkeit der Praxis zu stärken, wurden strukturierte JSON-LD-Daten vom Typ `Dentist` und `MedicalBusiness` fest in die Vorlagen integriert.
+Die Entwicklung orientierte sich an barrierearmen Markup-Strukturen. Formularelemente wurden semantisch deklariert und mit entsprechenden ARIA-Attributen versehen. Der Vitality-Score-Rechner wurde in ES6-JavaScript implementiert. Um die lokale Auffindbarkeit der Praxis zu unterstützen, wurden strukturierte JSON-LD-Daten vom Typ Dentist und MedicalBusiness in die Vorlagen integriert.
 
 ---
 
@@ -157,11 +157,11 @@ graph TD
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Soll-Vorgabe</span>
-        <p class="evidence-card__value">WCAG 2.1 (AA) Konformität.</p>
+        <p class="evidence-card__value">Orientierung an WCAG 2.1 (AA).</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Ist-Zustand</span>
-        <p class="evidence-card__value">Kontrastverhältnis aller Fließtexte liegt über 4.5:1.</p>
+        <p class="evidence-card__value">Bei der Gestaltung wurde auf ausreichende Kontraste und eine gute Lesbarkeit geachtet.</p>
       </div>
     </div>
   </div>
@@ -170,11 +170,11 @@ graph TD
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Soll-Vorgabe</span>
-        <p class="evidence-card__value">Volle Tastatur- und Screenreader-Bedienbarkeit.</p>
+        <p class="evidence-card__value">Unterstützung von Tastatur- und Screenreader-Bedienung.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Ist-Zustand</span>
-        <p class="evidence-card__value">Logischer Fokusfluss und ARIA-Labels in allen Formularen.</p>
+        <p class="evidence-card__value">Semantische Beschriftung, nachvollziehbare Fokusführung und zugängliche Interaktion wurden als Gestaltungsziele berücksichtigt.</p>
       </div>
     </div>
   </div>
@@ -182,27 +182,48 @@ graph TD
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Systematische Tastaturnavigationstests und Kontrastmessungen stellen sicher, dass medizinische Webportale für alle Patientengruppen uneingeschränkt nutzbar sind.</p>
+  <p class="engineering-insight__text">Durchdachte Tastaturnavigation und Kontrastoptimierung unterstützen die barrierearme Nutzung medizinischer Webportale.</p>
 </div>
 
 ---
 
 ## Results
-- **Datenschutzorientierte Interaktion**: Die vorgesehene clientseitige Auswertung vermeidet für die Berechnung eine serverseitige Verarbeitung der eingegebenen Werte.
-- **Barrierefreiheit**: Erfolgreiches Audit der Barrierefreiheit nach WCAG-Standards (Lighthouse Score 100/100).
-- **Conversion-Steigerung**: Stärkung des Patientenvertrauens und Erhöhung der Online-Terminbuchungen durch das interaktive Aufklärungskonzept.
+
+### Implementierte Ergebnisse (Outputs)
+- Bereitstellung der statischen Webportal-Struktur zur Präsentation ganzheitlicher Praxisleistungen.
+- Integration strukturierter JSON-LD-Suchdaten vom Typ Dentist und MedicalBusiness in das Markup.
+- Technische Integration eines clientseitigen JavaScript-Moduls zur Vitality-Score-Berechnung.
+
+### Technische Eigenschaften (Technical Intent)
+- Lokale Berechnung im Browser-DOM zur Verringerung der netzwerkbasierten Datenübertragung.
+- Verringerung der serverseitigen Angriffsfläche durch den Verzicht auf dynamische Server-Skripte für diesen Pfad.
+
+### Projektziele (Objectives)
+- Strukturierung von Fachinhalten zur Stärkung des Aufklärungsgrades bei Patienten.
+- Förderung der barrierearmen Nutzung durch Tastaturbedienbarkeit und Farbkontraste.
+
+> [!NOTE]
+> **Nachweisgrenze der Dokumentation**
+> Quantitative Conversion-Messungen sowie vollständige Lighthouse-Auditprotokolle sind nicht Bestandteil der vorliegenden technischen Dokumentation dieser Fallstudie.
 
 ---
 
 ## Lessons Learned
-Die Umsetzung dieses Fachportals unterstrich die Bedeutung einer engen Verzahnung von Informationsarchitektur, Datenschutz und Barrierefreiheit. Die Entscheidung, den Vitality-Score-Rechner rein clientseitig zu implementieren, war sowohl aus Performance-Gründen als auch zum Schutz vertraulicher Patientendaten die optimale Lösung. Zudem zeigte sich, dass barrierefreie Gestaltung nach WCAG-Standards und ästhetisches Design einander nicht ausschließen, sondern gemeinsam ein vertrauenswürdiges Nutzererlebnis schaffen.
+Die Umsetzung dieses Fachportals unterstrich die Bedeutung einer engen Verzahnung von Informationsarchitektur, Datenschutz und Barrierearmut. Die Entscheidung, den Vitality-Score-Rechner rein clientseitig zu implementieren, war sowohl aus Performance-Gründen als auch zum Schutz vertraulicher Patientendaten eine geeignete Lösung. Zudem zeigte sich, dass eine an WCAG-Vorgaben orientierte, barrierearme Gestaltung und ein ansprechendes Design einander unterstützen können, um ein vertrauenswürdiges Nutzererlebnis zu schaffen.
 
 ---
 
 ## Future Evolution
-Für zukünftige Erweiterungen ist die Integration einer Progressive Web App (PWA) Struktur vorgesehen. Dadurch können Notfallkontaktdaten, wichtige Verhaltensregeln nach Operationen und Praxisöffnungszeiten auch bei vollständigem Netzausfall im Offline-Modus der Patienten abgerufen werden.
+Für zukünftige Erweiterungen ist die Integration einer Progressive Web App (PWA) Struktur vorgesehen. Dadurch können Notfallkontaktdaten, wichtige Verhaltensregeln nach Operationen und Praxisöffnungszeiten bei unzureichender Netzabdeckung oder offline abgerufen werden.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Der Einsatz von Service-Worker-Caching erhöht die Resilienz von medizinischen Webportalen im Notfall erheblich.</p>
+  <p class="engineering-insight__text">Service-Worker-Caching kann die Verfügbarkeit wichtiger Inhalte bei eingeschränkter Netzverbindung verbessern.</p>
 </div>
+
+---
+
+## References
+- [WCAG 2.1 Web Content Accessibility Guidelines](https://www.w3.org/TR/WCAG21/)
+- [Schema.org Dentist Specification](https://schema.org/Dentist)
+- [Schema.org MedicalBusiness Specification](https://schema.org/MedicalBusiness)
