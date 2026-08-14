@@ -103,39 +103,25 @@ Die Entwicklung orientierte sich an barrierearmen Markup-Strukturen. Formularele
 
 ---
 
-## Public Artifacts
+## Öffentliche Projekteinblicke
 
 <figure>
-  <pre><code>
-+-----------------------------------+
-|           Lumina Praxis           |
-|                                   |
-|   [ Biologische Zahnmedizin ]     |
-|                                   |
-|   * Amalgamsanierung              |
-|   * Keramikimplantate             |
-|                                   |
-|   [ Vitality-Score Rechner ]      |
-|   > Berechnen Sie Ihren Score     |
-+-----------------------------------+
-  </code></pre>
-  <figcaption><strong>Artefakt 1: Schematisches Interface-Mockup</strong> – Zweck: Darstellung der klaren visuellen Hierarchie und des eingebetteten Vitality-Score-Rechners.</figcaption>
+  <img src="/images/lumina-portfolio/lumina-vitality-score-benutzeroberflaeche.jpeg" alt="Rekonstruierte Benutzeroberfläche des mehrstufigen Lumina-Praxis Vitality-Score-Rechners." loading="lazy" width="1293" height="728" />
+  <figcaption><strong>Artefakt 1: Benutzeroberfläche des Vitality-Score-Rechners</strong> – Typ: Codebasierte Rekonstruktion. Quelle: Ursprünglicher Lumina-Praxis-Codebestand. Zweck: Darstellung des mehrstufigen Fragebogens und der Benutzerinteraktion. Nachweisstatus: Belegt die aus dem ursprünglichen Code rekonstruierte Interface- und Interaktionsstruktur; kein Nachweis der medizinischen oder klinischen Validität der dargestellten Aussagen.</figcaption>
 </figure>
 
 <figure>
+  <img src="/images/lumina-portfolio/lumina-vitality-score-berechnungslogik.jpeg" alt="Codebasierte Darstellung der Berechnungs- und Ergebnislogik des Lumina-Praxis Vitality-Score-Rechners." loading="lazy" width="1326" height="791" />
+  <figcaption><strong>Artefakt 2: Berechnungs- und Ergebnislogik des Vitality-Score-Rechners</strong> – Typ: Codebasierte Logikrekonstruktion. Quelle: Ursprünglicher Lumina-Praxis-Codebestand. Zweck: Darstellung des dokumentierten Scorebereichs, der Schwellenwerte und der Zuordnung zu Ergebniszuständen. Nachweisstatus: Belegt die im ursprünglichen Code angelegte Softwarelogik; kein Nachweis der klinischen, medizinischen oder diagnostischen Validität der Kategorien.</figcaption>
+</figure>
 
-```mermaid
-graph TD
-    User([Patient]) -->|Formular-Eingabe| Rechner[Clientseitiger JS-Rechner]
-    Rechner -->|Lokale Kalkulation| Ergebnis[Score & Empfehlung im DOM]
-    Rechner -.->|Keine Serverübertragung vorgesehen| Server[(Webserver / Datenschutz-Sicherheit)]
-```
-
-  <figcaption><strong>Artefakt 2: High-Level Ablaufdiagramm</strong> – Zweck: Veranschaulichung der Caching- und Verarbeitungsgrenzen im Vitality-Score-Rechner.</figcaption>
+<figure>
+  <img src="/images/lumina-portfolio/lumina-vitality-score-verarbeitungsgrenze.svg" alt="Architekturdiagramm zur clientseitigen Verarbeitung und Datenübertragungsgrenze des Vitality-Score-Rechners." loading="lazy" width="800" height="450" />
+  <figcaption><strong>Artefakt 3: Verarbeitungsgrenze des Vitality-Score-Rechners</strong> – Typ: Architekturdiagramm. Quelle: Rekonstruktion der dokumentierten Anwendungsarchitektur. Zweck: Darstellung der vorgesehenen clientseitigen Verarbeitung und der Grenze zur serverseitigen Analyse. Nachweisstatus: Architektur- und Implementierungsmodell; kein Laufzeit-, Datenschutz- oder Sicherheits-Audit.</figcaption>
 </figure>
 
 <div class="architecture-note">
-  <strong>Artefakt 3: Ergebnis-Nachweis (Qualitäts- &amp; Datenschutzmatrix)</strong> – Zweck: Übersicht der Barrierefreiheits- und Datenschutz-Messungen der Plattform.
+  <strong>Dokumentationsübersicht (Qualitäts- und Datenschutzziele)</strong> – Zweck: Zusammenfassende Darstellung der im Projekt dokumentierten Zugänglichkeits- und Datenschutzanforderungen.
 </div>
 
 <div class="evidence-grid">
