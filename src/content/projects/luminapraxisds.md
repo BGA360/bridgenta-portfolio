@@ -20,55 +20,55 @@ sidebar:
     - Antigravity
 ---
 
-## Executive Summary
+## Kurzfassung
 Lumina Praxis ist ein Webportal, dessen Gestaltung auf gute Zugänglichkeit, verständliche Informationsvermittlung und responsive Nutzung ausgerichtet wurde. Die Anwendung kombiniert ein ansprechendes, gut lesbares Informationsangebot mit interaktiven Elementen. Ziel des Projekts war die Etablierung eines digitalen Aufklärungskonzepts, um Orientierung zu bieten, das Patientenvertrauen in biologische Heilverfahren zu stärken und die Online-Terminbuchungsprozesse zu unterstützen.
 
 ---
 
-## Context
+## Ausgangssituation
 Biologische Zahnarztpraxen behandeln Patienten unter Berücksichtigung systemischer Zusammenhänge. Solche medizinischen Konzepte bedürfen einer detaillierten und verständlichen Aufklärung auf der Website. Das Vorgängersystem war unübersichtlich, lud auf Mobilgeräten langsam und war für ältere oder sehbehinderte Patienten schwer zugänglich. Zudem fehlte eine optimierte Präsenz für die lokale Suche im Einzugsgebiet.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
   <p class="engineering-insight__text">Medizinische Webseiten müssen komplexe Fachinhalte strukturiert aufbereiten, um sowohl die Anforderungen von Patienten als auch die Kriterien lokaler Suchmaschinen zu erfüllen.</p>
 </div>
 
 ---
 
-## Problem
+## Problemstellung
 Medizinische Aufklärungsangebote sind oft schwer verständlich und unzugänglich für Menschen mit Einschränkungen. Zudem birgt die Implementierung interaktiver Tools (wie medizinischer Rechner) Risiken für den Datenschutz. Wenn Patientendaten zur Berechnung an einen Server übermittelt werden, unterliegen diese strengen regulatorischen Vorgaben (DSGVO). Es fehlte ein Lösungsansatz, der Barrierearmut, schnelle Ladezeiten und eine datenschutzorientierte, clientseitige Verarbeitung sensibler Eingaben miteinander verbindet.
 
 ---
 
-## Constraints
+## Rahmenbedingungen
 Bei der Entwicklung mussten strenge Vorgaben eingehalten werden:
 - **Zugänglichkeit (WCAG 2.1 AA-Orientierung)**: Kontraste, Tastaturbedienbarkeit und Screenreader-Unterstützung wurden als Designziele vorgegeben.
 - **Datenschutz (DSGVO)**: Für den Vitality-Score-Rechner war keine serverseitige Verarbeitung der eingegebenen Gesundheitswerte vorgesehen.
 - **Mobile Performance**: Schnelle Ladezeiten auch bei schlechter mobiler Netzabdeckung waren für Patienten von unterwegs essenziell.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
   <p class="engineering-insight__text">Der Verzicht auf eine serverseitige Verarbeitung der Eingabewerte reduziert eine mögliche Datenübertragung und begrenzt damit einen Teil der datenschutzbezogenen Risiken.</p>
 </div>
 
 ---
 
-## Engineering Thinking
+## Technische Überlegungen
 Die Lösung basiert auf einem statischen Frontend-Ansatz (Jamstack-Philosophie) kombiniert mit clientseitiger Logik. Der Verzicht auf einen eigenen dynamischen Berechnungs-Backenddienst reduziert die serverseitige Angriffsfläche für diesen Verarbeitungspfad. Nach dem dokumentierten Umsetzungskonzept erfolgt die Auswertung clientseitig im Browser. Dies spart Serverressourcen. Für die Berechnung ist keine Übertragung der eingegebenen Werte an einen serverseitigen Analysedienst vorgesehen.
 
 ---
 
-## Architecture
+## Architektur
 Das dokumentierte Architekturkonzept sieht eine clientseitige Ausführung der Anwendung vor. Die statischen Seiten werden vorgerendert bereitgestellt. Im dokumentierten Architekturkonzept verarbeitet Vanilla JavaScript die Benutzereingaben im DOM und aktualisiert die Ergebnisansicht clientseitig. Für die Berechnung ist nach dem Laden der Seite keine weitere Verbindung zu einem serverseitigen Analysedienst vorgesehen.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
   <p class="engineering-insight__text">Ein rein clientseitiger Berechnungs- und Renderzyklus minimiert Latenzen und entlastet die Hosting-Infrastruktur bei steigenden Nutzerzahlen.</p>
 </div>
 
 ---
 
-## Engineering Decisions
+## Technische Entscheidungen
 Wesentliche technische Entscheidungen prägten die Architektur von Lumina Praxis:
 
 <div class="decision-grid">
@@ -98,7 +98,7 @@ Wesentliche technische Entscheidungen prägten die Architektur von Lumina Praxis
 
 ---
 
-## Implementation
+## Umsetzung
 Die Entwicklung orientierte sich an barrierearmen Markup-Strukturen. Formularelemente wurden semantisch deklariert und mit entsprechenden ARIA-Attributen versehen. Der Vitality-Score-Rechner wurde in ES6-JavaScript implementiert. Um die lokale Auffindbarkeit der Praxis zu unterstützen, wurden strukturierte JSON-LD-Daten vom Typ Dentist und MedicalBusiness in die Vorlagen integriert.
 
 ---
@@ -167,24 +167,24 @@ Die Entwicklung orientierte sich an barrierearmen Markup-Strukturen. Formularele
 </div>
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
   <p class="engineering-insight__text">Durchdachte Tastaturnavigation und Kontrastoptimierung unterstützen die barrierearme Nutzung medizinischer Webportale.</p>
 </div>
 
 ---
 
-## Results
+## Ergebnisse
 
-### Implementierte Ergebnisse (Outputs)
+### Implementierte Ergebnisse
 - Bereitstellung der statischen Webportal-Struktur zur Präsentation ganzheitlicher Praxisleistungen.
 - Integration strukturierter JSON-LD-Suchdaten vom Typ Dentist und MedicalBusiness in das Markup.
 - Technische Integration eines clientseitigen JavaScript-Moduls zur Vitality-Score-Berechnung.
 
-### Technische Eigenschaften (Technical Intent)
+### Technische Eigenschaften
 - Lokale Berechnung im Browser-DOM zur Verringerung der netzwerkbasierten Datenübertragung.
 - Verringerung der serverseitigen Angriffsfläche durch den Verzicht auf dynamische Server-Skripte für diesen Pfad.
 
-### Projektziele (Objectives)
+### Projektziele
 - Strukturierung von Fachinhalten zur Stärkung des Aufklärungsgrades bei Patienten.
 - Förderung der barrierearmen Nutzung durch Tastaturbedienbarkeit und Farbkontraste.
 
@@ -194,22 +194,22 @@ Die Entwicklung orientierte sich an barrierearmen Markup-Strukturen. Formularele
 
 ---
 
-## Lessons Learned
+## Erkenntnisse aus der Entwicklung
 Die Umsetzung dieses Fachportals unterstrich die Bedeutung einer engen Verzahnung von Informationsarchitektur, Datenschutz und Barrierearmut. Die Entscheidung, den Vitality-Score-Rechner rein clientseitig zu implementieren, war sowohl aus Performance-Gründen als auch zum Schutz vertraulicher Patientendaten eine geeignete Lösung. Zudem zeigte sich, dass eine an WCAG-Vorgaben orientierte, barrierearme Gestaltung und ein ansprechendes Design einander unterstützen können, um ein vertrauenswürdiges Nutzererlebnis zu schaffen.
 
 ---
 
-## Future Evolution
+## Nächste Entwicklungsschritte
 Für zukünftige Erweiterungen ist die Integration einer Progressive Web App (PWA) Struktur vorgesehen. Dadurch können Notfallkontaktdaten, wichtige Verhaltensregeln nach Operationen und Praxisöffnungszeiten bei unzureichender Netzabdeckung oder offline abgerufen werden.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
   <p class="engineering-insight__text">Service-Worker-Caching kann die Verfügbarkeit wichtiger Inhalte bei eingeschränkter Netzverbindung verbessern.</p>
 </div>
 
 ---
 
-## References
+## Quellen und Referenzen
 - [WCAG 2.1 Web Content Accessibility Guidelines](https://www.w3.org/TR/WCAG21/)
 - [Schema.org Dentist Specification](https://schema.org/Dentist)
 - [Schema.org MedicalBusiness Specification](https://schema.org/MedicalBusiness)
