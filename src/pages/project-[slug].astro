@@ -38,13 +38,15 @@ const getBadgeClass = (status) => {
 
 const badgeClass = getBadgeClass(entry.data.sidebar.status);
 
-// Set hero image for BridGenta and AEOcortex
+// Set hero image for BridGenta, AEOcortex and Lumina Praxis
 const heroImage = 
   entry.slug === 'bridgenta' 
     ? '/images/bga-portfolio/BG-PA01-Hero.webp' 
     : entry.slug === 'aeocortex'
       ? '/images/aeocortex-portfolio/AEO-HERO-01-Platform-Overview.webp'
-      : undefined;
+      : entry.slug === 'luminapraxisds'
+        ? '/images/lumina-portfolio/lumina-praxis-hero-card.webp'
+        : undefined;
 ---
 
 <Layout 
@@ -125,7 +127,13 @@ const heroImage =
           <div class="project-showcase-image-wrapper">
             <img 
               src={heroImage} 
-              alt={entry.slug === 'aeocortex' ? "AEOcortex-Plattformübersicht mit Dashboard-Ansicht" : `${entry.data.title} Product Showcase Dashboard`} 
+              alt={
+                entry.slug === 'aeocortex' 
+                  ? "AEOcortex-Plattformübersicht mit Dashboard-Ansicht" 
+                  : entry.slug === 'luminapraxisds'
+                    ? "Lumina Praxis Plattformübersicht und Website-Mockup"
+                    : `${entry.data.title} Product Showcase Dashboard`
+              }
               class="project-showcase-image"
               loading="eager"
               width="1672"
