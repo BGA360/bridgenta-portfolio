@@ -108,83 +108,23 @@ Die dokumentierte Umsetzung beschreibt ein Python-Skript mit BeautifulSoup zum P
 ### Artefakt 1: Layout-Struktur
 
 <figure>
-  <pre><code>
-+-----------------------------------+
-|      Rooted Reality Gardens       |
-|                                   |
-|   [ Ökologische Gartenplanung ]   |
-|                                   |
-|   * Bodenregeneration             |
-|   * Heimische Pflanzen            |
-|   * Permakultur-Systeme           |
-|                                   |
-|   [Mehr erfahren]     [Kontakt]   |
-+-----------------------------------+
-  </code></pre>
-  <figcaption><strong>Artefakt 1: Schematische Layout-Skizze</strong> – Typ: DOCUMENTATION RECONSTRUCTION. Zweck: Veranschaulichung des beabsichtigten, mobiltauglichen Portfoliodesigns der ursprünglichen Website. Dieses Schema dient der strukturellen Veranschaulichung und stellt keinen direkten Screenshot der Live-Umgebung dar.</figcaption>
+  <img src="/images/rooted-reality-portfolio/rooted-reality-artifact-01-layout-structure.webp" alt="Dokumentationsrekonstruktion der Rooted-Reality-Gardens-Seitenstruktur mit Leistungsbereichen und semantischer JSON-LD-Einbindung." loading="lazy" width="1672" height="941" />
+  <figcaption><strong>Artefakt 1: Schematische Layout-Struktur &amp; semantischer Aufbau</strong> – Typ: DOCUMENTATION RECONSTRUCTION. Zweck: Veranschaulichung des beabsichtigten, mobiltauglichen Portfoliodesigns der ursprünglichen Website. Dieses Schema dient der strukturellen Veranschaulichung und stellt keinen direkten Screenshot der Live-Umgebung dar.</figcaption>
 </figure>
 
 ### Artefakt 2: Semantische Entitäten-Struktur
 
 <figure>
-
-```mermaid
-graph TD
-    Organization[Unternehmen] -->|Gründerin| Person[Personen-Entität]
-    Organization -->|Dienstleistung| Service[Regenerative Landschaftsgestaltung]
-    Organization -->|Einsatzgebiet| Place[Geografischer Dienstleistungsbereich]
-```
-
-  <figcaption><strong>Artefakt 2: High-Level Ablaufdiagramm</strong> – Typ: ARCHITECTURE / CONCEPT DIAGRAM. Zweck: Logische Darstellung der verknüpften semantischen Entitäten im JSON-LD-Schema-Graphen des ursprünglichen Projekts.</figcaption>
+  <img src="/images/rooted-reality-portfolio/rooted-reality-artifact-02-entity-architecture.webp" alt="Architekturdiagramm der semantischen Rooted-Reality-Gardens-Entitäten mit LocalBusiness, Person, Service und Place sowie ihren Beziehungen." loading="lazy" width="1672" height="941" />
+  <figcaption><strong>Artefakt 2: Semantische Entitäten-Architektur (JSON-LD)</strong> – Typ: ARCHITECTURE DIAGRAM. Zweck: Logische Darstellung der verknüpften semantischen Entitäten im JSON-LD-Schema-Graphen des ursprünglichen Projekts.</figcaption>
 </figure>
 
 ### Artefakt 3: Konzeptioneller Metadaten-Vergleich
 
-<div class="architecture-note">
-  <strong>Artefakt 3: Konzeptioneller Vergleich (SEO- &amp; Entity-Matrix)</strong> – Typ: DOCUMENTATION RECONSTRUCTION. Zweck: Gegenüberstellung der angestrebten Suchmaschinen-Indizierung mit und ohne semantische Datenstruktur. Diese Tabelle veranschaulicht das konzeptionelle Ziel und dokumentiert keine Echtzeit-Messdaten des Repositories.
-</div>
-
-<div class="evidence-grid">
-  <div class="evidence-card">
-    <h4 class="evidence-card__title">Entity-Zuordnung</h4>
-    <div class="evidence-card__meta">
-      <div class="evidence-card__item">
-        <span class="evidence-card__label">Ohne Entity-Graph</span>
-        <p class="evidence-card__value">Semantische Beziehungen zwischen Organisation, Person und Leistungen sind nicht explizit als Entity-Graph modelliert.</p>
-      </div>
-      <div class="evidence-card__item">
-        <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
-        <p class="evidence-card__value">Semantische Beziehungen zwischen Organisation, Person und Leistungen werden explizit modelliert.</p>
-      </div>
-    </div>
-  </div>
-  <div class="evidence-card">
-    <h4 class="evidence-card__title">Suchmaschinen-Erfassung</h4>
-    <div class="evidence-card__meta">
-      <div class="evidence-card__item">
-        <span class="evidence-card__label">Ohne Entity-Graph</span>
-        <p class="evidence-card__value">Maschinenlesbare Beziehungen zwischen den relevanten Entitäten sind weniger explizit strukturiert.</p>
-      </div>
-      <div class="evidence-card__item">
-        <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
-        <p class="evidence-card__value">Strukturierte Daten stellen die relevanten Entitätsbeziehungen explizit für Such- und Antwortsysteme bereit.</p>
-      </div>
-    </div>
-  </div>
-  <div class="evidence-card">
-    <h4 class="evidence-card__title">KI-Suchmaschinen-Erfassung</h4>
-    <div class="evidence-card__meta">
-      <div class="evidence-card__item">
-        <span class="evidence-card__label">Ohne Entity-Graph</span>
-        <p class="evidence-card__value">Die semantische Zuordnung des Angebots ist weniger explizit modelliert.</p>
-      </div>
-      <div class="evidence-card__item">
-        <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
-        <p class="evidence-card__value">Die semantische Zuordnung des Angebots wird durch strukturierte Entitätsbeziehungen unterstützt.</p>
-      </div>
-    </div>
-  </div>
-</div>
+<figure>
+  <img src="/images/rooted-reality-portfolio/rooted-reality-artifact-03-metadata-comparison.webp" alt="Konzeptioneller Vergleich der semantischen Metadatenstruktur ohne Entity-Graph und mit explizit modellierten Entitätsbeziehungen." loading="lazy" width="1672" height="941" />
+  <figcaption><strong>Artefakt 3: Konzeptioneller Metadaten-Vergleich</strong> – Typ: DOCUMENTATION RECONSTRUCTION / CONCEPTUAL COMPARISON. Zweck: Gegenüberstellung der angestrebten Suchmaschinen-Indizierung mit und ohne semantische Datenstruktur. Diese Tabelle veranschaulicht das konzeptionelle Ziel und dokumentiert keine Echtzeit-Messdaten des Repositories.</figcaption>
+</figure>
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
