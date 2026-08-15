@@ -54,12 +54,12 @@ Für das Projekt galten folgende Einschränkungen:
 ---
 
 ## Technische Überlegungen
-Die technische Strategie basiert auf dem Prinzip der **automatisierten semantischen Strukturierung**. Statt Metadaten manuell in jede HTML-Datei einzupflegen, wurde im ursprünglichen Projektkontext ein Build-Time-Skript entworfen. Dieses liest die logischen Bezüge aus einer zentralen Konfiguration und injiziert die generierten JSON-LD-Graphen direkt in den Header der jeweiligen Seiten (Hinweis: Das Skript ist Teil der clientseitigen Entwicklungspipeline und nicht Bestandteil dieses Portfoliorepositories). Dies unterstützt eine konsistente Datenstruktur über die verschiedenen Seiten hinweg.
+Die technische Strategie basiert auf dem Prinzip der **automatisierten semantischen Strukturierung**. Statt Metadaten manuell in jede HTML-Datei einzupflegen, wurde im ursprünglichen Projektkontext ein Build-Time-Skript entworfen. Dieses liest die logischen Bezüge aus einer zentralen Konfiguration und injiziert die generierten JSON-LD-Graphen direkt in den Header der jeweiligen Seiten (Hinweis: Das Skript gehörte zur dokumentierten Entwicklungs- und Bereitstellungspipeline des ursprünglichen Projekts und ist nicht Bestandteil dieses Portfoliorepositories). Dies unterstützt eine konsistente Datenstruktur über die verschiedenen Seiten hinweg.
 
 ---
 
 ## Architektur
-Die Bereitstellungs-Pipeline trennt Quellcode und Metadaten-Generierung. Ein Python-Automatisierungsskript (`add_seo.py`) las die strukturierten Definitionen von Dienstleistungen, Zertifizierungen und Personendaten ein. Es generierte den JSON-LD-Graphen für jede Unterseite und bettete diesen in die fertigen HTML-Dateien ein, bevor diese auf dem Webserver veröffentlicht wurden.
+Nach der dokumentierten Projektbeschreibung wurde ein Python-Automatisierungsskript (`add_seo.py`) für die Metadaten-Generierung eingesetzt. Es sollte strukturierte Definitionen von Dienstleistungen, Zertifizierungen und Personendaten verarbeiten, daraus JSON-LD-Graphen für die jeweiligen Unterseiten erzeugen und diese vor der Veröffentlichung in die HTML-Dateien integrieren.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
@@ -99,7 +99,7 @@ Im Rahmen des Projekts wurden strategische Entscheidungen zur Code- und Metadate
 ---
 
 ## Umsetzung
-Die historische Implementierung nutzte ein Python-Skript mit BeautifulSoup zum Parsen der HTML-Struktur und zur Metadaten-Injektion. Die Schema-Graphen deklarierten Bezüge vom Typ `LocalBusiness`, verlinkten die Gründerin als `Person` und verknüpften Dienstleistungen über `Service`-Knoten mit wissenschaftlichen Permakultur-Entitäten. Zur Absicherung wurden die Konfigurationen der `robots.txt` und der Sitemap optimiert.
+Die dokumentierte Umsetzung beschreibt ein Python-Skript mit BeautifulSoup zum Parsen der HTML-Struktur und zur Metadaten-Injektion. Demnach deklarierten die Schema-Graphen Bezüge vom Typ `LocalBusiness`, verlinkten die Gründerin als `Person` und verknüpften Dienstleistungen über `Service`-Knoten mit wissenschaftlichen Permakultur-Entitäten. Zur Absicherung wurden die Konfigurationen der `robots.txt` und der Sitemap optimiert.
 
 ---
 
@@ -117,7 +117,7 @@ Die historische Implementierung nutzte ein Python-Skript mit BeautifulSoup zum P
 |   * Bodenregeneration             |
 |   * Heimische Pflanzen            |
 |   * Permakultur-Systeme           |
-|   *                               |
+|                                   |
 |   [Mehr erfahren]     [Kontakt]   |
 +-----------------------------------+
   </code></pre>
@@ -150,11 +150,11 @@ graph TD
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Ohne Entity-Graph</span>
-        <p class="evidence-card__value">Nicht klassifizierte, unzusammenhängende Keyword-Fragmente.</p>
+        <p class="evidence-card__value">Semantische Beziehungen zwischen Organisation, Person und Leistungen sind nicht explizit als Entity-Graph modelliert.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
-        <p class="evidence-card__value">Eindeutig verknüpfte Relationen zwischen Organisation, Person und Services.</p>
+        <p class="evidence-card__value">Semantische Beziehungen zwischen Organisation, Person und Leistungen werden explizit modelliert.</p>
       </div>
     </div>
   </div>
@@ -163,11 +163,11 @@ graph TD
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Ohne Entity-Graph</span>
-        <p class="evidence-card__value">Reine Keyword-Indexierung ohne strukturierte Rich-Snippet-Bezüge.</p>
+        <p class="evidence-card__value">Maschinenlesbare Beziehungen zwischen den relevanten Entitäten sind weniger explizit strukturiert.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
-        <p class="evidence-card__value">Vorbereitete Struktur für Rich Snippets und lokale Map-Zuordnungen.</p>
+        <p class="evidence-card__value">Strukturierte Daten stellen die relevanten Entitätsbeziehungen explizit für Such- und Antwortsysteme bereit.</p>
       </div>
     </div>
   </div>
@@ -176,11 +176,11 @@ graph TD
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
         <span class="evidence-card__label">Ohne Entity-Graph</span>
-        <p class="evidence-card__value">Keine Erfassung oder unvollständige Zuordnung in KI-gestützten Antworten.</p>
+        <p class="evidence-card__value">Die semantische Zuordnung des Angebots ist weniger explizit modelliert.</p>
       </div>
       <div class="evidence-card__item">
         <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
-        <p class="evidence-card__value">Unterstützung der semantischen Zuweisung bei lokalen AEO/GEO-Suchanfragen.</p>
+        <p class="evidence-card__value">Die semantische Zuordnung des Angebots wird durch strukturierte Entitätsbeziehungen unterstützt.</p>
       </div>
     </div>
   </div>
@@ -195,8 +195,8 @@ graph TD
 
 ## Ergebnisse
 
-### Implementierte Ergebnisse
-- **Schema.org-Metadaten**: Einbettung strukturierter JSON-LD-Daten zur maschinellen Verarbeitung semantischer Zusammenhänge.
+### Dokumentierte Umsetzung
+- **Schema.org-Metadaten**: Die Projektbeschreibung dokumentiert die Einbettung strukturierter JSON-LD-Daten zur maschinellen Verarbeitung semantischer Zusammenhänge.
 
 ### Technische Eigenschaften
 - **Entitäten-Verknüpfung**: Modellierung von Relationen zwischen den Entitäten LocalBusiness, Person, Service und Place.
