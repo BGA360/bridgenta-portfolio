@@ -38,7 +38,7 @@ const getBadgeClass = (status) => {
 
 const badgeClass = getBadgeClass(entry.data.sidebar.status);
 
-// Set hero image for BridGenta, AEOcortex and Lumina Praxis
+// Set hero image for BridGenta, AEOcortex, Lumina Praxis, and Rooted Reality Gardens
 const heroImage = 
   entry.slug === 'bridgenta' 
     ? '/images/bga-portfolio/BG-PA01-Hero.webp' 
@@ -46,7 +46,9 @@ const heroImage =
       ? '/images/aeocortex-portfolio/AEO-HERO-01-Platform-Overview.webp'
       : entry.slug === 'luminapraxisds'
         ? '/images/lumina-portfolio/lumina-praxis-hero-card.webp'
-        : undefined;
+        : entry.slug === 'rootedrealitygarden'
+          ? '/images/rooted-reality-portfolio/rrg-hero-card.png'
+          : undefined;
 ---
 
 <Layout 
@@ -132,7 +134,9 @@ const heroImage =
                   ? "AEOcortex-Plattformübersicht mit Dashboard-Ansicht" 
                   : entry.slug === 'luminapraxisds'
                     ? "Lumina Praxis Plattformübersicht und Website-Mockup"
-                    : `${entry.data.title} Product Showcase Dashboard`
+                    : entry.slug === 'rootedrealitygarden'
+                      ? "Rooted Reality Gardens – Konzept-Visualisierung zur Verknüpfung von regenerativem Landschaftsdesign und Entity-SEO-Schema."
+                      : `${entry.data.title} Product Showcase Dashboard`
               }
               class="project-showcase-image"
               loading="eager"

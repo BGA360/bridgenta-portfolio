@@ -20,90 +20,92 @@ sidebar:
     - Antigravity
 ---
 
-## Executive Summary
-Rooted Reality Gardens ist eine Webpräsenz für eine Agentur für regenerative Landschaftsgestaltung. Ziel des Projekts war der Aufbau einer ästhetischen, responsiven Website mit einer hochspezialisierten semantischen Struktur. Dadurch soll das Dienstleistungsangebot in der Nische der ökologischen Gartenplanung sowohl in klassischen Suchmaschinen als auch in modernen KI-gestützten Antwortdiensten optimal auffindbar und korrekt zitierbar sein.
+## Kurzfassung
+Rooted Reality Gardens ist eine Webpräsenz für eine Agentur für regenerative Landschaftsgestaltung. Ziel des Projekts war der Aufbau einer ästhetischen, responsiven Website mit einer spezialisierten semantischen Struktur zur Unterstützung der strukturierten Auffindbarkeit und Zitierbarkeit des Dienstleistungsangebots in Suchmaschinen und KI-gestützten Antwortdiensten.
 
 ---
 
-## Context
+## Ausgangssituation
 Kleine Unternehmen in hochspezialisierten Nischen hängen stark von lokaler Auffindbarkeit ab. Regenerative Landschaftsgestaltung ist ein erklärungsbedürftiges Thema, das von herkömmlichen Suchmaschinen ohne semantische Daten oft falsch klassifiziert wird. Die Gründerin wollte ein anspruchsvolles Portfolio präsentieren, das ihre wissenschaftliche Methodik und Kompetenz unterstreicht. Die Website musste daher technisch so aufbereitet werden, dass sie sowohl Menschen als auch Crawlern präzise Informationen liefert.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Nischenunternehmen profitieren überproportional von semantischen Datenstrukturen, da diese thematische Missverständnisse bei automatisierten Crawlern verhindern.</p>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
+  <p class="engineering-insight__text">Nischenunternehmen können von strukturierten semantischen Daten profitieren, da diese thematische Missverständnisse bei automatisierten Crawlern minimieren helfen.</p>
 </div>
 
 ---
 
-## Problem
-In der Permakultur und regenerativen Landschaftsplanung reicht reine Keyword-Optimierung nicht aus. Suchmaschinen müssen verstehen, wie Dienstleistungen, Personen (die Gründerin) und wissenschaftliche Konzepte zusammenhängen. Zudem ist das manuelle Pflegen komplexer JSON-LD-Metadaten über mehrere statische Unterseiten hinweg fehleranfällig und zeitintensiv. Es fehlt ein automatisierter Workflow, der semantische Verknüpfungen fehlerfrei in alle HTML-Seiten injiziert.
+## Problemstellung
+In der Permakultur und regenerativen Landschaftsplanung reicht reine Keyword-Optimierung nicht aus. Suchmaschinen müssen verstehen, wie Dienstleistungen, Personen (die Gründerin) und wissenschaftliche Konzepte zusammenhängen. Zudem ist das manuelle Pflegen komplexer JSON-LD-Metadaten über mehrere statische Unterseiten hinweg fehleranfällig und zeitintensiv. Ziel des Projekts war daher der Entwurf eines automatisierten Workflows, um semantische Verknüpfungen konsistent in alle HTML-Seiten zu injizieren.
 
 ---
 
-## Constraints
+## Rahmenbedingungen
 Für das Projekt galten folgende Einschränkungen:
 - **Statische Hosting-Infrastruktur**: Keine Datenbanken oder serverseitigen Skripte zur Laufzeit.
-- **Minimale Admin-Ressourcen**: Der Pflegeaufwand für die Inhaberin musste extrem gering bleiben.
-- **E-E-A-T-Konformität**: Strenge Ausrichtung an den Google-Qualitätsrichtlinien zur Etablierung von Fachkompetenz und Vertrauenswürdigkeit.
+- **Minimale Admin-Ressourcen**: Der Pflegeaufwand für die Inhaberin musste gering bleiben.
+- **E-E-A-T-Ausrichtung**: Ausrichtung an E-E-A-T-orientierten Qualitätsprinzipien zur Unterstützung der Fachkompetenz und Vertrauenswürdigkeit.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Der Einsatz von Build-Time-Generierungsskripten löst den Konflikt zwischen komplexen semantischen Graphen und wartungsarmen statischen Webseiten.</p>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
+  <p class="engineering-insight__text">Der Einsatz von Build-Time-Skripten unterstützt die Bereitstellung komplexer semantischer Graphen auf wartungsarmen statischen Webseiten.</p>
 </div>
 
 ---
 
-## Engineering Thinking
-Die technische Strategie basiert auf dem Prinzip der **automatisierten semantischen Strukturierung**. Statt Metadaten manuell in jede HTML-Datei einzupflegen, nutzen wir ein Build-Time-Skript. Dieses liest die logischen Bezüge aus einer zentralen Konfiguration und injiziert die generierten JSON-LD-Graphen direkt in den Header der jeweiligen Seiten. Dies unterstützt eine konsistente Datenstruktur über die verschiedenen Seiten hinweg.
+## Technische Überlegungen
+Die technische Strategie basiert auf dem Prinzip der **automatisierten semantischen Strukturierung**. Statt Metadaten manuell in jede HTML-Datei einzupflegen, wurde im ursprünglichen Projektkontext ein Build-Time-Skript entworfen. Dieses liest die logischen Bezüge aus einer zentralen Konfiguration und injiziert die generierten JSON-LD-Graphen direkt in den Header der jeweiligen Seiten (Hinweis: Das Skript ist Teil der clientseitigen Entwicklungspipeline und nicht Bestandteil dieses Portfoliorepositories). Dies unterstützt eine konsistente Datenstruktur über die verschiedenen Seiten hinweg.
 
 ---
 
-## Architecture
-Die Bereitstellungs-Pipeline trennt Quellcode und Metadaten-Generierung. Ein Python-Automatisierungsskript (`add_seo.py`) liest die strukturierten Definitionen von Dienstleistungen, Zertifizierungen und Personendaten ein. Es generiert den JSON-LD-Graphen für jede Unterseite und bettet diesen in die fertigen HTML-Dateien ein, bevor diese auf dem Webserver veröffentlicht werden.
+## Architektur
+Die Bereitstellungs-Pipeline trennt Quellcode und Metadaten-Generierung. Ein Python-Automatisierungsskript (`add_seo.py`) las die strukturierten Definitionen von Dienstleistungen, Zertifizierungen und Personendaten ein. Es generierte den JSON-LD-Graphen für jede Unterseite und bettete diesen in die fertigen HTML-Dateien ein, bevor diese auf dem Webserver veröffentlicht wurden.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
   <p class="engineering-insight__text">Die Ausführung von Generierungs- und Prüfskripten vor dem Deployment unterstützt die Einhaltung standardisierter Datenstrukturen im veröffentlichten Code.</p>
 </div>
 
 ---
 
-## Engineering Decisions
+## Technische Entscheidungen
 Im Rahmen des Projekts wurden strategische Entscheidungen zur Code- und Metadatenstruktur getroffen:
 
 <div class="decision-grid">
   <div class="decision-card">
-    <h3 class="decision-card__title">Metadata Generation</h3>
+    <h3 class="decision-card__title">Metadaten-Generierung</h3>
     <div class="decision-card__group">
       <span class="decision-card__label">Alternative</span>
       <p class="decision-card__text">Manuelles Schreiben in HTML-Dateien</p>
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Entscheidung</span>
-      <p class="decision-card__text">Python-Skript zur automatisierten Injektion zur Vermeidung von Fehlern.</p>
+      <p class="decision-card__text">Python-Skript zur automatisierten Injektion zur Reduzierung manueller Übertragungsfehler.</p>
     </div>
   </div>
   <div class="decision-card">
-    <h3 class="decision-card__title">Entity Schema</h3>
+    <h3 class="decision-card__title">Entitäten-Schema</h3>
     <div class="decision-card__group">
       <span class="decision-card__label">Alternative</span>
       <p class="decision-card__text">Flache, unverbundene Schema-Tags</p>
     </div>
     <div class="decision-card__group">
       <span class="decision-card__label">Entscheidung</span>
-      <p class="decision-card__text">Vollständiger JSON-LD-Entity-Graph zur Verknüpfung von Person, Firma und Services.</p>
+      <p class="decision-card__text">Integrierter JSON-LD-Entity-Graph zur Verknüpfung von Person, Firma und Services.</p>
     </div>
   </div>
 </div>
 
 ---
 
-## Implementation
-Das Python-Skript nutzt BeautifulSoup zum Parsen der HTML-Struktur und injiziert die generierten Metadaten. Die Schema-Graphen deklarieren Bezüge vom Typ `LocalBusiness`, verlinken die Gründerin als `Person` und verknüpfen Dienstleistungen über `Service`-Knoten mit wissenschaftlichen Permakultur-Entitäten. Zur Absicherung wurden die Konfigurationen der `robots.txt` und der Sitemap optimiert.
+## Umsetzung
+Die historische Implementierung nutzte ein Python-Skript mit BeautifulSoup zum Parsen der HTML-Struktur und zur Metadaten-Injektion. Die Schema-Graphen deklarierten Bezüge vom Typ `LocalBusiness`, verlinkten die Gründerin als `Person` und verknüpften Dienstleistungen über `Service`-Knoten mit wissenschaftlichen Permakultur-Entitäten. Zur Absicherung wurden die Konfigurationen der `robots.txt` und der Sitemap optimiert.
 
 ---
 
-## Public Artifacts
+## Öffentliche Projekteinblicke
+
+### Artefakt 1: Layout-Struktur
 
 <figure>
   <pre><code>
@@ -115,12 +117,14 @@ Das Python-Skript nutzt BeautifulSoup zum Parsen der HTML-Struktur und injiziert
 |   * Bodenregeneration             |
 |   * Heimische Pflanzen            |
 |   * Permakultur-Systeme           |
-|                                   |
+|   *                               |
 |   [Mehr erfahren]     [Kontakt]   |
 +-----------------------------------+
   </code></pre>
-  <figcaption><strong>Artefakt 1: Schematische Layout-Skizze</strong> – Zweck: Veranschaulichung des übersichtlichen, mobiltauglichen Portfoliodesigns.</figcaption>
+  <figcaption><strong>Artefakt 1: Schematische Layout-Skizze</strong> – Typ: DOCUMENTATION RECONSTRUCTION. Zweck: Veranschaulichung des beabsichtigten, mobiltauglichen Portfoliodesigns der ursprünglichen Website. Dieses Schema dient der strukturellen Veranschaulichung und stellt keinen direkten Screenshot der Live-Umgebung dar.</figcaption>
 </figure>
+
+### Artefakt 2: Semantische Entitäten-Struktur
 
 <figure>
 
@@ -131,11 +135,13 @@ graph TD
     Organization -->|Einsatzgebiet| Place[Geografischer Dienstleistungsbereich]
 ```
 
-  <figcaption><strong>Artefakt 2: High-Level Ablaufdiagramm</strong> – Zweck: Logische Darstellung der verknüpften semantischen Entitäten im JSON-LD-Schema-Graphen.</figcaption>
+  <figcaption><strong>Artefakt 2: High-Level Ablaufdiagramm</strong> – Typ: ARCHITECTURE / CONCEPT DIAGRAM. Zweck: Logische Darstellung der verknüpften semantischen Entitäten im JSON-LD-Schema-Graphen des ursprünglichen Projekts.</figcaption>
 </figure>
 
+### Artefakt 3: Konzeptioneller Metadaten-Vergleich
+
 <div class="architecture-note">
-  <strong>Artefakt 3: Ergebnis-Nachweis (SEO- &amp; Entity-Matrix)</strong> – Zweck: Vergleich der Suchmaschinen-Indizierung vor und nach der semantischen Optimierung.
+  <strong>Artefakt 3: Konzeptioneller Vergleich (SEO- &amp; Entity-Matrix)</strong> – Typ: DOCUMENTATION RECONSTRUCTION. Zweck: Gegenüberstellung der angestrebten Suchmaschinen-Indizierung mit und ohne semantische Datenstruktur. Diese Tabelle veranschaulicht das konzeptionelle Ziel und dokumentiert keine Echtzeit-Messdaten des Repositories.
 </div>
 
 <div class="evidence-grid">
@@ -143,11 +149,11 @@ graph TD
     <h4 class="evidence-card__title">Entity-Zuordnung</h4>
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
-        <span class="evidence-card__label">Vorher (Ohne Graph)</span>
+        <span class="evidence-card__label">Ohne Entity-Graph</span>
         <p class="evidence-card__value">Nicht klassifizierte, unzusammenhängende Keyword-Fragmente.</p>
       </div>
       <div class="evidence-card__item">
-        <span class="evidence-card__label">Nachher (Mit Graph)</span>
+        <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
         <p class="evidence-card__value">Eindeutig verknüpfte Relationen zwischen Organisation, Person und Services.</p>
       </div>
     </div>
@@ -156,54 +162,70 @@ graph TD
     <h4 class="evidence-card__title">Suchmaschinen-Erfassung</h4>
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
-        <span class="evidence-card__label">Vorher (Ohne Graph)</span>
-        <p class="evidence-card__value">Reine Keyword-Indexierung ohne Rich Snippets.</p>
+        <span class="evidence-card__label">Ohne Entity-Graph</span>
+        <p class="evidence-card__value">Reine Keyword-Indexierung ohne strukturierte Rich-Snippet-Bezüge.</p>
       </div>
       <div class="evidence-card__item">
-        <span class="evidence-card__label">Nachher (Mit Graph)</span>
-        <p class="evidence-card__value">Aktivierte Rich Snippets und verbesserte Platzierung in lokalen Maps.</p>
+        <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
+        <p class="evidence-card__value">Vorbereitete Struktur für Rich Snippets und lokale Map-Zuordnungen.</p>
       </div>
     </div>
   </div>
   <div class="evidence-card">
-    <h4 class="evidence-card__title">KI-Suchmaschinen-Zitate</h4>
+    <h4 class="evidence-card__title">KI-Suchmaschinen-Erfassung</h4>
     <div class="evidence-card__meta">
       <div class="evidence-card__item">
-        <span class="evidence-card__label">Vorher (Ohne Graph)</span>
-        <p class="evidence-card__value">Keine Erfassung oder unvollständige Nennungen in Antworten.</p>
+        <span class="evidence-card__label">Ohne Entity-Graph</span>
+        <p class="evidence-card__value">Keine Erfassung oder unvollständige Zuordnung in KI-gestützten Antworten.</p>
       </div>
       <div class="evidence-card__item">
-        <span class="evidence-card__label">Nachher (Mit Graph)</span>
-        <p class="evidence-card__value">Als primäre lokale Quelle in AEO/GEO-Suchanfragen zitiert.</p>
+        <span class="evidence-card__label">Mit Entity-Graph (Ziel)</span>
+        <p class="evidence-card__value">Unterstützung der semantischen Zuweisung bei lokalen AEO/GEO-Suchanfragen.</p>
       </div>
     </div>
   </div>
 </div>
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Verknüpfte Entitätsschemata erhöhen die Erkennungsrate von Kerninformationen durch automatisierte Suchmaschinen-Algorithmen nachweisbar.</p>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
+  <p class="engineering-insight__text">Verknüpfte Entitätsschemata können die Erkennungsrate von Kerninformationen durch automatisierte Suchmaschinen-Algorithmen unterstützen.</p>
 </div>
 
 ---
 
-## Results
-- **Crawler-Optimierung**: Strukturierte Schema.org-Metadaten zur Unterstützung der maschinellen Verarbeitung semantischer Informationen.
-- **Zitierbarkeit**: Strukturierte Metadaten zur Unterstützung der Zuordnung und Auffindbarkeit des Angebots in KI-gestützten Suchanfragen.
-- **Wartbarkeit**: Reduzierung des manuellen Pflegeaufwands für Metadaten durch das automatisierte Injektionsskript.
+## Ergebnisse
+
+### Implementierte Ergebnisse
+- **Schema.org-Metadaten**: Einbettung strukturierter JSON-LD-Daten zur maschinellen Verarbeitung semantischer Zusammenhänge.
+
+### Technische Eigenschaften
+- **Entitäten-Verknüpfung**: Modellierung von Relationen zwischen den Entitäten LocalBusiness, Person, Service und Place.
+
+### Projektziele
+- **Zitierbarkeit**: Erhöhung der strukturellen Präzision zur Unterstützung der Zuordnung bei KI-basierten Suchanfragen (AEO/GEO).
+- **Wartungseffizienz**: Entwurf automatisierter Injektionsskripte zur Reduzierung des Pflegeaufwands bei statischen Seiten.
+
+### Nachweisgrenze
+- **Systemumgebung**: Die tatsächliche Ausführung des Python-Injektionsskripts sowie die daraus resultierenden Live-Suchmaschinen-Ergebnisse beziehen sich auf die ursprüngliche Produktionsumgebung des Kundenprojekts. Sie sind nicht Bestandteil dieses statischen Portfoliorepositories und werden im Rahmen dieses Codebestands nicht live verifiziert.
 
 ---
 
-## Lessons Learned
-Dieses Projekt hat verdeutlicht, dass strukturierte Entity-Verknüpfungen (JSON-LD) die Brücke zwischen klassischer und KI-basierter Websuche schlagen. Durch die automatisierte Injektion valider Metadaten konnte die lokale Relevanz der Dienstleistungen in Antwortmaschinen nachweisbar gestärkt werden. Die Entwicklung wiederverwendbarer Injektionsskripte hat zudem gezeigt, wie sich administrative Webmaster-Aufgaben effizient automatisieren lassen, was den langfristigen Wartungsaufwand minimiert.
+## Erkenntnisse aus der Entwicklung
+Dieses Projekt hat verdeutlicht, dass strukturierte Entity-Verknüpfungen (JSON-LD) die Brücke zwischen klassischer und KI-basierter Websuche schlagen können. Durch die geplante automatisierte Injektion strukturierter Metadaten wird die semantische Zuordnungsbasis von Dienstleistungen gestärkt. Die Entwicklung wiederverwendbarer Skripte zeigt zudem Wege auf, wie sich administrative Webmaster-Aufgaben effizienter gestalten lassen, um den langfristigen manuellen Wartungsaufwand zu reduzieren.
 
 ---
 
-## Future Evolution
+## Nächste Entwicklungsschritte
 In einer zukünftigen Version soll das Python-Skript um eine Bildanalyse erweitert werden. Diese soll automatisch alt-Attribute und Bild-Metadaten (z. B. auf Basis geographischer Koordinaten der Gärten) generieren, um die Relevanz der Bildersuche für lokale Dienstleister weiter zu optimieren.
 
 <div class="engineering-insight">
-  <div class="engineering-insight__title">Engineering Insight</div>
-  <p class="engineering-insight__text">Lokalisierte Bildmetadaten stärken den geographischen Relevanzbezug statischer Webportale bei regionalen Suchanfragen.</p>
+  <div class="engineering-insight__title">Technische Erkenntnis</div>
+  <p class="engineering-insight__text">Lokalisierte Bildmetadaten können den geographischen Relevanzbezug statischer Webportale bei regionalen Suchanfragen unterstützen.</p>
 </div>
+
 ---
+
+## Quellen und Referenzen
+- **Schema.org**: [LocalBusiness Schema-Spezifikation](https://schema.org/LocalBusiness) – Referenz für die Modellierung lokaler Unternehmensdaten.
+- **W3C JSON-LD Spezifikation**: [JSON-LD 1.1 Standard](https://www.w3.org/TR/json-ld11/) – Standard für die Serialisierung verknüpfter Daten.
+- **Google Search Central**: [Ausrichtung an Qualitätsprinzipien (E-E-A-T)](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) – Richtlinien zur Bereitstellung hilfreicher, vertrauenswürdiger Inhalte.
