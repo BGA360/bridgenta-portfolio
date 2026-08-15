@@ -417,6 +417,18 @@ section[id] { scroll-margin-top: 100px; }
   }
 }
 
+@keyframes heroGradientMove {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%, 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 0% 0%, 0% 0%, 0% 0%;
+  }
+}
+
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
@@ -424,9 +436,12 @@ section[id] { scroll-margin-top: 100px; }
   border-radius: var(--radius-l);
   overflow: hidden;
   background: 
-    var(--tech-gradient),
+    linear-gradient(135deg, #111827 0%, var(--magenta-deep) 50%, #1e1b4b 100%),
     radial-gradient(circle at 18% 22%, rgba(194,24,91,0.16), transparent 45%),
     radial-gradient(circle at 84% 12%, rgba(123,30,87,0.14), transparent 50%);
+  background-size: 200% 200%, auto, auto;
+  background-position: 0% 0%, 0% 0%, 0% 0%;
+  animation: heroGradientMove 25s ease-in-out infinite;
   padding: var(--space-7) var(--space-4) 140px;
   text-align: center;
   box-shadow: var(--shadow-lift);
