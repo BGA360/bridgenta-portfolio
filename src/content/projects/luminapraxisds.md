@@ -2,6 +2,8 @@
 title: "Lumina Praxis"
 subtitle: "Praxis-Website & Interaktive Rechner"
 description: "Modernes Portal für eine biologische Zahnarztpraxis mit medizinischen SEO-Strukturen und interaktivem Vitality-Score-Rechner."
+seoTitle: "Lumina Praxis – Praxis-Website, SEO & interaktive Webfunktionen"
+seoDescription: "Fallstudie einer modernen Praxis-Website mit medizinisch orientierten SEO-Strukturen, interaktiven Webfunktionen und technisch strukturierter Umsetzung."
 schemaType: "CreativeWork"
 sidebar:
   category: "Praxis-Website / Web-App"
