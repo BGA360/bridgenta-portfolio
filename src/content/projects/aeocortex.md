@@ -2,6 +2,7 @@
 title: "AEOcortex"
 subtitle: "AI-Suchmaschinen / AEO / GEO"
 description: "Persönliches Entwicklungsprojekt zur praktischen Erprobung von AI Search, moderner Webentwicklung und KI-gestützter Softwareentwicklung."
+schemaType: "SoftwareApplication"
 sidebar:
   category: "AI-Suchmaschinen / AEO / GEO"
   status: "In Entwicklung"

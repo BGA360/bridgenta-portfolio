@@ -6,6 +6,7 @@ const projectCollection = defineCollection({
     title: z.string(),
     subtitle: z.string().optional(),
     description: z.string(),
+    schemaType: z.enum(['CreativeWork', 'SoftwareApplication', 'WebApplication']).optional(),
     
     // Sidebar fields grouped
     sidebar: z.object({
