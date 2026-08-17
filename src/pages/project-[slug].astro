@@ -48,7 +48,9 @@ const heroImage =
         ? '/images/lumina-portfolio/lumina-praxis-hero-card.webp'
         : entry.slug === 'rootedrealitygarden'
           ? '/images/rooted-reality-portfolio/rooted-reality-hero-card.webp'
-          : undefined;
+          : entry.slug === 'starcleaners'
+            ? '/images/starcleaners-portfolio/starcleaners-hero-card.webp'
+            : undefined;
 ---
 
 <Layout 
@@ -136,7 +138,9 @@ const heroImage =
                     ? "Lumina Praxis Plattformübersicht und Website-Mockup"
                     : entry.slug === 'rootedrealitygarden'
                       ? "Rooted Reality Gardens – Konzept-Visualisierung zur Verknüpfung von regenerativem Landschaftsdesign und Entity-SEO-Schema."
-                      : `${entry.data.title} Product Showcase Dashboard`
+                      : entry.slug === 'starcleaners'
+                        ? "StarCleaners Portfolio-Visual mit einer rekonstruierten Premium-Reinigungswebsite für anspruchsvolle Wohnräume."
+                        : `${entry.data.title} Product Showcase Dashboard`
               }
               class="project-showcase-image"
               loading="eager"
