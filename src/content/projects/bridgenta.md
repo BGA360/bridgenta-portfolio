@@ -2,6 +2,7 @@
 title: "BridGenta"
 subtitle: "IT-Rekonstruktion und Governance"
 description: "Evidenzbasierte Rekonstruktionsplattform für Altsysteme zur Vorbereitung bestehender Softwaresysteme auf moderne KI-gestützte Entwicklungsplattformen."
+schemaType: "SoftwareApplication"
 sidebar:
   category: "Private Beta / IT-Rekonstruktion"
   status: "Private Beta"

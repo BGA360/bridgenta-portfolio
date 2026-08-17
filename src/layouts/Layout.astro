@@ -12,6 +12,7 @@ interface Props {
     status: string;
     technologies: string;
     description: string;
+    schemaType?: string;
   };
 }
 
@@ -33,11 +34,16 @@ const cleanPath = pathname.replace(/\/$/, ""); // Normalize path (remove trailin
 
 // Normalize URL for production canonical representation
 const siteUrl = Astro.site ? Astro.site.origin : 'https://bridgenta.de';
-let cleanPathname = pathname.replace(/\/$/, "").replace(/\/index\.html$/, "");
+let cleanPathname = pathname.replace(/\/index\.html$/, "").replace(/\/$/, "");
 if (cleanPathname === "/index") {
   cleanPathname = "";
 }
-const canonical = `${siteUrl}${cleanPathname}`;
+const isFile = /\.[a-z0-9]+$/i.test(cleanPathname);
+const canonical = cleanPathname === ""
+  ? `${siteUrl}/`
+  : isFile
+    ? `${siteUrl}${cleanPathname}`
+    : `${siteUrl}${cleanPathname}/`;
 
 // Format title consistently for SEO
 const displayTitle = title === "Startseite" 
@@ -88,7 +94,7 @@ import '../styles/styles.css';
   <meta name="geo.placename" content="Frankfurt am Main, Hessen, Deutschland" />
 
   <!-- JSON-LD Schema Graph -->
-  <Schema title={title} description={description} project={project} />
+  <Schema title={title} description={description} project={project} canonical={canonical} />
 
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">

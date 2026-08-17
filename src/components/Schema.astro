@@ -2,26 +2,21 @@
 interface Props {
   title: string;
   description: string;
+  canonical: string;
   project?: {
     title: string;
     category: string;
     status: string;
     technologies: string;
     description: string;
+    schemaType?: string;
   };
 }
 
-const { title, description, project } = Astro.props;
+const { title, description, project, canonical } = Astro.props;
 
 const siteUrl = Astro.site ? Astro.site.origin : 'https://bridgenta.de';
 const pathname = Astro.url.pathname;
-
-// Normalize path for canonical representation to avoid duplicate entities
-let cleanPathname = pathname.replace(/\/$/, "").replace(/\/index\.html$/, "");
-if (cleanPathname === "/index") {
-  cleanPathname = "";
-}
-const canonical = `${siteUrl}${cleanPathname}`;
 
 // Define base Person entity
 const personId = `${siteUrl}/#person`;
@@ -138,25 +133,35 @@ const graph = [
   breadcrumbListSchema
 ];
 
-// If on a project page, inject software application schema
+// If on a project page, inject dynamic schema type
 if (project) {
-  const projectSchema = {
-    '@type': 'SoftwareApplication',
+  const schemaType = project.schemaType || 'CreativeWork';
+  const projectSchema: any = {
+    '@type': schemaType,
     '@id': `${canonical}#project`,
     'name': project.title,
-    'applicationCategory': project.category,
-    'softwareRequirements': project.technologies,
     'description': project.description || description,
     'url': canonical,
     'creator': { '@id': personId },
-    'publisher': { '@id': orgId },
-    'developmentStatus': project.status === 'In Entwicklung' ? 'https://schema.org/ActiveActionStatus' : 'https://schema.org/PotentialActionStatus'
+    'publisher': { '@id': orgId }
   };
+
+  if (schemaType === 'SoftwareApplication' || schemaType === 'WebApplication') {
+    projectSchema['applicationCategory'] = project.category;
+    projectSchema['softwareRequirements'] = project.technologies;
+    projectSchema['developmentStatus'] = project.status === 'In Entwicklung'
+      ? 'https://schema.org/ActiveActionStatus'
+      : 'https://schema.org/PotentialActionStatus';
+  } else {
+    // Standard CreativeWork fields
+    projectSchema['genre'] = project.category;
+  }
+
   graph.push(projectSchema);
 }
 
 // Define the primary WebPage entity to link the graph nodes together
-const webpageEntity = {
+const webpageEntity: any = {
   '@type': 'WebPage',
   '@id': `${canonical}#webpage`,
   'url': canonical,
@@ -168,6 +173,10 @@ const webpageEntity = {
   'author': { '@id': personId },
   'speakable': speakableSchema
 };
+
+if (project) {
+  webpageEntity['about'] = { '@id': `${canonical}#project` };
+}
 
 graph.push(webpageEntity);
 

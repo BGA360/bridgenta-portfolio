@@ -2,6 +2,7 @@
 title: "Rooted Reality Gardens"
 subtitle: "Regenerative Landschaftsgestaltung & Technical SEO"
 description: "Website-Entwicklung und umfassende Suchmaschinen- und Answer-Engine-Optimierung für eine Agentur für regenerative Landschaftsgestaltung."
+schemaType: "CreativeWork"
 sidebar:
   category: "Unternehmens-Website / SEO"
   status: "Abgeschlossen"

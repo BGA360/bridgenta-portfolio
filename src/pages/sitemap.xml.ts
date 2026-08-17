@@ -8,17 +8,17 @@ export async function GET(context: APIContext) {
   const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
 
   const staticPages = [
-    '',
-    '/about',
-    '/projects',
-    '/contact',
-    '/impressum',
-    '/datenschutz'
+    '/',
+    '/about/',
+    '/projects/',
+    '/contact/',
+    '/impressum/',
+    '/datenschutz/'
   ];
 
   const projectPages = projects
     .filter(project => activeProjectSlugs.includes(project.slug))
-    .map(project => `/project-${project.slug}`);
+    .map(project => `/project-${project.slug}/`);
   const allPages = [...staticPages, ...projectPages];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -26,8 +26,8 @@ export async function GET(context: APIContext) {
   ${allPages.map(path => `
   <url>
     <loc>${siteUrl}${path}</loc>
-    <changefreq>${path === '' ? 'daily' : 'weekly'}</changefreq>
-    <priority>${path === '' ? '1.0' : path.startsWith('/project-') ? '0.8' : '0.5'}</priority>
+    <changefreq>${path === '/' ? 'daily' : 'weekly'}</changefreq>
+    <priority>${path === '/' ? '1.0' : path.startsWith('/project-') ? '0.8' : '0.5'}</priority>
   </url>`).join('').trim()}
 </urlset>`;
 

@@ -2,6 +2,7 @@
 title: "StarCleaners"
 subtitle: "Premium Cleaning Services & PWA"
 description: "Premium-Webpräsenz mit integrierten PWA-Funktionen und lokalem SEO-Entitätsschema für eine exklusive Reinigungsagentur."
+schemaType: "WebApplication"
 sidebar:
   category: "Luxury Cleaning Services Website & PWA"
   status: "Abgeschlossen"
