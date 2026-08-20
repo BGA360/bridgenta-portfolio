@@ -394,16 +394,6 @@ section[id] { scroll-margin-top: 100px; }
   .nav.is-open .nav__links a::after {
     display: none;
   }
-  .nav.is-open .nav__cta {
-    display: flex;
-    width: 100%;
-    margin-top: 0.4rem;
-  }
-  .nav.is-open .btn-nav-cta {
-    width: 100%;
-    justify-content: center;
-    padding: 0.8rem;
-  }
 }
 
 @keyframes slideDown {
