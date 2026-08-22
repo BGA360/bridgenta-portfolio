@@ -1,0 +1,19 @@
+{
+  "id": "softwarearchitektur",
+  "name": "Softwarearchitektur",
+  "slug": "softwarearchitektur",
+  "description": "Konzepte, Entwurfsmuster und Strukturierungsprinzipien für skalierbare und wartbare Softwaresysteme.",
+  "purpose": "Vermittlung von klaren Systemgrenzen, Datenmodellen und Migrations- und Rekonstruktionsmethodiken.",
+  "includedTopics": [
+    "Definition von Modulgrenzen und Schnittstellen",
+    "Datenmodellierung und Entwurf logischer Schema-Strukturen",
+    "Preservation-Layer-Architekturen zur Absicherung von Altsystemen",
+    "Analyse von Abhängigkeiten und Beseitigung von Architecture Drift",
+    "Codebasierte Systemrekonstruktion"
+  ],
+  "excludedTopics": [
+    "Rein visuelle CSS-Animationen und Layout-Styling",
+    "Konfiguration einfacher Build-Werkzeuge",
+    "Marketingbezogene Systemdarstellungen"
+  ]
+}
