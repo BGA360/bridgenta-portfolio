@@ -1,11 +1,12 @@
 {
+  "id": "ai-entwicklung",
   "name": "KI-gestützte Softwareentwicklung",
   "slug": "ai-entwicklung",
   "description": "Methoden und Best Practices für die sichere, effiziente Entwicklung mit generativen KI-Systemen und AI Buildern.",
   "purpose": "Vermittlung von Prompt-Architekturen, Code-Reviews und Kontrollgrenzen in der Kooperation zwischen Mensch und Maschine.",
   "includedTopics": [
     "Prompt Engineering und strukturierte Prompts",
-    "Verwendung von AI Buildern (z. B. Lovable, Astro-Integrationen)",
+    "Einsatz von KI-Entwicklungswerkzeugen und AI Buildern",
     "Qualitäts- und Sicherheitsaudits generierten Codes",
     "Festlegung von Autoritätsgrenzen zwischen Mensch und KI",
     "Mensch-KI-Entwicklungs-Workflows"

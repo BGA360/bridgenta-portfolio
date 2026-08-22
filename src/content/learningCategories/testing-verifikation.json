@@ -1,4 +1,5 @@
 {
+  "id": "testing-verifikation",
   "name": "Testen, Verifizieren und Absichern",
   "slug": "testing-verifikation",
   "description": "Qualitätssicherungs- und Validierungsmethoden für funktionale, semantische und governancebezogene Systemprüfungen.",

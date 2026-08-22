@@ -62,12 +62,13 @@ const pagesCollection = defineCollection({
 const learningCategoriesCollection = defineCollection({
   type: 'data',
   schema: z.object({
-    name: z.string(),
-    slug: z.string(),
-    description: z.string(),
-    purpose: z.string(),
-    includedTopics: z.array(z.string()),
-    excludedTopics: z.array(z.string()),
+    id: z.string().min(1),
+    name: z.string().min(1),
+    slug: z.string().min(1),
+    description: z.string().min(1),
+    purpose: z.string().min(1),
+    includedTopics: z.array(z.string().min(1)).nonempty(),
+    excludedTopics: z.array(z.string().min(1)).nonempty(),
   })
 });
 

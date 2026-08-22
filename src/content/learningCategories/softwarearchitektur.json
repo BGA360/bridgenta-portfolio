@@ -1,4 +1,5 @@
 {
+  "id": "softwarearchitektur",
   "name": "Softwarearchitektur",
   "slug": "softwarearchitektur",
   "description": "Konzepte, Entwurfsmuster und Strukturierungsprinzipien für skalierbare und wartbare Softwaresysteme.",
