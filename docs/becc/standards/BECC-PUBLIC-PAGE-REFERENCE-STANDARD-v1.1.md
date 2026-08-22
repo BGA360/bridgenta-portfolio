@@ -29,12 +29,12 @@ This standard defines the rules, validation layers, and claim-integrity constrai
 
 To ensure structured verification within the declared BECC scope, technical communication must satisfy six validation layers. Each layer has distinct authority:
 
-*   **Layer 1 — Machine lexical validation**: Automated matching of vocabulary, compound standards, proper nouns, and prohibited absolute claims using a deterministic registry.
+*   **Layer 1 — Machine lexical validation**: Automated matching of vocabulary, compound standards, proper nouns, and prohibited absolute claims using a deterministic registry. **Authority:** BECC/PRAG pipelines govern applicable validation gates and publication eligibility (security, secrets, structural validation).
 *   **Layer 2 — Author or engineering self-review**: Verification by the author or developer of layouts, evidence mapping, and readability.
 *   **Layer 3 — Authorized semantic fresh-reader review**: Human fresh-reader review of the layout context, reading complexity, and semantic clarity to resolve nuances that machine scanning cannot detect. **Authority:** The authorized fresh-reader holds sole authority to judge linguistic accessibility.
 *   **Layer 4 — Independent certification review**: Third-party evaluation of live pages against criteria, verifying deployed commit SHA-256 hashes and evidence manifests. **Authority:** Technical and evidence review judges technical correctness and evidence fidelity.
-*   **Layer 5 — Constitutional or designated approval**: Official approval of the reviewed candidate by the designated authorities. **Authority:** BECC/PRAG pipelines govern publication eligibility (security, secrets, structural validation).
-*   **Layer 6 — Publication or activation authorization**: Formal permission to deploy, merge, or activate the verified standard. **Authority:** Authorized human approval governs final publication, merging, and activation.
+*   **Layer 5 — Constitutional or designated approval**: Official approval of the reviewed candidate by the designated authorities. **Authority:** Constitutional or designated approval authority.
+*   **Layer 6 — Publication or activation authorization**: Formal permission to deploy, merge, or activate the verified standard. **Authority:** Authorized human publication/activation authorization.
 
 *Completion of one layer does not automatically complete, authorize, or satisfy any later layer.*
 
@@ -48,7 +48,7 @@ BECC establishes a clear target distinction between professional and learning co
 Technical prose targeting professional pages, official reports, and portfolio case studies must maintain a professional CEFR B2–C1 register. Authors must use active verbs, clear sentence structures, and eliminate marketing hyperboles.
 
 ### 2.2 Learning Accessibility Profile (CEFR A2–B1)
-Prose targeting educational or learning-focused content must maintain a CEFR A2–B1 accessibility register. The profile's scope explicitly includes all four learning branch levels:
+Prose targeting educational or learning-focused content targets approximately CEFR A2–B1 sentence structure and explanatory language. The profile's scope explicitly includes all four learning branch levels:
 *   **PUBLIC**
 *   **BEGINNER**
 *   **INTERMEDIATE**
@@ -57,15 +57,15 @@ Prose targeting educational or learning-focused content must maintain a CEFR A2�
 #### 2.2.1 Invariant: Technical Depth vs. Linguistic Complexity
 The core invariant of this profile is:
 $$\text{ADVANCED TECHNICAL DEPTH} \neq \text{ADVANCED LANGUAGE COMPLEXITY}$$
-While the technical depth, analytical depth, evidence density, architecture detail, implementation detail, and assurance reasoning vary between learning levels, the grammar, sentence construction, and explanatory accessibility remain strictly within the CEFR A2–B1 range. 
+While the technical depth, analytical depth, evidence density, architecture detail, implementation detail, and assurance reasoning vary between learning levels, the grammar, sentence construction, and explanatory accessibility do not intentionally become harder. Learning content targets approximately CEFR A2–B1 sentence structure and explanatory language. Necessary technical terminology may exceed ordinary A2–B1 vocabulary when technically required, as CEFR controls linguistic accessibility, not engineering depth.
 
 ---
 
 ## 3. Claim Bounding & Terminology
 
-### 3.1 Bounded Claims & Learning Transformation
+### 3.1 Bounded Claims
 All quantitative, performance, or outcome-based statements must be explicitly:
-1. Mapped to documented test run logs (transitioning governed source evidence to a learning transformation).
+1. Mapped to documented test run logs.
 2. Bounded to the specific environment in which they were observed (e.g. `im Pilotlauf`, `im Pilotbetrieb`, `in der Testumgebung`).
 3. Registered in a centralized evidence map.
 
@@ -112,7 +112,7 @@ No formal WCAG conformance claim may be published unless supported by evidence a
 ## 6. Governance and Human Adjudication
 
 ### 6.1 Verification Gates
-Project pages within BECC governed scope must pass through the applicable validation gates before publication authorization:
+If BECC v1.1 is formally authorized, project pages within its declared governed scope must pass through the applicable validation gates before publication authorization:
 1. **Source Check**: Lexical validation check.
 2. **Semantic Check**: Manual fresh-reader review.
 3. **Evidence Verification**: Mapping claims to evidence records.

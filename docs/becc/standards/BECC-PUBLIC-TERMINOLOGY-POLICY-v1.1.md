@@ -32,7 +32,7 @@ BECC establishes two distinct communication registers to manage technical docume
 Technical prose must align with the CEFR B2–C1 register. Style must be active, precise, and devoid of marketing superlatives. Structured readability scores and sentence length targets serve as advisory metrics.
 
 ### 1.2 Learning Accessibility Profile (CEFR A2–B1)
-Prose targeting learning or educational content must align with the CEFR A2–B1 register. The profile explicitly covers all learning branch levels:
+Prose targeting learning or educational content targets approximately CEFR A2–B1 sentence structure and explanatory language. The profile explicitly covers all learning branch levels:
 *   **PUBLIC**
 *   **BEGINNER**
 *   **INTERMEDIATE**
@@ -103,5 +103,6 @@ Linguistic checks and automated readability statistics are advisory supporting s
 ### 4.3 Human Adjudication
 - **Fresh-Reader Review:** Holds sole authority to judge linguistic accessibility and explanation clarity.
 - **Technical/Evidence Review:** Judges technical correctness and evidence fidelity.
-- **BECC/PRAG Pipelines:** Govern publication eligibility (security, secrets, structure checks).
-- **Authorized Human Approval:** Governs final publication, merging, and activation.
+- **BECC/PRAG Pipelines:** Govern applicable validation gates and publication eligibility (security, secrets, structure checks).
+- **Constitutional or Designated Approval:** Holds constitutional or designated approval authority (Layer 5).
+- **Authorized Human Approval:** Governs final publication, merging, and activation (Layer 6).

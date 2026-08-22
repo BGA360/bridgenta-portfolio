@@ -44,11 +44,11 @@ The validation process is divided into distinct sections. Completion of one sect
 - [ ] Are bilingual headings (e.g. parenthetical English additions in headings) removed?
 - [ ] Are ampersands (`&`) replaced with `und` in all standard German headings?
 - [ ] Are programmatic symbols wrapped in code backticks?
-- [ ] Does the page metadata declare the correct `languageProfile` (B2–C1 for Professional, A2–B1 for Learning)?
+- [ ] Has the applicable BECC communication profile been identified correctly for the content?
 
 ### Phase 3: Authorized Semantic Fresh-Reader Review
 *Authority: Authorized Fresh-Reader (Linguistic Accessibility Judge)*
-- [ ] For learning-focused content (A2-B1 profile), is the prose readable and understandable for beginner readers across all four learning branches (PUBLIC, BEGINNER, INTERMEDIATE, ADVANCED)?
+- [ ] Is the explanatory language accessible at the A2–B1 target while preserving the technical depth appropriate to the selected Learning Branch? (PUBLIC, BEGINNER, INTERMEDIATE, and ADVANCED).
 - [ ] Has the invariant **ADVANCED TECHNICAL DEPTH $\neq$ ADVANCED LANGUAGE COMPLEXITY** been preserved?
 - [ ] Do experimental heuristics (like the 15-word sentence limit and 5-sentence paragraph limit) indicate accessible sentence structure? (Flesch score and counts serve as advisory heuristics only).
 - [ ] Where human review is required, is there an authenticated, reviewer-controlled attestation bound to the exact reviewed target?
@@ -61,11 +61,11 @@ The validation process is divided into distinct sections. Completion of one sect
 - [ ] Are console errors and network blockages that affect access to content flagged?
 
 ### Phase 5: Constitutional or Designated Approval
-*Authority: Constitutional Architect / Project Owner*
+*Authority: Constitutional or Designated Approval Authority*
 - [ ] Has the record been verified by the constitutionally designated authority?
 
 ### Phase 6: Publication or Activation Authorization
-*Authority: Authorized Human Approval (Final Release)*
+*Authority: Authorized Human Publication/Activation Authorization*
 - [ ] Is the formal clearance logged before merging or deploying?
 
 ---
@@ -108,13 +108,13 @@ Verification of human gates requires checklist controls for:
 
 ## 4. Claim and Evidence Bounding (Fidelity Checks)
 
-- [ ] Are all quantitative metrics scoped to a test or pilot run (representing a learning transformation from governed source evidence)?
+- [ ] Are all quantitative metrics scoped to a test or pilot run?
 - [ ] Are absolute guarantees and unverified warranties (e.g. `garantieren`, `fehlerfrei`, `lückenloser Schutz`) removed?
 - [ ] Is the use of `alle` and `vollständig` verified as safe (meaning it refers strictly to bounded lists, code constructs, or verified scopes)?
 - [ ] Are all substantiation-sensitive claims required by the governing standard registered in the applicable claim-evidence map?
   *   *Includes: quantitative, performance, outcome, accessibility, security, conformance, certification, and categorical absence-of-event claims.*
 - [ ] Are preserved technical terms (such as `Abstraktionsebene`, `Runtime`) explained clearly close to their first meaningful use when needed?
-- [ ] Does the simplification of technical explanations avoid changing technical meaning or distorting evidence?
+- [ ] Does the learning transformation preserve technical meaning and evidence fidelity?
 
 ---
 
