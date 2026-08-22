@@ -59,7 +59,20 @@ const pagesCollection = defineCollection({
   schema: z.any(),
 });
 
+const learningCategoriesCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    name: z.string(),
+    slug: z.string(),
+    description: z.string(),
+    purpose: z.string(),
+    includedTopics: z.array(z.string()),
+    excludedTopics: z.array(z.string()),
+  })
+});
+
 export const collections = {
   projects: projectCollection,
   pages: pagesCollection,
+  learningCategories: learningCategoriesCollection,
 };

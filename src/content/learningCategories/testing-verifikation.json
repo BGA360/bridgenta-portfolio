@@ -1,0 +1,18 @@
+{
+  "name": "Testen, Verifizieren und Absichern",
+  "slug": "testing-verifikation",
+  "description": "Qualitätssicherungs- und Validierungsmethoden für funktionale, semantische und governancebezogene Systemprüfungen.",
+  "purpose": "Vermittlung von automatisierten Linter-Checks, manuellen Fresh-Reader-Verfahren und evidentieller Absicherung.",
+  "includedTopics": [
+    "Einrichtung und Ausführung von automatisierten Linter- und Build-Gates",
+    "Strukturierte manuelle Prüfverfahren (z. B. Fresh-Reader-Audits)",
+    "Registrierung und Abgleich evidentieller Belege in Claim-Evidence-Maps",
+    "Sitemap- und responsive Darstellungsprüfungen",
+    "Validierung von SEO-, AEO- und GEO-Metadaten"
+  ],
+  "excludedTopics": [
+    "Lokale Compiler-Installationen ohne Pipeline-Bezug",
+    "Manuelle ad-hoc Browsertests ohne protokollierte Evidenz",
+    "Allgemeine Server-Bereitstellung ohne Verifikationsfokus"
+  ]
+}
