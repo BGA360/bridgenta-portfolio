@@ -83,19 +83,53 @@ const learningCollection = defineCollection({
     publicStatus: z.enum(['historical', 'corrected']).optional(),
     publishedAt: z.coerce.date().optional(),
     updatedAt: z.coerce.date().optional(),
-  }).refine((data) => {
-    // published articles must have a valid publishedAt date
+  }).superRefine((data, ctx) => {
+    // Draft & Review checks
+    if (data.publicationState === 'draft' || data.publicationState === 'review') {
+      if (data.publishedAt !== undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${data.publicationState} articles must not declare publishedAt date.`,
+          path: ['publishedAt'],
+        });
+      }
+      if (data.updatedAt !== undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${data.publicationState} articles must not declare updatedAt date.`,
+          path: ['updatedAt'],
+        });
+      }
+      if (data.publicStatus !== undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${data.publicationState} articles must not declare publicStatus.`,
+          path: ['publicStatus'],
+        });
+      }
+    }
+
+    // Published checks
     if (data.publicationState === 'published') {
-      return data.publishedAt !== undefined;
+      if (data.publishedAt === undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Published articles require a publishedAt date.',
+          path: ['publishedAt'],
+        });
+      }
+      
+      // Date ordering check
+      if (data.publishedAt !== undefined && data.updatedAt !== undefined) {
+        if (data.updatedAt.getTime() < data.publishedAt.getTime()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'updatedAt must be equal to or greater than publishedAt.',
+            path: ['updatedAt'],
+          });
+        }
+      }
     }
-    // draft and review must NOT have an explicit publicStatus
-    if (data.publicationState !== 'published') {
-      return data.publicStatus === undefined;
-    }
-    return true;
-  }, {
-    message: "Published articles require publishedAt. Drafts/reviews cannot declare publicStatus.",
-    path: ["publishedAt"]
   })
 });
 
