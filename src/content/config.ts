@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, reference, z } from 'astro:content';
 
 const projectCollection = defineCollection({
   type: 'content',
@@ -72,8 +72,70 @@ const learningCategoriesCollection = defineCollection({
   })
 });
 
+const learningCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+    category: reference('learningCategories'),
+    learningLevel: z.enum(['public', 'beginner', 'intermediate', 'advanced']),
+    publicationState: z.enum(['draft', 'review', 'published']),
+    publicStatus: z.enum(['historical', 'corrected']).optional(),
+    publishedAt: z.coerce.date().optional(),
+    updatedAt: z.coerce.date().optional(),
+  }).superRefine((data, ctx) => {
+    // Draft & Review checks
+    if (data.publicationState === 'draft' || data.publicationState === 'review') {
+      if (data.publishedAt !== undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${data.publicationState} articles must not declare publishedAt date.`,
+          path: ['publishedAt'],
+        });
+      }
+      if (data.updatedAt !== undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${data.publicationState} articles must not declare updatedAt date.`,
+          path: ['updatedAt'],
+        });
+      }
+      if (data.publicStatus !== undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${data.publicationState} articles must not declare publicStatus.`,
+          path: ['publicStatus'],
+        });
+      }
+    }
+
+    // Published checks
+    if (data.publicationState === 'published') {
+      if (data.publishedAt === undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Published articles require a publishedAt date.',
+          path: ['publishedAt'],
+        });
+      }
+      
+      // Date ordering check
+      if (data.publishedAt !== undefined && data.updatedAt !== undefined) {
+        if (data.updatedAt.getTime() < data.publishedAt.getTime()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'updatedAt must be equal to or greater than publishedAt.',
+            path: ['updatedAt'],
+          });
+        }
+      }
+    }
+  })
+});
+
 export const collections = {
   projects: projectCollection,
   pages: pagesCollection,
   learningCategories: learningCategoriesCollection,
+  learning: learningCollection,
 };
