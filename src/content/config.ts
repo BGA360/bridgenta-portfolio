@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, reference, z } from 'astro:content';
 
 const projectCollection = defineCollection({
   type: 'content',
@@ -72,8 +72,36 @@ const learningCategoriesCollection = defineCollection({
   })
 });
 
+const learningCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+    category: reference('learningCategories'),
+    learningLevel: z.enum(['public', 'beginner', 'intermediate', 'advanced']),
+    publicationState: z.enum(['draft', 'review', 'published']),
+    publicStatus: z.enum(['historical', 'corrected']).optional(),
+    publishedAt: z.coerce.date().optional(),
+    updatedAt: z.coerce.date().optional(),
+  }).refine((data) => {
+    // published articles must have a valid publishedAt date
+    if (data.publicationState === 'published') {
+      return data.publishedAt !== undefined;
+    }
+    // draft and review must NOT have an explicit publicStatus
+    if (data.publicationState !== 'published') {
+      return data.publicStatus === undefined;
+    }
+    return true;
+  }, {
+    message: "Published articles require publishedAt. Drafts/reviews cannot declare publicStatus.",
+    path: ["publishedAt"]
+  })
+});
+
 export const collections = {
   projects: projectCollection,
   pages: pagesCollection,
   learningCategories: learningCategoriesCollection,
+  learning: learningCollection,
 };
