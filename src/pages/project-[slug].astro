@@ -4,10 +4,13 @@ import Layout from '../layouts/Layout.astro';
 import PortfolioSidebar from '../components/portfolio/PortfolioSidebar.astro';
 import RelatedProjects from '../components/portfolio/RelatedProjects.astro';
 import ProjectCTA from '../components/portfolio/ProjectCTA.astro';
+import portfolioConfig from '../config/portfolio.json';
+
+const activeProjectSlugs = portfolioConfig.activeProjectSlugs;
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+  const activeProjectSlugs = portfolioConfig.activeProjectSlugs;
   const activeProjects = projects.filter((entry) => activeProjectSlugs.includes(entry.slug));
   return activeProjects.map((entry) => ({
     params: { slug: entry.slug },
@@ -19,7 +22,6 @@ const { entry } = Astro.props;
 const { Content } = await entry.render();
 
 // Query projects collection to compute prev/next navigation links
-const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
 const projects = (await getCollection('projects'))
   .filter((p) => activeProjectSlugs.includes(p.slug))
   .sort((a, b) => activeProjectSlugs.indexOf(a.slug) - activeProjectSlugs.indexOf(b.slug));
