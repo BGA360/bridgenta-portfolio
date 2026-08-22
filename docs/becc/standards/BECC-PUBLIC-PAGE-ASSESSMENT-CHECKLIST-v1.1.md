@@ -27,40 +27,51 @@ This checklist guides auditors and developers through evaluating public project 
 
 ---
 
-## 1. Validation Phase Layering
+## 1. Validation Phase Layering & Authority Allocation
+
 The validation process is divided into distinct sections. Completion of one section does not complete or authorize a later section.
 
 ### Phase 1: Machine Lexical Validation
+*Authority: BECC/PRAG Pipelines*
 - [ ] Has the machine lexical scan run successfully with zero malformed registry errors?
 - [ ] Are all candidate matches flagged by the scanner adjudicated by a human reviewer?
 
 ### Phase 2: Author or Engineering Self-Review
+*Authority: Project Author / Developer*
 - [ ] Is there exactly one `H1` tag on the page?
 - [ ] Do headings proceed sequentially (`H2` -> `H3` -> `H4`) without skipped levels?
 - [ ] Are all public structural and navigation headings in German?
 - [ ] Are bilingual headings (e.g. parenthetical English additions in headings) removed?
 - [ ] Are ampersands (`&`) replaced with `und` in all standard German headings?
 - [ ] Are programmatic symbols wrapped in code backticks?
-- [ ] Is the prose natural, precise, and written in CEFR B2–C1 register?
+- [ ] Does the page metadata declare the correct `languageProfile` (B2–C1 for Professional, A2–B1 for Learning)?
 
 ### Phase 3: Authorized Semantic Fresh-Reader Review
+*Authority: Authorized Fresh-Reader (Linguistic Accessibility Judge)*
+- [ ] For learning-focused content (A2-B1 profile), is the prose readable and understandable for beginner readers across all four learning branches (PUBLIC, BEGINNER, INTERMEDIATE, ADVANCED)?
+- [ ] Has the invariant **ADVANCED TECHNICAL DEPTH $\neq$ ADVANCED LANGUAGE COMPLEXITY** been preserved?
+- [ ] Do experimental heuristics (like the 15-word sentence limit and 5-sentence paragraph limit) indicate accessible sentence structure? (Flesch score and counts serve as advisory heuristics only).
 - [ ] Where human review is required, is there an authenticated, reviewer-controlled attestation bound to the exact reviewed target?
 - [ ] Does the review check details that automated lexical scans cannot cover?
 
 ### Phase 4: Independent Certification Review
+*Authority: Independent Auditor (Technical & Evidence Fidelity Judge)*
 - [ ] Is any formal WCAG conformance claim supported by evidence appropriate to the declared level, scope, and authority?
 - [ ] Are generic payload-size budgets removed from the accessibility contract?
 - [ ] Are console errors and network blockages that affect access to content flagged?
 
 ### Phase 5: Constitutional or Designated Approval
+*Authority: Constitutional Architect / Project Owner*
 - [ ] Has the record been verified by the constitutionally designated authority?
 
 ### Phase 6: Publication or Activation Authorization
+*Authority: Authorized Human Approval (Final Release)*
 - [ ] Is the formal clearance logged before merging or deploying?
 
 ---
 
 ## 2. Exact-Target Verification Controls
+
 Every review must be bound to the exact target reference:
 - [ ] Repository identified?
 - [ ] Branch or release reference logged?
@@ -95,12 +106,15 @@ Verification of human gates requires checklist controls for:
 
 ---
 
-## 4. Claim and Evidence Bounding
-- [ ] Are all quantitative metrics scoped to a test or pilot run (e.g. `im Pilotlauf`, `im Testbetrieb`)?
+## 4. Claim and Evidence Bounding (Fidelity Checks)
+
+- [ ] Are all quantitative metrics scoped to a test or pilot run (representing a learning transformation from governed source evidence)?
 - [ ] Are absolute guarantees and unverified warranties (e.g. `garantieren`, `fehlerfrei`, `lückenloser Schutz`) removed?
 - [ ] Is the use of `alle` and `vollständig` verified as safe (meaning it refers strictly to bounded lists, code constructs, or verified scopes)?
 - [ ] Are all substantiation-sensitive claims required by the governing standard registered in the applicable claim-evidence map?
   *   *Includes: quantitative, performance, outcome, accessibility, security, conformance, certification, and categorical absence-of-event claims.*
+- [ ] Are preserved technical terms (such as `Abstraktionsebene`, `Runtime`) explained clearly close to their first meaningful use when needed?
+- [ ] Does the simplification of technical explanations avoid changing technical meaning or distorting evidence?
 
 ---
 
