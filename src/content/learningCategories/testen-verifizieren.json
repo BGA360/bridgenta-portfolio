@@ -1,7 +1,7 @@
 {
-  "id": "testing-verifikation",
+  "id": "testen-verifizieren",
   "name": "Testen, Verifizieren und Absichern",
-  "slug": "testing-verifikation",
+  "slug": "testen-verifizieren",
   "description": "Qualitätssicherungs- und Validierungsmethoden für funktionale, semantische und governancebezogene Systemprüfungen.",
   "purpose": "Vermittlung von automatisierten Linter-Checks, manuellen Fresh-Reader-Verfahren und evidentieller Absicherung.",
   "includedTopics": [
