@@ -18,7 +18,9 @@ Nein. Ein grüner Haken bedeutet lediglich: Alle vordefinierten Regeln sind erf�
 
 In unserem Validierungssystem **PRAG** setzen wir auf ein automatisiertes Prüfverfahren. Dabei schalten wir automatisierte Prüfungen als Kontrollpunkte ("Gates") in die Pipeline. Diese blockieren fehlerhafte Änderungen.
 
-Diese Kontrollen basieren auf statischen Prüfungen. Sie untersuchen Dokumente formal, ohne das System auszuführen. Sie folgen deterministischen Regeln.
+PRAG ist breiter aufgebaut als ein einzelner Linter. Es orchestriert mehrere Validatoren. Einige davon arbeiten ähnlich wie klassische Linter. Andere prüfen zusätzliche technische Bedingungen.
+
+Ein Teil dieser Prüfungen arbeitet statisch und regelbasiert. Andere Validatoren prüfen zusätzliche Bedingungen. Sie kontrollieren zum Beispiel den erfolgreichen Build der Website.
 
 Ein Blick in den Kern unseres Validierungssystems zeigt, wie diese Gates strukturiert sind:
 
@@ -38,13 +40,9 @@ Ein Blick in den Kern unseres Validierungssystems zeigt, wie diese Gates struktu
 ```
 *Quelle: `bridgenta-workspace/validation/automation_controller.js`*
 
-Dieses Code-Snippet zeigt die Validator-Kette. Ein **Linter** analysiert Text oder Code. Er prüft formale Konventionen und bekannte Fehlerbilder.
+Dieses Code-Snippet zeigt die Validator-Kette. Der PRAG-Controller koordiniert hierbei eine definierte Sequenz von Prüfungen. Die Namen zeigen unterschiedliche technische Prüfbereiche, zum Beispiel Metadaten, Secrets, Links, Builds und Hashes.
 
-Die einzelnen Module prüfen feste Bedingungen:
-* **Secret Scanner**: Findet API-Schlüssel, Passwörter oder persönliche Daten.
-* **Link Validator**: Prüft Links auf Erreichbarkeit.
-* **Metadata Validator**: Kontrolliert Pflichtfelder im Frontmatter.
-* **Hash Validator**: Vergleicht Prüfsummen geänderter Dateien.
+Welche konkrete Regel ein Validator im Detail durchsetzt, ergibt sich aus seiner jeweiligen Implementierung.
 
 ---
 
@@ -58,9 +56,9 @@ Ein kurzes Beispiel verdeutlicht dies. Ein Entwickler schreibt in einer Dokument
 *"Das Modul erzielt eine Zeitersparnis von 95%."*
 
 * **Was PRAG tut**: Der Linter prüft die Syntax. Er scannt nach sensiblen Begriffen.
-* **Was PRAG nicht kann**: Das System bewertet keine Fakten. Es kann nicht erkennen, ob der Wert auf echten Messungen beruht.
+* **Was PRAG nicht kann**: Das System bewertet Fakten nicht. Es erkennt gefälschte Werte nicht.
 
-Ein bestandener Check sichert nur die formale Qualität der Codebasis. Er ist unentbehrlich als Schutzfilter, aber kein Beweis für Wahrheit.
+Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er ist unentbehrlich als Schutzfilter. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.
 
 ---
 
@@ -71,14 +69,14 @@ Maschinelle Regelprüfungen und inhaltliche Verifikation beantworten unterschied
 1. **Die maschinelle Regelprüfung fragt**: *Ist das Dokument formal korrekt und sicher aufgebaut?*
 2. **Die inhaltliche Verifikation fragt**: *Sind die Aussagen korrekt und durch Belege gedeckt?*
 
-Für diese zweite Frage nutzen wir das manuelle **Fresh-Reader-Audit**.
+Für diese inhaltliche Prüfung eignet sich ein manuelles **Fresh-Reader-Audit**. Ein Fresh Reader liest die Seite wie ein neuer Besucher – also ohne das interne Projektwissen der Person, die den Text geschrieben hat.
 
-Der Reviewer liest das Dokument wie ein neuer Besucher. Er besitzt kein internes Vorwissen zum Text. Der Reviewer prüft:
-* Sind die Argumentationsketten logisch?
-* Werden Fachbegriffe ausreichend erklärt?
-* Sind die Belege nachvollziehbar? Stützen sie die Behauptungen im Text?
+Der Reviewer besitzt kein internes Vorwissen zum Text. Er achtet auf folgende Aspekte:
+* Sind die Argumentationsketten im Text schlüssig?
+* Werden technische Fachbegriffe ausreichend erklärt?
+* Sind die verlinkten Belege nachvollziehbar und stützen sie die Behauptungen?
 
-Das Dokument gilt erst nach zwei Schritten als verifiziert. Zuerst läuft die automatische Pipeline (Layer 1). Danach folgt das manuelle Audit (Layer 3).
+Im BridGenta-Prüfmodell ergänzen sich automatisierte Regelprüfungen und eine separate inhaltliche Prüfung. Sie liefern unterschiedliche Arten von Evidenz für die Gesamtqualität eines Dokuments.
 
 ---
 
@@ -86,6 +84,6 @@ Das Dokument gilt erst nach zwei Schritten als verifiziert. Zuerst läuft die au
 
 Für Entwickler und Autoren ergeben sich drei Lehren:
 
-* **Formale Qualität erzwingen**: Überlassen Sie Metadaten, Links und Secrets dem Linter. Nutzen Sie automatisches CI-Gating.
-* **Kein Freifahrtschein**: Der grüne Build ist nur die Mindesthürde. Er ersetzt keine fachliche Prüfung.
-* **Vier-Augen-Prinzip fokussieren**: Verschwenden Sie keine Zeit mit Tippfehlern oder defekten Links. Das erledigt die Maschine.
+* **Automatisieren, was möglich ist**: Automatisieren Sie Prüfungen, für die klare maschinelle Regeln existieren. Dazu gehören Metadaten-Formate, Link-Existenz und Secret-Scans.
+* **Kein Freifahrtschein**: Ein grüner Build ist nur die Mindesthürde. Er beweist keine inhaltliche Wahrheit.
+* **Inhaltliche Qualität**: Konzentrieren Sie sich auf Fragen außerhalb der Regeln. Prüfen Sie Verständlichkeit, Logik und Belege.
