@@ -1,0 +1,56 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('learning');
+  const publishedArticles = articles.filter(
+    (art) => art.data.publicationState === 'published'
+  );
+
+  for (const article of publishedArticles) {
+    if (article.slug.includes('/')) {
+      throw new Error(
+        `[ROUTE BUILD FAIL] Nested article found: "${article.id}". Learning articles must be flat under src/content/learning/.`
+      );
+    }
+    if (article.slug === 'themen') {
+      throw new Error(
+        `[ROUTE BUILD FAIL] Article slug matches reserved word "themen": "${article.id}".`
+      );
+    }
+  }
+
+  return publishedArticles.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// Fetch the associated category data
+const categoryEntry = await getEntry('learningCategories', entry.data.category.id);
+---
+
+<Layout title={entry.data.seoTitle || entry.data.title} description={entry.data.seoDescription || entry.data.description}>
+  <main class="container">
+    <article>
+      <header>
+        <h1>{entry.data.title}</h1>
+        <div>
+          <p>Thema: {categoryEntry.data.name}</p>
+          <p>Level: {entry.data.learningLevel}</p>
+        </div>
+        <p>
+          {entry.data.description}
+        </p>
+      </header>
+
+      <section class="tina-content">
+        <Content />
+      </section>
+    </article>
+  </main>
+</Layout>

@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const categories = await getCollection('learningCategories');
+  return categories.map((cat) => ({
+    params: { category: cat.id },
+    props: { category: cat },
+  }));
+}
+
+const { category } = Astro.props;
+
+// Fetch articles belonging to this category and filter by publicationState === 'published'
+const allArticles = await getCollection('learning');
+const publishedArticles = allArticles.filter(
+  (art) =>
+    art.data.publicationState === 'published' &&
+    art.data.category.id === category.id
+);
+---
+
+<Layout title={`${category.data.name}`} description={category.data.description}>
+  <main class="container">
+    <h1>{category.data.name}</h1>
+    <p>
+      {category.data.description}
+    </p>
+
+    <section>
+      <h2>Artikel in dieser Kategorie</h2>
+
+      {publishedArticles.length > 0 ? (
+        <ul>
+          {publishedArticles.map((art) => (
+            <li>
+              <h3>
+                <a href={`/lernen/${art.slug}/`}>
+                  {art.data.title}
+                </a>
+              </h3>
+              <p>{art.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Noch keine veröffentlichten Lernartikel in diesem Thema.</p>
+      )}
+    </section>
+  </main>
+</Layout>

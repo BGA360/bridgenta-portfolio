@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+// Fetch categories dynamically
+const categories = await getCollection('learningCategories');
+
+// Fetch learning articles dynamically, filter to only published
+const articles = await getCollection('learning');
+const publishedArticles = articles.filter(
+  (art) => art.data.publicationState === 'published'
+);
+
+// Group articles by category
+const articlesByCategory = new Map();
+for (const cat of categories) {
+  articlesByCategory.set(cat.id, []);
+}
+
+for (const art of publishedArticles) {
+  const catId = art.data.category.id;
+  if (articlesByCategory.has(catId)) {
+    articlesByCategory.get(catId).push(art);
+  }
+}
+---
+
+<Layout title="Lernen" description="Wissensdatenbank.">
+  <main class="container">
+    <h1>Lernen</h1>
+    <p>
+      Willkommen in unserer Wissensdatenbank. Hier teilen wir praxisnahe Erkenntnisse aus der Softwareentwicklung.
+    </p>
+
+    <section>
+      {categories.map((cat) => {
+        const catArticles = articlesByCategory.get(cat.id) || [];
+        return (
+          <div class="category-section">
+            <h2>
+              <a href={`/lernen/themen/${cat.id}/`}>
+                {cat.data.name}
+              </a>
+            </h2>
+            <p>{cat.data.description}</p>
+            
+            {catArticles.length > 0 ? (
+              <ul>
+                {catArticles.map((art) => (
+                  <li>
+                    <a href={`/lernen/${art.slug}/`}>
+                      {art.data.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Noch keine veröffentlichten Lernartikel.</p>
+            )}
+          </div>
+        );
+      })}
+    </section>
+  </main>
+</Layout>
