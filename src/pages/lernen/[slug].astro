@@ -2,6 +2,8 @@
 import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import LearningLevelBadge from '../../components/LearningLevelBadge.astro';
+import LearningStatusNotice from '../../components/LearningStatusNotice.astro';
 
 export async function getStaticPaths() {
   const articles = await getCollection('learning');
@@ -52,26 +54,67 @@ const learningArticle = {
 if (entry.data.updatedAt) {
   learningArticle.updatedAt = entry.data.updatedAt.toISOString();
 }
+
+const formattedPublishDate = entry.data.publishedAt.toLocaleDateString('de-DE', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const formattedUpdateDate = entry.data.updatedAt
+  ? entry.data.updatedAt.toLocaleDateString('de-DE', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : undefined;
 ---
 
 <Layout title={entry.data.seoTitle || entry.data.title} description={entry.data.seoDescription || entry.data.description} pageKind="learning-article" learningBreadcrumbs={learningBreadcrumbs} learningArticle={learningArticle}>
-  <main class="container">
+  <main class="container learning-article">
     <Breadcrumbs breadcrumbs={learningBreadcrumbs} />
-    <article>
-      <header>
-        <h1>{entry.data.title}</h1>
-        <div>
-          <p>Thema: {categoryEntry.data.name}</p>
-          <p>Level: {entry.data.learningLevel}</p>
+    
+    <article class="learning-prose">
+      <header class="learning-article__header">
+        <div class="learning-article__meta-top">
+          <a href={`/lernen/themen/${categoryEntry.id}/`} class="learning-article__category-link">
+            {categoryEntry.data.name}
+          </a>
+          <LearningLevelBadge level={entry.data.learningLevel} />
         </div>
-        <p>
+        
+        <h1>{entry.data.title}</h1>
+        
+        <p class="lede">
           {entry.data.description}
         </p>
+
+        <div class="learning-article__meta-dates">
+          <span>Veröffentlicht am {formattedPublishDate}</span>
+          {formattedUpdateDate && <span>&bull; Aktualisiert am {formattedUpdateDate}</span>}
+        </div>
+
+        {entry.data.publicStatus && (
+          <LearningStatusNotice status={entry.data.publicStatus} />
+        )}
       </header>
+
+      <hr class="learning-article__divider" />
 
       <section class="tina-content">
         <Content />
       </section>
+
+      <footer class="learning-article__footer">
+        <div class="learning-footer-nav">
+          <a href={`/lernen/themen/${categoryEntry.id}/`} class="btn btn--secondary">
+            &larr; Zurück zu {categoryEntry.data.name}
+          </a>
+          <a href="/lernen/" class="btn btn--text">
+            Zurück zur Lernübersicht
+          </a>
+        </div>
+      </footer>
     </article>
   </main>
 </Layout>

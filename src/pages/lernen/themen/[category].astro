@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import LearningCard from '../../../components/LearningCard.astro';
 
 export async function getStaticPaths() {
   const categories = await getCollection('learningCategories');
@@ -33,32 +34,37 @@ const learningBreadcrumbs = [
 ---
 
 <Layout title={`${category.data.name}`} description={category.data.description} robots={robots} pageKind="learning-category" learningBreadcrumbs={learningBreadcrumbs}>
-  <main class="container">
+  <main class="container learning-category">
     <Breadcrumbs breadcrumbs={learningBreadcrumbs} />
-    <h1>{category.data.name}</h1>
-    <p>
-      {category.data.description}
-    </p>
+    
+    <header class="learning-category__header">
+      <span class="eyebrow">Thema</span>
+      <h1>{category.data.name}</h1>
+      <p class="lede">
+        {category.data.description}
+      </p>
+    </header>
 
-    <section>
+    <section class="learning-category__articles">
       <h2>Artikel in dieser Kategorie</h2>
 
       {publishedArticles.length > 0 ? (
-        <ul>
+        <div class="learning-articles-list">
           {publishedArticles.map((art) => (
-            <li>
-              <h3>
-                <a href={`/lernen/${art.slug}/`}>
-                  {art.data.title}
-                </a>
-              </h3>
-              <p>{art.data.description}</p>
-            </li>
+            <LearningCard article={art} />
           ))}
-        </ul>
+        </div>
       ) : (
-        <p>Noch keine veröffentlichten Lernartikel in diesem Thema.</p>
+        <p class="learning-category__empty">
+          Noch keine veröffentlichten Lernartikel in diesem Thema.
+        </p>
       )}
     </section>
+
+    <div class="learning-back-link">
+      <a href="/lernen/" class="btn btn--secondary">
+        &larr; Zurück zur Übersicht
+      </a>
+    </div>
   </main>
 </Layout>

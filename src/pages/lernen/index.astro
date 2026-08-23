@@ -36,38 +36,43 @@ const learningBreadcrumbs = [
 ---
 
 <Layout title="Lernen" description="Wissensdatenbank." robots={robots} pageKind="learning-root" learningBreadcrumbs={learningBreadcrumbs}>
-  <main class="container">
+  <main class="container learning-root">
     <Breadcrumbs breadcrumbs={learningBreadcrumbs} />
-    <h1>Lernen</h1>
-    <p>
-      Willkommen in unserer Wissensdatenbank. Hier teilen wir praxisnahe Erkenntnisse aus der Softwareentwicklung.
-    </p>
+    
+    <header class="learning-root__header">
+      <span class="eyebrow">Wissen</span>
+      <h1>Lernen</h1>
+      <p class="lede">
+        Willkommen in unserer Wissensdatenbank. Hier teilen wir praxisnahe Erkenntnisse aus der Softwareentwicklung.
+      </p>
+    </header>
 
-    <section>
+    <section class="learning-grid">
       {categories.map((cat) => {
         const catArticles = articlesByCategory.get(cat.id) || [];
+        const count = catArticles.length;
         return (
-          <div class="category-section">
-            <h2>
-              <a href={`/lernen/themen/${cat.id}/`}>
-                {cat.data.name}
-              </a>
-            </h2>
-            <p>{cat.data.description}</p>
+          <div class="learning-category-card">
+            <div class="learning-category-card__content">
+              <h2 class="learning-category-card__title">
+                <a href={`/lernen/themen/${cat.id}/`}>
+                  {cat.data.name}
+                </a>
+              </h2>
+              <p class="learning-category-card__description">{cat.data.description}</p>
+            </div>
             
-            {catArticles.length > 0 ? (
-              <ul>
-                {catArticles.map((art) => (
-                  <li>
-                    <a href={`/lernen/${art.slug}/`}>
-                      {art.data.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>Noch keine veröffentlichten Lernartikel.</p>
-            )}
+            <div class="learning-category-card__footer">
+              <span class="learning-category-card__count">
+                {count} {count === 1 ? 'Artikel' : 'Artikel'}
+              </span>
+              
+              {count === 0 && (
+                <p class="learning-category-card__empty">
+                  Noch keine veröffentlichten Lernartikel in diesem Thema.
+                </p>
+              )}
+            </div>
           </div>
         );
       })}

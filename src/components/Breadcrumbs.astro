@@ -12,7 +12,7 @@ const { breadcrumbs } = Astro.props;
 ---
 
 {breadcrumbs && breadcrumbs.length > 0 && (
-  <nav aria-label="Breadcrumbs" class="breadcrumbs">
+  <nav aria-label="Brotkrümelnavigation" class="breadcrumbs">
     <ol>
       {breadcrumbs.map((item, index) => {
         const isLast = index === breadcrumbs.length - 1;

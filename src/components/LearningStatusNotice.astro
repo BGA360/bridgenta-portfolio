@@ -1,0 +1,23 @@
+---
+interface Props {
+  status?: 'current' | 'historical' | 'corrected';
+}
+
+const { status } = Astro.props;
+---
+
+{status === 'historical' && (
+  <div class="learning-notice learning-notice--historical" role="note">
+    <p>
+      <strong>Hinweis:</strong> Dieser Artikel ist als <em>historisch</em> gekennzeichnet und spiegelt möglicherweise nicht mehr den aktuellen Stand der Technik oder Best Practices wider.
+    </p>
+  </div>
+)}
+
+{status === 'corrected' && (
+  <div class="learning-notice learning-notice--corrected" role="note">
+    <p>
+      <strong>Aktualisierung:</strong> Dieser Artikel enthält Korrekturen oder Aktualisierungen bezüglich früherer Fehler oder veralteter Informationen.
+    </p>
+  </div>
+)}
