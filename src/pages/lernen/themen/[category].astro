@@ -19,9 +19,12 @@ const publishedArticles = allArticles.filter(
     art.data.publicationState === 'published' &&
     art.data.category.id === category.id
 );
+
+const hasArticles = publishedArticles.length > 0;
+const robots = hasArticles ? "index, follow" : "noindex, follow";
 ---
 
-<Layout title={`${category.data.name}`} description={category.data.description}>
+<Layout title={`${category.data.name}`} description={category.data.description} robots={robots}>
   <main class="container">
     <h1>{category.data.name}</h1>
     <p>

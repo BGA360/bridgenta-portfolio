@@ -6,6 +6,7 @@ import { getCollection, getEntry } from 'astro:content';
 interface Props {
   title: string;
   description?: string;
+  robots?: string;
   project?: {
     title: string;
     category: string;
@@ -16,7 +17,7 @@ interface Props {
   };
 }
 
-const { title, description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.", project } = Astro.props;
+const { title, description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.", robots = "index, follow", project } = Astro.props;
 
 // Fetch footer content dynamically
 const footerData = await getEntry('pages', 'footer');
@@ -65,7 +66,7 @@ import '../styles/styles.css';
   <link rel="canonical" href={canonical} />
 
   <!-- Crawler Indexing Directives -->
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content={robots} />
 
   <!-- Regional & Language Targeting (hreflang) -->
   <link rel="alternate" hreflang="de" href={canonical} />
