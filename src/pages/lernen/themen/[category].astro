@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const categories = await getCollection('learningCategories');
+  return categories.map((cat) => ({
+    params: { category: cat.id },
+    props: { category: cat },
+  }));
+}
+
+const { category } = Astro.props;
+
+// Fetch articles belonging to this category and filter by publicationState === 'published'
+const allArticles = await getCollection('learning');
+const publishedArticles = allArticles.filter(
+  (art) =>
+    art.data.publicationState === 'published' &&
+    art.data.category.id === category.id
+);
+---
+
+<Layout title={`${category.data.name} – Thema`} description={category.data.description}>
+  <div class="container" style="padding: 4rem 1rem;">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom: 2rem; font-size: 0.9rem; color: #666;">
+      <a href="/" style="color: inherit; text-decoration: none;">Startseite</a><span style="margin: 0 0.5rem;">/</span>
+      <a href="/lernen/" style="color: inherit; text-decoration: none;">Lernen</a><span style="margin: 0 0.5rem;">/</span>
+      <span style="color: #333; font-weight: 500;">{category.data.name}</span>
+    </nav>
+
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: #C2185B;">{category.data.name}</h1>
+    <p class="lede" style="font-size: 1.25rem; margin-bottom: 3rem; color: #555;">
+      {category.data.description}
+    </p>
+
+    <h2 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: #7B1E57;">Artikel in dieser Kategorie</h2>
+
+    {publishedArticles.length > 0 ? (
+      <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 800px;">
+        {publishedArticles.map((art) => (
+          <div style="border-bottom: 1px solid #eee; padding-bottom: 1.5rem;">
+            <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem;">
+              <a href={`/lernen/${art.slug}/`} style="color: #C2185B; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                {art.data.title}
+              </a>
+            </h3>
+            <p style="color: #666; font-size: 0.95rem; margin: 0;">{art.data.description}</p>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p style="color: #999; font-style: italic; font-size: 1rem;">Noch keine veröffentlichten Lernartikel in diesem Thema.</p>
+    )}
+  </div>
+</Layout>
