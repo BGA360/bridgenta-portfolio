@@ -6,7 +6,7 @@ learningLevel: "intermediate"
 publicationState: "draft"
 ---
 
-Ein automatischer Check in der CI-Pipeline läuft durch. Das Statussymbol springt auf Grün. Keine formale Regel wurde verletzt. Alle erforderlichen Metadatenfelder sind vorhanden, und die Syntax ist fehlerfrei. 
+Ein automatischer Check in der CI-Pipeline läuft durch. Das Statussymbol springt auf Grün. Die dafür definierten automatischen Prüfungen melden keinen Fehler. 
 
 Doch ist damit auch bewiesen, dass jede inhaltliche Aussage im Dokument korrekt ist?
 
@@ -16,11 +16,11 @@ Nein. Ein grüner Haken bedeutet lediglich: Alle vordefinierten Regeln sind erf�
 
 ## Was PRAG automatisch prüfen kann
 
-In unserem Validierungssystem **PRAG** setzen wir auf ein automatisiertes Prüfverfahren. Dabei schalten wir automatisierte Prüfungen als Kontrollpunkte ("Gates") in die Pipeline. Diese blockieren fehlerhafte Änderungen.
+In unserem Validierungssystem **PRAG** setzen wir auf ein automatisiertes Prüfverfahren. Dabei schalten wir automatisierte Prüfungen als Kontrollpunkte ("Gates") in die Pipeline. Diese können Änderungen stoppen, wenn eine definierte Prüfung fehlschlägt.
 
 PRAG ist breiter aufgebaut als ein einzelner Linter. Es orchestriert mehrere Validatoren. Einige davon arbeiten ähnlich wie klassische Linter. Andere prüfen zusätzliche technische Bedingungen.
 
-Ein Teil dieser Prüfungen arbeitet statisch und regelbasiert. Andere Validatoren prüfen zusätzliche Bedingungen. Sie kontrollieren zum Beispiel den erfolgreichen Build der Website.
+Ein Teil dieser Prüfungen arbeitet statisch und regelbasiert. Andere Validatoren prüfen zusätzliche Bedingungen. Sie kontrollieren zum Beispiel, ob die in einem Paket deklarierten Assets existieren und ob Diagramm-Syntaxen valide sind.
 
 Ein Blick in den Kern unseres Validierungssystems zeigt, wie diese Gates strukturiert sind:
 
@@ -58,7 +58,7 @@ Ein kurzes Beispiel verdeutlicht dies. Ein Entwickler schreibt in einer Dokument
 * **Was PRAG prüfen kann**: ob die dafür implementierten Regeln verletzt werden.
 * **Was daraus nicht folgt**: ob die behauptete Zeitersparnis tatsächlich gemessen und belegt wurde.
 
-Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er dient dabei als automatisierter Schutzfilter. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.
+Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er dient dabei als automatisierter Prüfmechanismus. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.
 
 ---
 
