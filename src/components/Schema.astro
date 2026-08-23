@@ -1,4 +1,9 @@
 ---
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
 interface Props {
   title: string;
   description: string;
@@ -11,9 +16,26 @@ interface Props {
     description: string;
     schemaType?: string;
   };
+  pageKind?: 'default' | 'learning-root' | 'learning-category' | 'learning-article';
+  learningBreadcrumbs?: BreadcrumbItem[];
+  learningArticle?: {
+    title: string;
+    description: string;
+    categoryName: string;
+    publishedAt: string;
+    updatedAt?: string;
+  };
 }
 
-const { title, description, project, canonical } = Astro.props;
+const {
+  title,
+  description,
+  project,
+  canonical,
+  pageKind = 'default',
+  learningBreadcrumbs,
+  learningArticle
+} = Astro.props;
 
 const siteUrl = Astro.site ? Astro.site.origin : 'https://bridgenta.de';
 const pathname = Astro.url.pathname;
@@ -73,45 +95,58 @@ const websiteSchema = {
   'description': 'Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.'
 };
 
-// Define dynamic Breadcrumbs
-const pathSegments = pathname.split('/').filter(Boolean);
-const breadcrumbItems = [
-  {
+// Define breadcrumbs schema
+let breadcrumbItems;
+if (learningBreadcrumbs) {
+  breadcrumbItems = learningBreadcrumbs.map((item, index) => ({
     '@type': 'ListItem',
-    'position': 1,
+    'position': index + 1,
     'item': {
-      '@id': siteUrl,
-      'name': 'Startseite'
+      '@id': item.url,
+      'name': item.name
     }
-  }
-];
-
-let accumulatedPath = '';
-pathSegments.forEach((segment, index) => {
-  accumulatedPath += `/${segment}`;
-  
-  // Format the name nicely based on the path
-  let name = segment;
-  if (segment === 'projects') name = 'Projekte';
-  else if (segment === 'about') name = 'Über mich';
-  else if (segment === 'contact') name = 'Kontakt';
-  else if (segment === 'impressum') name = 'Impressum';
-  else if (segment === 'datenschutz') name = 'Datenschutz';
-  else if (project && segment.startsWith('project-')) name = project.title;
-  else {
-    // Capitalize first letter as fallback
-    name = segment.charAt(0).toUpperCase() + segment.slice(1);
-  }
-
-  breadcrumbItems.push({
-    '@type': 'ListItem',
-    'position': index + 2,
-    'item': {
-      '@id': `${siteUrl}${accumulatedPath}`,
-      'name': name
+  }));
+} else {
+  // Define dynamic Breadcrumbs
+  const pathSegments = pathname.split('/').filter(Boolean);
+  breadcrumbItems = [
+    {
+      '@type': 'ListItem',
+      'position': 1,
+      'item': {
+        '@id': siteUrl,
+        'name': 'Startseite'
+      }
     }
+  ];
+
+  let accumulatedPath = '';
+  pathSegments.forEach((segment, index) => {
+    accumulatedPath += `/${segment}`;
+    
+    // Format the name nicely based on the path
+    let name = segment;
+    if (segment === 'projects') name = 'Projekte';
+    else if (segment === 'about') name = 'Über mich';
+    else if (segment === 'contact') name = 'Kontakt';
+    else if (segment === 'impressum') name = 'Impressum';
+    else if (segment === 'datenschutz') name = 'Datenschutz';
+    else if (project && segment.startsWith('project-')) name = project.title;
+    else {
+      // Capitalize first letter as fallback
+      name = segment.charAt(0).toUpperCase() + segment.slice(1);
+    }
+
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      'position': index + 2,
+      'item': {
+        '@id': `${siteUrl}${accumulatedPath}`,
+        'name': name
+      }
+    });
   });
-});
+}
 
 const breadcrumbListSchema = {
   '@type': 'BreadcrumbList',
@@ -161,8 +196,9 @@ if (project) {
 }
 
 // Define the primary WebPage entity to link the graph nodes together
+const webpageType = (pageKind === 'learning-root' || pageKind === 'learning-category') ? 'CollectionPage' : 'WebPage';
 const webpageEntity: any = {
-  '@type': 'WebPage',
+  '@type': webpageType,
   '@id': `${canonical}#webpage`,
   'url': canonical,
   'name': title,
@@ -174,8 +210,35 @@ const webpageEntity: any = {
   'speakable': speakableSchema
 };
 
+if (pageKind === 'learning-root' || pageKind === 'learning-category' || pageKind === 'learning-article') {
+  webpageEntity['inLanguage'] = 'de';
+}
+
 if (project) {
   webpageEntity['about'] = { '@id': `${canonical}#project` };
+}
+
+if (pageKind === 'learning-article' && learningArticle) {
+  webpageEntity['mainEntity'] = { '@id': `${canonical}#article` };
+
+  const techArticleSchema: any = {
+    '@type': 'TechArticle',
+    '@id': `${canonical}#article`,
+    'mainEntityOfPage': { '@id': `${canonical}#webpage` },
+    'headline': learningArticle.title,
+    'description': learningArticle.description,
+    'author': { '@id': personId },
+    'publisher': { '@id': orgId },
+    'articleSection': learningArticle.categoryName,
+    'datePublished': learningArticle.publishedAt,
+    'inLanguage': 'de'
+  };
+
+  if (learningArticle.updatedAt) {
+    techArticleSchema['dateModified'] = learningArticle.updatedAt;
+  }
+
+  graph.push(techArticleSchema);
 }
 
 graph.push(webpageEntity);

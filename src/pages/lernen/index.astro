@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 
 // Fetch categories dynamically
 const categories = await getCollection('learningCategories');
@@ -26,10 +27,17 @@ for (const art of publishedArticles) {
 
 const hasPublishedArticles = publishedArticles.length > 0;
 const robots = hasPublishedArticles ? "index, follow" : "noindex, follow";
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://bridgenta.de';
+const learningBreadcrumbs = [
+  { name: 'Startseite', url: `${siteUrl}/` },
+  { name: 'Lernen', url: `${siteUrl}/lernen/` }
+];
 ---
 
-<Layout title="Lernen" description="Wissensdatenbank." robots={robots}>
+<Layout title="Lernen" description="Wissensdatenbank." robots={robots} pageKind="learning-root" learningBreadcrumbs={learningBreadcrumbs}>
   <main class="container">
+    <Breadcrumbs breadcrumbs={learningBreadcrumbs} />
     <h1>Lernen</h1>
     <p>
       Willkommen in unserer Wissensdatenbank. Hier teilen wir praxisnahe Erkenntnisse aus der Softwareentwicklung.
