@@ -1,0 +1,20 @@
+---
+interface Props {
+  level: 'public' | 'beginner' | 'intermediate' | 'advanced';
+}
+
+const { level } = Astro.props;
+
+const mapping = {
+  public: { label: 'Allgemein verständlich', prefix: 'Lernformat' },
+  beginner: { label: 'Grundlagen', prefix: 'Lernniveau' },
+  intermediate: { label: 'Vertiefung', prefix: 'Lernniveau' },
+  advanced: { label: 'Fortgeschritten', prefix: 'Lernniveau' }
+};
+
+const mapped = mapping[level];
+---
+
+<span class="learning-badge">
+  <span class="sr-only">{mapped.prefix}: </span>{mapped.label}
+</span>

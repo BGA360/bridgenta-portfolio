@@ -1,0 +1,35 @@
+---
+import LearningLevelBadge from './LearningLevelBadge.astro';
+
+interface Props {
+  article: {
+    slug: string;
+    data: {
+      title: string;
+      description: string;
+      publishedAt: Date;
+      learningLevel: 'public' | 'beginner' | 'intermediate' | 'advanced';
+    };
+  };
+}
+
+const { article } = Astro.props;
+const formattedDate = article.data.publishedAt.toLocaleDateString('de-DE', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="learning-card">
+  <div class="learning-card__meta">
+    <LearningLevelBadge level={article.data.learningLevel} />
+    <time datetime={article.data.publishedAt.toISOString()} class="learning-card__date">
+      {formattedDate}
+    </time>
+  </div>
+  <h3 class="learning-card__title">
+    <a href={`/lernen/${article.slug}/`}>{article.data.title}</a>
+  </h3>
+  <p class="learning-card__description">{article.data.description}</p>
+</article>
