@@ -146,6 +146,7 @@ import '../styles/styles.css';
       <ul class="nav__links">
         <li><a href="/" aria-current={cleanPath === "" || cleanPath === "/index.html" ? "page" : undefined}>Startseite</a></li>
         <li><a href="/projects" aria-current={cleanPath.startsWith("/projects") || cleanPath.startsWith("/project-") ? "page" : undefined}>Projekte</a></li>
+        <li><a href="/lernen/" aria-current={cleanPath.startsWith("/lernen") ? "page" : undefined}>Lernen</a></li>
         <li><a href="/#faehigkeiten" id="nav-link-faehigkeiten">Fähigkeiten</a></li>
         <li><a href="/about" aria-current={cleanPath === "/about" ? "page" : undefined}>Über mich</a></li>
         <li><a href="/contact" aria-current={cleanPath === "/contact" ? "page" : undefined}>Kontakt</a></li>
