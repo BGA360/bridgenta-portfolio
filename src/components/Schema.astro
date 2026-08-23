@@ -207,9 +207,12 @@ const webpageEntity: any = {
   'breadcrumb': { '@id': `${canonical}#breadcrumb` },
   'publisher': { '@id': orgId },
   'author': { '@id': personId },
-  'speakable': speakableSchema,
-  'inLanguage': 'de'
+  'speakable': speakableSchema
 };
+
+if (pageKind === 'learning-root' || pageKind === 'learning-category' || pageKind === 'learning-article') {
+  webpageEntity['inLanguage'] = 'de';
+}
 
 if (project) {
   webpageEntity['about'] = { '@id': `${canonical}#project` };
