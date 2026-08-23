@@ -23,9 +23,12 @@ for (const art of publishedArticles) {
     articlesByCategory.get(catId).push(art);
   }
 }
+
+const hasPublishedArticles = publishedArticles.length > 0;
+const robots = hasPublishedArticles ? "index, follow" : "noindex, follow";
 ---
 
-<Layout title="Lernen" description="Wissensdatenbank.">
+<Layout title="Lernen" description="Wissensdatenbank." robots={robots}>
   <main class="container">
     <h1>Lernen</h1>
     <p>

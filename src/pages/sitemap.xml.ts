@@ -19,7 +19,29 @@ export async function GET(context: APIContext) {
   const projectPages = projects
     .filter(project => activeProjectSlugs.includes(project.slug))
     .map(project => `/project-${project.slug}/`);
-  const allPages = [...staticPages, ...projectPages];
+
+  // Fetch learning data dynamically
+  const categories = await getCollection('learningCategories');
+  const articles = await getCollection('learning');
+  const publishedArticles = articles.filter(
+    (art) => art.data.publicationState === 'published'
+  );
+
+  const learningPages: string[] = [];
+  if (publishedArticles.length > 0) {
+    learningPages.push('/lernen/');
+    const activeCategories = categories.filter((cat) =>
+      publishedArticles.some((art) => art.data.category.id === cat.id)
+    );
+    for (const cat of activeCategories) {
+      learningPages.push(`/lernen/themen/${cat.id}/`);
+    }
+    for (const art of publishedArticles) {
+      learningPages.push(`/lernen/${art.slug}/`);
+    }
+  }
+
+  const allPages = [...staticPages, ...projectPages, ...learningPages];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
