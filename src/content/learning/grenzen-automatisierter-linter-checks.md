@@ -58,7 +58,7 @@ Ein kurzes Beispiel verdeutlicht dies. Ein Entwickler schreibt in einer Dokument
 * **Was PRAG prüfen kann**: ob die dafür implementierten Regeln verletzt werden.
 * **Was daraus nicht folgt**: ob die behauptete Zeitersparnis tatsächlich gemessen und belegt wurde.
 
-Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er ist unentbehrlich als Schutzfilter. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.
+Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er dient dabei als automatisierter Schutzfilter. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.
 
 ---
 
@@ -85,5 +85,5 @@ Im BridGenta-Prüfmodell ergänzen sich automatisierte Regelprüfungen und eine 
 Für Entwickler und Autoren ergeben sich drei Lehren:
 
 * **Automatisieren, was möglich ist**: Automatisieren Sie Prüfungen, für die klare maschinelle Regeln existieren. Dazu gehören zum Beispiel klar definierte Format-, Struktur- oder technische Regeln.
-* **Kein Freifahrtschein**: Ein grüner Build ist nur die Mindesthürde. Er beweist keine inhaltliche Wahrheit.
+* **Kein Freifahrtschein**: Ein grüner Prüfstatus zeigt zunächst nur, dass die dafür definierten Prüfungen bestanden wurden. Er beweist keine inhaltliche Wahrheit.
 * **Inhaltliche Qualität**: Konzentrieren Sie sich auf Fragen außerhalb der Regeln. Prüfen Sie Verständlichkeit, Logik und Belege.
