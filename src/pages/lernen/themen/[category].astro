@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 
 export async function getStaticPaths() {
   const categories = await getCollection('learningCategories');
@@ -22,10 +23,18 @@ const publishedArticles = allArticles.filter(
 
 const hasArticles = publishedArticles.length > 0;
 const robots = hasArticles ? "index, follow" : "noindex, follow";
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://bridgenta.de';
+const learningBreadcrumbs = [
+  { name: 'Startseite', url: `${siteUrl}/` },
+  { name: 'Lernen', url: `${siteUrl}/lernen/` },
+  { name: category.data.name, url: `${siteUrl}/lernen/themen/${category.id}/` }
+];
 ---
 
-<Layout title={`${category.data.name}`} description={category.data.description} robots={robots}>
+<Layout title={`${category.data.name}`} description={category.data.description} robots={robots} pageKind="learning-category" learningBreadcrumbs={learningBreadcrumbs}>
   <main class="container">
+    <Breadcrumbs breadcrumbs={learningBreadcrumbs} />
     <h1>{category.data.name}</h1>
     <p>
       {category.data.description}

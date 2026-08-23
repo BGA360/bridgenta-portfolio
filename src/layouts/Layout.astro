@@ -15,9 +15,26 @@ interface Props {
     description: string;
     schemaType?: string;
   };
+  pageKind?: 'default' | 'learning-root' | 'learning-category' | 'learning-article';
+  learningBreadcrumbs?: { name: string; url: string; }[];
+  learningArticle?: {
+    title: string;
+    description: string;
+    categoryName: string;
+    publishedAt: string;
+    updatedAt?: string;
+  };
 }
 
-const { title, description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.", robots = "index, follow", project } = Astro.props;
+const {
+  title,
+  description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.",
+  robots = "index, follow",
+  project,
+  pageKind = 'default',
+  learningBreadcrumbs,
+  learningArticle
+} = Astro.props;
 
 // Fetch footer content dynamically
 const footerData = await getEntry('pages', 'footer');
@@ -90,7 +107,15 @@ import '../styles/styles.css';
   <meta name="geo.placename" content="Frankfurt am Main, Hessen, Deutschland" />
 
   <!-- JSON-LD Schema Graph -->
-  <Schema title={title} description={description} project={project} canonical={canonical} />
+  <Schema
+    title={title}
+    description={description}
+    project={project}
+    canonical={canonical}
+    pageKind={pageKind}
+    learningBreadcrumbs={learningBreadcrumbs}
+    learningArticle={learningArticle}
+  />
 
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
