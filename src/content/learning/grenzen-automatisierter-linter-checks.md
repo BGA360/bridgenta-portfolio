@@ -48,15 +48,15 @@ Welche konkrete Regel ein Validator im Detail durchsetzt, ergibt sich aus seiner
 
 ## Was der grüne Check nicht beweist
 
-Diese Pipeline blockiert formale Mängel und Sicherheitsrisiken sehr effektiv. Dennoch stößt sie an klare Grenzen:
+Die Pipeline kann definierte formale und technische Regelverstöße erkennen und je nach Validator den Prüfprozess fehlschlagen lassen. Dennoch stößt sie an klare Grenzen:
 
 > **PRAG kann mit seinen statischen Prüfungen nicht feststellen, ob eine Aussage inhaltlich wahr ist.**
 
 Ein kurzes Beispiel verdeutlicht dies. Ein Entwickler schreibt in einer Dokumentation:
 *"Das Modul erzielt eine Zeitersparnis von 95%."*
 
-* **Was PRAG tut**: Der Linter prüft die Syntax. Er scannt nach sensiblen Begriffen.
-* **Was PRAG nicht kann**: Das System bewertet Fakten nicht. Es erkennt gefälschte Werte nicht.
+* **Was PRAG prüfen kann**: ob die dafür implementierten Regeln verletzt werden.
+* **Was daraus nicht folgt**: ob die behauptete Zeitersparnis tatsächlich gemessen und belegt wurde.
 
 Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er ist unentbehrlich als Schutzfilter. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.
 
@@ -66,7 +66,7 @@ Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgre
 
 Maschinelle Regelprüfungen und inhaltliche Verifikation beantworten unterschiedliche Fragen:
 
-1. **Die maschinelle Regelprüfung fragt**: *Ist das Dokument formal korrekt und sicher aufgebaut?*
+1. **Die maschinelle Regelprüfung fragt**: *Erfüllt das Dokument die definierten maschinellen Regeln?*
 2. **Die inhaltliche Verifikation fragt**: *Sind die Aussagen korrekt und durch Belege gedeckt?*
 
 Für diese inhaltliche Prüfung eignet sich ein manuelles **Fresh-Reader-Audit**. Ein Fresh Reader liest die Seite wie ein neuer Besucher – also ohne das interne Projektwissen der Person, die den Text geschrieben hat.
@@ -76,7 +76,7 @@ Der Reviewer besitzt kein internes Vorwissen zum Text. Er achtet auf folgende As
 * Werden technische Fachbegriffe ausreichend erklärt?
 * Sind die verlinkten Belege nachvollziehbar und stützen sie die Behauptungen?
 
-Im BridGenta-Prüfmodell ergänzen sich automatisierte Regelprüfungen und eine separate inhaltliche Prüfung. Sie liefern unterschiedliche Arten von Evidenz für die Gesamtqualität eines Dokuments.
+Im BridGenta-Prüfmodell ergänzen sich automatisierte Regelprüfungen und eine separate inhaltliche Prüfung. Sie liefern unterschiedliche Arten von Evidenz für unterschiedliche Qualitätsfragen.
 
 ---
 
@@ -84,6 +84,6 @@ Im BridGenta-Prüfmodell ergänzen sich automatisierte Regelprüfungen und eine 
 
 Für Entwickler und Autoren ergeben sich drei Lehren:
 
-* **Automatisieren, was möglich ist**: Automatisieren Sie Prüfungen, für die klare maschinelle Regeln existieren. Dazu gehören Metadaten-Formate, Link-Existenz und Secret-Scans.
+* **Automatisieren, was möglich ist**: Automatisieren Sie Prüfungen, für die klare maschinelle Regeln existieren. Dazu gehören zum Beispiel klar definierte Format-, Struktur- oder technische Regeln.
 * **Kein Freifahrtschein**: Ein grüner Build ist nur die Mindesthürde. Er beweist keine inhaltliche Wahrheit.
 * **Inhaltliche Qualität**: Konzentrieren Sie sich auf Fragen außerhalb der Regeln. Prüfen Sie Verständlichkeit, Logik und Belege.
