@@ -25,41 +25,41 @@ for (const art of publishedArticles) {
 }
 ---
 
-<Layout title="Lernen – Wissensdatenbank" description="Wissensdatenbank für Web Development, Softwarearchitektur, Testing und Verifikation.">
-  <div class="container" style="padding: 4rem 1rem;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: #C2185B;">Lernen</h1>
-    <p class="lede" style="font-size: 1.25rem; margin-bottom: 3rem; color: #555;">
+<Layout title="Lernen" description="Wissensdatenbank.">
+  <main class="container">
+    <h1>Lernen</h1>
+    <p>
       Willkommen in unserer Wissensdatenbank. Hier teilen wir praxisnahe Erkenntnisse aus der Softwareentwicklung.
     </p>
 
-    <div class="categories-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 4rem;">
+    <section>
       {categories.map((cat) => {
         const catArticles = articlesByCategory.get(cat.id) || [];
         return (
-          <div class="category-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #7B1E57;">
-              <a href={`/lernen/themen/${cat.id}/`} style="color: inherit; text-decoration: none; border-bottom: 2px solid transparent; transition: border-color 0.2s;" onmouseover="this.style.borderBottomColor='#7B1E57'" onmouseout="this.style.borderBottomColor='transparent'">
+          <div class="category-section">
+            <h2>
+              <a href={`/lernen/themen/${cat.id}/`}>
                 {cat.data.name}
               </a>
             </h2>
-            <p style="color: #666; font-size: 0.95rem; margin-bottom: 1rem;">{cat.data.description}</p>
+            <p>{cat.data.description}</p>
             
             {catArticles.length > 0 ? (
-              <ul style="list-style: none; padding: 0; margin: 0;">
+              <ul>
                 {catArticles.map((art) => (
-                  <li style="margin-bottom: 0.5rem;">
-                    <a href={`/lernen/${art.slug}/`} style="color: #C2185B; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                  <li>
+                    <a href={`/lernen/${art.slug}/`}>
                       {art.data.title}
                     </a>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p style="color: #999; font-style: italic; font-size: 0.9rem;">Noch keine veröffentlichten Lernartikel.</p>
+              <p>Noch keine veröffentlichten Lernartikel.</p>
             )}
           </div>
         );
       })}
-    </div>
-  </div>
+    </section>
+  </main>
 </Layout>
