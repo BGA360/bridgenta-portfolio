@@ -3,7 +3,7 @@ title: "Automatisierte Linter-Checks im CI-Gating: Grenzen maschineller Textprü
 description: "Wie automatische Linter und manuelle Fresh-Reader-Audits zusammenwirken, um die Qualität von Projektbeschreibungen abzusichern."
 category: "testen-verifizieren"
 learningLevel: "intermediate"
-publicationState: "draft"
+publicationState: "review"
 ---
 
 Ein automatischer Check in der CI-Pipeline läuft durch. Das Statussymbol springt auf Grün. Die dafür definierten automatischen Prüfungen melden keinen Fehler. 
