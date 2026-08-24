@@ -169,7 +169,7 @@ Bevor eine Entscheidung über einen Antrag getroffen wird, müssen folgende Krit
 *   **Decision**: Accepted
 *   **Approval Authority**: Project Owner
 *   **Target Version**: `v1.0.0-Extension`
-*   **Notes**: Approved via GRANTED_FOR_EXACT_BECC_PLS_V1_0_SHA256_a1b2ea8b9b0a4f2fdb653be6b9973c2fb84c1e81966b5d55a7fe38a51311521d. Normalized to active status/version v1.0.0 (canonical active SHA256: c191c238adaa3384bc15d8e3b2519973fce7f49e21a37d9adb3706015dacff70).
+*   **Notes**: Approved via GRANTED_FOR_EXACT_BECC_PLS_V1_0_SHA256_a1b2ea8b9b0a4f2fdb653be6b9973c2fb84c1e81966b5d55a7fe38a51311521d.
 
 ---
 
