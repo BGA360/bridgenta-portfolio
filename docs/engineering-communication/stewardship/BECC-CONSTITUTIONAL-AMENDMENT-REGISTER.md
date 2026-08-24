@@ -173,7 +173,7 @@ Bevor eine Entscheidung über einen Antrag getroffen wird, müssen folgende Krit
 
 ---
 
-## 10. Integration im Stewardship-Ökosystem (Relationships)
+## 11. Integration im Stewardship-Ökosystem (Relationships)
 
 Das Änderungsregister ist der finale Gating-Punkt im Stewardship-Regelkreis:
 *   Meldungen aus dem **Operational Guidance Management (OS-1)** und Trends aus dem **Kennzahlen-System (OS-3)** fließen hier als Anträge ein.
@@ -182,7 +182,7 @@ Das Änderungsregister ist der finale Gating-Punkt im Stewardship-Regelkreis:
 
 ---
 
-## 11. Änderungs-Deklaration (Constitutional Amendment Declaration)
+## 12. Änderungs-Deklaration (Constitutional Amendment Declaration)
 
 Die Verfassungsverwaltung deklariert hiermit:
 *   Das Verfassungsänderungsregister (Constitutional Amendment Register) ist der **alleinige und autoritative Governance-Prozess** für inhaltliche und strukturelle Anpassungen der BECC.
