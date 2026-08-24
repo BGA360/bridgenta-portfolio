@@ -1,9 +1,9 @@
-# BECC Public Learning Standard v1.0 — Approval Candidate
+# BECC Public Learning Standard v1.0
 ## Governance-Richtlinie für öffentliche Lerninhalte und Provenienz-Sicherung
 
 *   **Identifikator:** `BECC-PLS-v1.0`
-*   **Status:** `PROPOSED — PENDING OWNER APPROVAL`
-*   **Version:** `1.0.0-Candidate`
+*   **Status:** `ACTIVE`
+*   **Version:** `1.0.0`
 *   **Änderungskategorie:** Kategorie B (Konstitutionelle Erweiterung)
 *   **Einreicher:** Constitutional Architect
 *   **Freigabe-Autorität:** Project Owner (Letztentscheidungsrecht)
