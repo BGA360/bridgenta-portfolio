@@ -144,10 +144,10 @@ Bevor eine Entscheidung über einen Antrag getroffen wird, müssen folgende Krit
 ## 9. Zustand des Registers (Register State)
 
 *   **Registrierte Anträge Gesamt (Total)**: 1
-*   **Akzeptierte Anträge (Accepted)**: 0
+*   **Akzeptierte Anträge (Accepted)**: 1
 *   **Zurückgestellte Anträge (Deferred)**: 0
 *   **Abgelehnte Anträge (Rejected)**: 0
-*   **Umgesetzte Anträge (Implemented)**: 0
+*   **Umgesetzte Anträge (Implemented)**: 1
 
 ---
 
@@ -165,11 +165,11 @@ Bevor eine Entscheidung über einen Antrag getroffen wird, müssen folgende Krit
 *   **Related Maintenance Releases**: `N/A`
 *   **Engineering Assessment**: Formalized standard is necessary to trace learning derivatives back to their canonical source project events without copying source repositories or creating fragile CI dependencies.
 *   **Constitutional Impact**: Backward compatible extension. Does not change existing README/PR standards for internal codebases. Establishes the public learning standard.
-*   **Status**: Proposed
-*   **Decision**: Pending
+*   **Status**: Implemented
+*   **Decision**: Accepted
 *   **Approval Authority**: Project Owner
 *   **Target Version**: `v1.0.0-Extension`
-*   **Notes**: Undergoing correction review for new candidate SHA256: a1b2ea8b9b0a4f2fdb653be6b9973c2fb84c1e81966b5d55a7fe38a51311521d.
+*   **Notes**: Approved via GRANTED_FOR_EXACT_BECC_PLS_V1_0_SHA256_a1b2ea8b9b0a4f2fdb653be6b9973c2fb84c1e81966b5d55a7fe38a51311521d.
 
 ---
 
