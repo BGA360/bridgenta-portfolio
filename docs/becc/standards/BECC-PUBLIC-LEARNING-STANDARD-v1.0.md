@@ -184,8 +184,7 @@ Die Einführung der Provenienzpflicht folgt einem stufenweisen Phasenmodell ohne
 *   **M2 — Advisory-Validierung:** PRAG scannt veröffentlichte Artikel und gibt Warnungen aus, falls `provenanceRef` fehlt. Der Build schlägt nicht fehl.
 *   **M3 — Migration bestehender Inhalte:** Die bestehenden Lernartikel (insb. Artikel 1) werden mit gültiger Provenienz ausgestattet, sobald das Quellereignis verifiziert ist.
 *   **M4 — Formelle Aktivierung:** Der Project Owner aktiviert den Standard formell über die Annahme von `AMD-0001`.
-*   **M5 — Blockierende Prüfung:** Nach der Aktivierung blockiert PRAG den Build aller neu zur Veröffentlichung anstehenden Artikel, die über keine gültige oder auflösbare `provenanceRef` verfügen.
-    *   *PRAG-Regel:* Ein Artikel gilt als neu und unterliegt der Blockade, wenn seine Erstveröffentlichung (`publicationState: 'published'`) nach dem Commit-SHA der Standard-Aktivierung erfolgt.
+*   **M5 — Blockierende Prüfung:** Jeder Artikel, dessen Status `publicationState: 'published'` ist, MUSS über eine gültige und auflösbare `provenanceRef` verfügen. PRAG blockiert den Build für jeden veröffentlichten Artikel, der dieses Kriterium nicht erfüllt.
 
 ---
 
