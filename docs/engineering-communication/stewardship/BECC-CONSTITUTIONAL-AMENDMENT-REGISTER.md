@@ -141,17 +141,35 @@ Bevor eine Entscheidung über einen Antrag getroffen wird, müssen folgende Krit
 
 ---
 
-## 9. Initialer Zustand des Registers (Initial Register State)
+## 9. Zustand des Registers (Register State)
 
-Da das Framework frisch in das Stewardship übergeht, ist das Register leer.
-
-*   **Registrierte Anträge Gesamt (Total)**: 0
-*   **Akzeptierte Anträge (Accepted)**: 0
+*   **Registrierte Anträge Gesamt (Total)**: 1
+*   **Akzeptierte Anträge (Accepted)**: 1
 *   **Zurückgestellte Anträge (Deferred)**: 0
 *   **Abgelehnte Anträge (Rejected)**: 0
-*   **Umgesetzte Anträge (Implemented)**: 0
+*   **Umgesetzte Anträge (Implemented)**: 1
 
-*BECC v1.0.0 GA startet das Operational Stewardship mit einem leeren Verfassungsänderungsregister.*
+---
+
+## 10. Verzeichnis der Änderungsanträge (Amendment Entries)
+
+### AMD-0001: BECC Public Learning Standard v1.0
+*   **Amendment ID**: `AMD-0001`
+*   **Title**: BECC Public Learning Standard v1.0
+*   **Category**: Constitutional Extension (Kategorie B)
+*   **Date Proposed**: 2026-08-24
+*   **Origin**: Constitutional Architect
+*   **Supporting Evidence**: Reconciled findings of BECC-LAUD-001 showing lack of structured source-to-learning provenance and need for governed derivation rules.
+*   **Related Assessments**: `BECC-LAUD-001`
+*   **Related Metrics**: `N/A`
+*   **Related Maintenance Releases**: `N/A`
+*   **Engineering Assessment**: Formalized standard is necessary to trace learning derivatives back to their canonical source project events without copying source repositories or creating fragile CI dependencies.
+*   **Constitutional Impact**: Backward compatible extension. Does not change existing README/PR standards for internal codebases. Establishes the public learning standard.
+*   **Status**: Implemented
+*   **Decision**: Accepted
+*   **Approval Authority**: Project Owner
+*   **Target Version**: `v1.0.0-Extension`
+*   **Notes**: Approved via GRANTED_FOR_EXACT_BECC_PLS_V1_0_SHA256_aed0a2874a45c92974421556798e51bf409ebb6d5230e35d6a7a53273f1445be.
 
 ---
 
