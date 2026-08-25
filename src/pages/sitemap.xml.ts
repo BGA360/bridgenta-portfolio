@@ -1,11 +1,11 @@
 import { getCollection } from 'astro:content';
-
 import type { APIContext } from 'astro';
+import portfolioConfig from '../config/portfolio.json';
 
 export async function GET(context: APIContext) {
   const projects = await getCollection('projects');
   const siteUrl = context.site ? context.site.origin : 'https://bridgenta.de';
-  const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+  const activeProjectSlugs = portfolioConfig.activeProjectSlugs;
 
   const staticPages = [
     '/',
