@@ -5,6 +5,7 @@ category: "testen-verifizieren"
 learningLevel: "intermediate"
 publicationState: "published"
 publishedAt: "2026-08-23"
+provenanceRef: "EV-BG-001"
 ---
 
 Ein automatischer Check in der CI-Pipeline läuft durch. Das Statussymbol springt auf Grün. Die dafür definierten automatischen Prüfungen melden keinen Fehler. 

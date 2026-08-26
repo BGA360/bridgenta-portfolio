@@ -91,18 +91,21 @@ test('B3: Fingerprint - canonical JSON serialization is deterministic', () => {
 });
 
 test('B3: Article resolution - article without provenanceRef -> non-blocking', () => {
-  const result = resolveArticleProvenance(
-    'src/content/learning/grenzen-automatisierter-linter-checks.md',
-    repoRoot,
-    [],
-    [],
-    []
-  );
-  assert.strictEqual(result.provenanceRef, null);
-  assert.strictEqual(result.baseResolutionState, null);
-  assert.strictEqual(result.effectiveGateResult, "PASS");
-  assert.strictEqual(result.clearanceApplied, false);
-  assert.strictEqual(result.reason, "NO_PROVENANCE_REF");
+  const contentNoRef = `---\ntitle: "No Ref"\n---`;
+  withTempFile('src/content/learning/temp-no-ref.md', contentNoRef, () => {
+    const result = resolveArticleProvenance(
+      'src/content/learning/temp-no-ref.md',
+      repoRoot,
+      [],
+      [],
+      []
+    );
+    assert.strictEqual(result.provenanceRef, null);
+    assert.strictEqual(result.baseResolutionState, null);
+    assert.strictEqual(result.effectiveGateResult, "PASS");
+    assert.strictEqual(result.clearanceApplied, false);
+    assert.strictEqual(result.reason, "NO_PROVENANCE_REF");
+  });
 });
 
 test('B3: Article resolution - unknown event -> UNKNOWN_EVENT advisory', () => {
@@ -508,6 +511,27 @@ test('B3: Article resolution - empty production registry does not break site bui
   assert.ok(Array.isArray(results));
   const prodArticleResult = results.find(r => r.subjectId === 'src/content/learning/grenzen-automatisierter-linter-checks.md');
   assert.ok(prodArticleResult);
-  assert.strictEqual(prodArticleResult.effectiveGateResult, "PASS");
-  assert.strictEqual(prodArticleResult.reason, "NO_PROVENANCE_REF");
+  assert.strictEqual(prodArticleResult.provenanceRef, "EV-BG-001");
+  assert.strictEqual(prodArticleResult.effectiveGateResult, "FAIL");
+  assert.strictEqual(prodArticleResult.reason, "UNKNOWN_EVENT");
 });
+
+test('B4: Article 1 resolves to PASS and RESOLVED with production registry', () => {
+  const registry = JSON.parse(fs.readFileSync(path.join(repoRoot, 'src', 'data', 'provenance_registry.json'), 'utf-8'));
+  const manifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'src', 'data', 'local_integrity_manifest.json'), 'utf-8'));
+  const clearances = JSON.parse(fs.readFileSync(path.join(repoRoot, 'stewardship', 'reviews', 'clearances_manifest.json'), 'utf-8'));
+
+  const result = resolveArticleProvenance(
+    'src/content/learning/grenzen-automatisierter-linter-checks.md',
+    repoRoot,
+    registry,
+    manifest,
+    clearances
+  );
+
+  assert.strictEqual(result.provenanceRef, "EV-BG-001");
+  assert.strictEqual(result.baseResolutionState, "RESOLVED");
+  assert.strictEqual(result.effectiveGateResult, "PASS");
+  assert.strictEqual(result.clearanceApplied, false);
+});
+
