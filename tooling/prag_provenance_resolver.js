@@ -29,40 +29,65 @@ export function parseFrontmatter(fileContent) {
   return data;
 }
 
-// Extracted helper for review subject matching
+// Extracted helper for review subject matching - strictly frontmatter-only
 export function getReviewSubject(fileContent) {
-  // Check frontmatter
   const fm = parseFrontmatter(fileContent);
-  if (fm.subject) return fm.subject;
-  if (fm.subjectId) return fm.subjectId;
-  if (fm.sourceArtifact) return fm.sourceArtifact;
-  if (fm.SourceArtifact) return fm.SourceArtifact;
-
-  // Fallback to line scanning
-  const lines = fileContent.split(/\r?\n/);
-  for (const line of lines) {
-    const trimmed = line.trim();
-    const match = trimmed.match(/(?:subject|source\s+artifact|subjectid)\*\*?\s*:\s*`?([^`\s\r\n]+)`?/i) 
-                  || trimmed.match(/(?:subject|source\s+artifact|subjectid)\s*:\s*`?([^`\s\r\n]+)`?/i);
-    if (match) {
-      return match[1].trim().replace(/^["']|["']$/g, '');
-    }
-  }
-  return null;
+  return (typeof fm.subject === "string" && fm.subject.trim()) ? fm.subject.trim() : null;
 }
 
-// Fingerprint calculation matching the minimum bound fields contract
-export function computeClearanceFingerprint(clearance) {
-  const { clearanceScope, eventId, resolutionState, subjectType, subjectId } = clearance;
-  let str = "";
+// Fingerprint calculation using canonical JSON serialization of exactly the bound fields
+export function computeExpectedFingerprint(activeEvidence) {
+  const {
+    eventId,
+    sourceProject,
+    sourceSystem,
+    sourceLocator,
+    historicalLocatorState,
+    historicalLocator,
+    resolutionState,
+    clearanceScope,
+    subjectType,
+    subjectId
+  } = activeEvidence;
+
+  let obj = {};
   if (clearanceScope === "EVENT") {
-    str = [eventId, resolutionState, clearanceScope].join(":");
+    obj = {
+      eventId,
+      sourceProject,
+      sourceSystem,
+      sourceLocator,
+      historicalLocatorState,
+      historicalLocator,
+      resolutionState,
+      clearanceScope
+    };
   } else if (clearanceScope === "ARTICLE_EVENT") {
-    str = [subjectType, subjectId, eventId, resolutionState, clearanceScope].join(":");
+    obj = {
+      eventId,
+      sourceProject,
+      sourceSystem,
+      sourceLocator,
+      historicalLocatorState,
+      historicalLocator,
+      resolutionState,
+      clearanceScope,
+      subjectType,
+      subjectId
+    };
   } else {
     throw new Error(`Invalid clearanceScope for fingerprint: '${clearanceScope}'.`);
   }
-  return crypto.createHash("sha256").update(str).digest("hex");
+
+  // Canonical JSON serialization: deterministic key sorting
+  const sortedKeys = Object.keys(obj).sort();
+  const canonicalObj = {};
+  for (const k of sortedKeys) {
+    canonicalObj[k] = obj[k];
+  }
+  const serialized = JSON.stringify(canonicalObj);
+
+  return crypto.createHash("sha256").update(serialized).digest("hex");
 }
 
 // Resolve a single article's provenance
@@ -179,11 +204,6 @@ export function resolveArticleProvenance(articlePath, workspaceDir, registry, ma
     };
   }
 
-  // Find effective clearances
-  const compatibleResolutionStates = baseResolutionState === "SOURCE_UNAVAILABLE" 
-    ? ["SOURCE_UNAVAILABLE", "SOURCE_DELETED", "SOURCE_MOVED", "SOURCE_SUPERSEDED"]
-    : [baseResolutionState];
-
   const expectedScope = baseResolutionState === "FIDELITY_UNCONFIRMED" ? "ARTICLE_EVENT" : "EVENT";
 
   let matchedClearance = null;
@@ -194,16 +214,31 @@ export function resolveArticleProvenance(articlePath, workspaceDir, registry, ma
     if (cl.reviewType !== "Source-Fidelity") continue;
     if (cl.result !== "PASS") continue;
     if (cl.clearanceScope !== expectedScope) continue;
-    if (!compatibleResolutionStates.includes(cl.resolutionState)) continue;
+    
+    // B3R-02: Exact resolutionState matching only
+    if (cl.resolutionState !== baseResolutionState) continue;
 
     if (expectedScope === "ARTICLE_EVENT") {
       if (cl.subjectType !== "learning-article") continue;
       if (cl.subjectId !== articlePath) continue;
     }
 
-    // Fingerprint verification
-    const computedFingerprint = computeClearanceFingerprint(cl);
-    if (computedFingerprint !== cl.evidenceFingerprint) {
+    // B3R-01: Runtime fingerprint verification from active validated evidence context
+    const activeEvidence = {
+      eventId: regEntry.eventId,
+      sourceProject: regEntry.sourceProject,
+      sourceSystem: regEntry.sourceSystem,
+      sourceLocator: regEntry.sourceLocator,
+      historicalLocatorState: regEntry.historicalLocatorState,
+      historicalLocator: regEntry.historicalLocator,
+      resolutionState: baseResolutionState,
+      clearanceScope: expectedScope,
+      subjectType: expectedScope === "ARTICLE_EVENT" ? "learning-article" : undefined,
+      subjectId: expectedScope === "ARTICLE_EVENT" ? articlePath : undefined
+    };
+
+    const expectedFingerprint = computeExpectedFingerprint(activeEvidence);
+    if (expectedFingerprint !== cl.evidenceFingerprint) {
       continue; // Fingerprint mismatch/staleness
     }
 
