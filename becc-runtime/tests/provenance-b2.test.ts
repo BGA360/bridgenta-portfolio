@@ -58,6 +58,13 @@ test('B2: Namespace Map - Rejects retired token reuse', () => {
   assert.throws(() => validateNamespaceMap(badMap), /Retired namespace token reused/);
 });
 
+test('B2: Namespace Map - Rejects additional property', () => {
+  const badMap = [
+    { projectId: "p1", currentName: "n1", aliases: [], prefix: "PA", status: "ACTIVE", unknownField: "bad" }
+  ];
+  assert.throws(() => validateNamespaceMap(badMap), /Additional properties not allowed/);
+});
+
 test('B2: Registry - Validates valid registry entry', () => {
   const registry = [
     {
@@ -155,6 +162,15 @@ test('B2: Registry - Rejects historical UNAVAILABLE with non-null locator', () =
 });
 
 test('B2: Registry - Rejects event prefix / project prefix mismatch', () => {
+  const customNamespaces = [
+    {
+      projectId: "bridgenta-core",
+      currentName: "bridgenta-core",
+      aliases: [],
+      prefix: "BG",
+      status: "ACTIVE"
+    }
+  ];
   const registry = [
     {
       eventId: "EV-LP-001", // LP prefix, but project is bridgenta-core (BG prefix)
@@ -165,7 +181,7 @@ test('B2: Registry - Rejects event prefix / project prefix mismatch', () => {
       historicalLocator: "123"
     }
   ];
-  assert.throws(() => validateRegistry(registry), /EVENT_PROJECT_PREFIX_MISMATCH/);
+  assert.throws(() => validateRegistry(registry, customNamespaces), /EVENT_PROJECT_PREFIX_MISMATCH/);
 });
 
 test('B2: Registry - Validates correct prefix binding with aliases', () => {
@@ -181,6 +197,21 @@ test('B2: Registry - Validates correct prefix binding with aliases', () => {
   ];
   const result = validateRegistry(registry);
   assert.ok(result);
+});
+
+test('B2: Registry - Rejects additional property', () => {
+  const registry = [
+    {
+      eventId: "EV-BG-001",
+      sourceProject: "bridgenta-core",
+      sourceSystem: "git",
+      sourceLocator: "src/content/config.ts",
+      historicalLocatorState: "AVAILABLE",
+      historicalLocator: "123",
+      extraProperty: "unauthorized"
+    }
+  ];
+  assert.throws(() => validateRegistry(registry), /Additional properties not allowed/);
 });
 
 test('B2: Manifest - Validates exact join/cardinality, fields, and correct verification states', () => {
@@ -458,6 +489,34 @@ test('B2: Manifest - Accepts valid DMS OPTIONAL_NOT_CAPTURED case', () => {
   assert.ok(result);
 });
 
+test('B2: Manifest - Rejects additional property', () => {
+  const registry = [
+    {
+      eventId: "EV-BG-001",
+      sourceProject: "bridgenta-core",
+      sourceSystem: "git",
+      sourceLocator: "package.json",
+      historicalLocatorState: "AVAILABLE",
+      historicalLocator: "123"
+    }
+  ];
+  const manifest = [
+    {
+      eventId: "EV-BG-001",
+      sourceSystem: "git",
+      sourceLocator: "package.json",
+      historicalLocatorState: "AVAILABLE",
+      historicalLocator: "123",
+      localVerificationState: "NOT_AVAILABLE",
+      integrityEvidenceType: null,
+      integrityEvidenceValue: null,
+      capturedAt: "2026-08-26T10:00:00Z",
+      unwantedProperty: "invalid"
+    }
+  ];
+  assert.throws(() => validateManifest(manifest, registry), /Additional properties not allowed/);
+});
+
 test('B2: Clearances - Validates clearances with EVENT and ARTICLE_EVENT scopes', () => {
   const clearances = [
     {
@@ -466,7 +525,7 @@ test('B2: Clearances - Validates clearances with EVENT and ARTICLE_EVENT scopes'
       clearanceScope: "EVENT",
       subjectType: null,
       subjectId: null,
-      reviewType: "fidelity-check",
+      reviewType: "Source-Fidelity",
       result: "PASS",
       reviewReference: "stewardship/reviews/rev-001.review.md",
       reviewedAt: "2026-08-26T10:00:00Z",
@@ -480,7 +539,7 @@ test('B2: Clearances - Validates clearances with EVENT and ARTICLE_EVENT scopes'
       clearanceScope: "ARTICLE_EVENT",
       subjectType: "learning-article",
       subjectId: "src/content/learning/grenzen-automatisierter-linter-checks.md",
-      reviewType: "fidelity-check",
+      reviewType: "Source-Fidelity",
       result: "PASS",
       reviewReference: "stewardship/reviews/rev-002.review.md",
       reviewedAt: "2026-08-26T10:00:00Z",
@@ -501,7 +560,7 @@ test('B2: Clearances - Rejects FIDELITY_UNCONFIRMED with EVENT clearance scope',
       clearanceScope: "EVENT", // must be ARTICLE_EVENT
       subjectType: null,
       subjectId: null,
-      reviewType: "fidelity-check",
+      reviewType: "Source-Fidelity",
       result: "PASS",
       reviewReference: "stewardship/reviews/rev-001.review.md",
       reviewedAt: "2026-08-26T10:00:00Z",
@@ -521,7 +580,7 @@ test('B2: Clearances - Rejects EVENT-scoped states with ARTICLE_EVENT clearance 
       clearanceScope: "ARTICLE_EVENT", // must be EVENT
       subjectType: "learning-article",
       subjectId: "src/content/learning/grenzen-automatisierter-linter-checks.md",
-      reviewType: "fidelity-check",
+      reviewType: "Source-Fidelity",
       result: "PASS",
       reviewReference: "stewardship/reviews/rev-001.review.md",
       reviewedAt: "2026-08-26T10:00:00Z",
@@ -541,7 +600,7 @@ test('B2: Clearances - Rejects ARTICLE_EVENT missing subjectId', () => {
       clearanceScope: "ARTICLE_EVENT",
       subjectType: "learning-article",
       subjectId: "", // empty
-      reviewType: "fidelity-check",
+      reviewType: "Source-Fidelity",
       result: "PASS",
       reviewReference: "stewardship/reviews/rev-001.review.md",
       reviewedAt: "2026-08-26T10:00:00Z",
@@ -561,7 +620,7 @@ test('B2: Clearances - Rejects EVENT with non-null subjectId', () => {
       clearanceScope: "EVENT",
       subjectType: null,
       subjectId: "src/content/learning/some-article.md", // non-null
-      reviewType: "fidelity-check",
+      reviewType: "Source-Fidelity",
       result: "PASS",
       reviewReference: "stewardship/reviews/rev-001.review.md",
       reviewedAt: "2026-08-26T10:00:00Z",
@@ -581,7 +640,7 @@ test('B2: Clearances - Rejects invalid reviewReference format', () => {
       clearanceScope: "EVENT",
       subjectType: null,
       subjectId: null,
-      reviewType: "fidelity-check",
+      reviewType: "Source-Fidelity",
       result: "PASS",
       reviewReference: "file:///stewardship/reviews/rev-001.review.md", // invalid absolute format
       reviewedAt: "2026-08-26T10:00:00Z",
@@ -601,7 +660,7 @@ test('B2: Clearances - Rejects invalid fingerprint format', () => {
       clearanceScope: "EVENT",
       subjectType: null,
       subjectId: null,
-      reviewType: "fidelity-check",
+      reviewType: "Source-Fidelity",
       result: "PASS",
       reviewReference: "stewardship/reviews/rev-001.review.md",
       reviewedAt: "2026-08-26T10:00:00Z",
@@ -611,6 +670,87 @@ test('B2: Clearances - Rejects invalid fingerprint format', () => {
     }
   ];
   assert.throws(() => validateClearances(clearances), /Invalid evidenceFingerprint format/);
+});
+
+test('B2: Clearances - Rejects reviewType != Source-Fidelity', () => {
+  const clearances = [
+    {
+      eventId: "EV-BG-001",
+      resolutionState: "SOURCE_UNAVAILABLE",
+      clearanceScope: "EVENT",
+      subjectType: null,
+      subjectId: null,
+      reviewType: "fidelity-check", // not Source-Fidelity
+      result: "PASS",
+      reviewReference: "stewardship/reviews/rev-001.review.md",
+      reviewedAt: "2026-08-26T10:00:00Z",
+      reviewerOrRole: "Reviewer A",
+      clearanceState: "APPROVED",
+      evidenceFingerprint: "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3d3d3d3d3d3d3d3d3d3d3d3d3"
+    }
+  ];
+  assert.throws(() => validateClearances(clearances), /Must be exactly 'Source-Fidelity'/);
+});
+
+test('B2: Clearances - Rejects result != PASS', () => {
+  const clearances = [
+    {
+      eventId: "EV-BG-001",
+      resolutionState: "SOURCE_UNAVAILABLE",
+      clearanceScope: "EVENT",
+      subjectType: null,
+      subjectId: null,
+      reviewType: "Source-Fidelity",
+      result: "FAIL", // not PASS
+      reviewReference: "stewardship/reviews/rev-001.review.md",
+      reviewedAt: "2026-08-26T10:00:00Z",
+      reviewerOrRole: "Reviewer A",
+      clearanceState: "APPROVED",
+      evidenceFingerprint: "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3d3d3d3d3d3d3d3d3d3d3d3d3"
+    }
+  ];
+  assert.throws(() => validateClearances(clearances), /Must be exactly 'PASS'/);
+});
+
+test('B2: Clearances - Rejects invalid clearanceState', () => {
+  const clearances = [
+    {
+      eventId: "EV-BG-001",
+      resolutionState: "SOURCE_UNAVAILABLE",
+      clearanceScope: "EVENT",
+      subjectType: null,
+      subjectId: null,
+      reviewType: "Source-Fidelity",
+      result: "PASS",
+      reviewReference: "stewardship/reviews/rev-001.review.md",
+      reviewedAt: "2026-08-26T10:00:00Z",
+      reviewerOrRole: "Reviewer A",
+      clearanceState: "PENDING", // not APPROVED | EXPIRED | REVOKED
+      evidenceFingerprint: "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3d3d3d3d3d3d3d3d3d3d3d3d3"
+    }
+  ];
+  assert.throws(() => validateClearances(clearances), /Must be APPROVED, EXPIRED, or REVOKED/);
+});
+
+test('B2: Clearances - Rejects additional property', () => {
+  const clearances = [
+    {
+      eventId: "EV-BG-001",
+      resolutionState: "SOURCE_UNAVAILABLE",
+      clearanceScope: "EVENT",
+      subjectType: null,
+      subjectId: null,
+      reviewType: "Source-Fidelity",
+      result: "PASS",
+      reviewReference: "stewardship/reviews/rev-001.review.md",
+      reviewedAt: "2026-08-26T10:00:00Z",
+      reviewerOrRole: "Reviewer A",
+      clearanceState: "APPROVED",
+      evidenceFingerprint: "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3d3d3d3d3d3d3d3d3d3d3d3d3",
+      extraKey: "unwanted"
+    }
+  ];
+  assert.throws(() => validateClearances(clearances), /Additional properties not allowed/);
 });
 
 test('B2: Integrity Generator - Deterministic behavior and capturedAt preservation', () => {
@@ -642,4 +782,34 @@ test('B2: Integrity Generator - Deterministic behavior and capturedAt preservati
     manifest1.map((m: any) => ({ ...m, capturedAt: 'mocked' })),
     manifest3.map((m: any) => ({ ...m, capturedAt: 'mocked' }))
   );
+});
+
+test('B2: Integrity Generator - B2R-02 Regression: Non-AVAILABLE historical states with existing file', () => {
+  // Let's use "package.json" which exists locally, but set historical locator to non-AVAILABLE states
+  const nonAvailableHistoricalStates = ["UNAVAILABLE", "TEMPORARILY_UNAVAILABLE", "NOT_MACHINE_VERIFIABLE"];
+
+  for (const state of nonAvailableHistoricalStates) {
+    const registry = [
+      {
+        eventId: "EV-BG-001",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "package.json",
+        historicalLocatorState: state,
+        historicalLocator: null
+      }
+    ];
+
+    const manifest = generateIntegrityManifest(registry, []);
+    assert.strictEqual(manifest.length, 1);
+    
+    // Invariant: generated localVerificationState MUST NOT be AVAILABLE
+    assert.notStrictEqual(manifest[0].localVerificationState, "AVAILABLE");
+    assert.strictEqual(manifest[0].integrityEvidenceType, null);
+    assert.strictEqual(manifest[0].integrityEvidenceValue, null);
+
+    // Roundtrip verification: manifest must pass validateManifest
+    const isValid = validateManifest(manifest, registry);
+    assert.ok(isValid);
+  }
 });

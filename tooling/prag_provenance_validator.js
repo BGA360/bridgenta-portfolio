@@ -9,41 +9,6 @@ export const PROJECT_NAMESPACE_MAP = [
     aliases: ["bridgenta-workspace", "bridgenta"],
     prefix: "BG",
     status: "ACTIVE"
-  },
-  {
-    projectId: "starcleaners",
-    currentName: "starcleaners",
-    aliases: ["star-cleaners"],
-    prefix: "SC",
-    status: "ACTIVE"
-  },
-  {
-    projectId: "luminapraxis",
-    currentName: "luminapraxis",
-    aliases: ["lumina-praxis"],
-    prefix: "LP",
-    status: "ACTIVE"
-  },
-  {
-    projectId: "aeocortex",
-    currentName: "aeocortex",
-    aliases: ["aeo-cortex"],
-    prefix: "AC",
-    status: "ACTIVE"
-  },
-  {
-    projectId: "test-project",
-    currentName: "test-project",
-    aliases: [],
-    prefix: "TEST",
-    status: "ACTIVE"
-  },
-  {
-    projectId: "retired-project",
-    currentName: "retired-project",
-    aliases: [],
-    prefix: "RET",
-    status: "RETIRED"
   }
 ];
 
@@ -81,6 +46,21 @@ export const HUMAN_CLEARABLE_RESOLUTIONS = new Set([
   "SOURCE_SUPERSEDED",
   "FIDELITY_UNCONFIRMED"
 ]);
+
+const ALLOWED_NAMESPACE_KEYS = ["projectId", "currentName", "aliases", "prefix", "status"];
+const ALLOWED_REGISTRY_KEYS = ["eventId", "sourceProject", "sourceSystem", "sourceLocator", "historicalLocatorState", "historicalLocator"];
+const ALLOWED_MANIFEST_KEYS = ["eventId", "sourceSystem", "sourceLocator", "historicalLocatorState", "historicalLocator", "localVerificationState", "integrityEvidenceType", "integrityEvidenceValue", "capturedAt"];
+const ALLOWED_CLEARANCE_KEYS = ["eventId", "resolutionState", "clearanceScope", "subjectType", "subjectId", "reviewType", "result", "reviewReference", "reviewedAt", "reviewerOrRole", "clearanceState", "evidenceFingerprint"];
+
+function hasAdditionalKeys(obj, allowedKeysArray) {
+  const allowed = new Set(allowedKeysArray);
+  for (const key of Object.keys(obj)) {
+    if (!allowed.has(key)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // sourceSystem x localVerificationState Matrix Check
 export function isValidSourceLocalPair(system, localState) {
@@ -125,6 +105,13 @@ export function validateNamespaceMap(map) {
   const activeTokens = new Set();
 
   for (const entry of map) {
+    if (typeof entry !== "object" || entry === null) {
+      throw new Error("Each namespace entry must be an object.");
+    }
+    if (hasAdditionalKeys(entry, ALLOWED_NAMESPACE_KEYS)) {
+      throw new Error("Additional properties not allowed in namespace entry.");
+    }
+
     if (typeof entry.projectId !== "string" || !entry.projectId) {
       throw new Error("Invalid or missing projectId.");
     }
@@ -202,7 +189,7 @@ export function validateNamespaceMap(map) {
 }
 
 // Registry validation
-export function validateRegistry(registry) {
+export function validateRegistry(registry, namespaceMap = PROJECT_NAMESPACE_MAP) {
   if (!Array.isArray(registry)) {
     throw new Error("Registry must be an array of event objects.");
   }
@@ -212,6 +199,9 @@ export function validateRegistry(registry) {
   for (const entry of registry) {
     if (typeof entry !== "object" || entry === null) {
       throw new Error("Each registry entry must be an object.");
+    }
+    if (hasAdditionalKeys(entry, ALLOWED_REGISTRY_KEYS)) {
+      throw new Error("Additional properties not allowed in registry entry.");
     }
 
     const { eventId, sourceProject, sourceSystem, sourceLocator, historicalLocatorState, historicalLocator } = entry;
@@ -231,7 +221,7 @@ export function validateRegistry(registry) {
       throw new Error("Missing or invalid sourceProject.");
     }
 
-    const resolvedProject = PROJECT_NAMESPACE_MAP.find(p =>
+    const resolvedProject = namespaceMap.find(p =>
       p.projectId === sourceProject || p.currentName === sourceProject || p.aliases.includes(sourceProject)
     );
 
@@ -273,13 +263,13 @@ export function validateRegistry(registry) {
 }
 
 // Manifest validation
-export function validateManifest(manifest, registry) {
+export function validateManifest(manifest, registry, namespaceMap = PROJECT_NAMESPACE_MAP) {
   if (!Array.isArray(manifest)) {
     throw new Error("Manifest must be an array.");
   }
 
-  // Validate registry first
-  validateRegistry(registry);
+  // Validate registry first with the same namespaceMap
+  validateRegistry(registry, namespaceMap);
 
   const registryMap = new Map(registry.map(e => [e.eventId, e]));
   const seenManifestIds = new Set();
@@ -287,6 +277,9 @@ export function validateManifest(manifest, registry) {
   for (const entry of manifest) {
     if (typeof entry !== "object" || entry === null) {
       throw new Error("Each manifest entry must be an object.");
+    }
+    if (hasAdditionalKeys(entry, ALLOWED_MANIFEST_KEYS)) {
+      throw new Error("Additional properties not allowed in manifest entry.");
     }
 
     const {
@@ -386,6 +379,9 @@ export function validateClearances(clearances) {
     if (typeof entry !== "object" || entry === null) {
       throw new Error("Each clearance entry must be an object.");
     }
+    if (hasAdditionalKeys(entry, ALLOWED_CLEARANCE_KEYS)) {
+      throw new Error("Additional properties not allowed in clearance entry.");
+    }
 
     const {
       eventId,
@@ -439,12 +435,17 @@ export function validateClearances(clearances) {
       }
     }
 
-    if (typeof reviewType !== "string" || !reviewType) {
-      throw new Error("Missing or invalid reviewType.");
+    if (reviewType !== "Source-Fidelity") {
+      throw new Error(`Invalid reviewType: '${reviewType}'. Must be exactly 'Source-Fidelity'.`);
     }
 
-    if (typeof result !== "string" || !result) {
-      throw new Error("Missing or invalid result.");
+    if (result !== "PASS") {
+      throw new Error(`Invalid result: '${result}'. Must be exactly 'PASS'.`);
+    }
+
+    // Enforce state enum
+    if (clearanceState !== "APPROVED" && clearanceState !== "EXPIRED" && clearanceState !== "REVOKED") {
+      throw new Error(`Invalid clearanceState: '${clearanceState}'. Must be APPROVED, EXPIRED, or REVOKED.`);
     }
 
     // Review Reference check
@@ -458,10 +459,6 @@ export function validateClearances(clearances) {
 
     if (typeof reviewerOrRole !== "string" || !reviewerOrRole) {
       throw new Error("Missing or invalid reviewerOrRole.");
-    }
-
-    if (typeof clearanceState !== "string" || !clearanceState) {
-      throw new Error("Missing or invalid clearanceState.");
     }
 
     // Evidence Fingerprint check

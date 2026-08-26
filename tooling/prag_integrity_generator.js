@@ -41,7 +41,8 @@ export function generateIntegrityManifest(registry, existingManifest = []) {
         }
       }
 
-      if (resolvedPath) {
+      // Invariant: IF historicalLocatorState != AVAILABLE, then localVerificationState MUST NOT be AVAILABLE
+      if (resolvedPath && historicalLocatorState === "AVAILABLE") {
         const content = fs.readFileSync(resolvedPath);
         const hash = crypto.createHash("sha256").update(content).digest("hex");
         localVerificationState = "AVAILABLE";
