@@ -535,3 +535,36 @@ test('B4: Article 1 resolves to PASS and RESOLVED with production registry', () 
   assert.strictEqual(result.clearanceApplied, false);
 });
 
+test('B4R: Evidence packet and Source-Fidelity review compliance checks', () => {
+  // 1. Verify evidence packet existence and key properties
+  const evidencePath = path.join(repoRoot, 'stewardship', 'evidence', 'article-1-ev-bg-001-source-evidence.md');
+  assert.ok(fs.existsSync(evidencePath), "Evidence packet must exist.");
+  const evidenceContent = fs.readFileSync(evidencePath, 'utf-8');
+  assert.ok(evidenceContent.includes('eventId'), "Evidence must bind eventId.");
+  assert.ok(evidenceContent.includes('EV-BG-001'), "Evidence must bind EV-BG-001.");
+  assert.ok(evidenceContent.includes('historicalLocator'), "Evidence must bind historicalLocator.");
+  assert.ok(evidenceContent.includes('07aac848a4a48282c8b83169179308bdb17db0c6'), "Evidence must bind historical commit.");
+  assert.ok(evidenceContent.includes('SOURCE_FILE_HASH_AT_HISTORICAL_REVISION'), "Evidence must record historical file hash.");
+  assert.ok(evidenceContent.includes('f26eec55fb363ff00281f4d9ddf00391fb1b3477031005c5042be1aa36c58280'), "Evidence must record correct hash value.");
+  assert.ok(evidenceContent.includes('LOCAL_GIT_EVIDENCE'), "Evidence must specify local git evidence.");
+
+  // 2. Verify corrected review timestamp format and content
+  const reviewPath = path.join(repoRoot, 'stewardship', 'reviews', 'grenzen-automatisierter-linter-checks.review.md');
+  assert.ok(fs.existsSync(reviewPath), "Fidelity review must exist.");
+  const reviewContent = fs.readFileSync(reviewPath, 'utf-8');
+  
+  // Extract and check frontmatter reviewedAt
+  const fm = parseFrontmatter(reviewContent);
+  assert.ok(fm.reviewedAt, "reviewedAt timestamp must be defined.");
+  assert.match(fm.reviewedAt, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})$/, "reviewedAt must be valid ISO 8601.");
+  
+  // Verify classifications corrected
+  assert.ok(reviewContent.includes('DERIVED') || reviewContent.includes('INFERENCE'), "Review must contain corrected DERIVED / INFERENCE classifications.");
+  assert.ok(reviewContent.includes('DIRECT'), "Review must contain DIRECT classifications.");
+  
+  // Verify Fresh Reader locators
+  assert.ok(reviewContent.includes('docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md'), "Review must contain exact Fresh-Reader locator.");
+  assert.ok(reviewContent.includes('a92301010557193bfb1e6696b39d26f0880f832c'), "Review must contain exact Fresh-Reader commit SHA.");
+});
+
+
