@@ -10,7 +10,8 @@
     "astro": "astro",
     "lint": "node tooling/lint_markdown.cjs",
     "check-links": "node tooling/check_markdown_links.cjs",
-    "test:runtime": "npm --prefix becc-runtime test"
+    "test:runtime": "npm --prefix becc-runtime test",
+    "m5:shadow": "node tooling/prag_provenance_ci_shadow.js"
   },
   "dependencies": {
     "astro": "^4.11.3"

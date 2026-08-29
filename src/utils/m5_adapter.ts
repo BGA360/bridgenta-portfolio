@@ -5,18 +5,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 
-// Resolve implementation identity (Commit SHA)
-export function resolveImplementationIdentity() {
-  try {
-    const sha = execSync('git rev-parse HEAD', { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
-    if (/^[0-9a-f]{40}$/i.test(sha)) {
-      return { state: 'RESOLVED', identity: sha };
-    }
-  } catch (e) {
-    // ignore
-  }
-  return { state: 'UNAVAILABLE', identity: null };
-}
+import { resolveImplementationIdentity } from '../../tooling/prag_provenance_identity.js';
+export { resolveImplementationIdentity };
 
 export function getM5Projection(articles: any[], options: { workspaceDir?: string } = {}) {
   const publishedArticles = articles.filter(

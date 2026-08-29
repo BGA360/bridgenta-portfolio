@@ -53,6 +53,33 @@ jobs:
         with:
           path: ./dist
 
+  m5-shadow:
+    name: 🕵️ M5 Shadow Observation
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📂 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🕵️ Run M5 Shadow Observation
+        run: npm run m5:shadow
+
+      - name: 📤 Upload M5 Shadow Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: m5-shadow-observation
+          path: stewardship/reports/m5-ci-shadow-observation.json
+          if-no-files-found: warn
+
   deploy:
     environment:
       name: github-pages
