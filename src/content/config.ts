@@ -83,6 +83,7 @@ const learningCollection = defineCollection({
     publicStatus: z.enum(['historical', 'corrected']).optional(),
     publishedAt: z.coerce.date().optional(),
     updatedAt: z.coerce.date().optional(),
+    provenanceRef: z.string().regex(/^EV-[A-Z]{2,4}-[0-9]{3,5}$/).optional(),
   }).superRefine((data, ctx) => {
     // Draft & Review checks
     if (data.publicationState === 'draft' || data.publicationState === 'review') {

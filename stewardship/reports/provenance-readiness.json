@@ -1,0 +1,33 @@
+{
+  "counters": {
+    "TOTAL_PUBLISHED_ARTICLES": 1,
+    "WITH_PROVENANCE_REF": 1,
+    "WITHOUT_PROVENANCE_REF": 0,
+    "REGISTRY_RESOLVED": 1,
+    "REGISTRY_UNRESOLVED": 0,
+    "MANIFEST_RESOLVED": 1,
+    "MANIFEST_UNRESOLVED": 0,
+    "SOURCE_FIDELITY_PASS": 1,
+    "SOURCE_FIDELITY_FAIL_OR_MISSING": 0,
+    "RUNTIME_PASS": 1,
+    "RUNTIME_FAIL": 0,
+    "READY_UNCLEARED": 1,
+    "READY_BY_CLEARANCE": 0,
+    "NOT_READY": 0
+  },
+  "articles": [
+    {
+      "subjectType": "learning-article",
+      "subjectId": "src/content/learning/grenzen-automatisierter-linter-checks.md",
+      "publicationState": "published",
+      "provenanceRef": "EV-BG-001",
+      "baseResolutionState": "RESOLVED",
+      "effectiveGateResult": "PASS",
+      "clearanceApplied": false,
+      "sourceFidelity": "PASS",
+      "readinessState": "READY_UNCLEARED",
+      "reasons": []
+    }
+  ],
+  "m5Preflight": "READY"
+}

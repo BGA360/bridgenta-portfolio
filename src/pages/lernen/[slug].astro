@@ -4,10 +4,12 @@ import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import LearningLevelBadge from '../../components/LearningLevelBadge.astro';
 import LearningStatusNotice from '../../components/LearningStatusNotice.astro';
+import { observeArticleEligibility } from '../../utils/m5_adapter';
 
 export async function getStaticPaths() {
   const articles = await getCollection('learning');
-  const publishedArticles = articles.filter(
+  const observedArticles = observeArticleEligibility(articles);
+  const publishedArticles = observedArticles.filter(
     (art) => art.data.publicationState === 'published'
   );
 

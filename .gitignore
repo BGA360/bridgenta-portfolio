@@ -30,3 +30,6 @@ Thumbs.db
 /scratch/
 /docs/engineering-communication.zip
 /docs/engineering-communication/v2/research/rkf-reference/docs/
+
+# M5 CI Observation reports
+/stewardship/reports/

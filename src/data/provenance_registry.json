@@ -1,0 +1,10 @@
+[
+  {
+    "eventId": "EV-BG-001",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "bridgenta-workspace/validation/automation_controller.js",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "07aac848a4a48282c8b83169179308bdb17db0c6"
+  }
+]

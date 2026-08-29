@@ -4,6 +4,8 @@ import Layout from '../../../layouts/Layout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import LearningCard from '../../../components/LearningCard.astro';
 
+import { observeArticleEligibility } from '../../../utils/m5_adapter';
+
 export async function getStaticPaths() {
   const categories = await getCollection('learningCategories');
   return categories.map((cat) => ({
@@ -16,7 +18,8 @@ const { category } = Astro.props;
 
 // Fetch articles belonging to this category and filter by publicationState === 'published'
 const allArticles = await getCollection('learning');
-const publishedArticles = allArticles.filter(
+const observedArticles = observeArticleEligibility(allArticles);
+const publishedArticles = observedArticles.filter(
   (art) =>
     art.data.publicationState === 'published' &&
     art.data.category.id === category.id
