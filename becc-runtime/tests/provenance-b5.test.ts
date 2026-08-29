@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import crypto from 'node:crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,6 +36,12 @@ function writeMockEvidence(filename: string, content: string) {
   const evidenceDir = path.join(testTmpDir, 'stewardship', 'evidence');
   fs.mkdirSync(evidenceDir, { recursive: true });
   fs.writeFileSync(path.join(evidenceDir, filename), content, 'utf-8');
+}
+
+function writeMockSourceFile(filename: string, content: string) {
+  const fullPath = path.join(testTmpDir, filename);
+  fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+  fs.writeFileSync(fullPath, content, 'utf-8');
 }
 
 describe('B5 Provenance Readiness Evaluator', () => {
@@ -223,7 +230,14 @@ reviewType: "Source-Fidelity"
 result: "FAIL"
 ---`, 'Matches [evidence](stewardship/evidence/sf-fail-ev-bg-104.md)');
 
-    writeMockEvidence('sf-fail-ev-bg-104.md', 'eventId: EV-BG-104');
+    writeMockEvidence('sf-fail-ev-bg-104.md', `
+- **eventId**: \`EV-BG-104\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
 
     const result = evaluateReadiness(testTmpDir, registry, manifest, []);
     assert.strictEqual(result.counters.NOT_READY, 1);
@@ -271,7 +285,14 @@ reviewType: "Source-Fidelity"
 result: "PASS"
 ---`, 'Matches [evidence](stewardship/evidence/sf-pass-ev-bg-105.md)');
 
-    writeMockEvidence('sf-pass-ev-bg-105.md', 'eventId: EV-BG-105');
+    writeMockEvidence('sf-pass-ev-bg-105.md', `
+- **eventId**: \`EV-BG-105\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
 
     // Expected fingerprint for ARTICLE_EVENT scope
     const activeEvidence = {
@@ -354,7 +375,14 @@ reviewType: "Source-Fidelity"
 result: "PASS"
 ---`, 'Matches [evidence](stewardship/evidence/sf-pass-ev-bg-106.md)');
 
-    writeMockEvidence('sf-pass-ev-bg-106.md', 'eventId: EV-BG-106');
+    writeMockEvidence('sf-pass-ev-bg-106.md', `
+- **eventId**: \`EV-BG-106\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
 
     // Clearance has WRONG fingerprint
     const clearances = [
@@ -429,7 +457,14 @@ reviewType: "Source-Fidelity"
 result: "PASS"
 ---`, 'Matches [evidence](stewardship/evidence/ev-bg-107.md)');
 
-    writeMockEvidence('ev-bg-107.md', 'eventId: EV-BG-107');
+    writeMockEvidence('ev-bg-107.md', `
+- **eventId**: \`EV-BG-107\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
 
     const result = evaluateReadiness(testTmpDir, registry, manifest, []);
     
@@ -449,5 +484,669 @@ result: "PASS"
     assert.strictEqual(result.counters.TOTAL_PUBLISHED_ARTICLES, 0);
     assert.strictEqual(result.counters.NOT_READY, 0);
     assert.strictEqual(result.m5Preflight, 'NOT_READY'); // Safe posture
+  });
+
+  test('B5R-01: Test 1 — Exact identity ready path', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    writeMockEvidence('ev-bg-108.md', `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.READY_UNCLEARED, 1);
+    assert.strictEqual(result.articles[0].readinessState, 'READY_UNCLEARED');
+    assert.deepStrictEqual(result.articles[0].reasons, []);
+  });
+
+  test('B5R-01: Test 2 — sourceProject mismatch', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    // sourceProject has mismatched value "other-project"
+    writeMockEvidence('ev-bg-108.md', `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`other-project\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.NOT_READY, 1);
+    assert.ok(result.articles[0].reasons.includes('SOURCE_FIDELITY_EVIDENCE_MISSING'));
+  });
+
+  test('B5R-01: Test 3 — sourceSystem mismatch', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    // sourceSystem has mismatched value "dms"
+    writeMockEvidence('ev-bg-108.md', `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`dms\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.NOT_READY, 1);
+    assert.ok(result.articles[0].reasons.includes('SOURCE_FIDELITY_EVIDENCE_MISSING'));
+  });
+
+  test('B5R-01: Test 4 — sourceLocator mismatch', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    // sourceLocator has mismatched value
+    writeMockEvidence('ev-bg-108.md', `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/other.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.NOT_READY, 1);
+    assert.ok(result.articles[0].reasons.includes('SOURCE_FIDELITY_EVIDENCE_MISSING'));
+  });
+
+  test('B5R-01: Test 5 — historicalLocatorState mismatch', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    // historicalLocatorState has mismatched value
+    writeMockEvidence('ev-bg-108.md', `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`UNAVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.NOT_READY, 1);
+    assert.ok(result.articles[0].reasons.includes('SOURCE_FIDELITY_EVIDENCE_MISSING'));
+  });
+
+  test('B5R-01: Test 6 — historicalLocator mismatch', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    // historicalLocator has mismatched value (xyz2 vs xyz)
+    writeMockEvidence('ev-bg-108.md', `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz2\`
+`);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.NOT_READY, 1);
+    assert.ok(result.articles[0].reasons.includes('SOURCE_FIDELITY_EVIDENCE_MISSING'));
+  });
+
+  test('B5R-01: Test 7 — zero exact evidence packets', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`); // no evidence links at all
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.NOT_READY, 1);
+    assert.ok(result.articles[0].reasons.includes('SOURCE_FIDELITY_EVIDENCE_MISSING'));
+  });
+
+  test('B5R-01: Test 8 — multiple exact evidence packets', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    // Reference two different files
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence1](stewardship/evidence/ev-bg-108-a.md) and [evidence2](stewardship/evidence/ev-bg-108-b.md)');
+
+    // Both have exact identical content matching the registry
+    const exactEvidence = `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`;
+    writeMockEvidence('ev-bg-108-a.md', exactEvidence);
+    writeMockEvidence('ev-bg-108-b.md', exactEvidence);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.NOT_READY, 1);
+    assert.ok(result.articles[0].reasons.includes('SOURCE_FIDELITY_EVIDENCE_AMBIGUOUS'));
+  });
+
+  test('B5R-01: Test 9 — multiple Source-Fidelity reviews', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    // Write two reviews with the same subject and reviewType
+    writeMockReview('rev-1.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    writeMockReview('rev-2.review.md', `---
+subject: "src/content/learning/article-1.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    writeMockEvidence('ev-bg-108.md', `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.NOT_READY, 1);
+    assert.ok(result.articles[0].reasons.includes('MULTIPLE_SOURCE_FIDELITY_REVIEWS'));
+  });
+
+  test('B5R-02: Test 10 — reverse filesystem/write order', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    // Write multiple articles. Their names are chosen to be in reverse alphabetical order of insertion
+    writeMockArticle('c-article.md', `---
+title: "Article C"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+    writeMockArticle('a-article.md', `---
+title: "Article A"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+    writeMockArticle('b-article.md', `---
+title: "Article B"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const result = evaluateReadiness(testTmpDir, [], [], []);
+    
+    // They must be returned sorted by subjectId ascending
+    assert.strictEqual(result.articles.length, 3);
+    assert.strictEqual(result.articles[0].subjectId, 'src/content/learning/a-article.md');
+    assert.strictEqual(result.articles[1].subjectId, 'src/content/learning/b-article.md');
+    assert.strictEqual(result.articles[2].subjectId, 'src/content/learning/c-article.md');
+  });
+
+  test('B5R-02: Test 11 — deterministic serialized JSON', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    writeMockArticle('article-1.md', `---
+title: "Article 1"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    const result1 = evaluateReadiness(testTmpDir, registry, [], []);
+    const result2 = evaluateReadiness(testTmpDir, registry, [], []);
+
+    const json1 = JSON.stringify(result1, null, 2);
+    const json2 = JSON.stringify(result2, null, 2);
+
+    assert.strictEqual(json1, json2);
+  });
+
+  test('B5R-02: Test 12 — one NOT_READY article does not block another article', () => {
+    fs.rmSync(testTmpDir, { recursive: true, force: true });
+    fs.mkdirSync(testTmpDir, { recursive: true });
+
+    // Article A is invalid (missing provenanceRef)
+    writeMockArticle('a-article.md', `---
+title: "Article A"
+publicationState: "published"
+---`);
+
+    // Article B is valid
+    writeMockArticle('b-article.md', `---
+title: "Article B"
+publicationState: "published"
+provenanceRef: "EV-BG-108"
+---`);
+
+    const registry = [
+      {
+        eventId: "EV-BG-108",
+        sourceProject: "bridgenta-core",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz"
+      }
+    ];
+
+    writeMockSourceFile("validation/some.js", "mock source file content");
+    const mockHash = crypto.createHash('sha256').update('mock source file content').digest('hex');
+
+    const manifest = [
+      {
+        eventId: "EV-BG-108",
+        sourceSystem: "git",
+        sourceLocator: "validation/some.js",
+        historicalLocatorState: "AVAILABLE",
+        historicalLocator: "xyz",
+        localVerificationState: "AVAILABLE",
+        integrityEvidenceType: "sha256",
+        integrityEvidenceValue: mockHash,
+        capturedAt: "2026-08-26T14:30:00Z"
+      }
+    ];
+
+    writeMockReview('rev-b.review.md', `---
+subject: "src/content/learning/b-article.md"
+reviewType: "Source-Fidelity"
+result: "PASS"
+---`, 'Matches [evidence](stewardship/evidence/ev-bg-108.md)');
+
+    writeMockEvidence('ev-bg-108.md', `
+- **eventId**: \`EV-BG-108\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`AVAILABLE\`
+- **historicalLocator**: \`xyz\`
+`);
+
+    const result = evaluateReadiness(testTmpDir, registry, manifest, []);
+    assert.strictEqual(result.counters.TOTAL_PUBLISHED_ARTICLES, 2);
+    
+    // a-article should be NOT_READY
+    const artA = result.articles.find((a: any) => a.subjectId === 'src/content/learning/a-article.md');
+    assert.ok(artA);
+    assert.strictEqual(artA.readinessState, 'NOT_READY');
+
+    // b-article should be READY_UNCLEARED
+    const artB = result.articles.find((a: any) => a.subjectId === 'src/content/learning/b-article.md');
+    assert.ok(artB);
+    assert.strictEqual(artB.readinessState, 'READY_UNCLEARED');
   });
 });

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 import {
   parseFrontmatter,
   getReviewSubject,
@@ -14,9 +15,110 @@ import {
   PROJECT_NAMESPACE_MAP
 } from "./prag_provenance_validator.js";
 
+// Parse an evidence packet file to extract identity fields
+export function parseEvidencePacket(content) {
+  const fields = {};
+  const lines = content.split(/\r?\n/);
+  for (const line of lines) {
+    const match = line.match(/(?:-\s*)?\*\*([a-zA-Z0-9_]+)\*\*:\s*(.*)/);
+    if (match) {
+      const label = match[1];
+      let val = match[2].trim();
+      const backtickMatch = val.match(/^`([^`]*)`$/);
+      if (backtickMatch) {
+        val = backtickMatch[1];
+      }
+      fields[label] = val;
+    }
+  }
+  return fields;
+}
+
+// Check if evidence packet identity fields match registry entry exactly
+export function matchEvidencePacket(evidenceFields, regEntry) {
+  const identityFields = [
+    "eventId",
+    "sourceProject",
+    "sourceSystem",
+    "sourceLocator",
+    "historicalLocatorState",
+    "historicalLocator"
+  ];
+  for (const field of identityFields) {
+    if (!(field in evidenceFields)) {
+      return false; // Lacks a required identity field
+    }
+    let evVal = evidenceFields[field];
+    if (evVal === "null" || evVal === "`null`" || evVal === null) {
+      evVal = null;
+    }
+    let regVal = regEntry[field];
+    if (regVal === undefined) {
+      regVal = null;
+    }
+    if (evVal !== regVal) {
+      return false; // Mismatch
+    }
+  }
+  return true;
+}
+
+// Get tracked and worktree status using git status
+export function getGitStatus(workspaceDir) {
+  if (!fs.existsSync(path.join(workspaceDir, ".git"))) {
+    return {
+      trackedFileStatus: "NOT_VERIFIABLE",
+      worktreeStatus: "NOT_VERIFIABLE"
+    };
+  }
+  try {
+    const output = execSync("git status --porcelain", { cwd: workspaceDir, encoding: "utf-8" });
+    const lines = output.split(/\r?\n/).filter(line => line.trim().length > 0);
+    
+    let hasTrackedChanges = false;
+    let hasUntrackedFiles = false;
+    
+    for (const line of lines) {
+      const status = line.slice(0, 2);
+      if (status === "??" || status === " Y") {
+        // Y = worktree status is untracked (usually ??), check if it's ??
+        if (status.trim() === "??") {
+          hasUntrackedFiles = true;
+        } else {
+          hasTrackedChanges = true;
+        }
+      } else {
+        hasTrackedChanges = true;
+      }
+    }
+    
+    const trackedStatus = hasTrackedChanges ? "DIRTY" : "CLEAN";
+    let worktreeStatus = "CLEAN";
+    if (hasTrackedChanges && hasUntrackedFiles) {
+      worktreeStatus = "DIRTY_MIXED";
+    } else if (hasTrackedChanges) {
+      worktreeStatus = "DIRTY_TRACKED";
+    } else if (hasUntrackedFiles) {
+      worktreeStatus = "DIRTY_UNTRACKED_ONLY";
+    }
+    
+    return {
+      trackedFileStatus: trackedStatus,
+      worktreeStatus: worktreeStatus
+    };
+  } catch (e) {
+    return {
+      trackedFileStatus: "NOT_VERIFIABLE",
+      worktreeStatus: "NOT_VERIFIABLE"
+    };
+  }
+}
+
 // B5 Provenance Readiness Evaluator
 export function evaluateReadiness(workspaceDir, registry, manifest, clearances, namespaceMap = PROJECT_NAMESPACE_MAP) {
   const learningDir = path.join(workspaceDir, "src", "content", "learning");
+  
+  const gitStatus = getGitStatus(workspaceDir);
   
   const defaultResult = {
     counters: {
@@ -36,7 +138,9 @@ export function evaluateReadiness(workspaceDir, registry, manifest, clearances, 
       NOT_READY: 0
     },
     articles: [],
-    m5Preflight: "NOT_READY" // Default safe posture for zero published articles
+    m5Preflight: "NOT_READY", // Default safe posture for zero published articles
+    trackedFileStatus: gitStatus.trackedFileStatus,
+    worktreeStatus: gitStatus.worktreeStatus
   };
 
   if (!fs.existsSync(learningDir)) {
@@ -205,28 +309,29 @@ export function evaluateReadiness(workspaceDir, registry, manifest, clearances, 
 
         // R8: Evidence packet lookup
         // Extract links to stewardship/evidence/*.md
-        const evidenceMatches = review.content.match(/stewardship\/evidence\/[a-zA-Z0-9_-]+\.md/g);
-        if (evidenceMatches && evidenceMatches.length > 0) {
-          // Check files exist and correspond to provenanceRef
-          let allEvidenceValid = true;
-          for (const evRel of evidenceMatches) {
+        const evidenceMatches = review.content.match(/stewardship\/evidence\/[a-zA-Z0-9_-]+\.md/g) || [];
+        const uniqueEvidencePaths = Array.from(new Set(evidenceMatches));
+        
+        let exactMatchesCount = 0;
+        if (uniqueEvidencePaths.length > 0) {
+          for (const evRel of uniqueEvidencePaths) {
             const evPath = path.join(workspaceDir, evRel);
             if (fs.existsSync(evPath)) {
               const evContent = fs.readFileSync(evPath, "utf-8");
-              if (!evContent.includes(provenanceRef)) {
-                allEvidenceValid = false;
+              const evidenceFields = parseEvidencePacket(evContent);
+              if (regEntry && matchEvidencePacket(evidenceFields, regEntry)) {
+                exactMatchesCount++;
               }
-            } else {
-              allEvidenceValid = false;
             }
           }
-          if (allEvidenceValid) {
-            r8 = true;
-          } else {
-            reasons.push("SOURCE_FIDELITY_MISSING");
-          }
+        }
+
+        if (exactMatchesCount === 1) {
+          r8 = true;
+        } else if (exactMatchesCount === 0) {
+          reasons.push("SOURCE_FIDELITY_EVIDENCE_MISSING");
         } else {
-          reasons.push("SOURCE_FIDELITY_MISSING");
+          reasons.push("SOURCE_FIDELITY_EVIDENCE_AMBIGUOUS");
         }
       } else if (matchedReviews.length > 1) {
         reasons.push("MULTIPLE_SOURCE_FIDELITY_REVIEWS");
@@ -298,6 +403,29 @@ export function evaluateReadiness(workspaceDir, registry, manifest, clearances, 
       notReady++;
     }
 
+    // Sort reasons deterministically using natural evaluation sequence order
+    const ORDERED_REASONS = [
+      "MISSING_PROVENANCE_REF",
+      "INVALID_PROVENANCE_REF_SYNTAX",
+      "UNKNOWN_EVENT",
+      "REGISTRY_INVALID",
+      "MANIFEST_INVALID",
+      "SOURCE_FIDELITY_MISSING",
+      "MULTIPLE_SOURCE_FIDELITY_REVIEWS",
+      "SOURCE_FIDELITY_NOT_PASS",
+      "SOURCE_FIDELITY_EVIDENCE_MISSING",
+      "SOURCE_FIDELITY_EVIDENCE_AMBIGUOUS",
+      "RUNTIME_NOT_PASS",
+      "CLEARANCE_INEFFECTIVE"
+    ];
+    reasons.sort((a, b) => {
+      const idxA = ORDERED_REASONS.indexOf(a);
+      const idxB = ORDERED_REASONS.indexOf(b);
+      const posA = idxA === -1 ? ORDERED_REASONS.length : idxA;
+      const posB = idxB === -1 ? ORDERED_REASONS.length : idxB;
+      return posA - posB;
+    });
+
     articles.push({
       subjectType: "learning-article",
       subjectId: repoRelativePath,
@@ -311,6 +439,9 @@ export function evaluateReadiness(workspaceDir, registry, manifest, clearances, 
       reasons
     });
   }
+
+  // Sort articles by subjectId ascending for deterministic report ordering
+  articles.sort((a, b) => a.subjectId.localeCompare(b.subjectId));
 
   const m5Preflight = (totalPublished > 0 && notReady === 0) ? "READY" : "NOT_READY";
 
@@ -332,7 +463,9 @@ export function evaluateReadiness(workspaceDir, registry, manifest, clearances, 
       NOT_READY: notReady
     },
     articles,
-    m5Preflight
+    m5Preflight,
+    trackedFileStatus: gitStatus.trackedFileStatus,
+    worktreeStatus: gitStatus.worktreeStatus
   };
 }
 
@@ -362,6 +495,8 @@ async function runCli() {
   console.log(`READY_BY_CLEARANCE: ${checkResult.counters.READY_BY_CLEARANCE}`);
   console.log(`NOT_READY: ${checkResult.counters.NOT_READY}`);
   console.log(`M5 PREFLIGHT DISPOSITION: ${checkResult.m5Preflight}`);
+  console.log(`TRACKED_FILE_STATUS: ${checkResult.trackedFileStatus}`);
+  console.log(`WORKTREE_STATUS: ${checkResult.worktreeStatus}`);
 }
 
 const currentFile = fileURLToPath(import.meta.url);

@@ -29,5 +29,7 @@
       "reasons": []
     }
   ],
-  "m5Preflight": "READY"
+  "m5Preflight": "READY",
+  "trackedFileStatus": "DIRTY",
+  "worktreeStatus": "DIRTY_MIXED"
 }
