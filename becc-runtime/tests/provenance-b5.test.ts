@@ -17,7 +17,7 @@ const readinessPath = pathToFileURL(path.join(repoRoot, 'tooling', 'prag_provena
 // @ts-ignore
 const { computeExpectedFingerprint } = await import(resolverPath);
 // @ts-ignore
-const { evaluateReadiness } = await import(readinessPath);
+const { evaluateReadiness, parseEvidencePacket, matchEvidencePacket } = await import(readinessPath);
 
 // Helper to write mock content files
 function writeMockArticle(filename: string, frontmatter: string) {
@@ -1148,5 +1148,116 @@ result: "PASS"
     const artB = result.articles.find((a: any) => a.subjectId === 'src/content/learning/b-article.md');
     assert.ok(artB);
     assert.strictEqual(artB.readinessState, 'READY_UNCLEARED');
+  });
+
+  test('B5R-V1-03: Null Test 1 — Canonical null is parsed to JavaScript null and matches', () => {
+    const registryEntry = {
+      eventId: "EV-BG-109",
+      sourceProject: "bridgenta-core",
+      sourceSystem: "git",
+      sourceLocator: "validation/some.js",
+      historicalLocatorState: "UNAVAILABLE",
+      historicalLocator: null
+    };
+
+    const evidenceContent = `
+- **eventId**: \`EV-BG-109\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`UNAVAILABLE\`
+- **historicalLocator**: \`null\`
+`;
+
+    const parsed = parseEvidencePacket(evidenceContent);
+    assert.strictEqual(parsed.historicalLocator, null);
+    
+    const matched = matchEvidencePacket(parsed, registryEntry);
+    assert.strictEqual(matched, true);
+  });
+
+  test('B5R-V1-03: Null Test 2 — Missing field does not match', () => {
+    const registryEntry = {
+      eventId: "EV-BG-109",
+      sourceProject: "bridgenta-core",
+      sourceSystem: "git",
+      sourceLocator: "validation/some.js",
+      historicalLocatorState: "UNAVAILABLE",
+      historicalLocator: null
+    };
+
+    const evidenceContent = `
+- **eventId**: \`EV-BG-109\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`UNAVAILABLE\`
+`;
+
+    const parsed = parseEvidencePacket(evidenceContent);
+    const matched = matchEvidencePacket(parsed, registryEntry);
+    assert.strictEqual(matched, false);
+  });
+
+  test('B5R-V1-03: Null Test 3 — Empty field does not match', () => {
+    const registryEntry = {
+      eventId: "EV-BG-109",
+      sourceProject: "bridgenta-core",
+      sourceSystem: "git",
+      sourceLocator: "validation/some.js",
+      historicalLocatorState: "UNAVAILABLE",
+      historicalLocator: null
+    };
+
+    const evidenceContent = `
+- **eventId**: \`EV-BG-109\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`UNAVAILABLE\`
+- **historicalLocator**:
+`;
+
+    const parsed = parseEvidencePacket(evidenceContent);
+    const matched = matchEvidencePacket(parsed, registryEntry);
+    assert.strictEqual(matched, false);
+  });
+
+  test('B5R-V1-03: Null Test 4 — Quoted string null does not match', () => {
+    const registryEntry = {
+      eventId: "EV-BG-109",
+      sourceProject: "bridgenta-core",
+      sourceSystem: "git",
+      sourceLocator: "validation/some.js",
+      historicalLocatorState: "UNAVAILABLE",
+      historicalLocator: null
+    };
+
+    const evidenceContent = `
+- **eventId**: \`EV-BG-109\`
+- **sourceProject**: \`bridgenta-core\`
+- **sourceSystem**: \`git\`
+- **sourceLocator**: \`validation/some.js\`
+- **historicalLocatorState**: \`UNAVAILABLE\`
+- **historicalLocator**: "null"
+`;
+
+    const parsed = parseEvidencePacket(evidenceContent);
+    assert.strictEqual(parsed.historicalLocator, '"null"');
+    const matched = matchEvidencePacket(parsed, registryEntry);
+    assert.strictEqual(matched, false);
+  });
+
+  test('B5R-V1-03: Field-specific normalization test — conversion is not generic parser-wide coercion', () => {
+    const evidenceContent = `
+- **historicalLocator**: \`null\`
+- **someOtherField**: \`null\`
+`;
+
+    const parsed = parseEvidencePacket(evidenceContent);
+    // historicalLocator must be normalized to JavaScript null
+    assert.strictEqual(parsed.historicalLocator, null);
+    // someOtherField must remain string "null", not gained identity authority or generically coerced
+    assert.strictEqual(parsed.someOtherField, "null");
   });
 });

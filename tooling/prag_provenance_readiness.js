@@ -24,11 +24,19 @@ export function parseEvidencePacket(content) {
     if (match) {
       const label = match[1];
       let val = match[2].trim();
+      let isBackticked = false;
       const backtickMatch = val.match(/^`([^`]*)`$/);
       if (backtickMatch) {
         val = backtickMatch[1];
+        isBackticked = true;
       }
-      fields[label] = val;
+      
+      // Field normalizer: applies field-specific canonical semantics
+      if (label === "historicalLocator" && isBackticked && val === "null") {
+        fields[label] = null;
+      } else {
+        fields[label] = backtickMatch ? val : match[2].trim();
+      }
     }
   }
   return fields;
@@ -48,10 +56,7 @@ export function matchEvidencePacket(evidenceFields, regEntry) {
     if (!(field in evidenceFields)) {
       return false; // Lacks a required identity field
     }
-    let evVal = evidenceFields[field];
-    if (evVal === "null" || evVal === "`null`" || evVal === null) {
-      evVal = null;
-    }
+    const evVal = evidenceFields[field];
     let regVal = regEntry[field];
     if (regVal === undefined) {
       regVal = null;
@@ -68,6 +73,7 @@ export function getGitStatus(workspaceDir) {
   if (!fs.existsSync(path.join(workspaceDir, ".git"))) {
     return {
       trackedFileStatus: "NOT_VERIFIABLE",
+      untrackedFilesPresent: "NOT_VERIFIABLE",
       worktreeStatus: "NOT_VERIFIABLE"
     };
   }
@@ -81,7 +87,6 @@ export function getGitStatus(workspaceDir) {
     for (const line of lines) {
       const status = line.slice(0, 2);
       if (status === "??" || status === " Y") {
-        // Y = worktree status is untracked (usually ??), check if it's ??
         if (status.trim() === "??") {
           hasUntrackedFiles = true;
         } else {
@@ -104,11 +109,13 @@ export function getGitStatus(workspaceDir) {
     
     return {
       trackedFileStatus: trackedStatus,
+      untrackedFilesPresent: hasUntrackedFiles ? "YES" : "NO",
       worktreeStatus: worktreeStatus
     };
   } catch (e) {
     return {
       trackedFileStatus: "NOT_VERIFIABLE",
+      untrackedFilesPresent: "NOT_VERIFIABLE",
       worktreeStatus: "NOT_VERIFIABLE"
     };
   }
@@ -117,8 +124,6 @@ export function getGitStatus(workspaceDir) {
 // B5 Provenance Readiness Evaluator
 export function evaluateReadiness(workspaceDir, registry, manifest, clearances, namespaceMap = PROJECT_NAMESPACE_MAP) {
   const learningDir = path.join(workspaceDir, "src", "content", "learning");
-  
-  const gitStatus = getGitStatus(workspaceDir);
   
   const defaultResult = {
     counters: {
@@ -138,9 +143,7 @@ export function evaluateReadiness(workspaceDir, registry, manifest, clearances, 
       NOT_READY: 0
     },
     articles: [],
-    m5Preflight: "NOT_READY", // Default safe posture for zero published articles
-    trackedFileStatus: gitStatus.trackedFileStatus,
-    worktreeStatus: gitStatus.worktreeStatus
+    m5Preflight: "NOT_READY" // Default safe posture for zero published articles
   };
 
   if (!fs.existsSync(learningDir)) {
@@ -463,9 +466,7 @@ export function evaluateReadiness(workspaceDir, registry, manifest, clearances, 
       NOT_READY: notReady
     },
     articles,
-    m5Preflight,
-    trackedFileStatus: gitStatus.trackedFileStatus,
-    worktreeStatus: gitStatus.worktreeStatus
+    m5Preflight
   };
 }
 
@@ -489,14 +490,17 @@ async function runCli() {
   const reportPath = path.join(reportsDir, "provenance-readiness.json");
   fs.writeFileSync(reportPath, JSON.stringify(checkResult, null, 2) + "\n", "utf-8");
 
+  const gitStatus = getGitStatus(workspaceDir);
+
   console.log(`B5 Provenance Readiness Report generated successfully at: ${reportPath}`);
   console.log(`TOTAL ARTICLES: ${checkResult.counters.TOTAL_PUBLISHED_ARTICLES}`);
   console.log(`READY_UNCLEARED: ${checkResult.counters.READY_UNCLEARED}`);
   console.log(`READY_BY_CLEARANCE: ${checkResult.counters.READY_BY_CLEARANCE}`);
   console.log(`NOT_READY: ${checkResult.counters.NOT_READY}`);
   console.log(`M5 PREFLIGHT DISPOSITION: ${checkResult.m5Preflight}`);
-  console.log(`TRACKED_FILE_STATUS: ${checkResult.trackedFileStatus}`);
-  console.log(`WORKTREE_STATUS: ${checkResult.worktreeStatus}`);
+  console.log(`TRACKED_FILE_STATUS: ${gitStatus.trackedFileStatus}`);
+  console.log(`UNTRACKED_FILES_PRESENT: ${gitStatus.untrackedFilesPresent}`);
+  console.log(`WORKTREE_STATUS: ${gitStatus.worktreeStatus}`);
 }
 
 const currentFile = fileURLToPath(import.meta.url);
