@@ -552,7 +552,8 @@ describe('M5.2 Publication Eligibility Projection', () => {
       };
 
       const dec = evaluateM5Decision(art, {
-        implementationIdentity: "1111111111111111111111111111111111111111"
+        implementationIdentity: "1111111111111111111111111111111111111111",
+        repositoryCommit: "1111111111111111111111111111111111111111"
       });
 
       assert.strictEqual(dec.m5Decision, "WITHHELD");
@@ -705,7 +706,8 @@ describe('M5.2 Publication Eligibility Projection', () => {
         reasons: []
       };
       const dec1 = evaluateM5Decision(art1, {
-        implementationIdentity: "1111111111111111111111111111111111111111"
+        implementationIdentity: "1111111111111111111111111111111111111111",
+        repositoryCommit: "1111111111111111111111111111111111111111"
       });
       assert.strictEqual(dec1.m5Decision, "ELIGIBLE");
       assert.strictEqual(dec1.decisionFinality, "FINAL");
@@ -720,7 +722,8 @@ describe('M5.2 Publication Eligibility Projection', () => {
         clearanceApplied: true
       };
       const dec2 = evaluateM5Decision(art2, {
-        implementationIdentity: "1111111111111111111111111111111111111111"
+        implementationIdentity: "1111111111111111111111111111111111111111",
+        repositoryCommit: "1111111111111111111111111111111111111111"
       });
       assert.strictEqual(dec2.m5Decision, "ELIGIBLE");
       assert.strictEqual(dec2.decisionFinality, "FINAL");
@@ -734,7 +737,8 @@ describe('M5.2 Publication Eligibility Projection', () => {
         reasons: ["RUNTIME_NOT_PASS"]
       };
       const dec3 = evaluateM5Decision(art3, {
-        implementationIdentity: "1111111111111111111111111111111111111111"
+        implementationIdentity: "1111111111111111111111111111111111111111",
+        repositoryCommit: "1111111111111111111111111111111111111111"
       });
       assert.strictEqual(dec3.m5Decision, "WITHHELD");
       assert.strictEqual(dec3.decisionFinality, "FINAL");

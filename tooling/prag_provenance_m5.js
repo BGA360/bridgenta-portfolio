@@ -26,16 +26,21 @@ export function evaluateM5Decision(articleReadiness, options = {}) {
   const policyVersion = options.policyVersion || "M5-POLICY-1.0";
   const evaluatorVersion = options.evaluatorVersion || "M5-EVALUATOR-1.0";
   const implementationIdentity = options.implementationIdentity;
+  const implementationIdentityScheme = options.implementationIdentityScheme || "M5-SOURCE-HASH-1";
+  const repositoryCommit = options.repositoryCommit;
 
   if (!implementationIdentity) {
     throw new Error("Missing implementationIdentity.");
+  }
+  if (!repositoryCommit) {
+    throw new Error("Missing repositoryCommit.");
   }
 
   const decisionRecord = {
     subjectType: articleReadiness.subjectType || "learning-article",
     subjectId: articleReadiness.subjectId || null,
     provenanceRef: articleReadiness.provenanceRef || null,
-    repositoryCommit: options.repositoryCommit || implementationIdentity,
+    repositoryCommit: repositoryCommit,
     b5ReadinessState: articleReadiness.readinessState || null,
     m5Decision: "NOT_EVALUATED",
     b5ReasonCodes: articleReadiness.reasons ? [...articleReadiness.reasons] : [],
@@ -43,6 +48,7 @@ export function evaluateM5Decision(articleReadiness, options = {}) {
     policyVersion,
     evaluatorVersion,
     implementationIdentity,
+    implementationIdentityScheme,
     decisionFinality: "FINAL"
   };
 
@@ -84,6 +90,8 @@ export function mapSystemFailure(articleReadiness, failureClass, options = {}) {
   const policyVersion = options.policyVersion || "M5-POLICY-1.0";
   const evaluatorVersion = options.evaluatorVersion || "M5-EVALUATOR-1.0";
   const implementationIdentity = options.implementationIdentity || null;
+  const implementationIdentityScheme = options.implementationIdentityScheme || "M5-SOURCE-HASH-1";
+  const repositoryCommit = options.repositoryCommit || null;
 
   if (!implementationIdentity) {
     if (failureClass !== "M5_INPUT_STATE_UNVERIFIABLE") {
@@ -100,7 +108,7 @@ export function mapSystemFailure(articleReadiness, failureClass, options = {}) {
     subjectType: articleReadiness ? (articleReadiness.subjectType || "learning-article") : "learning-article",
     subjectId: articleReadiness ? (articleReadiness.subjectId || null) : null,
     provenanceRef: articleReadiness ? (articleReadiness.provenanceRef || null) : null,
-    repositoryCommit: options.repositoryCommit || implementationIdentity,
+    repositoryCommit: repositoryCommit,
     b5ReadinessState: articleReadiness ? (articleReadiness.readinessState || null) : null,
     m5Decision: "SYSTEM_UNAVAILABLE",
     b5ReasonCodes: articleReadiness && articleReadiness.reasons ? [...articleReadiness.reasons] : [],
@@ -108,6 +116,7 @@ export function mapSystemFailure(articleReadiness, failureClass, options = {}) {
     policyVersion,
     evaluatorVersion,
     implementationIdentity,
+    implementationIdentityScheme,
     decisionFinality: implementationIdentity ? "FINAL" : "NON_FINALIZABLE"
   };
 
@@ -236,6 +245,7 @@ export function serializeDecisionRecord(decisionRecord) {
     policyVersion: decisionRecord.policyVersion,
     evaluatorVersion: decisionRecord.evaluatorVersion,
     implementationIdentity: decisionRecord.implementationIdentity,
+    implementationIdentityScheme: decisionRecord.implementationIdentityScheme !== undefined ? decisionRecord.implementationIdentityScheme : null,
     decisionFinality: finality
   };
 

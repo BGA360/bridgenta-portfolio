@@ -4,6 +4,7 @@ export function buildPublicationProjection({ expectedSubjects, m5DecisionRecords
   const policyVersion = options.policyVersion || "M5-POLICY-1.0";
   const evaluatorVersion = options.evaluatorVersion || "M5-EVALUATOR-1.0";
   const implementationIdentity = options.implementationIdentity || null;
+  const implementationIdentityScheme = options.implementationIdentityScheme || (implementationIdentity ? "M5-SOURCE-HASH-1" : null);
   const identityState = options.identityState || (implementationIdentity ? "RESOLVED" : "UNAVAILABLE");
 
   if (identityState === "RESOLVED") {
@@ -53,7 +54,8 @@ export function buildPublicationProjection({ expectedSubjects, m5DecisionRecords
       projectionDiagnostics: [],
       policyVersion,
       evaluatorVersion,
-      implementationIdentity
+      implementationIdentity,
+      implementationIdentityScheme
     };
 
     if (count === 0) {

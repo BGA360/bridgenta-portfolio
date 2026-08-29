@@ -2,7 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { parseFrontmatter } from "./prag_provenance_resolver.js";
-import { resolveImplementationIdentity } from "./prag_provenance_identity.js";
+import {
+  resolveRepositoryCommit,
+  computeM5ImplementationIdentity
+} from "./prag_provenance_identity.js";
 import { evaluateReadiness } from "./prag_provenance_readiness.js";
 import {
   evaluateM5Decision,
@@ -48,13 +51,14 @@ export function evaluateShadowObservation(workspaceRoot) {
   const articles = getExpectedPublishedArticles(workspaceRoot);
   const expectedSubjects = articles.map(art => `src/content/learning/${art.id}`).sort();
 
-  const identityRes = resolveImplementationIdentity();
-  const commitSha = identityRes.identity;
+  const repoCommitRes = resolveRepositoryCommit(workspaceRoot);
+  const evalIdentityRes = computeM5ImplementationIdentity(workspaceRoot);
+
+  const commitSha = repoCommitRes.commit;
+  const implementationIdentity = evalIdentityRes.identity;
+  const implementationIdentityScheme = "M5-SOURCE-HASH-1";
 
   let m5Decisions = [];
-  let globalDiagnostics = [];
-  let shadowGateResult = "SHADOW_PASS";
-
   const registryPath = path.join(workspaceRoot, "src", "data", "provenance_registry.json");
   const manifestPath = path.join(workspaceRoot, "src", "data", "local_integrity_manifest.json");
   const clearancesPath = path.join(workspaceRoot, "stewardship", "reviews", "clearances_manifest.json");
@@ -64,7 +68,7 @@ export function evaluateShadowObservation(workspaceRoot) {
   let clearances = [];
   let systemErrorClass = null;
 
-  if (identityRes.state === "UNAVAILABLE") {
+  if (evalIdentityRes.state === "UNAVAILABLE") {
     systemErrorClass = "M5_INPUT_STATE_UNVERIFIABLE";
   } else {
     try {
@@ -92,14 +96,20 @@ export function evaluateShadowObservation(workspaceRoot) {
         subjectId: subjId,
         readinessState: null,
         reasons: []
-      }, systemErrorClass, { implementationIdentity: commitSha }));
+      }, systemErrorClass, {
+        implementationIdentity,
+        implementationIdentityScheme,
+        repositoryCommit: commitSha
+      }));
     }
   } else {
     try {
       const b5Result = evaluateReadiness(workspaceRoot, registry, manifest, clearances);
       for (const b5Art of b5Result.articles) {
         const dec = evaluateM5Decision(b5Art, {
-          implementationIdentity: commitSha
+          implementationIdentity,
+          implementationIdentityScheme,
+          repositoryCommit: commitSha
         });
         m5Decisions.push(dec);
       }
@@ -109,12 +119,24 @@ export function evaluateShadowObservation(workspaceRoot) {
           subjectId: subjId,
           readinessState: null,
           reasons: []
-        }, "M5_EVALUATION_ERROR", { implementationIdentity: commitSha }));
+        }, "M5_EVALUATION_ERROR", {
+          implementationIdentity,
+          implementationIdentityScheme,
+          repositoryCommit: commitSha
+        }));
       }
     }
   }
 
-  return computeShadowObservationPayload(expectedSubjects, m5Decisions, commitSha, identityRes.state);
+  const identityInfo = {
+    repositoryCommit: commitSha,
+    repositoryCommitState: repoCommitRes.state,
+    implementationIdentity,
+    implementationIdentityState: evalIdentityRes.state,
+    implementationIdentityScheme
+  };
+
+  return computeShadowObservationPayload(expectedSubjects, m5Decisions, identityInfo);
 }
 
 /**
@@ -122,11 +144,25 @@ export function evaluateShadowObservation(workspaceRoot) {
  * Useful for framework-independent execution and unit testing diagnostics/failures.
  * @param {string[]} expectedSubjects 
  * @param {any[]} m5Decisions 
- * @param {string|null} commitSha 
- * @param {string} identityState 
+ * @param {any} identityInfoOrCommitSha 
+ * @param {string} [identityState] 
  * @returns {{ observation: any, observationHash: string }}
  */
-export function computeShadowObservationPayload(expectedSubjects, m5Decisions, commitSha, identityState) {
+export function computeShadowObservationPayload(expectedSubjects, m5Decisions, identityInfoOrCommitSha, identityState) {
+  let identityInfo;
+  if (identityInfoOrCommitSha && typeof identityInfoOrCommitSha === "object" && !Array.isArray(identityInfoOrCommitSha)) {
+    identityInfo = identityInfoOrCommitSha;
+  } else {
+    // Legacy positional arguments fallback
+    identityInfo = {
+      repositoryCommit: identityInfoOrCommitSha || null,
+      repositoryCommitState: identityInfoOrCommitSha ? "RESOLVED" : "UNAVAILABLE",
+      implementationIdentity: identityInfoOrCommitSha || null,
+      implementationIdentityState: identityState || (identityInfoOrCommitSha ? "RESOLVED" : "UNAVAILABLE"),
+      implementationIdentityScheme: identityInfoOrCommitSha ? "M5-SOURCE-HASH-1" : null
+    };
+  }
+
   // Ensure decisions are ordered by subjectId ascending
   m5Decisions.sort((a, b) => a.subjectId.localeCompare(b.subjectId));
 
@@ -135,8 +171,9 @@ export function computeShadowObservationPayload(expectedSubjects, m5Decisions, c
     expectedSubjects,
     m5DecisionRecords: m5Decisions,
     options: {
-      implementationIdentity: commitSha || null,
-      identityState: identityState
+      implementationIdentity: identityInfo.implementationIdentity,
+      implementationIdentityScheme: identityInfo.implementationIdentityScheme,
+      identityState: identityInfo.implementationIdentityState
     }
   });
   const projectionHash = computeProjectionHash(projection);
@@ -213,6 +250,7 @@ export function computeShadowObservationPayload(expectedSubjects, m5Decisions, c
   let hasMixedPolicy = false;
   let hasMixedEvaluator = false;
   let hasMixedImplementation = false;
+  let hasMixedScheme = false;
   let hasMixedCommit = false;
 
   if (m5Decisions.length > 0) {
@@ -221,6 +259,7 @@ export function computeShadowObservationPayload(expectedSubjects, m5Decisions, c
       if (dec.policyVersion !== firstDec.policyVersion) hasMixedPolicy = true;
       if (dec.evaluatorVersion !== firstDec.evaluatorVersion) hasMixedEvaluator = true;
       if (dec.implementationIdentity !== firstDec.implementationIdentity) hasMixedImplementation = true;
+      if (dec.implementationIdentityScheme !== firstDec.implementationIdentityScheme) hasMixedScheme = true;
       if (dec.repositoryCommit !== firstDec.repositoryCommit) hasMixedCommit = true;
     }
   }
@@ -273,8 +312,9 @@ export function computeShadowObservationPayload(expectedSubjects, m5Decisions, c
 
   const finalPolicyVersion = (hasMixedPolicy || m5Decisions.length === 0) ? "M5-POLICY-1.0" : m5Decisions[0].policyVersion;
   const finalEvaluatorVersion = (hasMixedEvaluator || m5Decisions.length === 0) ? "M5-EVALUATOR-1.0" : m5Decisions[0].evaluatorVersion;
-  const finalImplementationIdentity = hasMixedImplementation ? null : (commitSha || null);
-  const finalRepositoryCommit = hasMixedCommit ? null : (commitSha || null);
+  const finalImplementationIdentity = hasMixedImplementation ? null : identityInfo.implementationIdentity;
+  const finalImplementationIdentityScheme = hasMixedScheme ? null : identityInfo.implementationIdentityScheme;
+  const finalRepositoryCommit = hasMixedCommit ? null : identityInfo.repositoryCommit;
 
   const payload = {
     schemaVersion: "M5-OBSERVATION-1.0",
@@ -282,6 +322,7 @@ export function computeShadowObservationPayload(expectedSubjects, m5Decisions, c
     policyVersion: finalPolicyVersion,
     evaluatorVersion: finalEvaluatorVersion,
     implementationIdentity: finalImplementationIdentity,
+    implementationIdentityScheme: finalImplementationIdentityScheme,
     observationMode: "SHADOW",
     shadowGateResult,
     subjectCount,

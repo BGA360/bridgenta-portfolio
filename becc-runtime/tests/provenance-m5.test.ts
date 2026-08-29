@@ -43,7 +43,7 @@ describe('M5.1 Decision Model & Security Boundary', () => {
       reasons: ['MISSING_PROVENANCE_REF']
     };
 
-    const record = evaluateM5Decision(mockB5Input, { implementationIdentity: 'mock-commit-sha' });
+    const record = evaluateM5Decision(mockB5Input, { implementationIdentity: 'mock-commit-sha', repositoryCommit: 'mock-commit-sha' });
     assert.strictEqual(record.m5Decision, 'NOT_EVALUATED');
     assert.ok(record.m5ReasonCodes.includes('M5_CONFIGURATION_INVALID'));
     assert.strictEqual(record.m5ReasonCodes.length, 1);
@@ -63,7 +63,7 @@ describe('M5.1 Decision Model & Security Boundary', () => {
       reasons: []
     };
 
-    const record = evaluateM5Decision(mockB5Input, { implementationIdentity: 'mock-commit-sha' });
+    const record = evaluateM5Decision(mockB5Input, { implementationIdentity: 'mock-commit-sha', repositoryCommit: 'mock-commit-sha' });
     assert.strictEqual(record.m5Decision, 'ELIGIBLE');
     assert.strictEqual(record.m5ReasonCodes.length, 0);
   });
@@ -78,7 +78,7 @@ describe('M5.1 Decision Model & Security Boundary', () => {
       clearanceApplied: true
     };
 
-    const record = evaluateM5Decision(mockB5Input, { implementationIdentity: 'mock-commit-sha' });
+    const record = evaluateM5Decision(mockB5Input, { implementationIdentity: 'mock-commit-sha', repositoryCommit: 'mock-commit-sha' });
     assert.strictEqual(record.m5Decision, 'ELIGIBLE');
     assert.strictEqual(record.clearanceApplied, true);
   });
@@ -92,7 +92,7 @@ describe('M5.1 Decision Model & Security Boundary', () => {
       reasons: ['MISSING_PROVENANCE_REF']
     };
 
-    const record = evaluateM5Decision(mockB5Input, { implementationIdentity: 'mock-commit-sha' });
+    const record = evaluateM5Decision(mockB5Input, { implementationIdentity: 'mock-commit-sha', repositoryCommit: 'mock-commit-sha' });
     assert.strictEqual(record.m5Decision, 'WITHHELD');
     assert.ok(record.b5ReasonCodes.includes('MISSING_PROVENANCE_REF'));
   });
@@ -109,6 +109,7 @@ describe('M5.1 Decision Model & Security Boundary', () => {
 
     const record = evaluateM5Decision(mockB5Input, {
       implementationIdentity: 'mock-commit-sha',
+      repositoryCommit: 'mock-commit-sha',
       isHistoricalReplay: true,
       policyVersion: 'M5-POLICY-OLD',
       evaluatorVersion: 'M5-EVALUATOR-OLD'
@@ -130,6 +131,7 @@ describe('M5.1 Decision Model & Security Boundary', () => {
 
     const record = evaluateM5Decision(mockB5Input, {
       implementationIdentity: 'mock-commit-sha',
+      repositoryCommit: 'mock-commit-sha',
       isHistoricalReplay: true,
       policyVersion: 'M5-POLICY-1.0',
       evaluatorVersion: 'M5-EVALUATOR-1.0'

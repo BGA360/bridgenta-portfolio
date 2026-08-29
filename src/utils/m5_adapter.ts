@@ -5,7 +5,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 
-import { resolveImplementationIdentity } from '../../tooling/prag_provenance_identity.js';
+import {
+  resolveRepositoryCommit,
+  computeM5ImplementationIdentity,
+  resolveImplementationIdentity
+} from '../../tooling/prag_provenance_identity.js';
 export { resolveImplementationIdentity };
 
 export function getM5Projection(articles: any[], options: { workspaceDir?: string } = {}) {
@@ -21,19 +25,27 @@ export function getM5Projection(articles: any[], options: { workspaceDir?: strin
   const expectedSubjects = publishedArticles.map(art => `src/content/learning/${art.id}`);
 
   let m5Decisions = [];
-  const identityRes = resolveImplementationIdentity();
+  const repoCommitRes = resolveRepositoryCommit(workspaceRoot);
+  const evalIdentityRes = computeM5ImplementationIdentity(workspaceRoot);
 
-  if (identityRes.state === 'UNAVAILABLE') {
+  const commitSha = repoCommitRes.commit;
+  const implementationIdentity = evalIdentityRes.identity;
+  const implementationIdentityScheme = 'M5-SOURCE-HASH-1';
+
+  if (evalIdentityRes.state === 'UNAVAILABLE') {
     // Identity unavailable -> produce SYSTEM_UNAVAILABLE with null readiness and null identity
     for (const subjId of expectedSubjects) {
       m5Decisions.push(mapSystemFailure({
         subjectId: subjId,
         readinessState: null,
         reasons: []
-      }, 'M5_INPUT_STATE_UNVERIFIABLE', { implementationIdentity: null }));
+      }, 'M5_INPUT_STATE_UNVERIFIABLE', {
+        implementationIdentity: null,
+        implementationIdentityScheme,
+        repositoryCommit: commitSha
+      }));
     }
   } else {
-    const commitSha = identityRes.identity;
     const registryPath = path.join(workspaceRoot, 'src', 'data', 'provenance_registry.json');
     const manifestPath = path.join(workspaceRoot, 'src', 'data', 'local_integrity_manifest.json');
     const clearancesPath = path.join(workspaceRoot, 'stewardship', 'reviews', 'clearances_manifest.json');
@@ -69,14 +81,20 @@ export function getM5Projection(articles: any[], options: { workspaceDir?: strin
           subjectId: subjId,
           readinessState: null,
           reasons: []
-        }, systemErrorClass, { implementationIdentity: commitSha }));
+        }, systemErrorClass, {
+          implementationIdentity,
+          implementationIdentityScheme,
+          repositoryCommit: commitSha
+        }));
       }
     } else {
       try {
         const b5Result = evaluateReadiness(workspaceRoot, registry, manifest, clearances);
         for (const b5Art of b5Result.articles) {
           const dec = evaluateM5Decision(b5Art, {
-            implementationIdentity: commitSha
+            implementationIdentity,
+            implementationIdentityScheme,
+            repositoryCommit: commitSha
           });
           m5Decisions.push(dec);
         }
@@ -87,7 +105,11 @@ export function getM5Projection(articles: any[], options: { workspaceDir?: strin
             subjectId: subjId,
             readinessState: null,
             reasons: []
-          }, 'M5_EVALUATION_ERROR', { implementationIdentity: commitSha }));
+          }, 'M5_EVALUATION_ERROR', {
+            implementationIdentity,
+            implementationIdentityScheme,
+            repositoryCommit: commitSha
+          }));
         }
       }
     }
@@ -97,8 +119,9 @@ export function getM5Projection(articles: any[], options: { workspaceDir?: strin
     expectedSubjects,
     m5DecisionRecords: m5Decisions,
     options: {
-      implementationIdentity: identityRes.identity,
-      identityState: identityRes.state
+      implementationIdentity,
+      implementationIdentityScheme,
+      identityState: evalIdentityRes.state
     }
   });
 

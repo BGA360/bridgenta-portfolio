@@ -2,7 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { resolveImplementationIdentity } from "./prag_provenance_identity.js";
+import {
+  resolveRepositoryCommit,
+  computeM5ImplementationIdentity
+} from "./prag_provenance_identity.js";
 
 /**
  * Structural and cryptographic validation of a shadow observation report.
@@ -23,6 +26,7 @@ export function validateObservationReport(report) {
     policyVersion,
     evaluatorVersion,
     implementationIdentity,
+    implementationIdentityScheme,
     observationMode,
     schemaVersion
   } = observation;
@@ -57,18 +61,22 @@ export function validateObservationReport(report) {
   }
 
   payloadToHash.observationHash = targetHash;
+  if (implementationIdentityScheme !== undefined) {
+    payloadToHash.implementationIdentityScheme = implementationIdentityScheme;
+  }
   return { valid: true, observation: payloadToHash, hash: targetHash };
 }
 
 /**
- * Groups observations by stability segment (same policy, evaluator, and implementation identity).
+ * Groups observations by stability segment (same policy, evaluator, scheme, and implementation identity).
  * @param {any[]} observations 
  * @returns {any[]}
  */
 export function buildStabilitySegments(observations) {
   const segmentsMap = new Map();
   for (const obs of observations) {
-    const segKey = `${obs.policyVersion}_${obs.evaluatorVersion}_${obs.implementationIdentity}`;
+    const scheme = obs.implementationIdentityScheme || "LEGACY_UNDECLARED";
+    const segKey = `${obs.policyVersion}|${obs.evaluatorVersion}|${scheme}|${obs.implementationIdentity}`;
     if (!segmentsMap.has(segKey)) {
       segmentsMap.set(segKey, []);
     }
@@ -78,13 +86,14 @@ export function buildStabilitySegments(observations) {
   const stabilitySegments = [];
   for (const [segKey, obsList] of segmentsMap.entries()) {
     const uniqueCommits = Array.from(new Set(obsList.map(o => o.repositoryCommit))).sort();
-    const [policy, evaluator, identity] = segKey.split("_");
+    const [policy, evaluator, scheme, identity] = segKey.split("|");
     
     obsList.sort((a, b) => a.observationHash.localeCompare(b.observationHash));
 
     stabilitySegments.push({
       policyVersion: policy,
       evaluatorVersion: evaluator,
+      implementationIdentityScheme: scheme,
       implementationIdentity: identity === "null" ? null : identity,
       observationCount: obsList.length,
       uniqueRepositorySnapshots: uniqueCommits.length,
@@ -98,6 +107,8 @@ export function buildStabilitySegments(observations) {
     if (cmp !== 0) return cmp;
     cmp = a.evaluatorVersion.localeCompare(b.evaluatorVersion);
     if (cmp !== 0) return cmp;
+    cmp = a.implementationIdentityScheme.localeCompare(b.implementationIdentityScheme);
+    if (cmp !== 0) return cmp;
     return (a.implementationIdentity || "").localeCompare(b.implementationIdentity || "");
   });
 
@@ -107,7 +118,7 @@ export function buildStabilitySegments(observations) {
 /**
  * Performs readiness assessment based on candidate identity and ingested observations.
  * @param {any[]} observations 
- * @param {{ policyVersion: string, evaluatorVersion: string, implementationIdentity: string|null }} candidateInfo 
+ * @param {{ policyVersion: string, evaluatorVersion: string, implementationIdentityScheme: string, implementationIdentity: string|null, currentRepositoryCommit?: string|null }} candidateInfo 
  * @param {string} workspaceRoot 
  * @param {any} policyOptions 
  * @returns {any}
@@ -118,7 +129,12 @@ export function evaluateEnforcementReadiness(observations, candidateInfo, worksp
   const systemUnavailableRateThreshold = policyOptions.systemUnavailableRateThreshold || 0;
   const notEvaluatedRateThreshold = policyOptions.notEvaluatedRateThreshold || 0;
 
-  const { policyVersion: candidatePolicy, evaluatorVersion: candidateEvaluator, implementationIdentity: candidateIdentity } = candidateInfo;
+  const {
+    policyVersion: candidatePolicy,
+    evaluatorVersion: candidateEvaluator,
+    implementationIdentityScheme: candidateScheme,
+    implementationIdentity: candidateIdentity
+  } = candidateInfo;
 
   const stabilitySegments = buildStabilitySegments(observations);
 
@@ -133,6 +149,7 @@ export function evaluateEnforcementReadiness(observations, candidateInfo, worksp
   const candidateObsList = uniqueObservations.filter(obs => 
     obs.policyVersion === candidatePolicy &&
     obs.evaluatorVersion === candidateEvaluator &&
+    (obs.implementationIdentityScheme || "LEGACY_UNDECLARED") === candidateScheme &&
     obs.implementationIdentity === candidateIdentity
   );
 
@@ -160,10 +177,11 @@ export function evaluateEnforcementReadiness(observations, candidateInfo, worksp
   const warnings = [];
   const blockingReasons = [];
 
-  // Determinism check (on all observations with same commit, versions, identity)
+  // Determinism check (on all observations with same commit, versions, scheme, identity)
   const determinismMap = new Map();
   for (const obs of uniqueObservations) {
-    const key = `${obs.repositoryCommit}_${obs.policyVersion}_${obs.evaluatorVersion}_${obs.implementationIdentity}`;
+    const scheme = obs.implementationIdentityScheme || "LEGACY_UNDECLARED";
+    const key = `${obs.repositoryCommit}|${obs.policyVersion}|${obs.evaluatorVersion}|${scheme}|${obs.implementationIdentity}`;
     if (!determinismMap.has(key)) {
       determinismMap.set(key, new Set());
     }
@@ -187,12 +205,11 @@ export function evaluateEnforcementReadiness(observations, candidateInfo, worksp
   // False positive / unresolved cases analysis
   const unresolvedCases = [];
   const falsePositiveCases = [];
-  const falseNegativeCases = []; // none by default unless marked
+  const falseNegativeCases = [];
 
   for (const obs of candidateObsList) {
     for (const art of obs.articleResults || []) {
       if (art.publicationEligibility === "PUBLICATION_WITHHELD") {
-        // Scan reviews to check if resolved
         const reviewsDir = path.join(workspaceRoot, "stewardship", "reviews");
         let hasReview = false;
         if (fs.existsSync(reviewsDir)) {
@@ -270,6 +287,7 @@ export function evaluateEnforcementReadiness(observations, candidateInfo, worksp
       systemUnavailableRateThreshold,
       notEvaluatedRateThreshold
     },
+    currentRepositoryCommit: candidateInfo.currentRepositoryCommit || null,
     eligibleObservationCount,
     requiredObservationCount,
     shadowPassCount,
@@ -351,12 +369,18 @@ function main() {
     const workspaceRoot = process.cwd();
     const reportsDir = path.join(workspaceRoot, "stewardship", "reports");
 
-    const candidateIdentityRes = resolveImplementationIdentity();
-    const candidateIdentity = candidateIdentityRes.identity || null;
+    const repoCommitRes = resolveRepositoryCommit(workspaceRoot);
+    const evalIdentityRes = computeM5ImplementationIdentity(workspaceRoot);
+
+    const candidateIdentity = evalIdentityRes.identity || null;
+    const currentRepositoryCommit = repoCommitRes.commit || null;
+
     const candidateInfo = {
       policyVersion: "M5-POLICY-1.0",
       evaluatorVersion: "M5-EVALUATOR-1.0",
-      implementationIdentity: candidateIdentity
+      implementationIdentityScheme: "M5-SOURCE-HASH-1",
+      implementationIdentity: candidateIdentity,
+      currentRepositoryCommit
     };
 
     const ingestedReports = [];
@@ -440,6 +464,7 @@ function main() {
     console.log(`Candidate Policy:       ${candidateInfo.policyVersion}`);
     console.log(`Candidate Evaluator:    ${candidateInfo.evaluatorVersion}`);
     console.log(`Candidate Identity:     ${candidateInfo.implementationIdentity}`);
+    console.log(`Current commit:         ${candidateInfo.currentRepositoryCommit}`);
     console.log(`Eligible observations:  ${assessment.eligibleObservationCount} / ${assessment.requiredObservationCount} required`);
     console.log(`Unique snapshots:       ${assessment.sourceRepositoryCommits.length} / ${assessment.windowPolicy.requiredUniqueRepositorySnapshots} required`);
     console.log(`Determinism:            ${assessment.determinismFailures.length === 0 ? "PASS" : "FAIL"}`);

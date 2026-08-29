@@ -32,6 +32,7 @@ describe('M5.4 Enforcement Readiness Assessment', () => {
   const candidateInfo = {
     policyVersion: "M5-POLICY-1.0",
     evaluatorVersion: "M5-EVALUATOR-1.0",
+    implementationIdentityScheme: "M5-SOURCE-HASH-1",
     implementationIdentity: "e2b2203ceb8373abadcebf1784efadda67e438a8"
   };
 
@@ -41,6 +42,7 @@ describe('M5.4 Enforcement Readiness Assessment', () => {
     policyVersion: "M5-POLICY-1.0",
     evaluatorVersion: "M5-EVALUATOR-1.0",
     implementationIdentity: "e2b2203ceb8373abadcebf1784efadda67e438a8",
+    implementationIdentityScheme: "M5-SOURCE-HASH-1",
     observationMode: "SHADOW",
     shadowGateResult: "SHADOW_PASS",
     subjectCount: 1,
