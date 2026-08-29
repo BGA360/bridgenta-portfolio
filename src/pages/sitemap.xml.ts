@@ -2,6 +2,8 @@ import { getCollection } from 'astro:content';
 
 import type { APIContext } from 'astro';
 
+import { observeArticleEligibility, observeCategoryEligibility } from '../utils/m5_adapter';
+
 export async function GET(context: APIContext) {
   const projects = await getCollection('projects');
   const siteUrl = context.site ? context.site.origin : 'https://bridgenta.de';
@@ -23,14 +25,17 @@ export async function GET(context: APIContext) {
   // Fetch learning data dynamically
   const categories = await getCollection('learningCategories');
   const articles = await getCollection('learning');
-  const publishedArticles = articles.filter(
+  const observedArticles = observeArticleEligibility(articles);
+  const publishedArticles = observedArticles.filter(
     (art) => art.data.publicationState === 'published'
   );
+
+  const observedCategories = observeCategoryEligibility(categories, publishedArticles);
 
   const learningPages: string[] = [];
   if (publishedArticles.length > 0) {
     learningPages.push('/lernen/');
-    const activeCategories = categories.filter((cat) =>
+    const activeCategories = observedCategories.filter((cat) =>
       publishedArticles.some((art) => art.data.category.id === cat.id)
     );
     for (const cat of activeCategories) {

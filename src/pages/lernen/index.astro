@@ -3,14 +3,19 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 
+import { observeArticleEligibility, observeCategoryEligibility } from '../../utils/m5_adapter';
+
 // Fetch categories dynamically
 const categories = await getCollection('learningCategories');
 
 // Fetch learning articles dynamically, filter to only published
 const articles = await getCollection('learning');
-const publishedArticles = articles.filter(
+const observedArticles = observeArticleEligibility(articles);
+const publishedArticles = observedArticles.filter(
   (art) => art.data.publicationState === 'published'
 );
+
+const observedCategories = observeCategoryEligibility(categories, publishedArticles);
 
 // Group articles by category
 const articlesByCategory = new Map();
@@ -48,7 +53,7 @@ const learningBreadcrumbs = [
     </header>
 
     <section class="learning-grid">
-      {categories.map((cat) => {
+      {observedCategories.map((cat) => {
         const catArticles = articlesByCategory.get(cat.id) || [];
         const count = catArticles.length;
         return (
