@@ -26,7 +26,7 @@ const { buildPublicationProjection, serializeProjection, computeProjectionHash }
 const { getM5Projection, getShadowPublicationView, resolveImplementationIdentity } = await import(adapterModulePath);
 const ciShadowPath = pathToFileURL(path.join(repoRoot, 'tooling', 'prag_provenance_ci_shadow.js')).href;
 // @ts-ignore
-const { evaluateShadowObservation, shadowResultToExitCode } = await import(ciShadowPath);
+const { evaluateShadowObservation, shadowResultToExitCode, computeShadowObservationPayload } = await import(ciShadowPath);
 
 
 describe('M5.2 Publication Eligibility Projection', () => {
@@ -866,15 +866,86 @@ provenanceRef: "EV-BG-105"
     });
 
     test('SHADOW_NOT_EVALUATED on DECISION_MISSING, DECISION_DUPLICATE, or mixed versions', () => {
-      // 1. DECISION_MISSING: Expected subject with no matching decision record.
-      // We can test this by running evaluateShadowObservation when registry is empty.
-      // Wait, in evaluateShadowObservation, if registry is empty, the readiness evaluator
-      // returns the subject as NOT_READY which maps to WITHHELD.
-      // To simulate DECISION_MISSING, let's verify that a projection containing DECISION_MISSING
-      // yields SHADOW_NOT_EVALUATED. Since evaluateShadowObservation builds projection from decisions,
-      // let's verify it maps correctly.
-      
-      // Let's test exit codes
+      const baseDec = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art1.md",
+        provenanceRef: "EV-BG-105",
+        repositoryCommit: "1111111111111111111111111111111111111111",
+        b5ReadinessState: "READY_UNCLEARED",
+        m5Decision: "ELIGIBLE",
+        b5ReasonCodes: [],
+        m5ReasonCodes: [],
+        policyVersion: "M5-POLICY-1.0",
+        evaluatorVersion: "M5-EVALUATOR-1.0",
+        implementationIdentity: "1111111111111111111111111111111111111111",
+        decisionFinality: "FINAL"
+      };
+
+      // 1. DECISION_MISSING
+      const resMissing = computeShadowObservationPayload(
+        ["src/content/learning/art1.md"],
+        [],
+        "1111111111111111111111111111111111111111",
+        "RESOLVED"
+      );
+      assert.strictEqual(resMissing.observation.shadowGateResult, "SHADOW_NOT_EVALUATED");
+      assert.ok(resMissing.observation.globalDiagnostics.includes("DECISION_MISSING"));
+      assert.ok(!resMissing.observation.globalDiagnostics.includes(undefined));
+      assert.ok(!resMissing.observation.globalDiagnostics.includes(null));
+
+      // 2. DECISION_DUPLICATE
+      const resDup = computeShadowObservationPayload(
+        ["src/content/learning/art1.md"],
+        [
+          { ...baseDec, m5Decision: "ELIGIBLE" },
+          { ...baseDec, m5Decision: "WITHHELD" }
+        ],
+        "1111111111111111111111111111111111111111",
+        "RESOLVED"
+      );
+      assert.strictEqual(resDup.observation.shadowGateResult, "SHADOW_NOT_EVALUATED");
+      assert.ok(resDup.observation.globalDiagnostics.includes("DECISION_DUPLICATE"));
+      assert.ok(!resDup.observation.globalDiagnostics.includes(undefined));
+
+      // 3. PROJECTION_CONFIGURATION_INVALID
+      const resInvalid = computeShadowObservationPayload(
+        ["src/content/learning/art1.md"],
+        [
+          { ...baseDec, m5Decision: "INVALID_STATE_CODE" }
+        ],
+        "1111111111111111111111111111111111111111",
+        "RESOLVED"
+      );
+      assert.strictEqual(resInvalid.observation.shadowGateResult, "SHADOW_NOT_EVALUATED");
+      assert.ok(resInvalid.observation.globalDiagnostics.includes("PROJECTION_CONFIGURATION_INVALID"));
+
+      // 4. MIXED_POLICY_VERSION
+      const resPolicy = computeShadowObservationPayload(
+        ["src/content/learning/art1.md", "src/content/learning/art2.md"],
+        [
+          { ...baseDec, subjectId: "src/content/learning/art1.md", policyVersion: "M5-POLICY-1.0" },
+          { ...baseDec, subjectId: "src/content/learning/art2.md", policyVersion: "M5-POLICY-2.0" }
+        ],
+        "1111111111111111111111111111111111111111",
+        "RESOLVED"
+      );
+      assert.strictEqual(resPolicy.observation.shadowGateResult, "SHADOW_NOT_EVALUATED");
+      assert.ok(resPolicy.observation.globalDiagnostics.includes("MIXED_POLICY_VERSION"));
+
+      // 5. MIXED_EVALUATOR_VERSION
+      const resEval = computeShadowObservationPayload(
+        ["src/content/learning/art1.md", "src/content/learning/art2.md"],
+        [
+          { ...baseDec, subjectId: "src/content/learning/art1.md", evaluatorVersion: "M5-EVALUATOR-1.0" },
+          { ...baseDec, subjectId: "src/content/learning/art2.md", evaluatorVersion: "M5-EVALUATOR-2.0" }
+        ],
+        "1111111111111111111111111111111111111111",
+        "RESOLVED"
+      );
+      assert.strictEqual(resEval.observation.shadowGateResult, "SHADOW_NOT_EVALUATED");
+      assert.ok(resEval.observation.globalDiagnostics.includes("MIXED_EVALUATOR_VERSION"));
+
+      // Exit codes
       assert.strictEqual(shadowResultToExitCode("SHADOW_PASS"), 0);
       assert.strictEqual(shadowResultToExitCode("SHADOW_ATTENTION"), 0);
       assert.strictEqual(shadowResultToExitCode("SHADOW_SYSTEM_UNAVAILABLE"), 0);

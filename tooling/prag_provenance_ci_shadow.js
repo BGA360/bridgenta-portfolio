@@ -114,6 +114,19 @@ export function evaluateShadowObservation(workspaceRoot) {
     }
   }
 
+  return computeShadowObservationPayload(expectedSubjects, m5Decisions, commitSha, identityRes.state);
+}
+
+/**
+ * Computes the observation payload and hash from expected subjects and M5 decision records.
+ * Useful for framework-independent execution and unit testing diagnostics/failures.
+ * @param {string[]} expectedSubjects 
+ * @param {any[]} m5Decisions 
+ * @param {string|null} commitSha 
+ * @param {string} identityState 
+ * @returns {{ observation: any, observationHash: string }}
+ */
+export function computeShadowObservationPayload(expectedSubjects, m5Decisions, commitSha, identityState) {
   // Ensure decisions are ordered by subjectId ascending
   m5Decisions.sort((a, b) => a.subjectId.localeCompare(b.subjectId));
 
@@ -123,7 +136,7 @@ export function evaluateShadowObservation(workspaceRoot) {
     m5DecisionRecords: m5Decisions,
     options: {
       implementationIdentity: commitSha || null,
-      identityState: identityRes.state
+      identityState: identityState
     }
   });
   const projectionHash = computeProjectionHash(projection);
@@ -136,6 +149,7 @@ export function evaluateShadowObservation(workspaceRoot) {
 
   const articleResults = [];
   const decisionHashes = [];
+  const globalDiagnostics = [];
 
   for (const dec of m5Decisions) {
     const projRecord = projection.records.find(r => r.subjectId === dec.subjectId);
@@ -162,11 +176,22 @@ export function evaluateShadowObservation(workspaceRoot) {
     });
   }
 
-  // Extract global diagnostics from projection
-  const projDiagnostics = projection.diagnostics || [];
-  for (const diag of projDiagnostics) {
-    globalDiagnostics.push(diag.code);
+  // Extract global diagnostics from records[*].projectionDiagnostics
+  const uniqueDiagCodes = new Set();
+  for (const record of projection.records) {
+    if (record.projectionDiagnostics) {
+      for (const code of record.projectionDiagnostics) {
+        if (code) {
+          uniqueDiagCodes.add(code);
+        }
+      }
+    }
   }
+  for (const code of uniqueDiagCodes) {
+    globalDiagnostics.push(code);
+  }
+
+  const diagnosticMessages = projection.diagnostics || [];
 
   // Check version coherence across decisions
   let hasMixedPolicy = false;
@@ -191,6 +216,7 @@ export function evaluateShadowObservation(workspaceRoot) {
 
   // Determine shadowGateResult:
   // SHADOW_NOT_EVALUATED > SHADOW_SYSTEM_UNAVAILABLE > SHADOW_ATTENTION > SHADOW_PASS
+  let shadowGateResult = "SHADOW_PASS";
   const hasNotEvaluatedDiag = globalDiagnostics.some(code => 
     code === "DECISION_MISSING" ||
     code === "DECISION_DUPLICATE" ||
@@ -232,6 +258,7 @@ export function evaluateShadowObservation(workspaceRoot) {
     undecidedCount,
     articleResults,
     globalDiagnostics,
+    diagnosticMessages,
     projectionHash,
     decisionHashes
   };
