@@ -19,7 +19,7 @@ const resolverPath = pathToFileURL(path.join(repoRoot, 'tooling', 'prag_provenan
 // @ts-ignore
 const { computeExpectedFingerprint } = await import(resolverPath);
 // @ts-ignore
-const { evaluateM5Decision, mapSystemFailure } = await import(m5ModulePath);
+const { evaluateM5Decision, mapSystemFailure, serializeDecisionRecord, computeDecisionRecordHash } = await import(m5ModulePath);
 // @ts-ignore
 const { buildPublicationProjection, serializeProjection, computeProjectionHash } = await import(projectionModulePath);
 // @ts-ignore
@@ -565,6 +565,147 @@ describe('M5.2 Publication Eligibility Projection', () => {
       });
 
       assert.strictEqual(proj.records[0].publicationEligibility, "PUBLICATION_WITHHELD");
+    });
+  });
+
+  describe('M5.2R2 Decision Finality Serialization & Hashing Suite', () => {
+    const baseRecord = {
+      subjectType: "learning-article",
+      subjectId: "src/content/learning/art-x.md",
+      provenanceRef: "EV-BG-105",
+      repositoryCommit: "1111111111111111111111111111111111111111",
+      b5ReadinessState: "READY_UNCLEARED",
+      m5Decision: "ELIGIBLE",
+      b5ReasonCodes: [],
+      m5ReasonCodes: [],
+      policyVersion: "M5-POLICY-1.0",
+      evaluatorVersion: "M5-EVALUATOR-1.0",
+      implementationIdentity: "1111111111111111111111111111111111111111"
+    };
+
+    test('unsupported decisionFinality throws during serialization, but undefined defaults to FINAL', () => {
+      assert.throws(() => {
+        serializeDecisionRecord({
+          ...baseRecord,
+          decisionFinality: "INVALID_VALUE"
+        });
+      }, /Invalid or missing decisionFinality/);
+
+      const ser = serializeDecisionRecord({
+        ...baseRecord,
+        decisionFinality: undefined
+      });
+      assert.ok(ser.includes('"decisionFinality":"FINAL"'));
+    });
+
+    test('Record A (FINAL) and Record B (NON_FINALIZABLE) have distinct serialization and hashes', () => {
+      const recA = {
+        ...baseRecord,
+        decisionFinality: "FINAL"
+      };
+
+      const recB = {
+        ...baseRecord,
+        decisionFinality: "NON_FINALIZABLE"
+      };
+
+      const serA = serializeDecisionRecord(recA);
+      const serB = serializeDecisionRecord(recB);
+      const hashA = computeDecisionRecordHash(recA);
+      const hashB = computeDecisionRecordHash(recB);
+
+      assert.notStrictEqual(serA, serB);
+      assert.notStrictEqual(hashA, hashB);
+
+      // Verify hashes are 64 lowercase hexadecimal chars
+      assert.match(hashA, /^[0-9a-f]{64}$/);
+      assert.match(hashB, /^[0-9a-f]{64}$/);
+
+      // Log/verify decisionFinality is bound and serialized
+      assert.ok(serA.includes('"decisionFinality":"FINAL"'));
+      assert.ok(serB.includes('"decisionFinality":"NON_FINALIZABLE"'));
+    });
+
+    test('determinism: identical record serializes and hashes identically when run twice', () => {
+      const rec = {
+        ...baseRecord,
+        decisionFinality: "FINAL"
+      };
+
+      const ser1 = serializeDecisionRecord(rec);
+      const ser2 = serializeDecisionRecord(rec);
+      const hash1 = computeDecisionRecordHash(rec);
+      const hash2 = computeDecisionRecordHash(rec);
+
+      assert.strictEqual(ser1, ser2);
+      assert.strictEqual(hash1, hash2);
+    });
+
+    test('null-identity system record serializes implementationIdentity: null and decisionFinality: NON_FINALIZABLE', () => {
+      const rec = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art-x.md",
+        provenanceRef: null,
+        repositoryCommit: null,
+        b5ReadinessState: null,
+        m5Decision: "SYSTEM_UNAVAILABLE",
+        b5ReasonCodes: [],
+        m5ReasonCodes: ["M5_INPUT_STATE_UNVERIFIABLE"],
+        policyVersion: "M5-POLICY-1.0",
+        evaluatorVersion: "M5-EVALUATOR-1.0",
+        implementationIdentity: null,
+        decisionFinality: "NON_FINALIZABLE"
+      };
+
+      const ser = serializeDecisionRecord(rec);
+      assert.ok(ser.includes('"implementationIdentity":null'));
+      assert.ok(ser.includes('"decisionFinality":"NON_FINALIZABLE"'));
+      assert.ok(!ser.includes("000000000")); // no synthetic zero SHA
+    });
+
+    test('normal ready/not-ready decisions evaluated mapping', () => {
+      // READY_UNCLEARED
+      const art1 = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art-x.md",
+        provenanceRef: "EV-BG-105",
+        readinessState: "READY_UNCLEARED",
+        reasons: []
+      };
+      const dec1 = evaluateM5Decision(art1, {
+        implementationIdentity: "1111111111111111111111111111111111111111"
+      });
+      assert.strictEqual(dec1.m5Decision, "ELIGIBLE");
+      assert.strictEqual(dec1.decisionFinality, "FINAL");
+
+      // READY_BY_CLEARANCE
+      const art2 = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art-x.md",
+        provenanceRef: "EV-BG-105",
+        readinessState: "READY_BY_CLEARANCE",
+        reasons: [],
+        clearanceApplied: true
+      };
+      const dec2 = evaluateM5Decision(art2, {
+        implementationIdentity: "1111111111111111111111111111111111111111"
+      });
+      assert.strictEqual(dec2.m5Decision, "ELIGIBLE");
+      assert.strictEqual(dec2.decisionFinality, "FINAL");
+
+      // NOT_READY
+      const art3 = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art-x.md",
+        provenanceRef: "EV-BG-105",
+        readinessState: "NOT_READY",
+        reasons: ["RUNTIME_NOT_PASS"]
+      };
+      const dec3 = evaluateM5Decision(art3, {
+        implementationIdentity: "1111111111111111111111111111111111111111"
+      });
+      assert.strictEqual(dec3.m5Decision, "WITHHELD");
+      assert.strictEqual(dec3.decisionFinality, "FINAL");
     });
   });
 });

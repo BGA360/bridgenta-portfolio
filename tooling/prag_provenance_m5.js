@@ -191,6 +191,11 @@ export function validateSourceLocator(sourceLocator, sourceSystem, repositoryRoo
 }
 
 export function serializeDecisionRecord(decisionRecord) {
+  const finality = decisionRecord.decisionFinality || "FINAL";
+  if (finality !== "FINAL" && finality !== "NON_FINALIZABLE") {
+    throw new Error(`Invalid or missing decisionFinality value: ${finality}`);
+  }
+
   if (decisionRecord.b5ReasonCodes) {
     const ORDERED_REASONS = [
       "MISSING_PROVENANCE_REF",
@@ -230,7 +235,8 @@ export function serializeDecisionRecord(decisionRecord) {
     m5ReasonCodes: decisionRecord.m5ReasonCodes,
     policyVersion: decisionRecord.policyVersion,
     evaluatorVersion: decisionRecord.evaluatorVersion,
-    implementationIdentity: decisionRecord.implementationIdentity
+    implementationIdentity: decisionRecord.implementationIdentity,
+    decisionFinality: finality
   };
 
   if (decisionRecord.historicalReplayDecision !== undefined) {
