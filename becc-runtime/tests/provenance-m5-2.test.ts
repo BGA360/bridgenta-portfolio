@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import crypto from 'node:crypto';
+import { execSync } from 'node:child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +12,35 @@ const testTmpDir = path.join(__dirname, 'tmp-m5-2-tests');
 
 // Load M5 JS modules dynamically
 const repoRoot = path.resolve(process.cwd(), '..');
+
+function initializeMockWorkspace(dirPath: string) {
+  try {
+    execSync(`git init && git config user.name "Test" && git config user.email "test@test.com"`, { cwd: dirPath, stdio: 'ignore' });
+  } catch (e) {
+    // ignore
+  }
+
+  const files = [
+    'tooling/prag_provenance_m5.js',
+    'tooling/prag_provenance_projection.js',
+    'tooling/prag_provenance_ci_shadow.js',
+    'tooling/prag_provenance_identity.js',
+    'tooling/prag_provenance_readiness.js'
+  ];
+
+  for (const f of files) {
+    const srcPath = path.join(repoRoot, f);
+    const destPath = path.join(dirPath, f);
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    fs.copyFileSync(srcPath, destPath);
+  }
+
+  try {
+    execSync(`git add -A && git commit -m "mock workspace evaluator"`, { cwd: dirPath, stdio: 'ignore' });
+  } catch (e) {
+    // ignore
+  }
+}
 const m5ModulePath = pathToFileURL(path.join(repoRoot, 'tooling', 'prag_provenance_m5.js')).href;
 const projectionModulePath = pathToFileURL(path.join(repoRoot, 'tooling', 'prag_provenance_projection.js')).href;
 const adapterModulePath = pathToFileURL(path.join(repoRoot, 'src', 'utils', 'm5_adapter.ts')).href;
@@ -412,6 +442,8 @@ describe('M5.2 Publication Eligibility Projection', () => {
     ];
     fs.writeFileSync(path.join(mockRepoRoot, 'stewardship', 'reviews', 'clearances_manifest.json'), JSON.stringify(clearances), 'utf-8');
 
+    initializeMockWorkspace(mockRepoRoot);
+
     const resultView = getShadowPublicationView(mockArticles, { workspaceDir: mockRepoRoot });
 
     // Validate only art-eligible.md is returned in simulated view
@@ -756,6 +788,7 @@ describe('M5.2 Publication Eligibility Projection', () => {
         fs.mkdirSync(path.dirname(fullPath), { recursive: true });
         fs.writeFileSync(fullPath, content, 'utf-8');
       }
+      initializeMockWorkspace(shadowTmpDir);
     }
 
     test('SHADOW_PASS when all expected subjects are eligible', () => {

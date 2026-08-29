@@ -410,4 +410,62 @@ describe('M5.4R Identity and Hashing Suite', () => {
     );
     assert.notStrictEqual(obsRes1.observationHash, obsRes2.observationHash);
   });
+
+  test('Explicit Boundary - Missing First Governed File Test', () => {
+    const fixtureRoot = path.join(testTmpDir, 'mock-missing-first-file');
+    fs.mkdirSync(path.join(fixtureRoot, 'tooling'), { recursive: true });
+    // Write tooling/ directory but omit tooling/prag_provenance_m5.js
+    fs.writeFileSync(path.join(fixtureRoot, 'tooling/prag_provenance_projection.js'), 'const code = 1;\n');
+
+    const res = computeM5ImplementationIdentity(fixtureRoot);
+    assert.strictEqual(res.state, 'UNAVAILABLE');
+    assert.strictEqual(res.identity, null);
+  });
+
+  test('Explicit Boundary - Completely Missing Root Test', () => {
+    const nonexistentPath = path.join(testTmpDir, 'nonexistent-root-path-xyz');
+    const res = computeM5ImplementationIdentity(nonexistentPath);
+    assert.strictEqual(res.state, 'UNAVAILABLE');
+    assert.strictEqual(res.identity, null);
+  });
+
+  test('Explicit Boundary - Explicit Non-Git Workspace Test', () => {
+    const tempDirectory = path.join(testTmpDir, 'mock-nongit-workspace');
+    fs.mkdirSync(tempDirectory, { recursive: true });
+
+    const res = resolveRepositoryCommit(tempDirectory);
+    assert.strictEqual(res.state, 'UNAVAILABLE');
+    assert.strictEqual(res.commit, null);
+  });
+
+  test('Explicit Boundary - Nonexistent Git Root Test', () => {
+    const nonexistentPath = path.join(testTmpDir, 'nonexistent-git-path-xyz');
+    const res = resolveRepositoryCommit(nonexistentPath);
+    assert.strictEqual(res.state, 'UNAVAILABLE');
+    assert.strictEqual(res.commit, null);
+  });
+
+  test('Explicit Boundary - Default-Root Regression', () => {
+    // resolveRepositoryCommit() without arguments still resolves the actual repository HEAD
+    const resCommit = resolveRepositoryCommit();
+    assert.strictEqual(resCommit.state, 'RESOLVED');
+    assert.ok(/^[0-9a-f]{40}$/i.test(resCommit.commit));
+
+    // computeM5ImplementationIdentity() without arguments still resolves the current M5 evaluator identity
+    const resIdentity = computeM5ImplementationIdentity();
+    assert.strictEqual(resIdentity.state, 'RESOLVED');
+    assert.ok(/^[0-9a-f]{64}$/i.test(resIdentity.identity));
+  });
+
+  test('Explicit Boundary - Cross-Workspace Contamination Test', () => {
+    // Workspace A: incomplete evaluator
+    const workspaceA = path.join(testTmpDir, 'workspace-a-incomplete');
+    fs.mkdirSync(path.join(workspaceA, 'tooling'), { recursive: true });
+    fs.writeFileSync(path.join(workspaceA, 'tooling/prag_provenance_m5.js'), 'const a = 1;\n');
+
+    // Call computeM5ImplementationIdentity(workspaceA) -> must be UNAVAILABLE, never fall back to repoRoot (Workspace B)
+    const res = computeM5ImplementationIdentity(workspaceA);
+    assert.strictEqual(res.state, 'UNAVAILABLE');
+    assert.strictEqual(res.identity, null);
+  });
 });

@@ -14,10 +14,19 @@ const defaultWorkspaceRoot = path.resolve(__dirname, "..");
  * @returns {{ state: "RESOLVED"|"UNAVAILABLE", commit: string|null }}
  */
 export function resolveRepositoryCommit(workspaceRoot) {
-  let root = workspaceRoot || defaultWorkspaceRoot;
-  if (!fs.existsSync(path.join(root, ".git"))) {
-    root = defaultWorkspaceRoot;
+  const isExplicit = workspaceRoot !== undefined && workspaceRoot !== null;
+  const root = isExplicit ? workspaceRoot : defaultWorkspaceRoot;
+  
+  if (isExplicit) {
+    if (!fs.existsSync(root) || !fs.existsSync(path.join(root, ".git"))) {
+      return { state: "UNAVAILABLE", commit: null };
+    }
+  } else {
+    if (!fs.existsSync(path.join(root, ".git"))) {
+      return { state: "UNAVAILABLE", commit: null };
+    }
   }
+
   try {
     const sha = execSync(`git -C "${root}" rev-parse HEAD`, {
       encoding: "utf-8",
@@ -38,9 +47,13 @@ export function resolveRepositoryCommit(workspaceRoot) {
  * @returns {{ state: "RESOLVED"|"UNAVAILABLE", identity: string|null }}
  */
 export function computeM5ImplementationIdentity(workspaceRoot) {
-  let root = workspaceRoot || defaultWorkspaceRoot;
-  if (!fs.existsSync(path.join(root, "tooling/prag_provenance_m5.js"))) {
-    root = defaultWorkspaceRoot;
+  const isExplicit = workspaceRoot !== undefined && workspaceRoot !== null;
+  const root = isExplicit ? workspaceRoot : defaultWorkspaceRoot;
+
+  if (isExplicit) {
+    if (!fs.existsSync(root)) {
+      return { state: "UNAVAILABLE", identity: null };
+    }
   }
   
   const files = [
