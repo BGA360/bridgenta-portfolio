@@ -11,7 +11,8 @@
     "lint": "node tooling/lint_markdown.cjs",
     "check-links": "node tooling/check_markdown_links.cjs",
     "test:runtime": "npm --prefix becc-runtime test",
-    "m5:shadow": "node tooling/prag_provenance_ci_shadow.js"
+    "m5:shadow": "node tooling/prag_provenance_ci_shadow.js",
+    "m5:assess": "node tooling/prag_provenance_m5_readiness.js"
   },
   "dependencies": {
     "astro": "^4.11.3"
