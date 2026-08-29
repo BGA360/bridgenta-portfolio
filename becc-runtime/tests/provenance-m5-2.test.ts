@@ -893,19 +893,71 @@ provenanceRef: "EV-BG-105"
       assert.ok(!resMissing.observation.globalDiagnostics.includes(undefined));
       assert.ok(!resMissing.observation.globalDiagnostics.includes(null));
 
+      // Cardinality and Counts
+      assert.strictEqual(resMissing.observation.subjectCount, 1);
+      assert.strictEqual(resMissing.observation.eligibleCount, 0);
+      assert.strictEqual(resMissing.observation.withheldCount, 0);
+      assert.strictEqual(resMissing.observation.undecidedCount, 1);
+      assert.strictEqual(resMissing.observation.articleResults.length, 1);
+      assert.strictEqual(resMissing.observation.articleResults[0].publicationEligibility, "PUBLICATION_UNDECIDED");
+      assert.strictEqual(resMissing.observation.articleResults[0].decisionFinality, undefined);
+      assert.strictEqual(resMissing.observation.decisionHashes.length, 0);
+
+      // Invariant checks
+      assert.strictEqual(
+        resMissing.observation.subjectCount,
+        resMissing.observation.eligibleCount + resMissing.observation.withheldCount + resMissing.observation.undecidedCount
+      );
+      assert.strictEqual(resMissing.observation.subjectCount, resMissing.observation.articleResults.length);
+
       // 2. DECISION_DUPLICATE
-      const resDup = computeShadowObservationPayload(
+      const decDup1 = { ...baseDec, m5Decision: "ELIGIBLE", decisionFinality: "FINAL" };
+      const decDup2 = { ...baseDec, m5Decision: "WITHHELD", decisionFinality: "FINAL" };
+
+      const resDupA = computeShadowObservationPayload(
         ["src/content/learning/art1.md"],
-        [
-          { ...baseDec, m5Decision: "ELIGIBLE" },
-          { ...baseDec, m5Decision: "WITHHELD" }
-        ],
+        [decDup1, decDup2],
         "1111111111111111111111111111111111111111",
         "RESOLVED"
       );
+      const resDupB = computeShadowObservationPayload(
+        ["src/content/learning/art1.md"],
+        [decDup2, decDup1],
+        "1111111111111111111111111111111111111111",
+        "RESOLVED"
+      );
+
+      // Verify A and B are identical (order independence for duplicates)
+      assert.strictEqual(resDupA.observationHash, resDupB.observationHash);
+      assert.deepStrictEqual(resDupA.observation, resDupB.observation);
+
+      const resDup = resDupA;
       assert.strictEqual(resDup.observation.shadowGateResult, "SHADOW_NOT_EVALUATED");
       assert.ok(resDup.observation.globalDiagnostics.includes("DECISION_DUPLICATE"));
       assert.ok(!resDup.observation.globalDiagnostics.includes(undefined));
+
+      // Cardinality and Counts for Duplicates
+      assert.strictEqual(resDup.observation.subjectCount, 1);
+      assert.strictEqual(resDup.observation.eligibleCount, 0);
+      assert.strictEqual(resDup.observation.withheldCount, 0);
+      assert.strictEqual(resDup.observation.undecidedCount, 1);
+      assert.strictEqual(resDup.observation.articleResults.length, 1);
+      assert.strictEqual(resDup.observation.articleResults[0].m5Decision, "NOT_EVALUATED");
+      assert.strictEqual(resDup.observation.articleResults[0].publicationEligibility, "PUBLICATION_UNDECIDED");
+      assert.strictEqual(resDup.observation.articleResults[0].decisionFinality, undefined);
+      assert.strictEqual(resDup.observation.decisionHashes.length, 2);
+
+      // Verify sorting of hashes
+      const h1 = resDup.observation.decisionHashes[0].decisionHash;
+      const h2 = resDup.observation.decisionHashes[1].decisionHash;
+      assert.ok(h1 <= h2);
+
+      // Invariants for Duplicates
+      assert.strictEqual(
+        resDup.observation.subjectCount,
+        resDup.observation.eligibleCount + resDup.observation.withheldCount + resDup.observation.undecidedCount
+      );
+      assert.strictEqual(resDup.observation.subjectCount, resDup.observation.articleResults.length);
 
       // 3. PROJECTION_CONFIGURATION_INVALID
       const resInvalid = computeShadowObservationPayload(

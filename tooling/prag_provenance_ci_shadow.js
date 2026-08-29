@@ -141,8 +141,8 @@ export function computeShadowObservationPayload(expectedSubjects, m5Decisions, c
   });
   const projectionHash = computeProjectionHash(projection);
 
-  // Compute counts
-  let subjectCount = expectedSubjects.length;
+  // Compute counts directly from projection.records
+  let subjectCount = projection.records.length;
   let eligibleCount = 0;
   let withheldCount = 0;
   let undecidedCount = 0;
@@ -151,30 +151,46 @@ export function computeShadowObservationPayload(expectedSubjects, m5Decisions, c
   const decisionHashes = [];
   const globalDiagnostics = [];
 
-  for (const dec of m5Decisions) {
-    const projRecord = projection.records.find(r => r.subjectId === dec.subjectId);
-    const pubEligibility = projRecord ? projRecord.publicationEligibility : "PUBLICATION_UNDECIDED";
-
-    if (pubEligibility === "PUBLICATION_ELIGIBLE") {
+  for (const record of projection.records) {
+    if (record.publicationEligibility === "PUBLICATION_ELIGIBLE") {
       eligibleCount++;
-    } else if (pubEligibility === "PUBLICATION_WITHHELD") {
+    } else if (record.publicationEligibility === "PUBLICATION_WITHHELD") {
       withheldCount++;
     } else {
       undecidedCount++;
     }
 
-    articleResults.push({
-      subjectId: dec.subjectId,
-      publicationEligibility: pubEligibility,
-      m5Decision: dec.m5Decision,
-      decisionFinality: dec.decisionFinality
-    });
+    const matchingDecs = m5Decisions.filter(d => d.subjectId === record.subjectId);
+    const artRes = {
+      subjectId: record.subjectId,
+      publicationEligibility: record.publicationEligibility,
+      m5Decision: record.m5Decision,
+      projectionDiagnostics: record.projectionDiagnostics || []
+    };
 
-    decisionHashes.push({
-      subjectId: dec.subjectId,
-      decisionHash: computeDecisionRecordHash(dec)
-    });
+    if (matchingDecs.length === 1) {
+      artRes.decisionFinality = matchingDecs[0].decisionFinality;
+    }
+
+    articleResults.push(artRes);
   }
+
+  // Populate decisionHashes from raw decisions that match expected subjects
+  for (const dec of m5Decisions) {
+    if (expectedSubjects.includes(dec.subjectId)) {
+      decisionHashes.push({
+        subjectId: dec.subjectId,
+        decisionHash: computeDecisionRecordHash(dec)
+      });
+    }
+  }
+
+  // Sort decision hashes deterministically: subjectId ASC, then decisionHash ASC
+  decisionHashes.sort((a, b) => {
+    const cmp = a.subjectId.localeCompare(b.subjectId);
+    if (cmp !== 0) return cmp;
+    return a.decisionHash.localeCompare(b.decisionHash);
+  });
 
   // Extract global diagnostics from records[*].projectionDiagnostics
   const uniqueDiagCodes = new Set();
@@ -239,17 +255,33 @@ export function computeShadowObservationPayload(expectedSubjects, m5Decisions, c
     shadowGateResult = "SHADOW_PASS";
   }
 
+  // Invariant checks
+  const invariant1 = (subjectCount === articleResults.length);
+  const invariant2 = (subjectCount === (eligibleCount + withheldCount + undecidedCount));
+
+  if (!invariant1 || !invariant2) {
+    shadowGateResult = "SHADOW_NOT_EVALUATED";
+    if (!globalDiagnostics.includes("PROJECTION_CONFIGURATION_INVALID")) {
+      globalDiagnostics.push("PROJECTION_CONFIGURATION_INVALID");
+      globalDiagnostics.sort();
+    }
+  }
+
   // Sort canonical arrays
   articleResults.sort((a, b) => a.subjectId.localeCompare(b.subjectId));
-  decisionHashes.sort((a, b) => a.subjectId.localeCompare(b.subjectId));
   globalDiagnostics.sort();
+
+  const finalPolicyVersion = (hasMixedPolicy || m5Decisions.length === 0) ? "M5-POLICY-1.0" : m5Decisions[0].policyVersion;
+  const finalEvaluatorVersion = (hasMixedEvaluator || m5Decisions.length === 0) ? "M5-EVALUATOR-1.0" : m5Decisions[0].evaluatorVersion;
+  const finalImplementationIdentity = hasMixedImplementation ? null : (commitSha || null);
+  const finalRepositoryCommit = hasMixedCommit ? null : (commitSha || null);
 
   const payload = {
     schemaVersion: "M5-OBSERVATION-1.0",
-    repositoryCommit: commitSha || null,
-    policyVersion: m5Decisions.length > 0 ? m5Decisions[0].policyVersion : "M5-POLICY-1.0",
-    evaluatorVersion: m5Decisions.length > 0 ? m5Decisions[0].evaluatorVersion : "M5-EVALUATOR-1.0",
-    implementationIdentity: commitSha || null,
+    repositoryCommit: finalRepositoryCommit,
+    policyVersion: finalPolicyVersion,
+    evaluatorVersion: finalEvaluatorVersion,
+    implementationIdentity: finalImplementationIdentity,
     observationMode: "SHADOW",
     shadowGateResult,
     subjectCount,
