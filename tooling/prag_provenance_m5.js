@@ -191,7 +191,7 @@ export function validateSourceLocator(sourceLocator, sourceSystem, repositoryRoo
 }
 
 export function serializeDecisionRecord(decisionRecord) {
-  const finality = decisionRecord.decisionFinality || "FINAL";
+  const finality = decisionRecord.decisionFinality;
   if (finality !== "FINAL" && finality !== "NON_FINALIZABLE") {
     throw new Error(`Invalid or missing decisionFinality value: ${finality}`);
   }

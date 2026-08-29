@@ -265,7 +265,8 @@ describe('M5.1 Decision Model & Security Boundary', () => {
       m5ReasonCodes: ['M5_CONFIGURATION_INVALID', 'M5_EVALUATION_ERROR'],
       policyVersion: 'M5-POLICY-1.0',
       evaluatorVersion: 'M5-EVALUATOR-1.0',
-      implementationIdentity: 'commit-sha-1234'
+      implementationIdentity: 'commit-sha-1234',
+      decisionFinality: 'FINAL'
     };
 
     const str1 = serializeDecisionRecord(mockDecision);

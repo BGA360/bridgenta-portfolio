@@ -583,7 +583,7 @@ describe('M5.2 Publication Eligibility Projection', () => {
       implementationIdentity: "1111111111111111111111111111111111111111"
     };
 
-    test('unsupported decisionFinality throws during serialization, but undefined defaults to FINAL', () => {
+    test('unsupported/missing/null/empty decisionFinality throws during serialization, but FINAL/NON_FINALIZABLE passes', () => {
       assert.throws(() => {
         serializeDecisionRecord({
           ...baseRecord,
@@ -591,11 +591,39 @@ describe('M5.2 Publication Eligibility Projection', () => {
         });
       }, /Invalid or missing decisionFinality/);
 
-      const ser = serializeDecisionRecord({
+      assert.throws(() => {
+        serializeDecisionRecord({
+          ...baseRecord,
+          decisionFinality: undefined
+        });
+      }, /Invalid or missing decisionFinality/);
+
+      assert.throws(() => {
+        serializeDecisionRecord({
+          ...baseRecord,
+          decisionFinality: null
+        });
+      }, /Invalid or missing decisionFinality/);
+
+      assert.throws(() => {
+        serializeDecisionRecord({
+          ...baseRecord,
+          decisionFinality: ""
+        });
+      }, /Invalid or missing decisionFinality/);
+
+      // Verify success
+      const serA = serializeDecisionRecord({
         ...baseRecord,
-        decisionFinality: undefined
+        decisionFinality: "FINAL"
       });
-      assert.ok(ser.includes('"decisionFinality":"FINAL"'));
+      assert.ok(serA.includes('"decisionFinality":"FINAL"'));
+
+      const serB = serializeDecisionRecord({
+        ...baseRecord,
+        decisionFinality: "NON_FINALIZABLE"
+      });
+      assert.ok(serB.includes('"decisionFinality":"NON_FINALIZABLE"'));
     });
 
     test('Record A (FINAL) and Record B (NON_FINALIZABLE) have distinct serialization and hashes', () => {
