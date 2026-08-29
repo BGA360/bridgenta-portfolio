@@ -5,12 +5,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 
-// Get implementation identity (Commit SHA)
-let commitSha = '0000000000000000000000000000000000000000';
-try {
-  commitSha = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-} catch (e) {
-  // Use fallback if git is not available
+// Resolve implementation identity (Commit SHA)
+export function resolveImplementationIdentity() {
+  try {
+    const sha = execSync('git rev-parse HEAD', { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    if (/^[0-9a-f]{40}$/i.test(sha)) {
+      return { state: 'RESOLVED', identity: sha };
+    }
+  } catch (e) {
+    // ignore
+  }
+  return { state: 'UNAVAILABLE', identity: null };
 }
 
 export function getM5Projection(articles: any[], options: { workspaceDir?: string } = {}) {
@@ -23,64 +28,77 @@ export function getM5Projection(articles: any[], options: { workspaceDir?: strin
     workspaceRoot = path.resolve(workspaceRoot, '..');
   }
 
-  const registryPath = path.join(workspaceRoot, 'src', 'data', 'provenance_registry.json');
-  const manifestPath = path.join(workspaceRoot, 'src', 'data', 'local_integrity_manifest.json');
-  const clearancesPath = path.join(workspaceRoot, 'stewardship', 'reviews', 'clearances_manifest.json');
-
-  let registry = [];
-  let manifest = [];
-  let clearances = [];
-
-  let systemErrorClass: string | null = null;
-
-  try {
-    if (fs.existsSync(registryPath)) {
-      registry = JSON.parse(fs.readFileSync(registryPath, 'utf-8'));
-    } else {
-      systemErrorClass = 'M5_INPUT_STATE_UNVERIFIABLE';
-    }
-    if (fs.existsSync(manifestPath)) {
-      manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
-    } else {
-      systemErrorClass = 'M5_INPUT_STATE_UNVERIFIABLE';
-    }
-    if (fs.existsSync(clearancesPath)) {
-      clearances = JSON.parse(fs.readFileSync(clearancesPath, 'utf-8'));
-    }
-  } catch (e) {
-    systemErrorClass = 'M5_CONFIGURATION_INVALID';
-  }
-
   const expectedSubjects = publishedArticles.map(art => `src/content/learning/${art.id}`);
 
   let m5Decisions = [];
+  const identityRes = resolveImplementationIdentity();
 
-  if (systemErrorClass) {
-    // Map system failure for all expected subjects
+  if (identityRes.state === 'UNAVAILABLE') {
+    // Identity unavailable -> produce SYSTEM_UNAVAILABLE with null readiness and null identity
     for (const subjId of expectedSubjects) {
       m5Decisions.push(mapSystemFailure({
         subjectId: subjId,
-        readinessState: 'NOT_READY',
+        readinessState: null,
         reasons: []
-      }, systemErrorClass, { implementationIdentity: commitSha }));
+      }, 'M5_INPUT_STATE_UNVERIFIABLE', { implementationIdentity: null }));
     }
   } else {
+    const commitSha = identityRes.identity;
+    const registryPath = path.join(workspaceRoot, 'src', 'data', 'provenance_registry.json');
+    const manifestPath = path.join(workspaceRoot, 'src', 'data', 'local_integrity_manifest.json');
+    const clearancesPath = path.join(workspaceRoot, 'stewardship', 'reviews', 'clearances_manifest.json');
+
+    let registry = [];
+    let manifest = [];
+    let clearances = [];
+
+    let systemErrorClass: string | null = null;
+
     try {
-      const b5Result = evaluateReadiness(workspaceRoot, registry, manifest, clearances);
-      for (const b5Art of b5Result.articles) {
-        const dec = evaluateM5Decision(b5Art, {
-          implementationIdentity: commitSha
-        });
-        m5Decisions.push(dec);
+      if (fs.existsSync(registryPath)) {
+        registry = JSON.parse(fs.readFileSync(registryPath, 'utf-8'));
+      } else {
+        systemErrorClass = 'M5_INPUT_STATE_UNVERIFIABLE';
       }
-    } catch (err) {
-      // General evaluator/dependency error
+      if (fs.existsSync(manifestPath)) {
+        manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+      } else {
+        systemErrorClass = 'M5_INPUT_STATE_UNVERIFIABLE';
+      }
+      if (fs.existsSync(clearancesPath)) {
+        clearances = JSON.parse(fs.readFileSync(clearancesPath, 'utf-8'));
+      }
+    } catch (e) {
+      systemErrorClass = 'M5_CONFIGURATION_INVALID';
+    }
+
+    if (systemErrorClass) {
+      // Map system failure for all expected subjects
       for (const subjId of expectedSubjects) {
         m5Decisions.push(mapSystemFailure({
           subjectId: subjId,
-          readinessState: 'NOT_READY',
+          readinessState: null,
           reasons: []
-        }, 'M5_EVALUATION_ERROR', { implementationIdentity: commitSha }));
+        }, systemErrorClass, { implementationIdentity: commitSha }));
+      }
+    } else {
+      try {
+        const b5Result = evaluateReadiness(workspaceRoot, registry, manifest, clearances);
+        for (const b5Art of b5Result.articles) {
+          const dec = evaluateM5Decision(b5Art, {
+            implementationIdentity: commitSha
+          });
+          m5Decisions.push(dec);
+        }
+      } catch (err) {
+        // General evaluator/dependency error
+        for (const subjId of expectedSubjects) {
+          m5Decisions.push(mapSystemFailure({
+            subjectId: subjId,
+            readinessState: null,
+            reasons: []
+          }, 'M5_EVALUATION_ERROR', { implementationIdentity: commitSha }));
+        }
       }
     }
   }
@@ -89,7 +107,8 @@ export function getM5Projection(articles: any[], options: { workspaceDir?: strin
     expectedSubjects,
     m5DecisionRecords: m5Decisions,
     options: {
-      implementationIdentity: commitSha
+      implementationIdentity: identityRes.identity,
+      identityState: identityRes.state
     }
   });
 

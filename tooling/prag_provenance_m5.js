@@ -42,7 +42,8 @@ export function evaluateM5Decision(articleReadiness, options = {}) {
     m5ReasonCodes: [],
     policyVersion,
     evaluatorVersion,
-    implementationIdentity
+    implementationIdentity,
+    decisionFinality: "FINAL"
   };
 
   // 1. Historical Replay check
@@ -82,10 +83,12 @@ export function evaluateM5Decision(articleReadiness, options = {}) {
 export function mapSystemFailure(articleReadiness, failureClass, options = {}) {
   const policyVersion = options.policyVersion || "M5-POLICY-1.0";
   const evaluatorVersion = options.evaluatorVersion || "M5-EVALUATOR-1.0";
-  const implementationIdentity = options.implementationIdentity;
+  const implementationIdentity = options.implementationIdentity || null;
 
   if (!implementationIdentity) {
-    throw new Error("Missing implementationIdentity.");
+    if (failureClass !== "M5_INPUT_STATE_UNVERIFIABLE") {
+      throw new Error(`Missing implementationIdentity for failure class: ${failureClass}`);
+    }
   }
 
   const VALID_M5_SYSTEM_REASONS = new Set(M5_SYSTEM_REASON_ORDER);
@@ -104,7 +107,8 @@ export function mapSystemFailure(articleReadiness, failureClass, options = {}) {
     m5ReasonCodes: [failureClass],
     policyVersion,
     evaluatorVersion,
-    implementationIdentity
+    implementationIdentity,
+    decisionFinality: implementationIdentity ? "FINAL" : "NON_FINALIZABLE"
   };
 
   return decisionRecord;

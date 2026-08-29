@@ -3,10 +3,19 @@ import crypto from "node:crypto";
 export function buildPublicationProjection({ expectedSubjects, m5DecisionRecords, options = {} }) {
   const policyVersion = options.policyVersion || "M5-POLICY-1.0";
   const evaluatorVersion = options.evaluatorVersion || "M5-EVALUATOR-1.0";
-  const implementationIdentity = options.implementationIdentity;
+  const implementationIdentity = options.implementationIdentity || null;
+  const identityState = options.identityState || (implementationIdentity ? "RESOLVED" : "UNAVAILABLE");
 
-  if (!implementationIdentity) {
-    throw new Error("Missing implementationIdentity.");
+  if (identityState === "RESOLVED") {
+    if (!implementationIdentity) {
+      throw new Error("Missing implementationIdentity under RESOLVED identityState.");
+    }
+  } else if (identityState === "UNAVAILABLE") {
+    if (implementationIdentity !== null && implementationIdentity !== undefined) {
+      throw new Error("implementationIdentity must be null/undefined under UNAVAILABLE identityState.");
+    }
+  } else {
+    throw new Error(`Invalid identityState: ${identityState}`);
   }
 
   // Group decisions by subjectId
@@ -53,13 +62,11 @@ export function buildPublicationProjection({ expectedSubjects, m5DecisionRecords
       record.projectionDiagnostics.push("DECISION_MISSING");
       undecidedSubjectIds.push(subjId);
     } else if (count > 1) {
-      // Pick first decision's metadata for fields but flag duplicate
-      const firstDec = decisions[0];
-      record.subjectType = firstDec.subjectType || "learning-article";
-      record.m5Decision = firstDec.m5Decision || "NOT_EVALUATED";
-      record.b5ReasonCodes = firstDec.b5ReasonCodes ? [...firstDec.b5ReasonCodes] : [];
-      record.m5ReasonCodes = firstDec.m5ReasonCodes ? [...firstDec.m5ReasonCodes] : [];
+      record.subjectType = "learning-article";
+      record.m5Decision = "NOT_EVALUATED";
       record.publicationEligibility = "PUBLICATION_UNDECIDED";
+      record.b5ReasonCodes = [];
+      record.m5ReasonCodes = [];
       record.projectionDiagnostics.push("DECISION_DUPLICATE");
       undecidedSubjectIds.push(subjId);
       diagnostics.push(`Duplicate decisions for subject: '${subjId}'`);
@@ -69,6 +76,9 @@ export function buildPublicationProjection({ expectedSubjects, m5DecisionRecords
       record.m5Decision = dec.m5Decision || "NOT_EVALUATED";
       record.b5ReasonCodes = dec.b5ReasonCodes ? [...dec.b5ReasonCodes] : [];
       record.m5ReasonCodes = dec.m5ReasonCodes ? [...dec.m5ReasonCodes] : [];
+      if (dec.clearanceApplied !== undefined) {
+        record.clearanceApplied = !!dec.clearanceApplied;
+      }
 
       const validM5Decisions = new Set(["ELIGIBLE", "WITHHELD", "SYSTEM_UNAVAILABLE", "NOT_EVALUATED"]);
       if (!validM5Decisions.has(dec.m5Decision)) {
@@ -76,10 +86,10 @@ export function buildPublicationProjection({ expectedSubjects, m5DecisionRecords
         record.projectionDiagnostics.push("PROJECTION_CONFIGURATION_INVALID");
         undecidedSubjectIds.push(subjId);
         diagnostics.push(`Unknown M5 decision state: '${dec.m5Decision}' for subject: '${subjId}'`);
-      } else if (dec.m5Decision === "ELIGIBLE") {
+      } else if (dec.m5Decision === "ELIGIBLE" && identityState !== "UNAVAILABLE") {
         record.publicationEligibility = "PUBLICATION_ELIGIBLE";
         eligibleSubjectIds.push(subjId);
-      } else if (dec.m5Decision === "WITHHELD") {
+      } else if (dec.m5Decision === "WITHHELD" && identityState !== "UNAVAILABLE") {
         record.publicationEligibility = "PUBLICATION_WITHHELD";
         withheldSubjectIds.push(subjId);
       } else {

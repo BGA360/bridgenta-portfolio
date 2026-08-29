@@ -19,11 +19,11 @@ const resolverPath = pathToFileURL(path.join(repoRoot, 'tooling', 'prag_provenan
 // @ts-ignore
 const { computeExpectedFingerprint } = await import(resolverPath);
 // @ts-ignore
-const { evaluateM5Decision } = await import(m5ModulePath);
+const { evaluateM5Decision, mapSystemFailure } = await import(m5ModulePath);
 // @ts-ignore
 const { buildPublicationProjection, serializeProjection, computeProjectionHash } = await import(projectionModulePath);
 // @ts-ignore
-const { getM5Projection, getShadowPublicationView } = await import(adapterModulePath);
+const { getM5Projection, getShadowPublicationView, resolveImplementationIdentity } = await import(adapterModulePath);
 
 describe('M5.2 Publication Eligibility Projection', () => {
   before(() => {
@@ -433,5 +433,138 @@ describe('M5.2 Publication Eligibility Projection', () => {
     assert.strictEqual(projection.eligibleSubjectIds.length, 1);
     assert.strictEqual(projection.withheldSubjectIds.length, 0);
     assert.strictEqual(projection.undecidedSubjectIds.length, 0);
+  });
+
+  describe('M5.2R Duplicate Determinism & Ordering Independence', () => {
+    test('duplicate inputs yield byte-identical projection and hash regardless of input order', () => {
+      const dec1 = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art-x.md",
+        m5Decision: "ELIGIBLE",
+        b5ReasonCodes: ["SOME_B5_REASON"],
+        m5ReasonCodes: ["SOME_M5_REASON"],
+        policyVersion: "M5-POLICY-1.0",
+        evaluatorVersion: "M5-EVALUATOR-1.0",
+        implementationIdentity: "1111111111111111111111111111111111111111",
+        decisionFinality: "FINAL"
+      };
+
+      const dec2 = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art-x.md",
+        m5Decision: "WITHHELD",
+        b5ReasonCodes: ["ANOTHER_B5_REASON"],
+        m5ReasonCodes: ["ANOTHER_M5_REASON"],
+        policyVersion: "M5-POLICY-1.0",
+        evaluatorVersion: "M5-EVALUATOR-1.0",
+        implementationIdentity: "1111111111111111111111111111111111111111",
+        decisionFinality: "FINAL"
+      };
+
+      const projA = buildPublicationProjection({
+        expectedSubjects: ["src/content/learning/art-x.md"],
+        m5DecisionRecords: [dec1, dec2],
+        options: {
+          implementationIdentity: "1111111111111111111111111111111111111111",
+          identityState: "RESOLVED"
+        }
+      });
+
+      const projB = buildPublicationProjection({
+        expectedSubjects: ["src/content/learning/art-x.md"],
+        m5DecisionRecords: [dec2, dec1],
+        options: {
+          implementationIdentity: "1111111111111111111111111111111111111111",
+          identityState: "RESOLVED"
+        }
+      });
+
+      const bytesA = serializeProjection(projA);
+      const bytesB = serializeProjection(projB);
+      const hashA = computeProjectionHash(projA);
+      const hashB = computeProjectionHash(projB);
+
+      assert.strictEqual(bytesA, bytesB);
+      assert.strictEqual(hashA, hashB);
+
+      // Verify canonical fields (no leakage from dec1 or dec2)
+      assert.strictEqual(projA.records[0].m5Decision, "NOT_EVALUATED");
+      assert.strictEqual(projA.records[0].publicationEligibility, "PUBLICATION_UNDECIDED");
+      assert.deepEqual(projA.records[0].b5ReasonCodes, []);
+      assert.deepEqual(projA.records[0].m5ReasonCodes, []);
+      assert.deepEqual(projA.records[0].projectionDiagnostics, ["DECISION_DUPLICATE"]);
+    });
+  });
+
+  describe('M5.2R Identity Constraints and System Failure Paths', () => {
+    test('normal M5 decision without implementationIdentity must be rejected (throw)', () => {
+      const art = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art-x.md",
+        provenanceRef: "EV-BG-105",
+        readinessState: "READY_UNCLEARED",
+        reasons: [],
+        clearanceApplied: false
+      };
+
+      assert.throws(() => {
+        evaluateM5Decision(art, { implementationIdentity: null });
+      }, /Missing implementationIdentity/);
+
+      assert.throws(() => {
+        evaluateM5Decision(art, { implementationIdentity: "" });
+      }, /Missing implementationIdentity/);
+    });
+
+    test('system failure mapSystemFailure supports null identity only for M5_INPUT_STATE_UNVERIFIABLE', () => {
+      // Allowed:
+      const rec = mapSystemFailure(
+        { subjectId: "src/content/learning/art-x.md" },
+        "M5_INPUT_STATE_UNVERIFIABLE",
+        { implementationIdentity: null }
+      );
+      assert.strictEqual(rec.m5Decision, "SYSTEM_UNAVAILABLE");
+      assert.strictEqual(rec.implementationIdentity, null);
+      assert.strictEqual(rec.b5ReadinessState, null);
+      assert.strictEqual(rec.decisionFinality, "NON_FINALIZABLE");
+
+      // Rejected for others:
+      assert.throws(() => {
+        mapSystemFailure(
+          { subjectId: "src/content/learning/art-x.md" },
+          "M5_CONFIGURATION_INVALID",
+          { implementationIdentity: null }
+        );
+      }, /Missing implementationIdentity/);
+    });
+
+    test('real B5 NOT_READY preservation maps to WITHHELD and PUBLICATION_WITHHELD', () => {
+      const art = {
+        subjectType: "learning-article",
+        subjectId: "src/content/learning/art-x.md",
+        provenanceRef: "EV-BG-105",
+        readinessState: "NOT_READY",
+        reasons: ["RUNTIME_NOT_PASS"]
+      };
+
+      const dec = evaluateM5Decision(art, {
+        implementationIdentity: "1111111111111111111111111111111111111111"
+      });
+
+      assert.strictEqual(dec.m5Decision, "WITHHELD");
+      assert.strictEqual(dec.b5ReadinessState, "NOT_READY");
+      assert.deepEqual(dec.b5ReasonCodes, ["RUNTIME_NOT_PASS"]);
+
+      const proj = buildPublicationProjection({
+        expectedSubjects: ["src/content/learning/art-x.md"],
+        m5DecisionRecords: [dec],
+        options: {
+          implementationIdentity: "1111111111111111111111111111111111111111",
+          identityState: "RESOLVED"
+        }
+      });
+
+      assert.strictEqual(proj.records[0].publicationEligibility, "PUBLICATION_WITHHELD");
+    });
   });
 });
