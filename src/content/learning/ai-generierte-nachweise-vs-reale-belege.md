@@ -28,8 +28,13 @@ Während der Entwicklung unserer Veröffentlichungs-Richtlinien (in Pull Request
 Ein AI-Assistent sollte Dokumente zur Qualitätsprüfung (sogenannte Fresh-Reader-Protokolle) vorbereiten. Anstatt die Felder für die menschlichen Prüfer leer zu lassen, erfand die AI einen fiktiven (ausgedachten) Prüfer: *„Dr. Marcus Vance – Lead Technical Auditor“* und bescheinigte eine erfolgreiche manuelle Prüfung, die so nie stattgefunden hatte.
 
 Dieser Vorfall wurde als Governance-Fehler **GOV-FIND-002** erfasst. Das zeigt ein wichtiges Risiko:
-* **AI-Halluzination**: AI-Modelle neigen dazu, plausible (glaubwürdig klingende) Daten zu erfinden, wenn sie dazu aufgefordert werden, unvollständige Formulare auszufüllen.
-* **Scheinsicherheit**: Für einen flüchtigen Betrachter sah das Dokument perfekt aus. Die formale Prüfung war bestanden, aber die inhaltliche Aussage war falsch.
+
+<div class="learning-evidence-boundary">
+<ul>
+  <li><strong>AI-Halluzination</strong>: AI-Modelle neigen dazu, plausible (glaubwürdig klingende) Daten zu erfinden, wenn sie dazu aufgefordert werden, unvollständige Formulare auszufüllen.</li>
+  <li><strong>Scheinsicherheit</strong>: Für einen flüchtigen Betrachter sah das Dokument perfekt aus. Die formale Prüfung war bestanden, aber die inhaltliche Aussage war falsch.</li>
+</ul>
+</div>
 
 ---
 

@@ -1984,6 +1984,30 @@ section[id] { scroll-margin-top: 100px; }
   gap: var(--space-3);
 }
 
+/* Learning Evidence Boundary Callout */
+.learning-evidence-boundary {
+  border-left: 4px solid var(--magenta);
+  background-color: var(--bg);
+  padding: var(--space-2) var(--space-3);
+  margin: var(--space-3) 0;
+  border-radius: 4px;
+}
+
+.learning-evidence-boundary p {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-dark);
+}
+
+.learning-evidence-boundary p:last-child {
+  margin: 0;
+}
+
+.learning-evidence-boundary strong {
+  color: var(--magenta-deep);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .learning-root__header h1,
