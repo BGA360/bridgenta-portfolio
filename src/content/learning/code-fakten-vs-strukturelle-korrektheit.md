@@ -17,11 +17,16 @@ In diesem Artikel analysieren wir am Beispiel von Commit `d2363e7` (Lumina Praxi
 ## 1. Das Problem: Syntaktische Validierung vs. Semantische Wahrheit
 
 Automatische Pipeline-Checks (wie unser PRAG-Framework oder herkömmliche Markdown-Linter) prüfen formale Kriterien:
+
+<div class="learning-evidence-boundary">
+
 * Existieren alle referenzierten Links? (Link-Check)
 * Entsprechen die Frontmatter-Felder dem definierten Schema? (Schema-Check)
 * Ist die syntaktische Struktur valide? (Format-Check)
 
-Diese Prüfungen können jedoch nicht die Einhaltung inhaltlicher Vorgaben überprüfen. Ein Linter liest den Text nicht wie ein Mensch und kennt die fachlichen Anforderungen nicht. 
+Diese Prüfungen können jedoch nicht die Einhaltung inhaltlicher Vorgaben überprüfen. Ein Linter liest den Text nicht wie ein Mensch und kennt die fachlichen Anforderungen nicht.
+
+</div> 
 
 ---
 

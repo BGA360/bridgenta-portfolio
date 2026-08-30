@@ -27,7 +27,11 @@ Der große Kontakt-Knopf überlagerte die Menü-Links und schob das restliche Me
 
 In Deutschland und Europa gibt es strenge gesetzliche Vorschriften: Rechtliche Angaben wie das Impressum und die Datenschutzerklärung müssen auf einer Webseite jederzeit leicht erreichbar sein – und zwar auf jedem Gerät, auch auf dem Smartphone. 
 
+<div class="learning-evidence-boundary">
+
 Ein Design-Element (wie ein Kontakt-Knopf) darf niemals den Zugriff auf diese rechtlichen Pflichtseiten verhindern. Es ging hier also nicht nur um ein unschönes Aussehen, sondern um ein rechtliches Risiko für die gesamte Webseite.
+
+</div>
 
 ---
 
