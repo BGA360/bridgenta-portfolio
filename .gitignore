@@ -32,4 +32,7 @@ Thumbs.db
 /docs/engineering-communication/v2/research/rkf-reference/docs/
 
 # M5 CI Observation reports
-/stewardship/reports/
+/stewardship/reports/*
+!/stewardship/reports/history/
+/stewardship/reports/history/*
+!/stewardship/reports/history/m5-shadow/
