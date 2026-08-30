@@ -40,7 +40,7 @@ Ein Blick in den Kern unseres Validierungssystems zeigt, wie diese Gates struktu
       { name: 'Hash Validator', clazz: HashValidator, failFast: false }
     ];
 ```
-*Quelle: `bridgenta-workspace/validation/automation_controller.js`*
+*Quelle: `validation/automation_controller.js` im Quellprojekt*
 
 Dieses Code-Snippet zeigt die Validator-Kette. Der PRAG-Controller koordiniert hierbei eine definierte Sequenz von Prüfungen. Die Namen zeigen unterschiedliche technische Prüfbereiche, zum Beispiel Metadaten, Secrets, Links, Builds und Hashes.
 
@@ -93,3 +93,12 @@ Für Entwickler und Autoren ergeben sich drei Lehren:
 * **Automatisieren, was möglich ist**: Automatisieren Sie Prüfungen, für die klare maschinelle Regeln existieren. Dazu gehören zum Beispiel klar definierte Format-, Struktur- oder technische Regeln.
 * **Kein Freifahrtschein**: Ein grüner Prüfstatus zeigt zunächst nur, dass die dafür definierten Prüfungen bestanden wurden. Er beweist keine inhaltliche Wahrheit.
 * **Inhaltliche Qualität**: Konzentrieren Sie sich auf Fragen außerhalb der Regeln. Prüfen Sie Verständlichkeit, Logik und Belege.
+
+---
+
+## Begriffe einfach erklärt
+
+*   **CI (Continuous Integration)**: Ein automatisiertes Verfahren, bei dem Code-Änderungen fortlaufend zusammengeführt und automatisch getestet werden.
+*   **Linter**: Ein Werkzeug, das Quellcode automatisch auf formale Fehler, Stilregeln oder Programmierfehler hin untersucht.
+*   **Validator**: Eine Prüffunktion, die kontrolliert, ob bestimmte Daten oder Strukturen definierten Regeln und Schemas entsprechen.
+*   **Evidenz**: Ein nachprüfbarer, dokumentierter Beleg (z. B. ein Testbericht oder ein Git-Commit), der die Einhaltung einer Qualitätsanforderung beweist.

@@ -49,3 +49,11 @@ Um das Problem zu lösen, haben wir eine bewusste Vereinfachung vorgenommen:
 1. **Weniger ist mehr**: Auf mobilen Geräten müssen Sie Prioritäten setzen. Blenden Sie unwichtige oder doppelte Elemente aus, um Platz für das Wesentliche zu schaffen.
 2. **Pflichten gehen vor**: Gesetzliche Pflichtseiten (wie Datenschutz und Impressum) müssen bei jedem Layout-Entwurf oberste Priorität haben. Sie dürfen niemals durch Design-Features verdeckt werden.
 3. **Immer auf echten Geräten testen**: Ein Layout, das im Editor gut aussieht, kann auf einem echten Smartphone-Bildschirm unbrauchbar sein. Regelmäßiges Testen auf kleinen Displays verhindert solche Layout-Konflikte.
+
+---
+
+## Begriffe einfach erklärt
+
+*   **Layout-Kollision (Layout Collision)**: Ein Darstellungsfehler im Webdesign, bei dem sich verschiedene Elemente (z. B. Texte und Knöpfe) überlagern und gegenseitig verdecken.
+*   **Barrierefreiheit**: Das Gestalten von Webseiten, sodass sie von allen Menschen – unabhängig von ihren körperlichen oder technischen Möglichkeiten – ohne Einschränkungen genutzt werden können.
+*   **Impressum**: Die gesetzlich vorgeschriebene Anbieterkennzeichnung auf einer Webseite, die Auskunft über die Betreiber der Seite gibt.
