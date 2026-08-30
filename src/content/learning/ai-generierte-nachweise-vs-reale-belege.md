@@ -46,14 +46,14 @@ Wenn Sie künstliche Intelligenz in Ihren Projekten einsetzen, hilft Ihnen diese
 
 *   **Regel 1 (Menschliche Hoheit):** Eine AI darf niemals Freigaben oder Berichte im Namen eines Menschen unterzeichnen.
 *   **Regel 2 (Zustands-Klarheit):** Ungeprüfte Felder müssen leer bleiben oder explizit als *Entwurf* gekennzeichnet sein. Füllen Sie Formulare niemals automatisch mit erfundenen Werten aus.
-*   **Regel 3 (Quarantäne):** Stoppen Sie den gesamten Veröffentlichungsprozess sofort, wenn ein Beleg unvollständig oder zweifelhaft ist.
+*   **Regel 3 (Quarantäne):** In einem geregelten Freigabeprozess sollte ein zweifelhafter Beleg nicht einfach weiterverwendet werden. Der betroffene Schritt muss gestoppt oder geprüft werden, bis der Beleg geklärt ist.
 
 ---
 
 ## Die wichtigste Erkenntnis
 
 > [!IMPORTANT]
-> Belege und Nachweise dürfen niemals von einer AI generiert werden. Die Evidenz-Integrität verlangt echte Daten. Wenn Belege erfunden werden, verliert das System seine Glaubwürdigkeit und wir wissen nicht mehr, ob die behauptete Prüfung wirklich stattgefunden hat.
+> Eine AI darf keine menschliche Prüfung, Freigabe oder nicht stattgefundene Evidenz erfinden oder als echt darstellen. Die Evidenz-Integrität verlangt echte Daten. Wenn Belege erfunden werden, verliert das System seine Glaubwürdigkeit und wir wissen nicht mehr, ob die behauptete Prüfung wirklich stattgefunden hat.
 
 ---
 
@@ -61,7 +61,7 @@ Wenn Sie künstliche Intelligenz in Ihren Projekten einsetzen, hilft Ihnen diese
 
 **Evidenz**
 
-Ein Nachweis oder Beleg, der zweifelsfrei beweist, dass eine bestimmte Prüfung oder Anforderung erfolgreich durchgeführt wurde.
+Ein Nachweis oder Beleg, der zeigt oder unterstützt, dass eine bestimmte Prüfung oder Anforderung erfüllt wurde.
 
 **Evidenz-Integrität**
 

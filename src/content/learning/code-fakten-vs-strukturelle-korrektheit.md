@@ -53,15 +53,15 @@ Um semantische Abweichungen in Ihren Projekten zu verhindern, nutzen Sie dieses 
               ≠
       [ Inhaltlich korrekt ] --> Manuelles Review OK (Semantische Ebene)
     ```
-*   **Prinzip 2 (Keine Status-Schätzung):** Der inhaltliche Status einer Datei darf niemals automatisch anhand technischer Indikatoren (z. B. dem reinen Vorhandensein der Datei) geschätzt werden. Er erfordert immer ein explizites Attest durch einen berechtigten Prüfer.
-*   **Prinzip 3 (Dualer Prüfansatz):** Automatisieren Sie alles, was formal (syntaktisch) prüfbar ist, um Zeit zu sparen. Sichern Sie inhaltliche Konformität (Semantik) durch strukturierte, manuelle Reviews ab.
+*   **Prinzip 2 (Keine Status-Schätzung):** Im BridGenta-Prüfmodell wird der inhaltliche Status nicht allein aus technischen Signalen (wie dem reinen Vorhandensein einer Datei) abgeleitet. Für die inhaltliche Freigabe ist ein expliziter Review-Schritt vorgesehen.
+*   **Prinzip 3 (Dualer Prüfansatz):** Automatisieren Sie alles, was formal (syntaktisch) prüfbar ist, um Zeit zu sparen. Sichern Sie inhaltliche Konformität (Semantik) durch zusätzliche Prüfungen ab.
 
 ---
 
 ## Die wichtigste Erkenntnis
 
 > [!IMPORTANT]
-> Ein erfolgreicher Build- oder Linter-Lauf beweist nur, dass die formalen Regeln der Syntax erfüllt sind. Er ist kein Beweis dafür, dass der Inhalt fachlich korrekt ist. Automatisierte Checks prüfen nur Regeln, niemals die inhaltliche Wahrheit.
+> Ein erfolgreicher Linter- oder Build-Lauf zeigt nur, dass die von diesen Prüfungen abgedeckten Regeln erfüllt wurden. Er beweist nicht automatisch, dass alle fachlichen Anforderungen erfüllt sind.
 
 ---
 
