@@ -12,6 +12,7 @@
     "check-links": "node tooling/check_markdown_links.cjs",
     "test:runtime": "npm --prefix becc-runtime test",
     "m5:shadow": "node tooling/prag_provenance_ci_shadow.js",
+    "m5:retain": "node tooling/prag_provenance_m5_retain.js",
     "m5:assess": "node tooling/prag_provenance_m5_readiness.js"
   },
   "dependencies": {

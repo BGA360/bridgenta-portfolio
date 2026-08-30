@@ -429,6 +429,43 @@ function main() {
           }
         }
       }
+
+      // Recursively read all JSON files under stewardship/reports/history/m5-shadow/
+      const m5ShadowHistoryDir = path.join(reportsDir, "history", "m5-shadow");
+      function getJsonFilesRecursive(dir) {
+        let results = [];
+        if (!fs.existsSync(dir)) return results;
+        const list = fs.readdirSync(dir);
+        for (const file of list) {
+          const filePath = path.join(dir, file);
+          const stat = fs.statSync(filePath);
+          if (stat && stat.isDirectory()) {
+            results = results.concat(getJsonFilesRecursive(filePath));
+          } else if (file.endsWith(".json")) {
+            results.push(filePath);
+          }
+        }
+        return results;
+      }
+
+      if (fs.existsSync(m5ShadowHistoryDir)) {
+        const histFiles = getJsonFilesRecursive(m5ShadowHistoryDir);
+        for (const filePath of histFiles) {
+          const content = fs.readFileSync(filePath, "utf-8");
+          const relativeName = path.relative(m5ShadowHistoryDir, filePath);
+          try {
+            const report = JSON.parse(content);
+            const valRes = validateObservationReport(report);
+            if (valRes.valid) {
+              ingestedReports.push(valRes.observation);
+            } else {
+              hashMismatchFiles.push(relativeName);
+            }
+          } catch (e) {
+            hashMismatchFiles.push(relativeName);
+          }
+        }
+      }
     }
 
     const initialPolicy = {

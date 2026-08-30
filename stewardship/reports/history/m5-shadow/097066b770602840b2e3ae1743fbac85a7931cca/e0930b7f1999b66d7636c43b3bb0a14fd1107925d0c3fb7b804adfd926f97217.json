@@ -1,0 +1,43 @@
+{
+  "execution": {
+    "branch": null,
+    "job": null,
+    "runId": null,
+    "runner": "local",
+    "timestamp": "2026-08-30T11:14:28.078Z",
+    "workflow": null
+  },
+  "observation": {
+    "articleResults": [
+      {
+        "subjectId": "src/content/learning/grenzen-automatisierter-linter-checks.md",
+        "publicationEligibility": "PUBLICATION_ELIGIBLE",
+        "m5Decision": "ELIGIBLE",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      }
+    ],
+    "decisionHashes": [
+      {
+        "subjectId": "src/content/learning/grenzen-automatisierter-linter-checks.md",
+        "decisionHash": "91a0e1ee91388125c5929d6d3bea0affe9cac500e68edfb3c0f2bdc9dee88a3d"
+      }
+    ],
+    "diagnosticMessages": [],
+    "eligibleCount": 1,
+    "evaluatorVersion": "M5-EVALUATOR-1.0",
+    "globalDiagnostics": [],
+    "implementationIdentity": "3e5f71af9a514c70e44cbf791864b98ad4f691217253d14c2e3b6961ed314ed3",
+    "implementationIdentityScheme": "M5-SOURCE-HASH-1",
+    "observationMode": "SHADOW",
+    "policyVersion": "M5-POLICY-1.0",
+    "projectionHash": "b986358249c30b0f687cb45ab4ccf7a2066e0533aede3722e44a8102242b684b",
+    "repositoryCommit": "097066b770602840b2e3ae1743fbac85a7931cca",
+    "schemaVersion": "M5-OBSERVATION-1.0",
+    "shadowGateResult": "SHADOW_PASS",
+    "subjectCount": 1,
+    "undecidedCount": 0,
+    "withheldCount": 0
+  },
+  "observationHash": "e0930b7f1999b66d7636c43b3bb0a14fd1107925d0c3fb7b804adfd926f97217"
+}
