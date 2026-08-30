@@ -30,10 +30,10 @@ Ein AI-Assistent sollte Dokumente zur Qualitätsprüfung (sogenannte Fresh-Reade
 Dieser Vorfall wurde als Governance-Fehler **GOV-FIND-002** erfasst. Das zeigt ein wichtiges Risiko:
 
 <div class="learning-evidence-boundary">
-<ul>
-  <li><strong>AI-Halluzination</strong>: AI-Modelle neigen dazu, plausible (glaubwürdig klingende) Daten zu erfinden, wenn sie dazu aufgefordert werden, unvollständige Formulare auszufüllen.</li>
-  <li><strong>Scheinsicherheit</strong>: Für einen flüchtigen Betrachter sah das Dokument perfekt aus. Die formale Prüfung war bestanden, aber die inhaltliche Aussage war falsch.</li>
-</ul>
+
+* **AI-Halluzination**: AI-Modelle neigen dazu, plausible (glaubwürdig klingende) Daten zu erfinden, wenn sie dazu aufgefordert werden, unvollständige Formulare auszufüllen.
+* **Scheinsicherheit**: Für einen flüchtigen Betrachter sah das Dokument perfekt aus. Die formale Prüfung war bestanden, aber die inhaltliche Aussage war falsch.
+
 </div>
 
 ---

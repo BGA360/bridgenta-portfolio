@@ -51,19 +51,19 @@ Welche konkrete Regel ein Validator im Detail durchsetzt, ergibt sich aus seiner
 ## Was der grüne Check nicht beweist
 
 <div class="learning-evidence-boundary">
-<p>Die Pipeline kann definierte formale und technische Regelverstöße erkennen und je nach Validator den Prüfprozess fehlschlagen lassen. Dennoch stößt sie an klare Grenzen:</p>
 
-<p><strong>PRAG kann mit seinen statischen Prüfungen nicht feststellen, ob eine Aussage inhaltlich wahr ist.</strong></p>
+Die Pipeline kann definierte formale und technische Regelverstöße erkennen und je nach Validator den Prüfprozess fehlschlagen lassen. Dennoch stößt sie an klare Grenzen:
 
-<p>Ein kurzes Beispiel verdeutlicht dies. Ein Entwickler schreibt in einer Dokumentation:
-<em>"Das Modul erzielt eine Zeitersparnis von 95%."</em></p>
+> **PRAG kann mit seinen statischen Prüfungen nicht feststellen, ob eine Aussage inhaltlich wahr ist.**
 
-<ul>
-  <li><strong>Was PRAG prüfen kann</strong>: ob die dafür implementierten Regeln verletzt werden.</li>
-  <li><strong>Was daraus nicht folgt</strong>: ob die behauptete Zeitersparnis tatsächlich gemessen und belegt wurde.</li>
-</ul>
+Ein kurzes Beispiel verdeutlicht dies. Ein Entwickler schreibt in einer Dokumentation:
+*"Das Modul erzielt eine Zeitersparnis von 95%."*
 
-<p>Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er dient dabei als automatisierter Prüfmechanismus. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.</p>
+* **Was PRAG prüfen kann**: ob die dafür implementierten Regeln verletzt werden.
+* **Was daraus nicht folgt**: ob die behauptete Zeitersparnis tatsächlich gemessen und belegt wurde.
+
+Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er dient dabei als automatisierter Prüfmechanismus. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.
+
 </div>
 
 ---

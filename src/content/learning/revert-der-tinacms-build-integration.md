@@ -30,10 +30,10 @@ In Commit `4f83e40` hatten wir TinaCMS (ein Content-Management-System zur Bearbe
 Doch diese Integration verletzte unsere grundlegende Architekturregel:
 
 <div class="learning-evidence-boundary">
-<ul>
-  <li><strong>Das Problem</strong>: Um die Admin-Seite im Browser anzuzeigen, versuchte das Build-Skript externe Cloud-Bibliotheken und Registrierungs-Token von TinaCMS zu laden. Dadurch entstand eine direkte Abhängigkeit zu einem externen Server im Internet.</li>
-  <li><strong>Das Risiko</strong>: Fällt der externe Cloud-Dienst aus oder wird kompromittiert (gehackt), ist auch unser lokaler Build-Prozess betroffen. Zudem könnten interne Metadaten unbeabsichtigt ins Internet abfließen.</li>
-</ul>
+
+* **Das Problem**: Um die Admin-Seite im Browser anzuzeigen, versuchte das Build-Skript externe Cloud-Bibliotheken und Registrierungs-Token von TinaCMS zu laden. Dadurch entstand eine direkte Abhängigkeit zu einem externen Server im Internet.
+* **Das Risiko**: Fällt der externe Cloud-Dienst aus oder wird kompromittiert (gehackt), ist auch unser lokaler Build-Prozess betroffen. Zudem könnten interne Metadaten unbeabsichtigt ins Internet abfließen.
+
 </div>
 
 Deshalb haben wir in Commit `50a8c85` (Revert) die gesamte Build-Integration wieder entfernt. Die Admin-Oberfläche läuft nun ausschließlich im lokalen Entwicklungsmodus auf dem Rechner des Autors, ohne dass beim globalen Bauen der Webseite Cloud-Schnittstellen geladen werden.
