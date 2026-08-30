@@ -43,29 +43,38 @@ Ein erfolgreicher Linter- oder Build-Lauf beweist nur, dass die formalen Regeln 
 
 ---
 
-## 3. Architektur-Erkenntnisse für Verifikations-Systeme
+## Lektionen für die Praxis (Anwenden)
 
-Aus diesem Fall lassen sich drei Prinzipien für die Absicherung von Software-Systemen ableiten:
+Um semantische Abweichungen in Ihren Projekten zu verhindern, nutzen Sie dieses Prinzip der komplementären Prüfung:
 
-### A. Lifecycle-Ebenen sauber trennen
-Trennen Sie formale und semantische Prüfungen. Ein grüner Linter-Status darf im Freigabe-Prozess nicht automatisch als inhaltliche Freigabe gewertet werden.
+*   **Prinzip 1 (Ebenen-Trennung):** Ein grüner Linter-Status darf im Freigabeprozess niemals als inhaltliche Freigabe gewertet werden.
+    ```text
+      [ Code & Syntax OK ]  --> Linter-Status GRÜN (Formelle Ebene)
+              ≠
+      [ Inhaltlich korrekt ] --> Manuelles Review OK (Semantische Ebene)
+    ```
+*   **Prinzip 2 (Keine Status-Schätzung):** Der inhaltliche Status einer Datei darf niemals automatisch anhand technischer Indikatoren (z. B. dem reinen Vorhandensein der Datei) geschätzt werden. Er erfordert immer ein explizites Attest durch einen berechtigten Prüfer.
+*   **Prinzip 3 (Dualer Prüfansatz):** Automatisieren Sie alles, was formal (syntaktisch) prüfbar ist, um Zeit zu sparen. Sichern Sie inhaltliche Konformität (Semantik) durch strukturierte, manuelle Reviews ab.
 
-```text
-  [ Code & Syntax OK ]  --> Linter-Status GRÜN (Formelle Ebene)
-          ≠
-  [ Inhaltlich korrekt ] --> Manuelles Review OK (Semantische Ebene)
-```
+---
 
-### B. Keine automatische Ableitung von inhaltlichem Status
-Ein System darf den inhaltlichen Freigabestatus einer Datei niemals rein anhand technischer Indikatoren schätzen. Eine inhaltliche Prüfung erfordert ein explizites Attest durch einen berechtigten Prüfer.
+## Die wichtigste Erkenntnis
 
-### C. Komplementäre Prüf-Dimensionen nutzen
-Automatisieren Sie alles, was formal prüfbar ist, um Zeit zu sparen. Sichern Sie die inhaltliche Qualität durch strukturierte, manuelle Reviews (Fresh Reader, Source Fidelity) ab.
+> [!IMPORTANT]
+> Ein erfolgreicher Build- oder Linter-Lauf beweist nur, dass die formalen Regeln der Syntax erfüllt sind. Er ist kein Beweis dafür, dass der Inhalt fachlich korrekt ist. Automatisierte Checks prüfen nur Regeln, niemals die inhaltliche Wahrheit.
 
 ---
 
 ## Begriffe einfach erklärt
 
-*   **Syntaktische Validierung**: Die Überprüfung formaler Grammatik- und Formatierungsregeln in einer Datei (z. B. durch Linter).
-*   **Semantische Korrektheit**: Die inhaltliche und sachliche Richtigkeit von Daten oder Texten im Bezug auf die realen Anforderungen.
-*   **Source-Fidelity-Audit**: Eine manuelle inhaltliche Prüfung, die kontrolliert, ob ein veröffentlichter Text mit den realen Entwicklungsdaten übereinstimmt.
+**Syntaktische Validierung**
+
+Die Überprüfung formaler Grammatik-, Syntax- und Formatierungsregeln in einer Datei (z. B. durch einen Linter).
+
+**Semantische Korrektheit**
+
+Die tatsächliche inhaltliche und sachliche Richtigkeit von Texten oder Daten im Bezug auf die realen Projekt-Anforderungen.
+
+**Source-Fidelity-Audit**
+
+Eine manuelle inhaltliche Prüfung. Sie vergleicht, ob ein veröffentlichter Text mit den realen Entwicklungsdaten und Belegen übereinstimmt.

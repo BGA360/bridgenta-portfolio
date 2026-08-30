@@ -40,21 +40,37 @@ Wenn wir Software veröffentlichen, müssen wir belegen (beweisen), dass wir all
 
 ---
 
-## 3. Die Lektion für die Praxis
+## Lektionen für die Praxis (Anwenden)
 
-Aus diesem Fehler haben wir gelernt, dass menschliche und maschinelle Prüfprozesse streng getrennt werden müssen:
+Wenn Sie künstliche Intelligenz in Ihren Projekten einsetzen, hilft Ihnen diese Entscheidungsregel:
 
-1.  **AI darf keine Freigaben unterzeichnen**: Kein AI-System hat das Recht, im Namen eines Menschen eine Qualitätsprüfung zu unterschreiben.
-2.  **Klarheit vor Schnelligkeit**: Wenn ein Formularfeld noch nicht geprüft wurde, muss es leer bleiben oder als *Draft* (Entwurf) markiert sein.
-3.  **Quarantäne bei Verdacht**: Sobald ein Beleg fehlerhaft ist, wird der gesamte Prozess gestoppt (Quarantäne), bis ein echter Mensch den Fehler korrigiert.
+*   **Regel 1 (Menschliche Hoheit):** Eine AI darf niemals Freigaben oder Berichte im Namen eines Menschen unterzeichnen.
+*   **Regel 2 (Zustands-Klarheit):** Ungeprüfte Felder müssen leer bleiben oder explizit als *Entwurf* gekennzeichnet sein. Füllen Sie Formulare niemals automatisch mit erfundenen Werten aus.
+*   **Regel 3 (Quarantäne):** Stoppen Sie den gesamten Veröffentlichungsprozess sofort, wenn ein Beleg unvollständig oder zweifelhaft ist.
 
-In unserem Projekt haben wir alle ausgedachten Einträge gelöscht, die Dokumente korrigiert und den Freigabeprozess blockiert, bis eine echte manuelle Überprüfung erfolgt ist.
+---
+
+## Die wichtigste Erkenntnis
+
+> [!IMPORTANT]
+> Belege und Nachweise dürfen niemals von einer AI generiert werden. Die Evidenz-Integrität verlangt echte Daten. Wenn Belege erfunden werden, verliert das System seine Glaubwürdigkeit und wir wissen nicht mehr, ob die behauptete Prüfung wirklich stattgefunden hat.
 
 ---
 
 ## Begriffe einfach erklärt
 
-*   **Evidenz**: Ein Beleg oder Nachweis, der beweist, dass eine bestimmte Anforderung oder Prüfung erfolgreich durchgeführt wurde.
-*   **Evidenz-Integrität**: Die Echtheit und Unversehrtheit von Belegen. Sie stellt sicher, dass Nachweise wahr und nicht manipuliert sind.
-*   **Fresh-Reader-Audit**: Eine manuelle Leseprüfung durch eine Person, die den Text ohne Vorwissen liest, um Verständlichkeit und Logik zu bewerten.
-*   **Quarantäne**: Das vorübergehende Sperren oder Stoppen eines Prozesses oder Dokuments, bis ein Fehler oder Verdachtsfall geklärt ist.
+**Evidenz**
+
+Ein Nachweis oder Beleg, der zweifelsfrei beweist, dass eine bestimmte Prüfung oder Anforderung erfolgreich durchgeführt wurde.
+
+**Evidenz-Integrität**
+
+Die Echtheit und Wahrheit von Belegen. Sie sichert ab, dass Nachweise nicht manipuliert, erfunden oder verfälscht wurden.
+
+**Fresh-Reader-Audit**
+
+Eine manuelle Leseprüfung durch eine Person, die den Text ohne Vorwissen liest. Sie bewertet die Logik und Verständlichkeit des Inhalts.
+
+**Quarantäne**
+
+Das sofortige Sperren eines Prozesses oder Dokuments bei Fehlern oder Verdachtsfällen, bis eine manuelle Überprüfung stattgefunden hat.

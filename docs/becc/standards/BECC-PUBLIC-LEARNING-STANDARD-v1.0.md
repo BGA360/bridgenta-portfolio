@@ -158,6 +158,21 @@ Jeder Lernartikel muss vor der Veröffentlichungsfreigabe zwei separate manuelle
 *   Professionelles, technisches Fachvokabular bleibt erlaubt und notwendig. Fachbegriffe müssen bei Erstverwendung durch eine einfache Erklärung eingeführt werden (Verständnis zuerst, Begriff danach).
 *   Höhere technische Komplexität (z. B. auf Intermediate- oder Advanced-Niveau) darf nicht zu einer unnötig verschachtelten oder komplexen Grammatik führen. Jede Erkenntnis muss in klaren, kurzen Sätzen formuliert werden.
 
+### 9.4 BridGenta Learning Core Teaching Sequence
+*   **Prinzip:** `BRIDGENTA_LEARNING_CORE_TEACHING_SEQUENCE`.
+*   Jeder Lernartikel muss der didaktischen Reihenfolge **VERSTEHEN → BENENNEN → BELEGEN → ANWENDEN** folgen.
+*   **VERSTEHEN (Understand):** Zuerst muss die konkrete Situation oder das Problem ohne Fachbegriffe verständlich beschrieben werden. Der Leser muss begreifen, was passiert ist, warum das Problem wichtig ist und welche Fragestellung gelöst wird (`SITUATION_FIRST → ABSTRACTION_LATER`).
+*   **BENENNEN (Name):** Erst danach wird der korrekte technische Begriff eingeführt und in einfachem Deutsch erklärt. Fachbegriffe dürfen nicht entfernt werden, sondern müssen verständlich mit der bekannten Situation verknüpft werden (`UNDERSTAND_FIRST → TERM_SECOND`).
+*   **BELEGEN (Evidence):** Die Aussagen und Erkenntnisse müssen durch nachprüfbare Belege (Evidenz) gestützt sein. Der Leser muss zwischen reiner Erklärung, Behauptung, Schlussfolgerung und tatsächlicher Projektevidenz (z. B. Git-Commits oder Testberichte) klar unterscheiden können.
+*   **ANWENDEN (Apply):** Jeder Artikel muss dem Leser mindestens ein übertragbares und direkt anwendbares Werkzeug (eine Frage, eine Regel, eine Unterscheidung, ein mentales Modell, eine Checkliste, ein Entscheidungsprinzip oder eine Methode) mitgeben (`READ → UNDERSTAND → APPLY_ELSEWHERE`).
+
+### 9.5 Die vier obligatorischen Prüftore (Conformance Gates)
+Jeder Lernartikel wird im Review-Prozess gegen vier Prüftore evaluiert:
+1.  **UNDERSTAND_GATE:** Kann der Leser das Problem verstehen, bevor Fachbegriffe vorausgesetzt werden? (Pass-Kriterium: konkrete Situation zuerst, kein vorzeitiges Jargon-Stacking).
+2.  **NAME_GATE:** Werden Fachbegriffe erst nach der inhaltlichen Hinführung benannt und verständlich eingeführt? (Pass-Kriterium: präzise Fachbegriffe vorhanden, aber didaktisch eingeleitet).
+3.  **EVIDENCE_GATE:** Ist die Evidenz sichtbar und von Interpretationen getrennt? (Pass-Kriterium: Einhaltung der Evidenzgrenzen, keine unbewiesenen Behauptungen).
+4.  **REUSE_GATE:** Bietet der Artikel ein nützliches Werkzeug zur Wiederverwendung in anderen Projekten? (Pass-Kriterium: mindestens ein konkretes Werkzeug wie eine Checkliste oder Entscheidungsregel).
+
 ---
 
 ## 10. Konstitutionelle Autoritäts-Grenzbereiche
@@ -217,3 +232,7 @@ Jede Anforderung wird nachfolgend klassifiziert:
 | **LR-08** | Lesbarkeits-Heuristiken geprüft | **SHOULD** | EDITORIAL | Nein | Ja (Advisory) | Ja (Fresh Reader)| Fresh Reader |
 | **LR-09** | Keine permanenten UI-Abstraktionen | **MUST** | VISUAL | Nein | Nein | Ja (Calibration) | Architect |
 | **LR-10** | Freigabe nach BPS eingeholt | **MUST** | GOVERNANCE | Nein | Nein | Ja (Attestation) | BPGA |
+| **LR-11** | `UNDERSTAND_GATE` bestanden | **MUST** | SEMANTIC | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
+| **LR-12** | `NAME_GATE` bestanden | **MUST** | SEMANTIC | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
+| **LR-13** | `EVIDENCE_GATE` bestanden | **MUST** | SEMANTIC | Nein | Nein | Ja (Fidelity) | Lead Architect |
+| **LR-14** | `REUSE_GATE` bestanden | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |

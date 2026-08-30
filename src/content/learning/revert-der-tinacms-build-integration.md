@@ -44,18 +44,33 @@ Das bedeutet: Alle sensiblen Daten und Konfigurationen müssen vollständig auf 
 
 ---
 
-## 3. Die Lektion für die Praxis
+## Lektionen für die Praxis (Anwenden)
 
-Aus dieser Entscheidung lassen sich drei Lehren ziehen:
+Wenn Sie Schnittstellen zu externen Diensten entwerfen, hilft Ihnen dieses Entscheidungsmodell:
 
-1.  **Funktionalität ist nicht alles**: Nur weil eine Funktion im Test reibungslos läuft, heißt das nicht, dass sie architektonisch richtig ist.
-2.  **Sicherheitsgrenzen schützen**: Weichen Sie Ihre Sicherheitsarchitektur nicht für kleine Bequemlichkeiten (wie eine einfachere Admin-Seite im Web) auf.
-3.  **Mut zum Rückbau**: Wenn ein Fehler oder ein Architektur-Verstoß erkannt wird, zögern Sie nicht, den Code sofort wieder zurückzubauen (Revert), anstatt provisorische Flicken („Workarounds“) einzubauen.
+*   **Regel 1 (Offline-Garantie):** Muss diese Komponente beim Bauen der Webseite zwingend mit dem Internet kommunizieren? Wenn ja, verletzen Sie das Offline-First-Prinzip.
+*   **Regel 2 (Sicherheits-Vorzug):** Kleine Bequemlichkeiten (wie eine einfachere Admin-Oberfläche) dürfen niemals die Systemunabhängigkeit gefährden.
+*   **Regel 3 (Mut zum Revert):** Zögern Sie nicht, eine fehlerhafte oder unsichere Funktion sofort zurückzubauen, anstatt instabile Behelfslösungen zu entwickeln.
+
+---
+
+## Die wichtigste Erkenntnis
+
+> [!IMPORTANT]
+> Eine funktionierende Funktion ist wertlos, wenn sie die Sicherheitsgrenzen des Systems verletzt. Lokale Hoheit und Unabhängigkeit von externen Cloud-Diensten müssen in der Architektur Vorrang vor Komfort haben.
 
 ---
 
 ## Begriffe einfach erklärt
 
-*   **Revert**: Das Zurücksetzen oder Löschen einer Code-Änderung im Git-Verlauf, um zu einem früheren, sicheren Zustand zurückzukehren.
-*   **Sicherheitsgrenze (Security Boundary)**: Eine gedachte Linie im System, die vertrauenswürdige Bereiche (wie den eigenen Rechner) von weniger sicheren Bereichen (wie dem Internet) trennt.
-*   **Offline-First**: Ein Design-Prinzip, bei dem eine Anwendung so gebaut wird, dass sie auch ohne Verbindung zum Internet voll funktionsfähig ist.
+**Revert**
+
+Das Zurücksetzen oder Löschen einer Code-Änderung im Git-Verlauf. Dadurch wird das System wieder in einen früheren, sicheren Zustand versetzt.
+
+**Sicherheitsgrenze (Security Boundary)**
+
+Eine Grenze im System, die sichere Bereiche (wie Ihren eigenen Rechner) von unsicheren Bereichen (wie externen Cloud-Servern im Internet) trennt.
+
+**Offline-First**
+
+Ein Architektur-Prinzip. Software wird so entwickelt, dass sie auch ohne Verbindung zum Internet lokal voll funktionsfähig bleibt.

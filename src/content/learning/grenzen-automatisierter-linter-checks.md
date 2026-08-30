@@ -86,19 +86,37 @@ Im BridGenta-Prüfmodell ergänzen sich automatisierte Regelprüfungen und eine 
 
 ---
 
-## Erkenntnisse für die Praxis
+## Erkenntnisse für die Praxis (Anwenden)
 
-Für Entwickler und Autoren ergeben sich drei Lehren:
+Wenn Sie selbst Dokumentationen oder Berichte verifizieren, können Sie diese praktische Checkliste nutzen:
 
-* **Automatisieren, was möglich ist**: Automatisieren Sie Prüfungen, für die klare maschinelle Regeln existieren. Dazu gehören zum Beispiel klar definierte Format-, Struktur- oder technische Regeln.
-* **Kein Freifahrtschein**: Ein grüner Prüfstatus zeigt zunächst nur, dass die dafür definierten Prüfungen bestanden wurden. Er beweist keine inhaltliche Wahrheit.
-* **Inhaltliche Qualität**: Konzentrieren Sie sich auf Fragen außerhalb der Regeln. Prüfen Sie Verständlichkeit, Logik und Belege.
+*   **Prüfpunkt 1 (Formale Prüfung):** Sind alle Links aktiv, alle Pflichtfelder ausgefüllt und die Formate fehlerfrei? (Das kann eine Maschine automatisch prüfen).
+*   **Prüfpunkt 2 (Verständlichkeit):** Kann eine Person ohne Vorwissen den Text logisch nachvollziehen? (Das erfordert ein Fresh-Reader-Audit).
+*   **Prüfpunkt 3 (Evidenz-Prüfung):** Gibt es für jede Behauptung einen nachprüfbaren Beleg, der die Aussage deckt? (Das erfordert ein Source-Fidelity-Audit).
+
+---
+
+## Die wichtigste Erkenntnis
+
+> [!IMPORTANT]
+> Vertrauen Sie niemals blind einem grünen Pipeline-Symbol. Ein automatischer Check sichert nur die formale Struktur, aber niemals die inhaltliche Wahrheit. Echte Qualität entsteht erst durch die Kombination aus maschinellen Regeln und menschlicher Verifikation.
 
 ---
 
 ## Begriffe einfach erklärt
 
-*   **CI (Continuous Integration)**: Ein automatisiertes Verfahren, bei dem Code-Änderungen fortlaufend zusammengeführt und automatisch getestet werden.
-*   **Linter**: Ein Werkzeug, das Quellcode automatisch auf formale Fehler, Stilregeln oder Programmierfehler hin untersucht.
-*   **Validator**: Eine Prüffunktion, die kontrolliert, ob bestimmte Daten oder Strukturen definierten Regeln und Schemas entsprechen.
-*   **Evidenz**: Ein nachprüfbarer, dokumentierter Beleg (z. B. ein Testbericht oder ein Git-Commit), der die Einhaltung einer Qualitätsanforderung beweist.
+**CI (Continuous Integration)**
+
+Ein automatisiertes Verfahren in der Softwareentwicklung. Code-Änderungen werden fortlaufend zusammengeführt und automatisch getestet.
+
+**Linter**
+
+Ein kleines Hilfsprogramm. Es untersucht Dokumente oder Code automatisch auf formale Fehler, Stilregeln oder Schreibfehler.
+
+**Validator**
+
+Eine Prüffunktion. Sie kontrolliert, ob bestimmte Daten oder Dateien den definierten Regeln und Strukturen entsprechen.
+
+**Evidenz**
+
+Ein nachprüfbarer, echter Beleg (z. B. ein Testprotokoll oder ein Git-Commit), der beweist, dass eine Anforderung erfüllt wurde.
