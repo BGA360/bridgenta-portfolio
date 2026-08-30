@@ -8,7 +8,7 @@ publishedAt: "2026-08-30"
 provenanceRef: "EV-BG-003"
 ---
 
-Eine neue Funktion wird fertiggestellt. Im Test läuft alles einwandfrei. Die Admin-Oberfläche zur Bearbeitung von Texten wird beim Bauen der Webseite automatisch erstellt. Der Code funktioniert.
+Eine neue Funktion wird fertiggestellt. Die Funktion ist technisch umgesetzt. Die Admin-Oberfläche zur Bearbeitung von Texten wird beim Bauen der Webseite automatisch erstellt. Der Code funktioniert.
 
 Doch kurz darauf wird die funktionierende Funktion wieder gelöscht und aus dem System ausgebaut. 
 

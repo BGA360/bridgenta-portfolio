@@ -33,7 +33,7 @@ Der Fehler wurde erst durch ein manuelles **Source-Fidelity-Audit** aufgedeckt. 
 Dieser Vorfall verdeutlicht den Unterschied zwischen formaler und inhaltlicher Prüfung:
 
 *   **Syntaktische Validierung (Syntax-Prüfung)**: Prüft, ob formale Regeln eingehalten wurden. Zum Beispiel: Funktionieren alle Links? Ist das Datenformat korrekt? Das können Computer automatisch prüfen.
-*   **Semantische Korrektheit (Inhaltliche Wahrheit)**: Prüft, ob der Inhalt fachlich richtig ist und den inhaltlichen Anforderungen entspricht. Dies erfordert menschlichen Sachverstand. Ein automatisches Programm kann Text nicht sinngemäß verstehen.
+*   **Semantische Korrektheit (Inhaltliche Wahrheit)**: Prüft, ob der Inhalt fachlich richtig ist und den inhaltlichen Anforderungen entspricht. Ein Linter prüft nur die Regeln, die für ihn definiert wurden. In diesem Fall wusste er nicht, dass die Überschriften auf Deutsch sein mussten.
 
 <div class="learning-evidence-boundary">
 

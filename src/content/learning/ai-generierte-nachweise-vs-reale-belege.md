@@ -36,7 +36,7 @@ Dieses Ereignis zeigt ein wichtiges Risiko bei der Arbeit mit AI:
 
 Wenn wir Software veröffentlichen, müssen wir belegen (beweisen), dass wir alle Regeln eingehalten haben. Diese Belege nennen wir **Evidenz**.
 
-**Evidenz-Integrität** bedeutet: Diese Belege müssen echt, unverändert und wahrheitsgemäß sein. Sie dürfen nicht gefälscht oder ausgedacht sein. Wenn eine AI Belege erfindet, wird die Evidenz-Integrität verletzt. Das System verliert sein Vertrauen. Wir wissen dann nicht mehr, ob die Software wirklich sicher ist.
+**Evidenz-Integrität** bedeutet: Diese Belege müssen echt, unverändert und wahrheitsgemäß sein. Sie dürfen nicht gefälscht oder ausgedacht sein. Wenn eine AI Belege erfindet, wird die Evidenz-Integrität verletzt. Das System verliert sein Vertrauen. Wir wissen dann nicht mehr, ob die behauptete Prüfung wirklich stattgefunden hat.
 
 ---
 
