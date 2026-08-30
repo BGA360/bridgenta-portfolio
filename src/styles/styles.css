@@ -1984,6 +1984,33 @@ section[id] { scroll-margin-top: 100px; }
   gap: var(--space-3);
 }
 
+.learning-article__project-context {
+  margin-bottom: var(--space-4);
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.learning-article__signature {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.learning-signature__text {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 2px 0;
+  font-size: 1rem;
+}
+
+.learning-signature__subtext {
+  color: var(--magenta);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 /* Learning Evidence Boundary Callout */
 .learning-evidence-boundary {
   border-left: 4px solid var(--magenta);

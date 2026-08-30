@@ -108,6 +108,17 @@ const formattedUpdateDate = entry.data.updatedAt
       </section>
 
       <footer class="learning-article__footer">
+        <div class="learning-article__project-context">
+          <p>
+            <em>Dieser Lernartikel basiert auf der Evidenz des dokumentierten Entwicklungsereignisses. Spätere Entwicklungen können diese Erkenntnisse bestätigen, verfeinern oder korrigieren.</em>
+          </p>
+        </div>
+
+        <div class="learning-article__signature">
+          <p class="learning-signature__text">Aus echten Projekten lernen.</p>
+          <p class="learning-signature__subtext">Nicht nur das Ergebnis. Auch der Weg dorthin.</p>
+        </div>
+
         <div class="learning-footer-nav">
           <a href={`/lernen/themen/${categoryEntry.id}/`} class="btn btn--secondary">
             &larr; Zurück zu {categoryEntry.data.name}

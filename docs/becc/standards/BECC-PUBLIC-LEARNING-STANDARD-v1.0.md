@@ -152,6 +152,12 @@ Jeder Lernartikel muss vor der Veröffentlichungsfreigabe zwei separate manuelle
     *   Werden die Evidenzgrenzen eingehalten und absolute Garantien vermieden?
     *   Liegen keine erfundenen Chronologien, Prompts oder Motivationen vor?
 
+### 9.3 A2–B1 Sprachniveau-Richtlinie (CEFR-Klarstellung)
+*   **Prinzip:** `TECHNICAL_DEPTH_DECOUPLED_FROM_GRAMMATICAL_COMPLEXITY`.
+*   BridGenta Learning nutzt eine an A2–B1 orientierte deutsche Satzstruktur, wo immer dies möglich und sinnvoll ist.
+*   Professionelles, technisches Fachvokabular bleibt erlaubt und notwendig. Fachbegriffe müssen bei Erstverwendung durch eine einfache Erklärung eingeführt werden (Verständnis zuerst, Begriff danach).
+*   Höhere technische Komplexität (z. B. auf Intermediate- oder Advanced-Niveau) darf nicht zu einer unnötig verschachtelten oder komplexen Grammatik führen. Jede Erkenntnis muss in klaren, kurzen Sätzen formuliert werden.
+
 ---
 
 ## 10. Konstitutionelle Autoritäts-Grenzbereiche
