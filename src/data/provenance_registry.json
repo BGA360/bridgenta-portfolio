@@ -6,5 +6,37 @@
     "sourceLocator": "bridgenta-workspace/validation/automation_controller.js",
     "historicalLocatorState": "AVAILABLE",
     "historicalLocator": "07aac848a4a48282c8b83169179308bdb17db0c6"
+  },
+  {
+    "eventId": "EV-BG-002",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "docs/becc/governance/GOV-FIND-002-AI-GENERATED-HUMAN-EVIDENCE.md",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "d181dd3027779aef107ac5ee3ca94cc8b6a1ca79"
+  },
+  {
+    "eventId": "EV-BG-003",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "tooling/build_tina.cjs",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "50a8c85e8aa7ebdc8fafb060b92166aebba4764c"
+  },
+  {
+    "eventId": "EV-BG-004",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "src/content/projects/luminapraxisds.md",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "d2363e776159090cff6613e020d41e3451587067"
+  },
+  {
+    "eventId": "EV-BG-005",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "src/styles/styles.css",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "34989fdae04230f060f71b284726dee0c4a39dc8"
   }
 ]

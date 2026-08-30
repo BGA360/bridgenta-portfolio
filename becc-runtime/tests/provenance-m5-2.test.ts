@@ -452,21 +452,25 @@ describe('M5.2 Publication Eligibility Projection', () => {
   });
 
   // Section 15: Production Projection Truth
-  test('Production projection has exactly 1 eligible article and zero withheld/undecided', () => {
+  test('Production projection has exactly 5 eligible articles and zero withheld/undecided', () => {
     // Run evaluation against current production learning articles
     const mockCollection = [
-      { id: 'grenzen-automatisierter-linter-checks.md', data: { publicationState: 'published' } }
+      { id: 'grenzen-automatisierter-linter-checks.md', data: { publicationState: 'published' } },
+      { id: 'ai-generierte-nachweise-vs-reale-belege.md', data: { publicationState: 'published' } },
+      { id: 'revert-der-tinacms-build-integration.md', data: { publicationState: 'published' } },
+      { id: 'code-fakten-vs-strukturelle-korrektheit.md', data: { publicationState: 'published' } },
+      { id: 'layout-absicherung-in-mobilen-ansichten.md', data: { publicationState: 'published' } }
     ];
 
     const projection = getM5Projection(mockCollection);
     
-    assert.strictEqual(projection.records.length, 1);
+    assert.strictEqual(projection.records.length, 5);
     
-    const rec = projection.records[0];
-    assert.strictEqual(rec.subjectId, 'src/content/learning/grenzen-automatisierter-linter-checks.md');
+    const rec = projection.records.find((r: any) => r.subjectId === 'src/content/learning/grenzen-automatisierter-linter-checks.md');
+    assert.ok(rec);
     assert.strictEqual(rec.publicationEligibility, 'PUBLICATION_ELIGIBLE');
     
-    assert.strictEqual(projection.eligibleSubjectIds.length, 1);
+    assert.strictEqual(projection.eligibleSubjectIds.length, 5);
     assert.strictEqual(projection.withheldSubjectIds.length, 0);
     assert.strictEqual(projection.undecidedSubjectIds.length, 0);
   });
@@ -1105,8 +1109,8 @@ provenanceRef: "EV-BG-106"
       // Evaluate against the real repository root
       const res = evaluateShadowObservation(repoRoot);
       assert.strictEqual(res.observation.shadowGateResult, "SHADOW_PASS");
-      assert.strictEqual(res.observation.subjectCount, 1);
-      assert.strictEqual(res.observation.eligibleCount, 1);
+      assert.strictEqual(res.observation.subjectCount, 5);
+      assert.strictEqual(res.observation.eligibleCount, 5);
       assert.strictEqual(res.observation.withheldCount, 0);
       assert.strictEqual(res.observation.undecidedCount, 0);
     });

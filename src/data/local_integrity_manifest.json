@@ -9,5 +9,49 @@
     "integrityEvidenceType": "sha256",
     "integrityEvidenceValue": "60c3eeec08a279732b24d69ad331de2c960dc6a7711a1467713e80ec9f4ddaf8",
     "capturedAt": "2026-08-26T13:46:36.584Z"
+  },
+  {
+    "eventId": "EV-BG-002",
+    "sourceSystem": "git",
+    "sourceLocator": "docs/becc/governance/GOV-FIND-002-AI-GENERATED-HUMAN-EVIDENCE.md",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "d181dd3027779aef107ac5ee3ca94cc8b6a1ca79",
+    "localVerificationState": "AVAILABLE",
+    "integrityEvidenceType": "sha256",
+    "integrityEvidenceValue": "6bfc30bf6f649848dd97cf66085a266952cd306706c6f0d007568719b455e75a",
+    "capturedAt": "2026-08-30T14:40:00.000Z"
+  },
+  {
+    "eventId": "EV-BG-003",
+    "sourceSystem": "git",
+    "sourceLocator": "tooling/build_tina.cjs",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "50a8c85e8aa7ebdc8fafb060b92166aebba4764c",
+    "localVerificationState": "NOT_AVAILABLE",
+    "integrityEvidenceType": null,
+    "integrityEvidenceValue": null,
+    "capturedAt": "2026-08-30T14:40:00.000Z"
+  },
+  {
+    "eventId": "EV-BG-004",
+    "sourceSystem": "git",
+    "sourceLocator": "src/content/projects/luminapraxisds.md",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "d2363e776159090cff6613e020d41e3451587067",
+    "localVerificationState": "AVAILABLE",
+    "integrityEvidenceType": "sha256",
+    "integrityEvidenceValue": "5c7f9fa54be66ef7c4722288753a22cdd97aeb8310e299840df4afe505c75f4d",
+    "capturedAt": "2026-08-30T14:40:00.000Z"
+  },
+  {
+    "eventId": "EV-BG-005",
+    "sourceSystem": "git",
+    "sourceLocator": "src/styles/styles.css",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "34989fdae04230f060f71b284726dee0c4a39dc8",
+    "localVerificationState": "AVAILABLE",
+    "integrityEvidenceType": "sha256",
+    "integrityEvidenceValue": "9e2ea04c64ae0cde1b10314b0f2e712cfc0166067755ae380cfe67af28c66008",
+    "capturedAt": "2026-08-30T14:40:00.000Z"
   }
 ]

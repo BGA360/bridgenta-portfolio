@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "eventId": "EV-BG-003",
+    "clearanceState": "APPROVED",
+    "reviewType": "Source-Fidelity",
+    "result": "PASS",
+    "reviewedAt": "2026-08-30T14:40:00+02:00",
+    "reviewerOrRole": "Publication Steward",
+    "evidenceFingerprint": "3ab09842fe93f414ca94cd69f63c48b498877a4fb9818215a67851e376ca3faa",
+    "clearanceScope": "EVENT",
+    "resolutionState": "SOURCE_UNAVAILABLE",
+    "reviewReference": "stewardship/reviews/revert-der-tinacms-build-integration.review.md",
+    "subjectType": null,
+    "subjectId": null
+  }
+]
