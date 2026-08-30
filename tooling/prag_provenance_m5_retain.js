@@ -4,6 +4,51 @@ import { fileURLToPath } from "node:url";
 import { validateObservationReport } from "./prag_provenance_m5_readiness.js";
 
 /**
+ * Constructs a deterministic canonical retained envelope.
+ * @param {any} observation 
+ * @param {string} observationHash 
+ * @param {any} execution 
+ * @returns {any}
+ */
+export function buildCanonicalEnvelope(observation, observationHash, execution) {
+  // Sort observation keys
+  const sortedObs = {};
+  for (const k of Object.keys(observation || {}).sort()) {
+    sortedObs[k] = observation[k];
+  }
+
+  // Build canonical execution metadata
+  const canonicalExecution = {
+    branch: execution?.branch || null,
+    job: execution?.job || null,
+    runId: execution?.runId || null,
+    runner: execution?.runner || null,
+    timestamp: execution?.timestamp || null,
+    workflow: execution?.workflow || null
+  };
+
+  return {
+    execution: canonicalExecution,
+    observation: sortedObs,
+    observationHash: observationHash
+  };
+}
+
+/**
+ * Deterministically serializes a retained envelope.
+ * @param {any} envelope 
+ * @returns {string}
+ */
+export function serializeEnvelope(envelope) {
+  const canonical = buildCanonicalEnvelope(
+    envelope.observation,
+    envelope.observationHash,
+    envelope.execution
+  );
+  return JSON.stringify(canonical, null, 2) + "\n";
+}
+
+/**
  * Validates and persists a shadow observation working report into the durable history directory.
  * @param {string} workspaceRoot 
  * @param {string|null} [customReportPath] 
@@ -38,6 +83,8 @@ export function runRetention(workspaceRoot, customReportPath = null) {
     fs.mkdirSync(historyDir, { recursive: true });
   }
 
+  const incomingSerialized = serializeEnvelope(executionEnvelope);
+
   if (fs.existsSync(destPath)) {
     // Idempotency / content verification (Section 13)
     const existingContent = fs.readFileSync(destPath, "utf-8");
@@ -54,27 +101,23 @@ export function runRetention(workspaceRoot, customReportPath = null) {
       throw new Error("HISTORICAL_EVIDENCE_CORRUPTION: Existing history file fails validation.");
     }
 
-    // Check if semantically identical
-    if (valExisting.hash === obsHash) {
+    let existingSerialized;
+    try {
+      existingSerialized = serializeEnvelope(existingEnvelope);
+    } catch (e) {
+      throw new Error("HISTORICAL_EVIDENCE_CORRUPTION: Existing history file cannot be serialized.");
+    }
+
+    // Check if semantically identical canonical envelope
+    if (existingSerialized === incomingSerialized) {
       return { status: "IDEMPOTENT_NOOP", hash: obsHash };
     } else {
-      throw new Error("HISTORICAL_EVIDENCE_CORRUPTION: Content mismatch for same hash.");
+      throw new Error("HISTORICAL_EVIDENCE_CORRUPTION: Content mismatch between existing envelope and incoming envelope.");
     }
   }
 
-  // Deterministic serialization: stable property sorting and trailing newline
-  const payloadToHash = {};
-  for (const k of Object.keys(executionEnvelope.observation).sort()) {
-    payloadToHash[k] = executionEnvelope.observation[k];
-  }
-  const cleanEnvelope = {
-    observation: payloadToHash,
-    observationHash: executionEnvelope.observationHash,
-    execution: executionEnvelope.execution || null
-  };
-
-  const serialized = JSON.stringify(cleanEnvelope, null, 2) + "\n";
-  fs.writeFileSync(destPath, serialized, "utf-8");
+  // Write new record deterministically
+  fs.writeFileSync(destPath, incomingSerialized, "utf-8");
   return { status: "PERSISTED", hash: obsHash };
 }
 

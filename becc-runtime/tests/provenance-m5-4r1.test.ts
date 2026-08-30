@@ -378,4 +378,204 @@ describe('M5.4O-R1 Durable Shadow Observation Evidence Retention', () => {
     assert.strictEqual(res.eligibleObservationCount, 5); // 10 observations deduplicated to 5
     assert.strictEqual(res.sourceRepositoryCommits.length, 5);
   });
+
+  // M5.4O-R2 Idempotency and Workflow Permissions checks
+  test('deploy.yml permissions check', () => {
+    const yamlPath = path.join(repoRoot, '.github', 'workflows', 'deploy.yml');
+    assert.ok(fs.existsSync(yamlPath));
+    const content = fs.readFileSync(yamlPath, 'utf-8');
+
+    // 1. Workflow-level contents permission must be read
+    const lines = content.split(/\r?\n/);
+    let inWorkflowPermissions = false;
+    let workflowContentsPermission = '';
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.startsWith('permissions:')) {
+        inWorkflowPermissions = true;
+        continue;
+      }
+      if (inWorkflowPermissions) {
+        if (line.startsWith(' ') || line.trim() === '') {
+          const match = line.match(/\s*contents:\s*(\w+)/);
+          if (match) {
+            workflowContentsPermission = match[1];
+          }
+        } else {
+          inWorkflowPermissions = false;
+        }
+      }
+    }
+    assert.strictEqual(workflowContentsPermission, 'read', 'Workflow-level contents permission must be read');
+
+    // 2. Parse job-level permissions
+    const jobPermissions: { [job: string]: { [perm: string]: string } } = {};
+    let currentJob = '';
+    let inJobPermissions = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.startsWith('jobs:')) {
+        continue;
+      }
+      const jobMatch = line.match(/^\s{2}(\w+[\w-]*):\s*$/);
+      if (jobMatch) {
+        currentJob = jobMatch[1];
+        jobPermissions[currentJob] = {};
+        inJobPermissions = false;
+        continue;
+      }
+
+      if (currentJob) {
+        if (line.match(/^\s{4}permissions:\s*$/)) {
+          inJobPermissions = true;
+          continue;
+        }
+        if (inJobPermissions) {
+          const indentMatch = line.match(/^(\s*)/);
+          const indent = indentMatch ? indentMatch[1].length : 0;
+          if (indent > 4 && line.trim() !== '') {
+            const permValMatch = line.match(/\s*(\w+[\w-]*):\s*(\w+)/);
+            if (permValMatch) {
+              jobPermissions[currentJob][permValMatch[1]] = permValMatch[2];
+            }
+          } else if (line.trim() !== '') {
+            inJobPermissions = false;
+          }
+        }
+      }
+    }
+
+    assert.ok(jobPermissions['build'], 'build job not found');
+    assert.ok(jobPermissions['m5-shadow'], 'm5-shadow job not found');
+    assert.ok(jobPermissions['m5-retain'], 'm5-retain job not found');
+    assert.ok(jobPermissions['deploy'], 'deploy job not found');
+
+    assert.notStrictEqual(jobPermissions['build']['contents'], 'write', 'build job contents must not be write');
+    assert.notStrictEqual(jobPermissions['m5-shadow']['contents'], 'write', 'm5-shadow job contents must not be write');
+    assert.strictEqual(jobPermissions['m5-retain']['contents'], 'write', 'm5-retain job contents must be write');
+    assert.notStrictEqual(jobPermissions['deploy']['contents'], 'write', 'deploy job contents must not be write');
+    assert.strictEqual(jobPermissions['deploy']['pages'], 'write', 'deploy job pages must be write');
+    assert.strictEqual(jobPermissions['deploy']['id-token'], 'write', 'deploy job id-token must be write');
+  });
+
+  test('identical canonical envelope -> IDEMPOTENT_NOOP', () => {
+    const workspace = path.join(testTmpDir, 'envelope-idem');
+    const reportsDir = path.join(workspace, 'stewardship', 'reports');
+    fs.mkdirSync(reportsDir, { recursive: true });
+
+    const envelope = createEnvelope(validObsTemplate);
+    const reportPath = path.join(reportsDir, 'm5-ci-shadow-observation.json');
+    fs.writeFileSync(reportPath, JSON.stringify(envelope), 'utf-8');
+
+    const res1 = runRetention(workspace, reportPath);
+    assert.strictEqual(res1.status, 'PERSISTED');
+
+    const res2 = runRetention(workspace, reportPath);
+    assert.strictEqual(res2.status, 'IDEMPOTENT_NOOP');
+  });
+
+  test('same observation hash + modified execution.runId -> HISTORICAL_EVIDENCE_CORRUPTION', () => {
+    const workspace = path.join(testTmpDir, 'envelope-runid');
+    const reportsDir = path.join(workspace, 'stewardship', 'reports');
+    fs.mkdirSync(reportsDir, { recursive: true });
+
+    const envelope1 = createEnvelope(validObsTemplate);
+    envelope1.execution.runId = "11111";
+    const reportPath = path.join(reportsDir, 'm5-ci-shadow-observation.json');
+    fs.writeFileSync(reportPath, JSON.stringify(envelope1), 'utf-8');
+
+    runRetention(workspace, reportPath);
+
+    const envelope2 = {
+      ...envelope1,
+      execution: {
+        ...envelope1.execution,
+        runId: "22222" // modified
+      }
+    };
+    fs.writeFileSync(reportPath, JSON.stringify(envelope2), 'utf-8');
+
+    assert.throws(() => {
+      runRetention(workspace, reportPath);
+    }, /HISTORICAL_EVIDENCE_CORRUPTION/);
+  });
+
+  test('same observation hash + modified execution.timestamp -> HISTORICAL_EVIDENCE_CORRUPTION', () => {
+    const workspace = path.join(testTmpDir, 'envelope-timestamp');
+    const reportsDir = path.join(workspace, 'stewardship', 'reports');
+    fs.mkdirSync(reportsDir, { recursive: true });
+
+    const envelope1 = createEnvelope(validObsTemplate);
+    envelope1.execution.timestamp = "2026-08-30T10:00:00.000Z";
+    const reportPath = path.join(reportsDir, 'm5-ci-shadow-observation.json');
+    fs.writeFileSync(reportPath, JSON.stringify(envelope1), 'utf-8');
+
+    runRetention(workspace, reportPath);
+
+    const envelope2 = {
+      ...envelope1,
+      execution: {
+        ...envelope1.execution,
+        timestamp: "2026-08-30T11:00:00.000Z" // modified
+      }
+    };
+    fs.writeFileSync(reportPath, JSON.stringify(envelope2), 'utf-8');
+
+    assert.throws(() => {
+      runRetention(workspace, reportPath);
+    }, /HISTORICAL_EVIDENCE_CORRUPTION/);
+  });
+
+  test('malformed existing history file -> HISTORICAL_EVIDENCE_CORRUPTION', () => {
+    const workspace = path.join(testTmpDir, 'envelope-malformed-existing');
+    const reportsDir = path.join(workspace, 'stewardship', 'reports');
+    fs.mkdirSync(reportsDir, { recursive: true });
+
+    const envelope = createEnvelope(validObsTemplate);
+    const reportPath = path.join(reportsDir, 'm5-ci-shadow-observation.json');
+    fs.writeFileSync(reportPath, JSON.stringify(envelope), 'utf-8');
+
+    const historyDir = path.join(reportsDir, 'history', 'm5-shadow', envelope.observation.repositoryCommit);
+    fs.mkdirSync(historyDir, { recursive: true });
+    const targetFile = path.join(historyDir, `${envelope.observationHash}.json`);
+    fs.writeFileSync(targetFile, "NOT_JSON_CONTENT", 'utf-8');
+
+    assert.throws(() => {
+      runRetention(workspace, reportPath);
+    }, /HISTORICAL_EVIDENCE_CORRUPTION/);
+  });
+
+  test('existing valid observation but different canonical envelope -> NO OVERWRITE', () => {
+    const workspace = path.join(testTmpDir, 'envelope-no-overwrite');
+    const reportsDir = path.join(workspace, 'stewardship', 'reports');
+    fs.mkdirSync(reportsDir, { recursive: true });
+
+    const envelope1 = createEnvelope(validObsTemplate);
+    envelope1.execution.runId = "11111";
+    const reportPath = path.join(reportsDir, 'm5-ci-shadow-observation.json');
+    fs.writeFileSync(reportPath, JSON.stringify(envelope1), 'utf-8');
+
+    runRetention(workspace, reportPath);
+
+    const targetFile = path.join(reportsDir, 'history', 'm5-shadow', envelope1.observation.repositoryCommit, `${envelope1.observationHash}.json`);
+    const historyContentBefore = fs.readFileSync(targetFile, 'utf-8');
+
+    const envelope2 = {
+      ...envelope1,
+      execution: {
+        ...envelope1.execution,
+        runId: "22222"
+      }
+    };
+    fs.writeFileSync(reportPath, JSON.stringify(envelope2), 'utf-8');
+
+    assert.throws(() => {
+      runRetention(workspace, reportPath);
+    });
+
+    const historyContentAfter = fs.readFileSync(targetFile, 'utf-8');
+    assert.strictEqual(historyContentBefore, historyContentAfter, 'The existing historical record must not be overwritten');
+  });
 });
