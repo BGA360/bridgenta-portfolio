@@ -260,6 +260,9 @@ Die prose-Ebene der Lernartikel folgt dem BridGenta Natural Learning Rhythm, um 
 11. **PRESERVE NATURAL VARIATION BETWEEN ARTICLES**: Jeder Artikel darf eine eigene Dynamik, Wortwahl und Struktur besitzen. Die Konsistenz liegt in der Didaktik, nicht in einer identischen Textmaske.
 12. **THE READER SHOULD NOT NOTICE THE FRAMEWORK**: Der Leser soll einer natürlichen Erklärung folgen und nicht das Gefühl haben, ein mechanisch generiertes Formular zu lesen.
 
+* **SOURCE_LINE_BREAK != COGNITIVE_PAUSE**: Ein Zeilenumbruch im Markdown-Quellcode ist keine hinreichende Bedingung für eine gedankliche Pause des Lesers. Jede kognitive Pause muss im gerenderten Artikel im Browser visuell deutlich wahrnehmbar sein (durch Abstände und Absätze).
+* **SOURCE_FORMATTING_ALONE DOES_NOT_PROVE READER_PERCEIVED_RHYTHM**: Die Formatierung im Quelltext allein garantiert keinen guten Lesefluss; ausschlaggebend ist das im Browser sichtbare Ergebnis.
+
 ### 15.2 Stilistische Leitplanken
 * **HUMANIZED != CASUAL**: Der Text bleibt professionell und respektvoll, spricht den Leser aber auf Augenhöhe an.
 * **SIMPLE != SHALLOW**: Fachliche Tiefe wird beibehalten, aber durch klare Sprache zugänglich gemacht.
@@ -282,4 +285,21 @@ Didaktisch wird der Lernprozess in einzelne, aufeinander aufbauende Schritte zer
 * **Satz-Dichte:** Vermeide Sätze mit mehreren Nebensätzen, vielen Qualifikationen oder verschachtelten Kausalitätsbeziehungen.
 * **Absatz-Schnittstelle:** Ein Absatz behandelt genau eine Kernidee (`ONE_MAIN_IDEA → ONE_SHORT_PARAGRAPH → COGNITIVE_PAUSE`).
 * **Satzlängen-Formel:** `SHORT_WHEN_POSSIBLE`, `LONGER_WHEN_NECESSARY`, `NEVER_DENSE_WITHOUT_NEED`.
+
+### 16.3 Rendered Readability Principle (BRIDGENTA_RENDERED_READABILITY_PRINCIPLE)
+Der tatsächliche Lesefluss ergibt sich aus der Summe von inhaltlichem Satzrhythmus und visuellem Layout:
+`READING_RHYTHM = SENTENCE_RHYTHM + PARAGRAPH_SPACING + HEADING_SPACING + LINE_HEIGHT + LIST_SPACING + CALLOUT_SPACING`
+
+Für die Darstellung gelten folgende qualitative Zielvorgaben auf Desktop, Tablet und Mobilgeräten:
+- `DESKTOP_LINE_HEIGHT`: COMFORTABLE (angenehme Zeilenhöhe für flüssiges Lesen)
+- `TABLET_LINE_HEIGHT`: COMFORTABLE
+- `MOBILE_LINE_HEIGHT`: COMFORTABLE
+- `PARAGRAPH_SEPARATION`: VISIBLE (Absätze heben sich deutlich voneinander ab)
+- `HEADING_SEPARATION`: CLEAR (Überschriften grenzen sich klar vom vorherigen und nachfolgenden Text ab)
+- `LIST_ITEM_SPACING`: READABLE (Listenpunkte wirken nicht komprimiert)
+- `GLOSSARY_TERM_SPACING`: READABLE (Fachbegriffe und ihre Erläuterungen sind leicht scannbar)
+- `CALLOUT_SPACING`: READABLE (Hervorhebungen und Boxen haben Luft zum Atmen)
+- `NO_TEXT_BLOCK_FEELS_COMPRESSED`: YES
+- `NO_VISUAL_FRAGMENTATION`: YES (Der Leerraum darf die inhaltliche Verbundenheit der Abschnitte nicht zerreißen)
+
 

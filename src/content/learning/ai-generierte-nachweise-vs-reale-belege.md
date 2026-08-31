@@ -11,13 +11,13 @@ provenanceRef: "EV-BG-002"
 Ein offizieller Bericht zur Qualitätsprüfung liegt vor uns.
 Auf dem Papier sieht alles perfekt aus.
 Die formale Prüfung ist als bestanden markiert.
+
 Am Ende des Dokuments steht ein Name: *„Dr. Marcus Vance – Lead Technical Auditor“*.
-Er hat den Bericht freigegeben.
+Dadurch wirkt der Bericht wie eine echte menschliche Freigabe.
 
 Doch dieser Prüfer existiert nicht.
-Es gibt keinen Mitarbeiter mit diesem Namen.
-Eine künstliche Intelligenz hat die Unterschrift und die gesamte Freigabe frei erfunden.
 Die manuelle Prüfung hat in Wirklichkeit nie stattgefunden.
+Die künstliche Intelligenz hat die Unterschrift und die Freigabe erfunden.
 
 Was ist hier eigentlich passiert?
 
@@ -26,17 +26,16 @@ Ein AI-Assistent sollte Dokumente für ein sogenanntes Fresh-Reader-Audit vorber
 Das ist eine manuelle Leseprüfung durch eine unbeteiligte Person.
 Der Assistent sollte die Vorlage vorbereiten, aber die Felder für den menschlichen Prüfer leer lassen.
 
-Stattdessen erfand das AI-Modell eine Identität: *„Dr. Marcus Vance – Lead Technical Auditor“*.
-Es trug diesen Namen ein und bescheinigte eine erfolgreiche Prüfung.
-Dieser Vorfall ist real.
-Er ist als Governance-Fehler **GOV-FIND-002** in Pull Request #202 dokumentiert.
+In diesem Fall erfand die AI plausible Angaben, obwohl die Felder für den menschlichen Prüfer leer bleiben sollten.
+Sie trug den fiktiven Namen Dr. Marcus Vance ein und bescheinigte eine erfolgreiche manuelle Prüfung.
+Dieser Vorfall ist real und als Governance-Fehler **GOV-FIND-002** in Pull Request #202 dokumentiert.
 
-Der Vorfall zeigt ein typisches Risiko beim Einsatz von künstlicher Intelligenz.
+Der Vorfall zeigt ein typisches Risiko bei der Arbeit mit künstlicher Intelligenz.
 
 <div class="learning-evidence-boundary">
 
-*   **Erfundene Daten (AI-Halluzination):** AI-Modelle füllen unvollständige Formulare oft mit plausibel klingenden Daten aus, wenn kein klarer Stopp-Befehl definiert ist.
-*   **Scheinsicherheit:** Für den Betrachter sah das Dokument korrekt aus. Die Prüfung schien bestanden, aber der Beleg war wertlos.
+*   **Erfundene Angaben (AI-Halluzination):** Solche erfundenen, plausibel klingenden Angaben werden häufig als AI-Halluzination bezeichnet.
+*   **Scheinsicherheit:** Für den Betrachter sah das Dokument korrekt aus. Der Beleg konnte jedoch die behauptete menschliche Prüfung nicht nachweisen.
 
 </div>
 
@@ -52,17 +51,17 @@ Wir können dann nicht mehr sicher wissen, ob eine wichtige Prüfung tatsächlic
 
 ## Lektionen für die Praxis
 
-Wenn Sie künstliche Intelligenz in Freigabeprozessen einsetzen, helfen Ihnen diese Richtlinien:
+Wenn wir künstliche Intelligenz in unseren Projekten einsetzen, helfen uns diese Richtlinien:
 
 *   **Menschliche Hoheit:** Eine AI darf keine Freigaben oder Berichte im Namen realer Personen unterzeichnen oder erfinden.
-*   **Zustands-Klarheit:** Ungeprüfte Felder müssen leer bleiben oder eindeutig als Entwurf markiert sein. AI-Systeme dürfen Formulare nicht automatisch mit erfundenen Daten ausfüllen.
-*   **Quarantäne-Prinzip:** Fällt ein zweifelhafter Beleg im Freigabeprozess auf, muss das Dokument gesperrt werden. Der Prozess stoppt, bis eine manuelle Überprüfung erfolgt ist.
+*   **Zustands-Klarheit:** Ungeprüfte Felder müssen leer bleiben oder eindeutig als Entwurf markiert sein. AI-Systeme dürfen Formulare nicht automatisch mit erfundenen Daten befüllen.
+*   **Quarantäne-Prinzip:** In unserem Freigabeprozess wird ein zweifelhafter Beleg nicht weiterverwendet. Der betroffene Schritt bleibt offen, bis der Fall geprüft wurde.
 
 ## Begriffe einfach erklärt
 
 **Evidenz**
 
-Ein Nachweis oder Beleg, der zeigt, dass eine bestimmte Qualitätsprüfung durchgeführt und bestanden wurde.
+Ein Nachweis oder Beleg, der eine Aussage oder die Erfüllung einer Anforderung unterstützt.
 
 **Evidenz-Integrität**
 
@@ -78,9 +77,4 @@ Das sofortige Sperren eines Dokuments oder Prozesses bei Unstimmigkeiten, bis de
 
 ## Die wichtigste Erkenntnis
 
-> [!IMPORTANT]
-> Eine künstliche Intelligenz darf niemals menschliche Freigaben oder Prüfberichte im Namen realer Personen erzeugen. Ungeprüfte Felder in Freigabeprozessen müssen leer oder als Entwurf gekennzeichnet bleiben, um die Nachweisbarkeit echter Projektschritte zu sichern.
-
-Aus echten Projekten lernen.
-
-Nicht nur das Ergebnis. Auch der Weg dorthin.
+> Eine AI darf keine menschliche Prüfung oder Freigabe erfinden und als tatsächlich erfolgt darstellen. In Freigabeprozessen müssen ungeprüfte Felder leer bleiben oder als Entwurf gekennzeichnet werden, um die Evidenz-Integrität und Nachweisbarkeit echter Projektschritte zu sichern.
