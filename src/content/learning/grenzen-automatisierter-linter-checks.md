@@ -91,15 +91,15 @@ Im BridGenta-Prüfmodell ergänzen sich automatisierte Regelprüfungen und eine 
 Wenn Sie selbst Dokumentationen oder Berichte verifizieren, können Sie diese praktische Checkliste nutzen:
 
 *   **Prüfpunkt 1 (Formale Prüfung):** Sind alle Links aktiv, alle Pflichtfelder ausgefüllt und die Formate fehlerfrei? (Das kann eine Maschine automatisch prüfen).
-*   **Prüfpunkt 2 (Verständlichkeit):** Kann eine Person ohne Vorwissen den Text logisch nachvollziehen? (Das erfordert ein Fresh-Reader-Audit).
-*   **Prüfpunkt 3 (Evidenz-Prüfung):** Gibt es für jede Behauptung einen nachprüfbaren Beleg, der die Aussage deckt? (Das erfordert ein Source-Fidelity-Audit).
+*   **Prüfpunkt 2 (Verständlichkeit):** Kann eine Person ohne Vorwissen den Text logisch nachvollziehen? (Im BridGenta-Prüfmodell nutzen wir dafür einen Fresh-Reader-Review).
+*   **Prüfpunkt 3 (Evidenz-Prüfung):** Gibt es für jede Behauptung einen nachprüfbaren Beleg, der die Aussage deckt? (Im BridGenta-Prüfmodell nutzen wir dafür einen Source-Fidelity-Audit).
 
 ---
 
 ## Die wichtigste Erkenntnis
 
 > [!IMPORTANT]
-> Vertrauen Sie niemals blind einem grünen Pipeline-Symbol. Ein automatischer Check sichert nur die formale Struktur, aber niemals die inhaltliche Wahrheit. Echte Qualität entsteht erst durch die Kombination aus maschinellen Regeln und menschlicher Verifikation.
+> Vertrauen Sie einem grünen Pipeline-Symbol nur im Rahmen der geprüften Regeln. Ein automatischer Check zeigt nur, was mit seinen definierten Regeln geprüft wurde. Er beweist nicht automatisch, dass alle inhaltlichen oder fachlichen Anforderungen erfüllt sind.
 
 ---
 
@@ -119,4 +119,4 @@ Eine Prüffunktion. Sie kontrolliert, ob bestimmte Daten oder Dateien den defini
 
 **Evidenz**
 
-Ein nachprüfbarer, echter Beleg (z. B. ein Testprotokoll oder ein Git-Commit), der beweist, dass eine Anforderung erfüllt wurde.
+Ein nachprüfbarer Beleg, der eine Aussage oder die Erfüllung einer Anforderung unterstützt.

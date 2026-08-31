@@ -39,8 +39,8 @@ Ein Design-Element (wie ein Kontakt-Knopf) darf niemals den Zugriff auf diese re
 
 Um das Problem zu lösen, haben wir eine bewusste Vereinfachung vorgenommen:
 * **Entfernung auf Smartphones**: Auf kleinen Bildschirmen wird der Kontakt-Knopf in der Navigation nun komplett ausgeblendet (Commit `34989fd`). Das Menü hat dadurch wieder genug Platz.
-* **Erreichbarkeit gesichert**: Der Kontakt-Link ist weiterhin als normaler Text-Link im Menü vorhanden. 
-* **Freie Bahn für Pflichtangaben**: Impressum und Datenschutzerklärung sind nun wieder für jeden Smartphone-Besucher sofort sichtbar und barrierefrei anklickbar.
+* **Erreichbarkeit gesichert**: Der Kontakt-Link ist weiterhin im Menü vorhanden. 
+* **Freie Bahn für Pflichtangaben**: Impressum und Datenschutzerklärung sind in diesem Layout wieder für Smartphone-Besucher erreichbar und anklickbar.
 
 ---
 
@@ -49,7 +49,7 @@ Um das Problem zu lösen, haben wir eine bewusste Vereinfachung vorgenommen:
 Wenn Sie mobile Benutzeroberflächen gestalten, hilft Ihnen diese Checkliste zur Layout-Absicherung:
 
 *   **Prüfpunkt 1 (Platzsparen):** Blenden Sie unwichtige oder doppelte Design-Elemente auf Smartphones gezielt aus, um Platz für die Hauptnavigation zu schaffen.
-*   **Prüfpunkt 2 (Rechtspriorität):** Stellen Sie sicher, dass gesetzliche Pflichtangaben (wie Impressum und Datenschutz) in jedem mobilen Layout-Zustand erreichbar und unverdeckt bleiben.
+*   **Prüfpunkt 2 (Rechtspriorität):** Bei mobilen Layout-Änderungen müssen wichtige Pflicht- und Navigationslinks weiterhin erreichbar bleiben.
 *   **Prüfpunkt 3 (Mobiles Testen):** Testen Sie Navigationsmenüs immer auf echten Mobilgeräten mit unterschiedlichen Bildschirmgrößen, um Layout-Kollisionen frühzeitig zu erkennen.
 
 ---
@@ -57,7 +57,7 @@ Wenn Sie mobile Benutzeroberflächen gestalten, hilft Ihnen diese Checkliste zur
 ## Die wichtigste Erkenntnis
 
 > [!IMPORTANT]
-> Mobile Layout-Kollisionen sind nicht nur optische Mängel, sondern können zum rechtlichen Risiko werden. Rechtliche Pflichtlinks müssen auf jedem Endgerät barrierefrei erreichbar sein. Priorisieren Sie die Erreichbarkeit von Pflichtangaben vor ästhetischen Zusatzfeatures.
+> Mobile Layout-Kollisionen können den Zugriff auf wichtige Seiten erschweren. Im mobilen Layout müssen wichtige Pflichtlinks weiterhin erreichbar bleiben. Zusätzlich sollte die Oberfläche so gestaltet sein, dass Menschen sie mit unterschiedlichen Geräten und Bedürfnissen möglichst gut nutzen können.
 
 ---
 
@@ -69,8 +69,8 @@ Ein Darstellungsfehler im Webdesign. Verschiedene Elemente (z. B. Texte und Knö
 
 **Barrierefreiheit**
 
-Das barrierefreie Gestalten von Internetseiten. So können alle Menschen die Webseite ohne Einschränkungen nutzen – unabhängig von ihren körperlichen oder technischen Fähigkeiten.
+Barrierefreiheit bedeutet, digitale Inhalte so zu gestalten, dass Menschen mit unterschiedlichen Fähigkeiten sie möglichst gut wahrnehmen, verstehen und bedienen können.
 
 **Impressum**
 
-Die gesetzlich vorgeschriebene Anbieterkennzeichnung auf einer Internetseite. Sie gibt Auskunft über die Betreiber der Seite.
+Ein Impressum enthält Angaben zum Anbieter einer Website. Ob und welche Angaben gesetzlich erforderlich sind, hängt vom jeweiligen Fall ab.
