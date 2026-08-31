@@ -2,10 +2,12 @@
 ## Kalibrierungs- und Auslegungsmodell für öffentliche Lerninhalte
 
 *   **Identifikator:** `BECC-LCMB-v1.0`
-*   **Status:** `CALIBRATED CANDIDATE / PENDING OWNER APPROVAL`
+*   **Status:** `CALIBRATED / ACTIVE`
 *   **Basis-Standard:** `BECC-PLS-v1.0` (v1.0.0-Extension)
 *   **Version:** `1.0.0`
 *   **Freigabe-Autorität:** Project Owner (Letztentscheidungsrecht)
+*   **Historischer Zustand:** Die Baseline wurde ursprünglich als `CALIBRATED CANDIDATE / PENDING OWNER APPROVAL` eingeführt.
+*   **Aktivierungs-Basis:** Formelle Freigabe und Squash-Merge von PR #254 (Quell-Head: `4416bc0ac6e9a24f5a5e98d4ede96007f0dae9d9`, Squash-Merge-Commit: `c09ac8e52e3fb68a80129b2a5b78466f9322a51e`, M5-Retention-Commit: `647c99c60117c9616a46b03df506a78d4bbe09d1`). M5 hat diese Aktivierung nicht autorisiert (M5_IS_ACTIVATION_AUTHORITY: NO).
 
 ---
 
@@ -206,8 +208,8 @@ Eine vergleichende Analyse der drei eingefrorenen Referenzartikel zeigt:
 
 ## 18. Planungs-Bereitschaft für Artikel 04 (Article 04 Readiness)
 
-*   **Planungs-Status:** `ARTICLE_04_PLANNING_READY: CONDITIONAL`
-*   **Kalibrierungs-Status:** `ARTICLE_04_CALIBRATION_READY: NO_UNTIL_BASELINE_APPROVED`
+*   **Planungs-Status:** `ARTICLE_04_PLANNING_READY: YES`
+*   **Kalibrierungs-Status:** `ARTICLE_04_CALIBRATION_READY: YES`
 *   **Kandidat:** `code-fakten-vs-strukturelle-korrektheit.md`
 *   **Kalibrierungs-Risiko:** Trennung von `CODE_EXISTS` (Code existiert statisch) und `STRUCTURAL_CORRECTNESS` (syntaktisch und strukturell korrekt deklariert) sowie die Vermeidung von Scheinsicherheit.
 *   *Leitsatz: ARTICLE_04_IMPLEMENTATION_AUTHORIZATION: NOT_GRANTED.*
@@ -216,5 +218,5 @@ Eine vergleichende Analyse der drei eingefrorenen Referenzartikel zeigt:
 
 ## 19. Finale Baseline-Entscheidung (Final Decision)
 
-*   **Baseline-Status:** `CANONICAL_MODEL_BASELINE: READY_FOR_OWNER_APPROVAL`
-*   Die Baseline ist vorbereitet und wartet auf die formelle Freigabe und den Merge durch den Project Owner.
+*   **Baseline-Status:** `CANONICAL_MODEL_BASELINE: ESTABLISHED / ACTIVE`
+*   Die Baseline ist hiermit formell nach erfolgtem Squash-Merge und Freigabe durch den Project Owner in Kraft gesetzt.
