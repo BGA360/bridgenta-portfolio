@@ -239,3 +239,68 @@ Jede Anforderung wird nachfolgend klassifiziert:
 | **LR-13** | `EVIDENCE_GATE` bestanden | **MUST** | SEMANTIC | Nein | Nein | Ja (Fidelity) | Lead Architect |
 | **LR-14** | `REUSE_GATE` bestanden | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
 | **LR-15** | `TRANSFERABILITY_BOUNDARY_GATE` bestanden | **MUST** | SEMANTIC | Nein | Nein | Ja (Fidelity) | Lead Architect |
+
+---
+
+## 15. BridGenta Natural Learning Rhythm (BRIDGENTA_NATURAL_LEARNING_RHYTHM)
+
+Die prose-Ebene der Lernartikel folgt dem BridGenta Natural Learning Rhythm, um eine verständliche, fließende und kognitiv zugängliche Erklärungsstruktur zu schaffen.
+
+### 15.1 Die zwölf Prinzipien des natürlichen Lernrhythmus
+1. **CONCRETE BEFORE ABSTRACT**: Beschreibe zuerst eine konkrete Beobachtung oder Situation, bevor du zu abstrakten Begriffen oder verallgemeinerten Definitionen übergehst.
+2. **UNDERSTAND BEFORE TERMINOLOGY**: Stelle sicher, dass der Leser den inhaltlichen Zusammenhang oder die Situation versteht, bevor der formelle Fachbegriff eingeführt wird.
+3. **ONE COGNITIVE JOB PER SENTENCE WHERE PRACTICAL**: Jeder Satz sollte sich nach Möglichkeit darauf konzentrieren, genau eine konzeptionelle Beziehung oder einen Gedanken zu erklären.
+4. **SHORT ANCHOR → EXPLANATION → PAUSE**: Nutze eine natürliche Satzlängen-Variation. Beginne mit einem kurzen Anker-Satz, gefolgt von einer detaillierteren Erklärung, und schließe mit einer kognitiven Pause.
+5. **ONE MAIN IDEA PER SHORT PARAGRAPH**: Packe nicht mehrere neue Konzepte in einen einzigen Absatz. Ein Absatz darf aus einem einzigen Satz bestehen, wenn dies eine sinnvolle Pause erzeugt.
+6. **QUESTIONS MAY CARRY NATURAL TRANSITIONS**: Verwende natürliche, leserorientierte Fragen (z. B. „Was ist hier eigentlich passiert?“) als Übergänge anstelle von starren Arbeitsplan-Überschriften.
+7. **EXPLAIN PARTS BEFORE COMPRESSING INTO A RULE**: Erkläre die einzelnen Komponenten und Zusammenhänge einer Regel, bevor du die komprimierte Regel präsentierst.
+8. **USE REPETITION FOR REINFORCEMENT, NOT DUPLICATION**: Wiederholungen zur Festigung des Lernstoffs sind erlaubt, aber vermeide redundante Satzstrukturen oder starre Pattern-Wiederholungen ohne neuen didaktischen Nutzen.
+9. **STANDARDIZE PEDAGOGY, NOT VISIBLE ARTICLE SHAPE**: Stelle sicher, dass die didaktische Reihenfolge (VERSTEHEN → BENENNEN → BELEGEN → ANWENDEN) gewahrt bleibt, aber lasse zu, dass Überschriften, Absatzanzahlen und Textstrukturen flexibel variieren.
+10. **REMOVE BODY HORIZONTAL RULES BY DEFAULT**: Verzichte auf Trennlinien (`---`) im Fließtext der Artikel. Nutze stattdessen Absätze, Zwischenüberschriften und Leerraum, um Struktur zu erzeugen.
+11. **PRESERVE NATURAL VARIATION BETWEEN ARTICLES**: Jeder Artikel darf eine eigene Dynamik, Wortwahl und Struktur besitzen. Die Konsistenz liegt in der Didaktik, nicht in einer identischen Textmaske.
+12. **THE READER SHOULD NOT NOTICE THE FRAMEWORK**: Der Leser soll einer natürlichen Erklärung folgen und nicht das Gefühl haben, ein mechanisch generiertes Formular zu lesen.
+
+* **SOURCE_LINE_BREAK != COGNITIVE_PAUSE**: Ein Zeilenumbruch im Markdown-Quellcode ist keine hinreichende Bedingung für eine gedankliche Pause des Lesers. Jede kognitive Pause muss im gerenderten Artikel im Browser visuell deutlich wahrnehmbar sein (durch Abstände und Absätze).
+* **SOURCE_FORMATTING_ALONE DOES_NOT_PROVE READER_PERCEIVED_RHYTHM**: Die Formatierung im Quelltext allein garantiert keinen guten Lesefluss; ausschlaggebend ist das im Browser sichtbare Ergebnis.
+
+### 15.2 Stilistische Leitplanken
+* **HUMANIZED != CASUAL**: Der Text bleibt professionell und respektvoll, spricht den Leser aber auf Augenhöhe an.
+* **SIMPLE != SHALLOW**: Fachliche Tiefe wird beibehalten, aber durch klare Sprache zugänglich gemacht.
+* **STRUCTURED != FORMULAIC**: Logischer Aufbau statt starrer Textschablonen.
+* **CONSISTENT != REPETITIVE**: Gleiche didaktische Ziele, aber abwechslungsreiche sprachliche Umsetzung.
+* **ADVANCED_TECHNICAL_CONCEPT != ADVANCED_GERMAN_GRAMMAR**: Komplexe technische Sachverhalte dürfen nicht durch komplexe Schachtelsätze erschwert werden.
+
+---
+
+## 16. Cognitive Load Principle (BRIDGENTA_COGNITIVE_LOAD_PRINCIPLE)
+
+Das kognitive Belastungsprinzip stellt sicher, dass der Leser zu keinem Zeitpunkt mit zu vielen neuen Informationen gleichzeitig konfrontiert wird.
+
+### 16.1 Die kognitive Kette
+Didaktisch wird der Lernprozess in einzelne, aufeinander aufbauende Schritte zerlegt:
+`SITUATION` → `ONE OBSERVATION` → `ONE CONTRAST` → `ONE QUESTION` → `ONE EXPLANATION` → `ONE TERM` → `ONE EVIDENCE STEP` → `ONE REUSABLE LESSON`
+
+### 16.2 Satz- und Absatz-Rhythmus
+* **Satz-Schnittstelle:** Jeder Satz sollte in der Regel nur eine einzige kognitive Aufgabe übernehmen (`ONE_SENTENCE ≈ ONE_COGNITIVE_JOB`). Längere Sätze sind erlaubt, sofern sie genau eine Beziehung verständlich erklären.
+* **Satz-Dichte:** Vermeide Sätze mit mehreren Nebensätzen, vielen Qualifikationen oder verschachtelten Kausalitätsbeziehungen.
+* **Absatz-Schnittstelle:** Ein Absatz behandelt genau eine Kernidee (`ONE_MAIN_IDEA → ONE_SHORT_PARAGRAPH → COGNITIVE_PAUSE`).
+* **Satzlängen-Formel:** `SHORT_WHEN_POSSIBLE`, `LONGER_WHEN_NECESSARY`, `NEVER_DENSE_WITHOUT_NEED`.
+
+### 16.3 Rendered Readability Principle (BRIDGENTA_RENDERED_READABILITY_PRINCIPLE)
+Der tatsächliche Lesefluss ergibt sich aus der Summe von inhaltlichem Satzrhythmus und visuellem Layout:
+`READING_RHYTHM = SENTENCE_RHYTHM + PARAGRAPH_SPACING + HEADING_SPACING + LINE_HEIGHT + LIST_SPACING + CALLOUT_SPACING`
+
+Für die Darstellung gelten folgende qualitative Zielvorgaben auf Desktop, Tablet und Mobilgeräten:
+- `DESKTOP_LINE_HEIGHT`: COMFORTABLE (angenehme Zeilenhöhe für flüssiges Lesen)
+- `TABLET_LINE_HEIGHT`: COMFORTABLE
+- `MOBILE_LINE_HEIGHT`: COMFORTABLE
+- `PARAGRAPH_SEPARATION`: VISIBLE (Absätze heben sich deutlich voneinander ab)
+- `HEADING_SEPARATION`: CLEAR (Überschriften grenzen sich klar vom vorherigen und nachfolgenden Text ab)
+- `LIST_ITEM_SPACING`: READABLE (Listenpunkte wirken nicht komprimiert)
+- `GLOSSARY_TERM_SPACING`: READABLE (Fachbegriffe und ihre Erläuterungen sind leicht scannbar)
+- `CALLOUT_SPACING`: READABLE (Hervorhebungen und Boxen haben Luft zum Atmen)
+- `NO_TEXT_BLOCK_FEELS_COMPRESSED`: YES
+- `NO_VISUAL_FRAGMENTATION`: YES (Der Leerraum darf die inhaltliche Verbundenheit der Abschnitte nicht zerreißen)
+- `SHARED_STYLE_RULES_GENERIC`: Gemeinsame Darstellungsstile müssen streng generisch bleiben (z. B. grundlegende Abstände, Zeilenhöhen, Listen- und Zitat-Layouts) und dürfen keine artikelspezifischen Design-Ausnahmen erzwingen. Jede Änderung an den gemeinsamen Stylesheets erfordert eine visuelle Regressionsprüfung auf Desktop, Tablet und Mobilgeräten über alle bereits veröffentlichten Lernartikel der Kohorte.
+
+
