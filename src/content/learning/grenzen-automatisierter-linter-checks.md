@@ -30,7 +30,7 @@ this.validators = customValidators || [
 ```
 *Quelle: `validation/automation_controller.js` in Commit `07aac848a4`*
 
-Einige Validatoren sind als `failFast: true` deklariert. Wenn eine solche kritische Prüfung fehlschlägt, bricht der Controller den Prüflauf sofort ab und überspringt die restlichen Prüfungen. Andere Validatoren laufen weiter und können zusätzliche Ergebnisse sammeln, bevor der Lauf endet.
+Einige Validatoren sind als `failFast: true` deklariert. Wenn eine solche Prüfung fehlschlägt, bricht der Controller den Prüflauf sofort ab und überspringt die restlichen Prüfungen. Andere Validatoren laufen weiter und können zusätzliche Ergebnisse sammeln, bevor der Lauf endet.
 
 ## Was die Prüfungen sehen
 
@@ -44,7 +44,7 @@ Der **Evidence Validator** prüft, ob die erwarteten Belegdateien vorhanden, nic
 
 ## Grenzen statischer Kontrollen
 
-Ein bestandener PRAG-Lauf zeigt, dass die dafür implementierten Prüfungen erfolgreich waren. Daraus folgt nicht automatisch, dass jede inhaltliche Aussage im geprüften Dokument wahr ist. Eine Maschine kann prüfen, ob alle Links funktionieren oder ob die Pflichtfelder gefüllt sind. Die hier eingesetzten Prüfungen bewerten jedoch nicht automatisch, ob eine beschriebene Messung sachlich stimmt oder ob ein neuer Leser die Hinführung gut versteht.
+Ein bestandener PRAG-Lauf zeigt, dass die dafür implementierten Prüfungen erfolgreich waren. Daraus folgt nicht automatisch, dass jede inhaltliche Aussage im geprüften Dokument wahr ist. Die hier eingesetzten Validatoren prüfen definierte formale Bedingungen, zum Beispiel Link- oder Pflichtfeldregeln. Sie bewerten jedoch nicht automatisch, ob eine beschriebene Messung sachlich stimmt oder ob ein neuer Leser die Hinführung gut versteht.
 
 Aus diesem Grund ergänzen wir automatisierte Kontrollen durch manuelle Reviews.
 
@@ -58,8 +58,8 @@ Automatisierte Prüfungen und manuelle Reviews ergänzen sich. Sie beantworten u
 
 Wenn Sie Dokumente oder Berichte verifizieren, können Sie den Prüfprozess in drei komplementäre Dimensionen unterteilen:
 
-* Führen Sie automatische Syntax- und Formatprüfungen aus, um triviale formale Fehler sofort abzufangen.
-* Nutzen Sie einen unvoreingenommenen Leser, um die logische Verständlichkeit und die Erläuterung von Fachbegriffen zu prüfen.
+* Führen Sie automatische Syntax- und Formatprüfungen aus, um definierte Syntax- und Formatfehler automatisch zu erkennen.
+* Nutzen Sie einen Leser ohne internes Projektwissen, um die logische Verständlichkeit und die Erläuterung von Fachbegriffen zu prüfen.
 * Vergleichen Sie wichtige inhaltliche Aussagen mit dem zugrunde liegenden Quellmaterial. Prüfen Sie, ob die Quellen die Aussagen tatsächlich stützen.
 
 > Ein grüner Haken zeigt, dass die für diesen Lauf ausgeführten Prüfungen innerhalb ihres definierten Prüfumfangs erfolgreich waren. Er beweist nicht automatisch, dass der Inhalt wahr, vollständig oder verständlich ist.
