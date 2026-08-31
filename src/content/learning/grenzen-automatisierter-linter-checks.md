@@ -14,14 +14,16 @@ Das sieht überzeugend aus. Aber was genau wurde damit bewiesen? Und warum bewei
 
 ## Das automatisierte Gatter
 
-In unserem System nutzen wir das Validierungsprogramm **PRAG** als automatischen Kontrollpunkt. In der Software-Entwicklung nennt man einen solchen Punkt auch **CI-Gate**. PRAG ist breiter aufgebaut als ein einfacher **Linter**, der nur Schreibfehler oder Formatierungen prüft. Es orchestriert als Controller eine Kette von verschiedenen **Validatoren**.
+In unserem System nutzen wir das Validierungsprogramm **PRAG** als automatischen Kontrollpunkt. In der Software-Entwicklung nennt man einen solchen Punkt auch **CI-Gate**. PRAG ist breiter aufgebaut als ein einzelner Linter. Ein Linter prüft Code oder Dokumente anhand definierter Regeln. PRAG koordiniert dagegen mehrere unterschiedliche Validatoren.
 
 Ein Blick in das System zeigt, wie diese Gates strukturiert sind:
 
 ```javascript
 this.validators = customValidators || [
   { name: 'Registry Validator', clazz: RegistryValidator, failFast: true },
+  // ...
   { name: 'Secret Scanner', clazz: SecretScanner, failFast: false },
+  // ...
   { name: 'Build Validator', clazz: BuildValidator, failFast: false },
   { name: 'Evidence Validator', clazz: EvidenceValidator, failFast: false }
 ];
@@ -42,13 +44,13 @@ Der **Evidence Validator** prüft, ob die erwarteten Belegdateien vorhanden, nic
 
 ## Grenzen statischer Kontrollen
 
-Ein bestandener PRAG-Lauf zeigt, dass die dafür implementierten Prüfungen erfolgreich waren. Daraus folgt nicht automatisch, dass jede inhaltliche Aussage im geprüften Dokument wahr ist. Eine Maschine kann prüfen, ob alle Links funktionieren oder ob die Pflichtfelder gefüllt sind. Sie kann aber nicht verstehen, ob die beschriebenen Messergebnisse der Wahrheit entsprechen oder ob die Sätze für Menschen Sinn ergeben.
+Ein bestandener PRAG-Lauf zeigt, dass die dafür implementierten Prüfungen erfolgreich waren. Daraus folgt nicht automatisch, dass jede inhaltliche Aussage im geprüften Dokument wahr ist. Eine Maschine kann prüfen, ob alle Links funktionieren oder ob die Pflichtfelder gefüllt sind. Die hier eingesetzten Prüfungen bewerten jedoch nicht automatisch, ob eine beschriebene Messung sachlich stimmt oder ob ein neuer Leser die Hinführung gut versteht.
 
 Aus diesem Grund ergänzen wir automatisierte Kontrollen durch manuelle Reviews.
 
 Der **Fresh-Reader-Review** prüft die Verständlichkeit und logische Hinführung ohne internes Vorwissen. Ein menschlicher Leser liest das Dokument aus der Sicht eines Außenstehenden.
 
-Der **Source-Fidelity-Audit** vergleicht die im Text gemachten Aussagen direkt mit den Git-Commits und Protokollen des Quellprojekts (Single Source of Truth). Er stellt sicher, dass keine Chronologien, Messergebnisse oder Entwickler-Motivationen erfunden wurden.
+Der **Source-Fidelity-Audit** vergleicht die im Text gemachten Aussagen direkt mit den Git-Commits und Protokollen des Quellprojekts (Single Source of Truth). Der Review prüft, ob Aussagen, Chronologien und andere Projektangaben mit den identifizierten Quellen übereinstimmen und die Evidenzgrenzen eingehalten werden.
 
 Automatisierte Prüfungen und manuelle Reviews ergänzen sich. Sie beantworten unterschiedliche Fragen und liefern verschiedene Arten von Evidenz.
 
@@ -58,6 +60,6 @@ Wenn Sie Dokumente oder Berichte verifizieren, können Sie den Prüfprozess in d
 
 * Führen Sie automatische Syntax- und Formatprüfungen aus, um triviale formale Fehler sofort abzufangen.
 * Nutzen Sie einen unvoreingenommenen Leser, um die logische Verständlichkeit und die Erläuterung von Fachbegriffen zu prüfen.
-* Vergleichen Sie die inhaltlichen Kernaussagen stichprobenartig mit dem echten Quellmaterial, um Übertreibungen oder ungenaue Behauptungen auszuschließen.
+* Vergleichen Sie wichtige inhaltliche Aussagen mit dem zugrunde liegenden Quellmaterial. Prüfen Sie, ob die Quellen die Aussagen tatsächlich stützen.
 
 > Ein grüner Haken zeigt, dass die für diesen Lauf ausgeführten Prüfungen innerhalb ihres definierten Prüfumfangs erfolgreich waren. Er beweist nicht automatisch, dass der Inhalt wahr, vollständig oder verständlich ist.
