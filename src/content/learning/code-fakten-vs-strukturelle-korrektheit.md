@@ -14,8 +14,6 @@ Der Test war grün. Trotzdem war die Anforderung nicht erfüllt.
 
 Genau das passierte bei der Integration der Fallstudie *Lumina Praxis* in Commit `d2363e7`. In diesem Artikel erklären wir am Praxis-Beispiel, warum automatische Tests inhaltliche Fehler oft übersehen und wie wir diese Lücke durch manuelle Kontrollen schließen.
 
----
-
 ## 1. Was ist passiert?
 
 Beim Erstellen der Fallstudie *Lumina Praxis* (`src/content/projects/luminapraxisds.md`) liefen alle Pipeline-Checks erfolgreich durch. Dennoch gab es eine Abweichung von den Projektvorgaben:
@@ -25,8 +23,6 @@ Beim Erstellen der Fallstudie *Lumina Praxis* (`src/content/projects/luminapraxi
 *   **Das Problem**: Da die Markdown-Formatierung syntaktisch vollkommen fehlerfrei war, erkannte der automatische Linter keinen Fehler. Das Dokument war formal richtig, aber inhaltlich falsch strukturiert.
 
 Der Fehler wurde erst durch ein manuelles **Source-Fidelity-Audit** aufgedeckt. In Commit `d2363e7` wurden die Überschriften korrigiert.
-
----
 
 ## 2. Der Begriff: Syntax-Prüfung vs. Inhaltliche Wahrheit
 
@@ -41,8 +37,6 @@ Ein erfolgreicher Linter- oder Build-Lauf beweist nur, dass die formalen Regeln 
 
 </div>
 
----
-
 ## Lektionen für die Praxis (Anwenden)
 
 Um semantische Abweichungen in Ihren Projekten zu verhindern, nutzen Sie dieses Prinzip der komplementären Prüfung:
@@ -56,14 +50,10 @@ Um semantische Abweichungen in Ihren Projekten zu verhindern, nutzen Sie dieses 
 *   **Prinzip 2 (Keine Status-Schätzung):** Im BridGenta-Prüfmodell wird der inhaltliche Status nicht allein aus technischen Signalen (wie dem reinen Vorhandensein einer Datei) abgeleitet. Für die inhaltliche Freigabe ist ein expliziter Review-Schritt vorgesehen.
 *   **Prinzip 3 (Dualer Prüfansatz):** Automatisieren Sie alles, was formal (syntaktisch) prüfbar ist, um Zeit zu sparen. Sichern Sie inhaltliche Konformität (Semantik) durch zusätzliche Prüfungen ab.
 
----
-
 ## Die wichtigste Erkenntnis
 
 > [!IMPORTANT]
 > Ein erfolgreicher Linter- oder Build-Lauf zeigt nur, dass die von diesen Prüfungen abgedeckten Regeln erfüllt wurden. Er beweist nicht automatisch, dass alle fachlichen Anforderungen erfüllt sind.
-
----
 
 ## Begriffe einfach erklärt
 
