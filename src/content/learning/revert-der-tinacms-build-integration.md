@@ -65,7 +65,7 @@ Wenn Sie Schnittstellen zu externen Diensten entwerfen, hilft Ihnen dieses Entsc
 
 **Revert**
 
-Das Zurücksetzen oder Löschen einer Code-Änderung im Git-Verlauf. Dadurch wird das System wieder in einen früheren, sicheren Zustand versetzt.
+Das Rückgängigmachen einer früheren Code-Änderung. Dadurch wird die betreffende Änderung entfernt oder ein früherer Code-Zustand wiederhergestellt. In diesem Projekt wurde damit die problematische Integration entfernt.
 
 **Sicherheitsgrenze (Security Boundary)**
 

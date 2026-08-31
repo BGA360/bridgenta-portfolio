@@ -50,7 +50,7 @@ Wenn Sie mobile Benutzeroberflächen gestalten, hilft Ihnen diese Checkliste zur
 
 *   **Prüfpunkt 1 (Platzsparen):** Blenden Sie unwichtige oder doppelte Design-Elemente auf Smartphones gezielt aus, um Platz für die Hauptnavigation zu schaffen.
 *   **Prüfpunkt 2 (Rechtspriorität):** Bei mobilen Layout-Änderungen müssen wichtige Pflicht- und Navigationslinks weiterhin erreichbar bleiben.
-*   **Prüfpunkt 3 (Mobiles Testen):** Testen Sie Navigationsmenüs immer auf echten Mobilgeräten mit unterschiedlichen Bildschirmgrößen, um Layout-Kollisionen frühzeitig zu erkennen.
+*   **Prüfpunkt 3 (Mobiles Testen):** Prüfen Sie Navigationsmenüs auf relevanten mobilen Bildschirmgrößen. Tests auf echten Geräten können zusätzliche Darstellungsprobleme sichtbar machen.
 
 ---
 
