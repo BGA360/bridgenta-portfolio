@@ -8,115 +8,58 @@ publishedAt: "2026-08-23"
 provenanceRef: "EV-BG-001"
 ---
 
-Ein automatischer Check in der CI-Pipeline läuft durch. Das Statussymbol springt auf Grün. Die dafür definierten automatischen Prüfungen melden keinen Fehler. 
+Ein automatischer Check läuft durch. Das Statussymbol springt auf Grün. Die definierten Prüfungen in der Pipeline melden keinen Fehler.
 
-Doch ist damit auch bewiesen, dass jede inhaltliche Aussage im Dokument korrekt ist?
+Das sieht überzeugend aus. Aber was genau wurde damit bewiesen? Und warum beweist ein grüner Haken nicht automatisch, dass jeder Inhalt eines Dokuments korrekt ist?
 
-Nein. Ein grüner Haken bedeutet lediglich: Alle vordefinierten Regeln sind erfüllt. Er beweist nicht automatisch, dass der Inhalt wahr oder verständlich ist. Genau hier liegt der Unterschied zwischen maschineller Regelprüfung und inhaltlicher Verifikation.
+## Das automatisierte Gatter
 
----
+In unserem System nutzen wir das Validierungsprogramm **PRAG** als automatischen Kontrollpunkt. In der Software-Entwicklung nennt man einen solchen Punkt auch **CI-Gate**. PRAG ist breiter aufgebaut als ein einzelner Linter. Ein Linter prüft Code oder Dokumente anhand definierter Regeln. PRAG koordiniert dagegen mehrere unterschiedliche Validatoren.
 
-## Was PRAG automatisch prüfen kann
-
-In unserem Validierungssystem **PRAG** setzen wir auf ein automatisiertes Prüfverfahren. Dabei schalten wir automatisierte Prüfungen als Kontrollpunkte ("Gates") in die Pipeline. Diese können Änderungen stoppen, wenn eine definierte Prüfung fehlschlägt.
-
-PRAG ist breiter aufgebaut als ein einzelner Linter. Es orchestriert mehrere Validatoren. Einige davon arbeiten ähnlich wie klassische Linter. Andere prüfen zusätzliche technische Bedingungen.
-
-Ein Teil dieser Prüfungen arbeitet statisch und regelbasiert. Andere Validatoren prüfen zusätzliche Bedingungen. Sie kontrollieren zum Beispiel, ob die in einem Paket deklarierten Assets existieren und ob Diagramm-Syntaxen valide sind.
-
-Ein Blick in den Kern unseres Validierungssystems zeigt, wie diese Gates strukturiert sind:
+Ein Blick in das System zeigt, wie diese Gates strukturiert sind:
 
 ```javascript
-    this.validators = customValidators || [
-      { name: 'Registry Validator', clazz: RegistryValidatorWrapper, failFast: true },
-      { name: 'Metadata Validator', clazz: MetadataValidatorWrapper, failFast: true },
-      { name: 'EPPS Validator', clazz: EPPSValidator, failFast: true },
-      { name: 'Manifest Validator', clazz: ManifestValidator, failFast: true },
-      { name: 'Secret Scanner', clazz: SecretScanner, failFast: false },
-      { name: 'Classification Validator', clazz: ClassificationValidator, failFast: false },
-      { name: 'Link Validator', clazz: LinkValidator, failFast: false },
-      { name: 'Build Validator', clazz: BuildValidator, failFast: false },
-      { name: 'Evidence Validator', clazz: EvidenceValidator, failFast: false },
-      { name: 'Hash Validator', clazz: HashValidator, failFast: false }
-    ];
+this.validators = customValidators || [
+  { name: 'Registry Validator', clazz: RegistryValidator, failFast: true },
+  // ...
+  { name: 'Secret Scanner', clazz: SecretScanner, failFast: false },
+  // ...
+  { name: 'Build Validator', clazz: BuildValidator, failFast: false },
+  { name: 'Evidence Validator', clazz: EvidenceValidator, failFast: false }
+];
 ```
-*Quelle: `validation/automation_controller.js` im Quellprojekt*
+*Quelle: `validation/automation_controller.js` in Commit `07aac848a4`*
 
-Dieses Code-Snippet zeigt die Validator-Kette. Der PRAG-Controller koordiniert hierbei eine definierte Sequenz von Prüfungen. Die Namen zeigen unterschiedliche technische Prüfbereiche, zum Beispiel Metadaten, Secrets, Links, Builds und Hashes.
+Einige Validatoren sind als `failFast: true` deklariert. Wenn eine solche Prüfung fehlschlägt, bricht der Controller den Prüflauf sofort ab und überspringt die restlichen Prüfungen. Andere Validatoren laufen weiter und können zusätzliche Ergebnisse sammeln, bevor der Lauf endet.
 
-Welche konkrete Regel ein Validator im Detail durchsetzt, ergibt sich aus seiner jeweiligen Implementierung.
+## Was die Prüfungen sehen
 
----
+Jeder Validator besitzt einen eng begrenzten Bereich, den er auswerten kann.
 
-## Was der grüne Check nicht beweist
+Der **Build Validator** führt eine statische Syntax-Prüfung durch. Er prüft unter anderem offene Code-Blöcke und Klammern in Mermaid-Diagrammen, führt aber keinen Programmcode aus. Er beweist somit nicht, dass die Anwendung komplett ohne Fehler läuft.
 
-<div class="learning-evidence-boundary">
+Der **Secret Scanner** prüft Dateien nach vordefinierten regulären Ausdrücken auf bekannte API-Schlüssel-Muster. Er kann unbekannte Muster nicht sicher ausschließen.
 
-Die Pipeline kann definierte formale und technische Regelverstöße erkennen und je nach Validator den Prüfprozess fehlschlagen lassen. Dennoch stößt sie an klare Grenzen:
+Der **Evidence Validator** prüft, ob die erwarteten Belegdateien vorhanden, nicht leer, registriert und im vorgesehenen Inhalt referenziert sind. Er prüft damit definierte Evidenzstrukturen, nicht die faktische Wahrheit des Beleginhalts.
 
-> **PRAG kann mit seinen statischen Prüfungen nicht feststellen, ob eine Aussage inhaltlich wahr ist.**
+## Grenzen statischer Kontrollen
 
-Ein kurzes Beispiel verdeutlicht dies. Ein Entwickler schreibt in einer Dokumentation:
-*"Das Modul erzielt eine Zeitersparnis von 95%."*
+Ein bestandener PRAG-Lauf zeigt, dass die dafür implementierten Prüfungen erfolgreich waren. Daraus folgt nicht automatisch, dass jede inhaltliche Aussage im geprüften Dokument wahr ist. Die hier eingesetzten Validatoren prüfen definierte formale Bedingungen, zum Beispiel Link- oder Pflichtfeldregeln. Sie bewerten jedoch nicht automatisch, ob eine beschriebene Messung sachlich stimmt oder ob ein neuer Leser die Hinführung gut versteht.
 
-* **Was PRAG prüfen kann**: ob die dafür implementierten Regeln verletzt werden.
-* **Was daraus nicht folgt**: ob die behauptete Zeitersparnis tatsächlich gemessen und belegt wurde.
+Aus diesem Grund ergänzen wir automatisierte Kontrollen durch manuelle Reviews.
 
-Ein bestandener PRAG-Lauf zeigt, dass die dafür definierten Prüfungen erfolgreich waren. Er dient dabei als automatisierter Prüfmechanismus. Er beweist jedoch nicht automatisch, dass jede Aussage im geprüften Inhalt wahr ist.
+Der **Fresh-Reader-Review** prüft die Verständlichkeit und logische Hinführung ohne internes Vorwissen. Ein menschlicher Leser liest das Dokument aus der Sicht eines Außenstehenden.
 
-</div>
+Der **Source-Fidelity-Audit** vergleicht die im Text gemachten Aussagen direkt mit den Git-Commits und Protokollen des Quellprojekts (Single Source of Truth). Der Review prüft, ob Aussagen, Chronologien und andere Projektangaben mit den identifizierten Quellen übereinstimmen und die Evidenzgrenzen eingehalten werden.
 
----
+Automatisierte Prüfungen und manuelle Reviews ergänzen sich. Sie beantworten unterschiedliche Fragen und liefern verschiedene Arten von Evidenz.
 
-## Regelprüfung und inhaltliche Verifikation sind zwei verschiedene Aufgaben
+## Erkenntnisse für die Praxis
 
-Maschinelle Regelprüfungen und inhaltliche Verifikation beantworten unterschiedliche Fragen:
+Wenn Sie Dokumente oder Berichte verifizieren, können Sie den Prüfprozess in drei komplementäre Dimensionen unterteilen:
 
-1. **Die maschinelle Regelprüfung fragt**: *Erfüllt das Dokument die definierten maschinellen Regeln?*
-2. **Die inhaltliche Verifikation fragt**: *Sind die Aussagen korrekt und durch Belege gedeckt?*
+* Führen Sie automatische Syntax- und Formatprüfungen aus, um definierte Syntax- und Formatfehler automatisch zu erkennen.
+* Nutzen Sie einen Leser ohne internes Projektwissen, um die logische Verständlichkeit und die Erläuterung von Fachbegriffen zu prüfen.
+* Vergleichen Sie wichtige inhaltliche Aussagen mit dem zugrunde liegenden Quellmaterial. Prüfen Sie, ob die Quellen die Aussagen tatsächlich stützen.
 
-Für diese inhaltliche Prüfung eignet sich ein manuelles **Fresh-Reader-Audit**. Ein Fresh Reader liest die Seite wie ein neuer Besucher – also ohne das interne Projektwissen der Person, die den Text geschrieben hat.
-
-Der Reviewer besitzt kein internes Vorwissen zum Text. Er achtet auf folgende Aspekte:
-* Sind die Argumentationsketten im Text schlüssig?
-* Werden technische Fachbegriffe ausreichend erklärt?
-* Sind die verlinkten Belege nachvollziehbar und stützen sie die Behauptungen?
-
-Im BridGenta-Prüfmodell ergänzen sich automatisierte Regelprüfungen und eine separate inhaltliche Prüfung. Sie liefern unterschiedliche Arten von Evidenz für unterschiedliche Qualitätsfragen.
-
----
-
-## Erkenntnisse für die Praxis (Anwenden)
-
-Wenn Sie selbst Dokumentationen oder Berichte verifizieren, können Sie diese praktische Checkliste nutzen:
-
-*   **Prüfpunkt 1 (Formale Prüfung):** Sind alle Links aktiv, alle Pflichtfelder ausgefüllt und die Formate fehlerfrei? (Das kann eine Maschine automatisch prüfen).
-*   **Prüfpunkt 2 (Verständlichkeit):** Kann eine Person ohne Vorwissen den Text logisch nachvollziehen? (Im BridGenta-Prüfmodell nutzen wir dafür einen Fresh-Reader-Review).
-*   **Prüfpunkt 3 (Evidenz-Prüfung):** Gibt es für jede Behauptung einen nachprüfbaren Beleg, der die Aussage deckt? (Im BridGenta-Prüfmodell nutzen wir dafür einen Source-Fidelity-Audit).
-
----
-
-## Die wichtigste Erkenntnis
-
-> [!IMPORTANT]
-> Vertrauen Sie einem grünen Pipeline-Symbol nur im Rahmen der geprüften Regeln. Ein automatischer Check zeigt nur, was mit seinen definierten Regeln geprüft wurde. Er beweist nicht automatisch, dass alle inhaltlichen oder fachlichen Anforderungen erfüllt sind.
-
----
-
-## Begriffe einfach erklärt
-
-**CI (Continuous Integration)**
-
-Ein automatisiertes Verfahren in der Softwareentwicklung. Code-Änderungen werden fortlaufend zusammengeführt und automatisch getestet.
-
-**Linter**
-
-Ein kleines Hilfsprogramm. Es untersucht Dokumente oder Code automatisch auf formale Fehler, Stilregeln oder Schreibfehler.
-
-**Validator**
-
-Eine Prüffunktion. Sie kontrolliert, ob bestimmte Daten oder Dateien den definierten Regeln und Strukturen entsprechen.
-
-**Evidenz**
-
-Ein nachprüfbarer Beleg, der eine Aussage oder die Erfüllung einer Anforderung unterstützt.
+> Ein grüner Haken zeigt, dass die für diesen Lauf ausgeführten Prüfungen innerhalb ihres definierten Prüfumfangs erfolgreich waren. Er beweist nicht automatisch, dass der Inhalt wahr, vollständig oder verständlich ist.
