@@ -1,13 +1,13 @@
-# BECC Public Learning Standard v1.0 — Approval Candidate
+# BECC Public Learning Standard v1.0 — Active Standard
 ## Governance-Richtlinie für öffentliche Lerninhalte und Provenienz-Sicherung
 
 *   **Identifikator:** `BECC-PLS-v1.0`
-*   **Status:** `PROPOSED — PENDING OWNER APPROVAL`
-*   **Version:** `1.0.0-Candidate`
+*   **Status:** `APPROVED / ACTIVE`
+*   **Version:** `v1.0.0-Extension`
 *   **Änderungskategorie:** Kategorie B (Konstitutionelle Erweiterung)
 *   **Einreicher:** Constitutional Architect
 *   **Freigabe-Autorität:** Project Owner (Letztentscheidungsrecht)
-*   **Inkrafttreten:** Nach formeller Genehmigung des Änderungsantrags `AMD-0001` im Verfassungsänderungsregister.
+*   **Inkrafttreten:** Formell genehmigt und aktiviert durch `AMD-0001` im Verfassungsänderungsregister (Originally introduced as an approval candidate, formally accepted and implemented through AMD-0001).
 
 ---
 
@@ -213,8 +213,9 @@ Die Einführung der Provenienzpflicht folgt einem stufenweisen Phasenmodell ohne
 
 ## 13. Behandlung von Artikel 1 (Kalibrierungs-Fixture)
 
-*   **Status:** `ARTICLE_1_EVENT_ID: UNRESOLVED_PENDING_SSOT_INSPECTION`
-*   Artikel 1 wird nach den Regeln der Stufe M3 migriert. Es wird vorerst keine fiktive Event-ID zugewiesen. Die ID `EV-BG-002` darf in Dokumenten nur als **nicht-normatives Beispiel** verwendet werden.
+*   **Status:** `ARTICLE_1_EVENT_ID: RESOLVED`
+*   Artikel 1 wurde erfolgreich auf die Event-ID `EV-BG-002` abgebildet und normativ in die Provenienz-Sicherung integriert.
+*   *Historischer Hinweis:* Vor Abschluss der Provenienz-Prüfung war dieses Fixture als unresolved gelistet, und `EV-BG-002` diente vorübergehend als nicht-normatives Beispiel.
 
 ---
 
