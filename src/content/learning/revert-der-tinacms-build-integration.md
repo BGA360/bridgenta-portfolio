@@ -37,25 +37,40 @@ Deshalb haben wir die Integration komplett zurückgesetzt. Die Admin-Oberfläche
 
 ## 2. Der Begriff: Sicherheitsgrenze
 
-Eine **Sicherheitsgrenze** (Security Boundary) trennt sichere Bereiche eines Systems von unsicheren Bereichen. Daten dürfen diese Grenze nur unter strengen Kontrollen überschreiten.
+Eine **Sicherheitsgrenze** (Security Boundary) trennt verschiedene Vertrauensbereiche (Trust Domains) eines Systems voneinander. Daten dürfen diese Grenze nur nach festgelegten Regeln und Kontrollen überschreiten.
 
-In unserem Web-Projekt gilt die Regel: **Offline-First und Lokale Hoheit**. 
-Das bedeutet: Alle sensiblen Daten und Konfigurationen müssen vollständig auf dem eigenen Rechner laufen. Sie dürfen nicht ungefragt mit Servern im Internet kommunizieren. Die Integration verletzte diese Sicherheitsgrenze, indem sie den Build-Prozess vom Internet abhängig machte.
+In unserem Web-Projekt gilt das Prinzip: **Offline-First und Lokale Hoheit**.
+Für diese Anwendung bedeutet das: Wichtige Konfigurationen und Admin-Dateien sollten auf dem lokalen System verwaltet werden. Die Integration verletzte diese Sicherheitsgrenze, indem sie den Build-Prozess dauerhaft vom Internet abhängig machte.
 
 ---
 
-## 3. Die Lektion für die Praxis
+## Lektionen für die Praxis (Anwenden)
 
-Aus dieser Entscheidung lassen sich drei Lehren ziehen:
+Wenn Sie Schnittstellen zu externen Diensten entwerfen, hilft Ihnen dieses Entscheidungsmodell:
 
-1.  **Funktionalität ist nicht alles**: Nur weil eine Funktion im Test reibungslos läuft, heißt das nicht, dass sie architektonisch richtig ist.
-2.  **Sicherheitsgrenzen schützen**: Weichen Sie Ihre Sicherheitsarchitektur nicht für kleine Bequemlichkeiten (wie eine einfachere Admin-Seite im Web) auf.
-3.  **Mut zum Rückbau**: Wenn ein Fehler oder ein Architektur-Verstoß erkannt wird, zögern Sie nicht, den Code sofort wieder zurückzubauen (Revert), anstatt provisorische Flicken („Workarounds“) einzubauen.
+*   **Regel 1 (Offline-Garantie):** In diesem Projekt war für den Build ein lokaler, unabhängiger Ablauf vorgesehen. Eine verpflichtende externe Verbindung hätte diese konkrete Architekturgrenze verletzt.
+*   **Regel 2 (Sicherheits-Vorzug):** In diesem Projekt hatte die festgelegte Sicherheits- und Unabhängigkeitsgrenze Vorrang vor zusätzlichem Komfort.
+*   **Regel 3 (Mut zum Revert):** Zögern Sie nicht, eine fehlerhafte oder unsichere Funktion zurückzubauen, anstatt instabile Behelfslösungen zu entwickeln.
+
+---
+
+## Die wichtigste Erkenntnis
+
+> [!IMPORTANT]
+> Eine technisch funktionierende Funktion kann trotzdem ungeeignet sein, wenn sie eine festgelegte Sicherheits- oder Architekturgrenze verletzt.
 
 ---
 
 ## Begriffe einfach erklärt
 
-*   **Revert**: Das Zurücksetzen oder Löschen einer Code-Änderung im Git-Verlauf, um zu einem früheren, sicheren Zustand zurückzukehren.
-*   **Sicherheitsgrenze (Security Boundary)**: Eine gedachte Linie im System, die vertrauenswürdige Bereiche (wie den eigenen Rechner) von weniger sicheren Bereichen (wie dem Internet) trennt.
-*   **Offline-First**: Ein Design-Prinzip, bei dem eine Anwendung so gebaut wird, dass sie auch ohne Verbindung zum Internet voll funktionsfähig ist.
+**Revert**
+
+Das Rückgängigmachen einer früheren Code-Änderung. Dadurch wird die betreffende Änderung entfernt oder ein früherer Code-Zustand wiederhergestellt. In diesem Projekt wurde damit die problematische Integration entfernt.
+
+**Sicherheitsgrenze (Security Boundary)**
+
+Eine Sicherheitsgrenze trennt Bereiche eines Systems, die unterschiedliche Vertrauens-, Zugriffs- oder Schutzregeln haben.
+
+**Offline-First**
+
+Offline-First bedeutet, dass wichtige Funktionen lokal und ohne dauerhafte Internetverbindung nutzbar bleiben. Welche Funktionen das sind, hängt von der Architektur ab.

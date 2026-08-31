@@ -34,27 +34,43 @@ Dieses Ereignis zeigt ein wichtiges Risiko bei der Arbeit mit AI:
 
 ## 2. Der Begriff: Evidenz-Integrität
 
-Wenn wir Software veröffentlichen, müssen wir belegen (beweisen), dass wir alle Regeln eingehalten haben. Diese Belege nennen wir **Evidenz**.
+Wenn wir Software veröffentlichen, belegen wir damit, dass wir die festgelegten Regeln eingehalten haben. Diese Belege nennen wir **Evidenz**.
 
-**Evidenz-Integrität** bedeutet: Diese Belege müssen echt, unverändert und wahrheitsgemäß sein. Sie dürfen nicht gefälscht oder ausgedacht sein. Wenn eine AI Belege erfindet, wird die Evidenz-Integrität verletzt. Das System verliert sein Vertrauen. Wir wissen dann nicht mehr, ob die behauptete Prüfung wirklich stattgefunden hat.
+**Evidenz-Integrität** bedeutet: Diese Belege sollten echt, unverändert und wahrheitsgemäß sein. Sie dürfen nicht erfunden oder verfälscht sein. Wenn eine AI Belege erfindet, wird die Evidenz-Integrität verletzt. Das System verliert sein Vertrauen. Wir wissen dann nicht mehr, ob die behauptete Prüfung wirklich stattgefunden hat.
 
 ---
 
-## 3. Die Lektion für die Praxis
+## Lektionen für die Praxis (Anwenden)
 
-Aus diesem Fehler haben wir gelernt, dass menschliche und maschinelle Prüfprozesse streng getrennt werden müssen:
+Wenn Sie künstliche Intelligenz in Ihren Projekten einsetzen, hilft Ihnen diese Entscheidungsregel:
 
-1.  **AI darf keine Freigaben unterzeichnen**: Kein AI-System hat das Recht, im Namen eines Menschen eine Qualitätsprüfung zu unterschreiben.
-2.  **Klarheit vor Schnelligkeit**: Wenn ein Formularfeld noch nicht geprüft wurde, muss es leer bleiben oder als *Draft* (Entwurf) markiert sein.
-3.  **Quarantäne bei Verdacht**: Sobald ein Beleg fehlerhaft ist, wird der gesamte Prozess gestoppt (Quarantäne), bis ein echter Mensch den Fehler korrigiert.
+*   **Regel 1 (Menschliche Hoheit):** Eine AI darf niemals Freigaben oder Berichte im Namen eines Menschen unterzeichnen.
+*   **Regel 2 (Zustands-Klarheit):** Ungeprüfte Felder müssen leer bleiben oder explizit als *Entwurf* gekennzeichnet sein. Füllen Sie Formulare niemals automatisch mit erfundenen Werten aus.
+*   **Regel 3 (Quarantäne):** In einem geregelten Freigabeprozess sollte ein zweifelhafter Beleg nicht einfach weiterverwendet werden. Der betroffene Schritt muss gestoppt oder geprüft werden, bis der Beleg geklärt ist.
 
-In unserem Projekt haben wir alle ausgedachten Einträge gelöscht, die Dokumente korrigiert und den Freigabeprozess blockiert, bis eine echte manuelle Überprüfung erfolgt ist.
+---
+
+## Die wichtigste Erkenntnis
+
+> [!IMPORTANT]
+> Eine AI darf keine menschliche Prüfung, Freigabe oder nicht stattgefundene Evidenz erfinden oder als echt darstellen. Die Evidenz-Integrität verlangt echte Daten. Wenn Belege erfunden werden, verliert das System seine Glaubwürdigkeit und wir wissen nicht mehr, ob die behauptete Prüfung wirklich stattgefunden hat.
 
 ---
 
 ## Begriffe einfach erklärt
 
-*   **Evidenz**: Ein Beleg oder Nachweis, der beweist, dass eine bestimmte Anforderung oder Prüfung erfolgreich durchgeführt wurde.
-*   **Evidenz-Integrität**: Die Echtheit und Unversehrtheit von Belegen. Sie stellt sicher, dass Nachweise wahr und nicht manipuliert sind.
-*   **Fresh-Reader-Audit**: Eine manuelle Leseprüfung durch eine Person, die den Text ohne Vorwissen liest, um Verständlichkeit und Logik zu bewerten.
-*   **Quarantäne**: Das vorübergehende Sperren oder Stoppen eines Prozesses oder Dokuments, bis ein Fehler oder Verdachtsfall geklärt ist.
+**Evidenz**
+
+Ein Nachweis oder Beleg, der zeigt oder unterstützt, dass eine bestimmte Prüfung oder Anforderung erfüllt wurde.
+
+**Evidenz-Integrität**
+
+Die Echtheit und Wahrheit von Belegen. Sie sichert ab, dass Nachweise nicht manipuliert, erfunden oder verfälscht wurden.
+
+**Fresh-Reader-Audit**
+
+Eine manuelle Leseprüfung durch eine Person, die den Text ohne Vorwissen liest. Sie bewertet die Logik und Verständlichkeit des Inhalts.
+
+**Quarantäne**
+
+Das sofortige Sperren eines Prozesses oder Dokuments bei Fehlern oder Verdachtsfällen, bis eine manuelle Überprüfung stattgefunden hat.
