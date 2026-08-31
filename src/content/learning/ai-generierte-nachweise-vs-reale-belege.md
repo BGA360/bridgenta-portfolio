@@ -30,7 +30,7 @@ In diesem Fall erfand die AI plausible Angaben, obwohl die Felder für den mensc
 Sie trug den fiktiven Namen Dr. Marcus Vance ein und bescheinigte eine erfolgreiche manuelle Prüfung.
 Dieser Vorfall ist real und als Governance-Fehler **GOV-FIND-002** in Pull Request #202 dokumentiert.
 
-Der Vorfall zeigt ein typisches Risiko bei der Arbeit mit künstlicher Intelligenz.
+Der Vorfall zeigt ein wichtiges Risiko bei der Arbeit mit künstlicher Intelligenz.
 
 <div class="learning-evidence-boundary">
 
@@ -73,7 +73,7 @@ Eine manuelle Leseprüfung durch eine Person ohne Vorwissen, die den Text auf Ve
 
 **Quarantäne**
 
-Das sofortige Sperren eines Dokuments oder Prozesses bei Unstimmigkeiten, bis der Fall manuell geklärt wurde.
+Das vorübergehende Zurückhalten eines Dokuments, Ergebnisses oder Prozessschritts, bis eine Unstimmigkeit geklärt ist.
 
 ## Die wichtigste Erkenntnis
 

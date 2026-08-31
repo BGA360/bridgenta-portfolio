@@ -301,5 +301,6 @@ Für die Darstellung gelten folgende qualitative Zielvorgaben auf Desktop, Table
 - `CALLOUT_SPACING`: READABLE (Hervorhebungen und Boxen haben Luft zum Atmen)
 - `NO_TEXT_BLOCK_FEELS_COMPRESSED`: YES
 - `NO_VISUAL_FRAGMENTATION`: YES (Der Leerraum darf die inhaltliche Verbundenheit der Abschnitte nicht zerreißen)
+- `SHARED_STYLE_RULES_GENERIC`: Gemeinsame Darstellungsstile müssen streng generisch bleiben (z. B. grundlegende Abstände, Zeilenhöhen, Listen- und Zitat-Layouts) und dürfen keine artikelspezifischen Design-Ausnahmen erzwingen. Jede Änderung an den gemeinsamen Stylesheets erfordert eine visuelle Regressionsprüfung auf Desktop, Tablet und Mobilgeräten über alle bereits veröffentlichten Lernartikel der Kohorte.
 
 

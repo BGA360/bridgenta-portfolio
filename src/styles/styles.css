@@ -2001,8 +2001,8 @@ section[id] { scroll-margin-top: 100px; }
   color: var(--text-dark);
 }
 
-/* Glossary Terms styling using strong as only-child */
-.learning-prose .tina-content p > strong:only-child {
+/* Glossary Terms styling using strong as only-child under the glossary heading */
+.learning-prose .tina-content h2[id^="begriffe-einfach"] ~ p > strong:only-child {
   display: block;
   margin-top: 1.5rem;
   margin-bottom: 0.35rem;
