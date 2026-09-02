@@ -1,0 +1,46 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import LearningArticleRenderer from '../../../components/LearningArticleRenderer.astro';
+
+export async function getStaticPaths() {
+  // Fail-Closed: Return 0 routes when not in local development mode
+  if (!import.meta.env.DEV) {
+    return [];
+  }
+
+  const articles = await getCollection('learning');
+  // Selector contract: Exclusively select articles in 'draft' state
+  const draftArticles = articles.filter(
+    (art) => art.data.publicationState === 'draft'
+  );
+
+  for (const article of draftArticles) {
+    if (article.slug.includes('/')) {
+      throw new Error(
+        `[PREVIEW ROUTE BUILD FAIL] Nested article found: "${article.id}". Learning articles must be flat under src/content/learning/.`
+      );
+    }
+    if (article.slug === 'themen') {
+      throw new Error(
+        `[PREVIEW ROUTE BUILD FAIL] Article slug matches reserved word "themen": "${article.id}".`
+      );
+    }
+  }
+
+  return draftArticles.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const categoryEntry = await getEntry('learningCategories', entry.data.category.id);
+---
+
+<LearningArticleRenderer
+  mode="preview"
+  entry={entry}
+  categoryEntry={categoryEntry}
+  Content={Content}
+/>
