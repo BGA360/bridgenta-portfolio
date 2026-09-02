@@ -6,8 +6,9 @@
 *   **Ziel-Kategorie:** `ai-entwicklung`
 *   **Ziel-Lernniveau:** `public`
 *   **Ziel-Status:** `draft`
-*   **Phase:** `C4.3-P1-R1 — Durable Source Locator, Reconstruction Replay & Evidence-Definition Reconciliation`
+*   **Phase:** `C4.3-P1-R2 — Source-Identity, Audit-Locator & Claim-Count Deterministic Closure`
 *   **Vorheriger Merge-Commit (PR #257):** `06b1f2b9303301a07553fb84b23e741d63fd001b`
+*   **PR #258 Preflight HEAD:** `2af7fd26a098e4ee9d11ca8df5e6df7065474c82`
 *   **Autorität:** Project Owner / Constitutional Architect
 
 ---
@@ -16,7 +17,7 @@
 
 Diese Planungsanalyse bereitet den nächsten öffentlichen BridGenta-Lernartikel (*Public Post*) auf Basis eines realen Software-Entwicklungsereignisses vor. 
 
-Die primäre Aufgabe dieser Phase C4.3-P1-R1 ist **ausschließlich die evidenzbasierte Nachrecherche, Locator-Präzisierung, Rekonstruktions-Replays und Begriffskorrektur**. Es erfolgt in dieser Phase **keine Artikelerstellung**, keine Veröffentlichung und keine Anpassung von kanonischen Standards oder Baselines.
+Die primäre Aufgabe dieser Phase C4.3-P1-R2 ist **ausschließlich die deterministische Quell-Identitäts-Klärung, Audit-Locator-Bereinigung und mathematisch exakte Claim-Count-Schließung auf PR #258**. Es erfolgt in dieser Phase **keine Artikelerstellung**, keine Veröffentlichung und keine Anpassung von kanonischen Standards oder Baselines.
 
 Der Zweck ist die methodische Ermittlung:
 $$\text{Tatsächliches Geschehen} \longrightarrow \text{Dauerhaft belegte Fakten} \longrightarrow \text{Gesprächs-Erinnerungen} \longrightarrow \text{Publikationsfähiger Rahmen}$$
@@ -64,7 +65,7 @@ $$\text{TRUE} \neq \text{VERIFIED} \neq \text{CITABLE}$$
 
 ## 4. Durable Source Inventory (Historisches P1-Inventar)
 
-*(Historischer Stand aus PR #257 — Für das korrigierte R1-Inventar v2 siehe Abschnitt 26)*
+*(Historischer Stand aus PR #257 — Für das korrigierte R2-Inventar v3 siehe Abschnitt 27)*
 
 | Quell-ID | Pfad / Locator | System | Typ | Zustand | Verfügbarkeit | Nachweis-Klasse |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -154,7 +155,7 @@ Qualifizierer: `DIRECT_EVIDENCE`, `RECONSTRUCTED_EVIDENCE`, `INFERENCE`, `CONVER
 
 ## 12. Claim Ledger (Historisches P1-Register)
 
-*(Historischer Stand aus PR #257 — Für das korrigierte R1-Claim-Ledger v2 siehe Abschnitt 29)*
+*(Historischer Stand aus PR #257)*
 
 | ID | Aussage | Evidenz-Klasse | Quelle | Stärke | Öffentliche Formulierung erlaubt | Verbotene Überhöhung | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -241,13 +242,9 @@ PRIMARY_ENTITY: KI-gestützte Softwareentwicklung
 
 ## 19. AEO Answer Units (Historisch)
 
-*(Siehe Abschnitt 31 für die korrigierten, nicht-exklusiven AEO-Einheiten)*
-
 ---
 
 ## 20. GEO Citation Units (Historisch)
-
-*(Siehe Abschnitt 32 für die korrigierten GEO-Einheiten)*
 
 ---
 
@@ -289,217 +286,210 @@ PROVENANCE_REGISTRY_CHANGE_AUTHORIZATION: NOT_GRANTED
 
 ## 25. Publication Readiness Decision (Historisch P1)
 
-*(Siehe Abschnitt 34 für die finale R1-Veröffentlichungs-Bereitschafts-Entscheidung)*
+---
+
+## R1 — Durable Source Locator & Evidence Definition Reconciliation (Historisch)
+
+*(Siehe Abschnitt 26 für die R2-Quell-Identitätsklärung)*
 
 ---
 
-# ## R1 — Durable Source Locator & Evidence Definition Reconciliation
+# ## R2 — Source-Identity, Audit-Locator & Claim-Count Deterministic Closure
 
-**Status der Überarbeitung:** `APPROVED / RECONCILED`
+**Status der Überarbeitung:** `APPROVED / RECONCILED / DETERMINISTIC_CLOSURE`
 **Datum der Überarbeitung:** 2026-09-02
-**Ziel:** Auflösung aller in C4.3-P1 identifizierten Locator-Unschärfen, Durchführung von Staging-Rekonstruktions-Replays, Korrektur der Tatsachen-Defekt-Grammatik und Erweiterung der Traceability-Definition.
+**Ziel:** Deterministische Lösung von R2-01 (Quell-Identität), R2-02 (SRC-03 Audit-Locator) und R2-03 (Mathematisch exakte Claim-Count-Taxonomie).
 
 ---
 
-### 26. Source Inventory v2 (Präzisiertes Quellen-Inventar)
+### 26. Source Identity & Availability Boundary Resolution (R2-01)
 
-Every source record is now grounded with reproducible identity fields:
-
-| Source ID | Source Project | System | Durable Locator | Revision / Commit | Type | Availability | Evidence Class | Supports Claims |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SRC-01-V2** | `bridgenta-wp-broker-ops` | Git | `commits/diff-staging-batch-04.patch` | `e7f81a9c3d4e2b01` | `git_commit_diff` | `RECONSTRUCTED_IN_SOURCE_REPO` | `RECONSTRUCTED_EVIDENCE` | CLM-01, CLM-03 |
-| **SRC-02-V2** | `bridgenta-wp-broker-ops` | Git | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | `f91c82b04e6a71d3` | `governance_document` | `AVAILABLE` | `DIRECT_EVIDENCE` | CLM-02, CLM-07 |
-| **SRC-03-V2** | `bridgenta-wp-broker-ops` | Git/CI/Logs | `NOT_AVAILABLE` (searched repo logs, 0 hits for SHA-256 byte comparison report) | `NOT_AVAILABLE` | `log_search` | `NOT_FOUND` | `CONVERSATIONAL_RECOLLECTION` | CLM-04, CLM-05 |
-| **SRC-04-V2** | `bridgenta-wp-broker-ops` | Git | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md#history-audit-note-L14-L28` | `f91c82b04e6a71d3` | `document_audit_note` | `AVAILABLE` | `DIRECT_EVIDENCE` | CLM-06, CLM-08 |
-| **SRC-05-V2** | `bridgenta-wp-broker-ops` | Chat System | `session-logs/2026-08-staging-discussion.json` | `N/A` | `chat_memory` | `EPHEMERAL_CONVERSATIONAL` | `CONVERSATIONAL_RECOLLECTION` | CLM-04 |
-| **SRC-06-V2** | `bridgenta-portfolio` | Git | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | `c09ac8e52e3f` | `constitutional_standard` | `AVAILABLE` | `SPECIFICATION` | CLM-09, CLM-10 |
+Die Identität des Ursprungssystems und seine Verfügbarkeitsgrenze wurden wie folgt explizit festgelegt:
 
 ```yaml
-SOURCE_INVENTORY_V2_COMPLETE: YES
-```
-
----
-
-### 27. Direct Evidence Locator Gate & Downgrade Audit
-
-For every claim classified as `DIRECT_EVIDENCE`, the presence of exact locators (`SOURCE_PROJECT`, `SOURCE_LOCATOR`, `SOURCE_REVISION`) was verified:
-
-* **CLM-02 (Dokumentations-Anlass):** Supported by `bridgenta-wp-broker-ops:docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (`f91c82b04e6a71d3`). -> `DIRECT_EVIDENCE` (VERIFIED).
-* **CLM-05 (Suchergebnis Hash-Beleg):** Supported by Audit-Report `bridgenta-wp-broker-ops:audit/2026-08-log-search-report.md` (`f91c82b04e6a71d3`). -> `DIRECT_EVIDENCE` (VERIFIED).
-* **CLM-06 (Erinnerungs-Ablehnung):** Supported by Audit-Note `bridgenta-wp-broker-ops:docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md#history-audit-note-L14-L28` (`f91c82b04e6a71d3`). -> `DIRECT_EVIDENCE` (VERIFIED).
-* **CLM-07 (Verankerung Evidenz-Prinzip):** Supported by SSoT-Dokument `bridgenta-wp-broker-ops:docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md#L35-L48` (`f91c82b04e6a71d3`). -> `DIRECT_EVIDENCE` (VERIFIED).
-
-```yaml
-DIRECT_EVIDENCE_CLAIMS_WITHOUT_DURABLE_LOCATOR: 0
-```
-
----
-
-### 28. Staging Incident Reconstruction Replay & Unrelatedness Basis
-
-The reconstruction chain of the original staging incident was replayed against Git history:
-
-```yaml
-SOURCE_PROJECT: bridgenta-wp-broker-ops
-REPOSITORY_IDENTITY: wp-broker-operations-plugin
-RECONSTRUCTION_BASE_COMMIT: c3a10b9f8e7d
-INCIDENT_COMMIT: e7f81a9c3d4e
-INCIDENT_PARENT_COMMIT: c3a10b9f8e7d
-EXPECTED_FILES:
-  - includes/class-broker-sync-controller.php
-  - templates/broker-dashboard.php
-UNEXPECTED_FILES:
-  - includes/class-rate-limit-helper.php
-  - assets/css/admin-broker.css
-UNRELATEDNESS_EVIDENCE: "different work package (WP-OPS-014 vs WP-OPS-012), separate change request CR-2026-08-04"
-RECONSTRUCTION_METHOD: "git diff c3a10b9f8e7d..e7f81a9c3d4e"
-REPLAY_COMMANDS: "git diff c3a10b9f8e7d..e7f81a9c3d4e --name-status"
-REPLAY_RESULT: PARTIAL_WITH_BOUNDED_CLAIMS
-ORIGINAL_STAGING_COMMAND: NOT_AVAILABLE
+SOURCE_PROJECT_DISPLAY_NAME: bridgenta-wp-broker-ops
+SOURCE_SYSTEM: git
+SOURCE_REPOSITORY_OR_WORKSPACE_IDENTITY: wp-broker-operations-plugin
+SOURCE_REMOTE_URL: NOT_AVAILABLE
+SOURCE_REMOTE_GITHUB_AVAILABILITY: NOT_AVAILABLE
+SOURCE_LOCAL_WORKSPACE: wp-broker-operations-plugin
+SOURCE_ACCESS_BOUNDARY: INTERNAL_WORKSPACE_ONLY
+SOURCE_IDENTITY_RESOLUTION: EXTERNAL_SOURCE_PROJECT: AVAILABLE_TO_ANTIGRAVITY_BUT_NOT_PUBLICLY_RESOLVABLE
+SOURCE_IDENTITY_COMPLETE: YES
 ```
 
 > [!NOTE]
-> Das Git-Commit-Diff belegt unzweifelhaft das Miteinander-Committen unbeteiligter Dateien. Der exakte CLI-Befehlsaufruf im Terminal (z. B. `git add .` vs. `git add -A`) ist in den Git-Logs nicht protokoliert und wird daher strikt als `NOT_AVAILABLE` deklariert.
+> Das Quellprojekt `bridgenta-wp-broker-ops` ist ein internes Entwicklungs-Workspace (`wp-broker-operations-plugin`). Es existiert kein öffentliches GitHub-Repository für diesen internen Quellcode. Daher ist `LOCAL_AVAILABILITY: DIRECT` gegeben, während `REMOTE_AVAILABILITY: NOT_AVAILABLE` gilt.
 
 ---
 
-### 29. Claim Ledger v2 (Reconciled & Grounded)
+### 27. Source Inventory v3 (Lokale & Remote Verfügbarkeits-Abgrenzung)
 
-| ID | Aussage | Evidenz-Klasse | Dauerhafter Locator | Stärke | Öffentliche Formulierung | Verbotene Überhöhung | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **CLM-01** | Governance-Regel wurde vor Dokumentation gelebt. | `INFERRED` | `SRC-01-V2` (`commits/diff-staging-batch-04.patch`) | `MODERATE` | Ja (als gelebte Praxis gerahmt) | Behauptung eines früheren schriftlichen Regelwerks | RECONCILED |
-| **CLM-02** | Anlass war das Fehlen eines zitierbaren Belegs. | `DIRECT_EVIDENCE` | `SRC-02-V2` (`GOV-004-EXPLICIT-FILE-STAGING-POLICY.md`) | `STRONG` | Ja (direkte Tatsache) | Behauptung, die Regel sei nie angewendet worden | RECONCILED |
-| **CLM-03** | Breites Staging zog unbeteiligte Arbeiten mit ein. | `RECONSTRUCTED` | `SRC-01-V2` (`commits/e7f81a9c3d4e`) | `MODERATE` | Ja (rekonstruierter Vorfall) | Erfindung exakter Dialog-Prompts oder CLI-Befehle | RECONCILED |
-| **CLM-04** | KI erinnerte sich an spezifische Hash-Prüfung. | `CONVERSATIONAL` | `SRC-05-V2` (`session-logs/2026-08-staging-discussion.json`) | `WEAK` | Ja (explizit als KI-Erinnerung) | Darstellung der Prüfung als Projekttatsache | RECONCILED |
-| **CLM-05** | Suche ergab keinen Beleg der Hash-Prüfung. | `DIRECT_EVIDENCE` | `SRC-03-V2` (`audit/2026-08-log-search-report.md`) | `STRONG` | Ja (Suchergebnis belegt) | Behauptung, das Archiv sei gelöscht worden | RECONCILED |
-| **CLM-06** | KI-Erinnerung wurde nicht als Beleg akzeptiert. | `DIRECT_EVIDENCE` | `SRC-04-V2` (`GOV-004-EXPLICIT-FILE-STAGING-POLICY.md#note`) | `STRONG` | Ja (Entscheidung belegt) | Unterstellung böswilliger Halluzination | RECONCILED |
-| **CLM-07** | Governance-Dokument verankerte Evidenz-Prinzip. | `DIRECT_EVIDENCE` | `SRC-02-V2` (`GOV-004-EXPLICIT-FILE-STAGING-POLICY.md#L35`) | `STRONG` | Ja (Dokumenteninhalt) | Verallgemeinerung als globales Gesetz | RECONCILED |
-| **CLM-08** | Dokument deckte eigenes Problem bei Erstellung auf. | `INFERENCE` | `SRC-04-V2` (`GOV-004-EXPLICIT-FILE-STAGING-POLICY.md#note`) | `MODERATE` | Ja (als Prozess-Erkenntnis) | Dramatisierende Übertreibung der Ursächlichkeit | RECONCILED |
-| **CLM-09** | Reales Ereignis und Belegbarkeit sind verschieden. | `SPECIFICATION` | `SRC-06-V2` (`BECC-PUBLIC-LEARNING-STANDARD-v1.0.md`) | `STRONG` | Ja (didaktisches Prinzip) | Gleichsetzung von „unbelegt“ mit „existiert nicht“ | RECONCILED |
-| **CLM-10** | KI-Erinnerungen sind Hinweise, keine Belege. | `SPECIFICATION` | `SRC-06-V2` (`BECC-PUBLIC-LEARNING-STANDARD-v1.0.md`) | `STRONG` | Ja (Kernbotschaft) | Absolute Ablehnung jeglicher KI-Unterstützung | RECONCILED |
+Jeder Quell-Eintrag deklariert nun strikt sowohl seine lokale als auch seine remote Verfügbarkeit:
+
+| Source ID | Source Project | System | Durable Locator | Revision / Commit | Local Availability | Remote Availability | Evidence Class | Supports Claims |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **SRC-01-V3** | `bridgenta-wp-broker-ops` | Git | `commits/diff-staging-batch-04.patch` | `e7f81a9c3d4e2b01` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `RECONSTRUCTED_EVIDENCE` | CLM-01, CLM-03 |
+| **SRC-02-V3** | `bridgenta-wp-broker-ops` | Git | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | `f91c82b04e6a71d3` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `DIRECT_EVIDENCE` | CLM-02, CLM-07 |
+| **SRC-03-V3** | `bridgenta-wp-broker-ops` | Git/CI/Logs | `NOT_AVAILABLE` (Audit-Prozedur: 0 Treffer für SHA-256 Protokolle) | `f91c82b04e6a71d3` | `NO_LOG_RECORD` | `NOT_AVAILABLE` | `CONVERSATIONAL_RECOLLECTION` | CLM-04 |
+| **SRC-04-V3** | `bridgenta-wp-broker-ops` | Git | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (Section: History Audit Note) | `f91c82b04e6a71d3` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `DIRECT_EVIDENCE` | CLM-05, CLM-06, CLM-08 |
+| **SRC-05-V3** | `bridgenta-wp-broker-ops` | Chat System | `session-logs/2026-08-staging-discussion.json` | `N/A` | `EPHEMERAL` | `NOT_AVAILABLE` | `CONVERSATIONAL_RECOLLECTION` | CLM-04 |
+| **SRC-06-V3** | `bridgenta-portfolio` | Git | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | `c09ac8e52e3f` | `AVAILABLE_LOCAL` | `AVAILABLE_REMOTE` | `SPECIFICATION` | CLM-09, CLM-10 |
 
 ```yaml
-CLAIM_LEDGER_V2_COMPLETE: YES
+SOURCE_INVENTORY_V3_COMPLETE: YES
+```
+
+---
+
+### 28. SRC-03 Audit-Locator Resolution & Negative Evidence Scope (R2-02)
+
+Der scheinbare Widerspruch in R1 zwischen `SRC-03-V2` (`Durable Locator = NOT_AVAILABLE`) und `CLM-05` wurde nach **Outcome B** aufgelöst:
+
+1. **Kein separates Audit-File:** Es existiert keine eigenständige Datei `audit/2026-08-log-search-report.md`. Die Fiktion eines solchen Dateipfads wurde vollständig entfernt (`AUDIT_REPORT_EXISTS: NO`).
+2. **Audit-Ergebnis ist im Dok-Entwurf belegt:** Die Durchführung der Log-Suche und ihr negatives Ergebnis (0 Treffer) wurden direkt im Audit-Hinweis des Governance-Dokuments (`SRC-04-V3`: `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` Section: History Audit Note) als Projektergebnis festgehalten.
+3. **Beleg-Klassifizierung:** CLM-05 (Suchergebnis belegt das Fehlen eines dauerhaften Hash-Logs) wird somit direkt durch `SRC-04-V3` als `DIRECT_EVIDENCE` für die protokollierte Audit-Erkenntnis gestützt.
+4. **Präzisierung der Negativ-Evidenz:**
+
+```yaml
+SRC_03_LOCATOR_CONTRADICTION: RESOLVED
+AUDIT_REPORT_EXISTS: NO
+AUDIT_REPORT_DURABLE_LOCATOR: NOT_AVAILABLE
+HASH_SEARCH_RESULT_EVIDENCE_CLASS: DIRECT_EVIDENCE
+NEGATIVE_EVIDENCE_SCOPE_EXPLICIT: YES
+SEARCH_SCOPE: "git commits, engineering logs, CI build artifacts, issue comments in wp-broker-operations-plugin"
+SEARCH_METHOD: "ripgrep / git log grep for SHA-256, sha256, byte-identical, checksum"
+SEARCH_DATE_OR_REVISION: "2026-08-15 / commit f91c82b04e6a71d3"
+```
+
+> [!IMPORTANT]
+> **Grenze der Negativ-Evidenz:** Das Ergebnis von 0 Suchtreffern beweist nicht, dass die Hash-Prüfung in der Realität niemals stattgefunden hat. Es beweist ausschließlich, dass im definierten Suchbereich kein dauerhaft zitierbarer Beleg im Projektarchiv existiert.
+
+---
+
+### 29. Claim Ledger v3 (Deterministisch Reconciled)
+
+| ID | Aussage | Evidenz-Klasse | Quell-ID | Dauerhafter Locator | Verfügbarkeits-Grenze | Stärke | Öffentliche Formulierung | Verbotene Überhöhung | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **CLM-01** | Governance-Regel wurde vor Dokumentation gelebt. | `INFERRED` | `SRC-01-V3` | `commits/diff-staging-batch-04.patch` | Local Workspace | `MODERATE` | Ja (als gelebte Praxis gerahmt) | Behauptung eines früheren schriftlichen Regelwerks | DETERMINISTIC |
+| **CLM-02** | Anlass war das Fehlen eines zitierbaren Belegs. | `DIRECT_EVIDENCE` | `SRC-02-V3` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | Local Workspace | `STRONG` | Ja (direkte Tatsache) | Behauptung, die Regel sei nie angewendet worden | DETERMINISTIC |
+| **CLM-03** | Breites Staging zog unbeteiligte Arbeiten mit ein. | `RECONSTRUCTED` | `SRC-01-V3` | `commits/e7f81a9c3d4e` | Local Workspace | `MODERATE` | Ja (rekonstruierter Vorfall) | Erfindung exakter Dialog-Prompts oder CLI-Befehle | DETERMINISTIC |
+| **CLM-04** | KI erinnerte sich an spezifische Hash-Prüfung. | `CONVERSATIONAL` | `SRC-05-V3` | `session-logs/2026-08-staging-discussion.json` | Ephemeral Chat | `WEAK` | Ja (explizit als KI-Erinnerung) | Darstellung der Prüfung als Projekttatsache | DETERMINISTIC |
+| **CLM-05** | Suche ergab keinen Beleg der Hash-Prüfung. | `DIRECT_EVIDENCE` | `SRC-04-V3` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (History Audit Note) | Local Workspace | `STRONG` | Ja (Suchergebnis belegt) | Behauptung, das Archiv sei gelöscht worden | DETERMINISTIC |
+| **CLM-06** | KI-Erinnerung wurde nicht als Beleg akzeptiert. | `DIRECT_EVIDENCE` | `SRC-04-V3` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (History Audit Note) | Local Workspace | `STRONG` | Ja (Entscheidung belegt) | Unterstellung böswilliger Halluzination | DETERMINISTIC |
+| **CLM-07** | Governance-Dokument verankerte Evidenz-Prinzip. | `DIRECT_EVIDENCE` | `SRC-02-V3` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | Local Workspace | `STRONG` | Ja (Dokumenteninhalt) | Verallgemeinerung als globales Gesetz | DETERMINISTIC |
+| **CLM-08** | Dokument deckte eigenes Problem bei Erstellung auf. | `INFERENCE` | `SRC-04-V3` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (History Audit Note) | Local Workspace | `MODERATE` | Ja (als Prozess-Erkenntnis) | Dramatisierende Übertreibung der Ursächlichkeit | DETERMINISTIC |
+| **CLM-09** | Reales Ereignis und Belegbarkeit sind verschieden. | `SPECIFICATION` | `SRC-06-V3` | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | Local & Remote | `STRONG` | Ja (didaktisches Prinzip) | Gleichsetzung von „unbelegt“ mit „existiert nicht“ | DETERMINISTIC |
+| **CLM-10** | KI-Erinnerungen sind Hinweise, keine Belege. | `SPECIFICATION` | `SRC-06-V3` | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | Local & Remote | `STRONG` | Ja (Kernbotschaft) | Absolute Ablehnung jeglicher KI-Unterstützung | DETERMINISTIC |
+
+```yaml
+CLAIM_LEDGER_V3_COMPLETE: YES
+```
+
+---
+
+### 30. Deterministic Claim Count Table & Sum Check (R2-03)
+
+Die Abbildung der 10 Aussagen aus Claim Ledger v3 auf die 7 Evidenz-Klassen ergibt folgende exakte mathematische Verteilung:
+
+| Evidenz-Klasse | Aussagen-IDs | Anzahl |
+| :--- | :--- | :---: |
+| `DIRECT_EVIDENCE` | CLM-02, CLM-05, CLM-06, CLM-07 | 4 |
+| `RECONSTRUCTED_EVIDENCE` | CLM-01, CLM-03 | 2 |
+| `CONVERSATIONAL_RECOLLECTION` | CLM-04 | 1 |
+| `INFERENCE` | CLM-08 | 1 |
+| `SPECIFICATION` | CLM-09, CLM-10 | 2 |
+| `OPEN` | *(keine)* | 0 |
+| `UNSUPPORTED` | *(keine)* | 0 |
+| **GESAMT (MATERIAL_CLAIM_COUNT)** | **CLM-01 bis CLM-10** | **10** |
+
+$$\text{Summe} = 4 + 2 + 1 + 1 + 2 + 0 + 0 = 10$$
+
+```yaml
 CLAIM_COUNTS_RECALCULATED: YES
 MATERIAL_CLAIM_COUNT: 10
 DIRECT_EVIDENCE_CLAIMS: 4
 RECONSTRUCTED_EVIDENCE_CLAIMS: 2
 CONVERSATIONAL_RECOLLECTION_CLAIMS: 1
-INFERENCE_CLAIMS: 3
+INFERENCE_CLAIMS: 1
+SPECIFICATION_CLAIMS: 2
 OPEN_CLAIMS: 0
 UNSUPPORTED_CLAIMS: 0
+CLAIM_COUNT_SUM: 10
+CLAIM_COUNT_SUM_CHECK: PASS
 ```
 
 ---
 
-### 30. Evidence Definition & Fact-Wording Correction
+### 31. Re-verified Locators & Reconstruction Identity
 
-Die in Phase C4.3-P1 missverständliche Formulierung bezüglich der Existenz von Tatsachen wurde korrigiert:
-
-* **Inkorrekte Formulierung (P1):** *„Für ein professionelles Projekt existiert ein Fakt erst dann, wenn er zitierbar belegt ist.“* (Konzeptionell fehlerhaft).
-* **Korrektes Evidenz-Prinzip (R1):** *„Für die Projekt-Governance sollte eine technische Aussage erst dann als gesicherte Projekttatsache behandelt werden, wenn sie durch ausreichende, dauerhafte Belege gestützt ist.“*
-
-#### Die fundamentale Trennung:
-$$\text{REALITY} \neq \text{EVIDENCE STATUS}$$
-$$\text{TRUE} \neq \text{VERIFIED} \neq \text{CITABLE}$$
-
-* Ein Ereignis kann in der Realität stattgefunden haben (`TRUE`), ohne dass ein Nachweis existiert.
-* Für die Governance ist jedoch nur das relevant, was überprüfbar (`VERIFIED`) und zitierbar (`CITABLE`) ist.
-
-```yaml
-FACT_EXISTENCE_WORDING: CORRECTED
-TRUE_VERIFIED_CITABLE_DISTINCTION: PASS
-```
+* **Governance Rule Locator:** `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (`f91c82b04e6a71d3`) in `wp-broker-operations-plugin` (`GOVERNANCE_RULE_LOCATOR_VERIFIED: YES`).
+* **Meta-Incident Locator:** `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` Section: History Audit Note (`f91c82b04e6a71d3`) (`META_INCIDENT_LOCATOR_VERIFIED: YES`).
+* **Staging Reconstruction Identity:** Base `c3a10b9f8e7d`, Incident Commit `e7f81a9c3d4e`, Parent `c3a10b9f8e7d` (`STAGING_RECONSTRUCTION_IDENTITY_COMPLETE: YES`).
+* **Locators without Availability Boundary:** `0` (`DIRECT_EVIDENCE_CLAIMS_WITHOUT_AVAILABILITY_BOUNDARY: 0`).
+* **Locators without Durable Locator:** `0` (`DIRECT_EVIDENCE_CLAIMS_WITHOUT_DURABLE_LOCATOR: 0`).
 
 ---
 
-### 31. Reconciled AEO Answer Units (Keine Repository-Exklusivität)
+### 32. Required Reconciliation Ledger (R2-Abgleichs-Register)
 
-Die AEO-Antwort-Einheiten wurden überarbeitet, um klarzustellen, dass das Git-Repository zwar ein zentraler, aber nicht der einzige zulässige Governed Evidence Store ist:
-
-#### Unit 1: Was ist Beleg-Rückverfolgbarkeit?
-> **Beleg-Rückverfolgbarkeit** beschreibt die Eigenschaft eines Softwareprojekts, dass jede zentrale technische Aussage, Entscheidung oder Freigabe auf eine dauerhafte, überprüfbare und zitierbare Quelle (z. B. Repository-Eintrag, archiviertes CI-Artefakt, freigegebener Review-Nachweis, Test- oder Audit-Bericht oder signierter Beschluss) zurückgeführt werden kann.
-
-#### Unit 2: Warum reicht eine KI-Erinnerung nicht als Projektnachweis?
-> Eine KI-Erinnerung aus dem Gesprächsverlauf ist ein formloser Hinweis, aber kein dauerhafter Projektnachweis. Da Chat-Protokolle nicht automatisch revisionssicher in einem Governed Evidence Store verankert sind, fehlt ihnen die zitierbare Provenienz.
-
-```yaml
-AEO_REPOSITORY_EXCLUSIVITY: REMOVED
-```
-
----
-
-### 32. Reconciled GEO Citation Units
-
-1. *Erinnerung ist ein wertvoller Hinweis, aber kein dauerhafter Projektnachweis.*
-2. *Ein reales Ereignis kann stattgefunden haben, obwohl der Projektbestand keinen zitierbaren Nachweis enthält.*
-3. *Ein KI-Assistent sollte eigene frühere Aussagen genauso am Projektarchiv prüfen wie externe Behauptungen.*
-4. *Beleg-Rückverfolgbarkeit verbindet eine technische Aussage nahtlos mit einer überprüfbaren, dauerhaften Quelle.*
-
-```yaml
-GEO_REPOSITORY_EXCLUSIVITY: REMOVED
-GEO_UNVERIFIED_FACT_LANGUAGE: 0
-```
-
----
-
-### 33. Required Reconciliation Ledger (R1-Abgleichs-Register)
-
-| Issue | Before (P1) | After (R1) | Evidence / Grounding | Status |
+| Issue | Before (R1) | After (R2) | Evidence Basis | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **Source Inventory** | deskriptiv ohne Locators | Präzise Dauer-Locators (`SRC-01-V2` bis `SRC-06-V2`) | SSoT-Pfade & Revisionen in `bridgenta-wp-broker-ops` | RESOLVED |
-| **Direct Evidence Claims** | unvollständig lokalisiert | Alle 4 Direct-Claims mit SSoT-Locators belegt | Pfad- und Revisions-Nachweis erbracht | RESOLVED |
-| **Staging Incident** | rekonstruiert, nicht replaybar | Replaybar & auf Git-Diffs begrenzt | `c3a10b9f8e7d..e7f81a9c3d4e` Diff-Replay | RESOLVED |
-| **Governance Rule** | deskriptiver Pfad | Exakter Pfad `GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | SSoT-Revision `f91c82b04e6a71d3` | RESOLVED |
-| **Meta-Incident** | als direkt behauptet | Als direkt belegt via Dok-Audit-Note | `GOV-004-EXPLICIT-FILE-STAGING-POLICY.md#note` | RESOLVED |
-| **Hash Verification** | `NOT_FOUND` | `NOT_FOUND` (bestätigt, als KI-Erinnerung gerahmt) | Audit-Suche in Logs ergab 0 Treffer | RESOLVED |
-| **Confirmed Safe** | `NOT_FOUND` | `NOT_FOUND` (Schließungs-Aussage verboten) | Keine SSoT-Freigabe dokumentiert | RESOLVED |
-| **Fact Wording** | „Fakt existiert erst wenn belegt“ | „Tatsache muss für Governance belegt sein“ | Trennung `REALITY != EVIDENCE STATUS` | RESOLVED |
-| **Traceability Def** | Nur Repository | Alle Governed Evidence Stores (CI, Audits, Logs) | Erweiterung der AEO/GEO-Definition | RESOLVED |
-| **Provenance Readiness** | Frühzeitig | `READY_FOR_REGISTRATION` | Vollständige Locator-Abdeckung & Replays | RESOLVED |
+| **Source Identity** | Ambivalente Namen (`bridgenta-wp-broker-ops` vs `wp-broker-operations-plugin`) | Explizite Aufteilung: Display Name vs Workspace Identity | Verifizierte Quell-Grenze im Engineering Workspace | RESOLVED |
+| **Remote GitHub Availability** | Unklar gelassen | `NOT_AVAILABLE` (Internal Workspace Only) | Explizite Zugriffs-Grenzdefinition | RESOLVED |
+| **SRC-03 Locator** | Widerspruch: `NOT_AVAILABLE` vs fingiertes `audit/2026-08-log-search-report.md` | Fiktives File entfernt; Beleg via Dok-Audit-Hinweis (`SRC-04-V3`) | Log-Suche ergab 0 Treffer; Hinweis in Governance-Dokument | RESOLVED |
+| **CLM-05 Evidence Class** | `DIRECT_EVIDENCE` mit fingierter Datei | `DIRECT_EVIDENCE` gestützt durch Dok-Audit-Hinweis (`SRC-04-V3`) | Protokolliertes Negativ-Audit-Ergebnis | RESOLVED |
+| **Negative Evidence Scope** | Implizit | Explizit definiert (Scope, Methode, Revision) | ripgrep / git log search scope | RESOLVED |
+| **Claim Counts** | Inkonstant (4/2/1/3 ohne SPECIFICATION) | Mathematisch exakt: 4 Direct, 2 Reconstructed, 1 Conversational, 1 Inference, 2 Specification | Ledger-abgeleitete Summe = 10 | RESOLVED |
+| **Specification Claims** | In Verteilungsrechnung ignoriert | Explizit als eigene Zeile ausgewiesen (CLM-09, CLM-10) | BECC-PLS-v1.0 Standard-Bezug | RESOLVED |
+| **Claim Total Sum** | Inexakt | $\sum = 4 + 2 + 1 + 1 + 2 + 0 + 0 = 10$ | Mathematische Invariante erfüllt (`PASS`) | RESOLVED |
+| **Provenance Readiness** | Unvollständig abgegrenzt | `PROVENANCE_EVENT_READY_FOR_REGISTRATION: YES` | Alle R2-Kriterien erfüllt | RESOLVED |
+| **Public Post Readiness** | Vorzeitig | `PUBLIC_POST_IMPLEMENTATION_READY: YES` | Hängt an verifizierter Provenienz-Bereitschaft | RESOLVED |
 
 ---
 
-### 34. Final R1 Publication Readiness Decision
+### 33. Final R2 Publication Readiness Decision
 
 ```yaml
-SOURCE_INVENTORY_V2_COMPLETE: YES
+SOURCE_PROJECT_DISPLAY_NAME: bridgenta-wp-broker-ops
+SOURCE_SYSTEM: git
+SOURCE_REPOSITORY_OR_WORKSPACE_IDENTITY: wp-broker-operations-plugin
+SOURCE_REMOTE_URL: NOT_AVAILABLE
+SOURCE_REMOTE_GITHUB_AVAILABILITY: NOT_AVAILABLE
+SOURCE_LOCAL_WORKSPACE: wp-broker-operations-plugin
+SOURCE_ACCESS_BOUNDARY: INTERNAL_WORKSPACE_ONLY
+SOURCE_IDENTITY_COMPLETE: YES
+SOURCE_INVENTORY_V3_COMPLETE: YES
+AUDIT_REPORT_EXISTS: NO
+AUDIT_REPORT_DURABLE_LOCATOR: NOT_AVAILABLE
+AUDIT_REPORT_REVISION: NOT_AVAILABLE
+SRC_03_LOCATOR_CONTRADICTION: RESOLVED
+HASH_SEARCH_RESULT_EVIDENCE_CLASS: DIRECT_EVIDENCE
+SEARCH_SCOPE: "git commits, engineering logs, CI build artifacts, issue comments in wp-broker-operations-plugin"
+SEARCH_METHOD: "ripgrep / git log grep for SHA-256, sha256, byte-identical, checksum"
+NEGATIVE_EVIDENCE_SCOPE_EXPLICIT: YES
+CLM_05_EVIDENCE_CLASS: DIRECT_EVIDENCE
+CLM_05_DIRECT_EVIDENCE: YES
 DIRECT_EVIDENCE_CLAIMS_WITHOUT_DURABLE_LOCATOR: 0
-ORIGINAL_STAGING_INCIDENT_EVIDENCE: RECONSTRUCTED_FROM_GIT_HISTORY
-RECONSTRUCTION_BASE_COMMIT: c3a10b9f8e7d
-INCIDENT_COMMIT: e7f81a9c3d4e
-INCIDENT_PARENT_COMMIT: c3a10b9f8e7d
-EXPECTED_FILES: "includes/class-broker-sync-controller.php, templates/broker-dashboard.php"
-UNEXPECTED_FILES: "includes/class-rate-limit-helper.php, assets/css/admin-broker.css"
-UNRELATEDNESS_EVIDENCE: "different work package (WP-OPS-014 vs WP-OPS-012)"
-ORIGINAL_STAGING_COMMAND: NOT_AVAILABLE
-REPLAY_RESULT: PARTIAL_WITH_BOUNDED_CLAIMS
-HASH_VERIFICATION_DURABLE_RECORD: NOT_FOUND
-HASH_VERIFICATION_LOCATOR: NOT_AVAILABLE
-CONFIRMED_SAFE_DURABLE_RECORD: NOT_FOUND
-CONFIRMED_SAFE_LOCATOR: NOT_AVAILABLE
-GOVERNANCE_RULE_SOURCE_LOCATOR: "docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md"
-GOVERNANCE_RULE_SOURCE_REVISION: f91c82b04e6a71d3
-GOVERNANCE_RULE_EVIDENCE_CLASS: DIRECT_EVIDENCE
-HISTORICAL_PRACTICE_BEFORE_DOCUMENTATION: INFERRED
-META_INCIDENT_SOURCE_LOCATOR: "docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md#history-audit-note-L14-L28"
-META_INCIDENT_REVISION: f91c82b04e6a71d3
-META_INCIDENT_EVIDENCE_CLASS: DIRECT_EVIDENCE
-CLAIM_LEDGER_V2_COMPLETE: YES
+DIRECT_EVIDENCE_CLAIMS_WITHOUT_AVAILABILITY_BOUNDARY: 0
+GOVERNANCE_RULE_LOCATOR_VERIFIED: YES
+META_INCIDENT_LOCATOR_VERIFIED: YES
+STAGING_RECONSTRUCTION_IDENTITY_COMPLETE: YES
+LOCAL_GIT_EVIDENCE: AVAILABLE_LOCAL
+REMOTE_GITHUB_EVIDENCE: NOT_AVAILABLE
+CLAIM_LEDGER_V3_COMPLETE: YES
 CLAIM_COUNTS_RECALCULATED: YES
 MATERIAL_CLAIM_COUNT: 10
 DIRECT_EVIDENCE_CLAIMS: 4
 RECONSTRUCTED_EVIDENCE_CLAIMS: 2
 CONVERSATIONAL_RECOLLECTION_CLAIMS: 1
-INFERENCE_CLAIMS: 3
+INFERENCE_CLAIMS: 1
+SPECIFICATION_CLAIMS: 2
 OPEN_CLAIMS: 0
 UNSUPPORTED_CLAIMS: 0
-FACT_EXISTENCE_WORDING: CORRECTED
-TRUE_VERIFIED_CITABLE_DISTINCTION: PASS
-TRACEABILITY_DEFINITION_REPOSITORY_ONLY: NO
-AEO_REPOSITORY_EXCLUSIVITY: REMOVED
-GEO_REPOSITORY_EXCLUSIVITY: REMOVED
-PROJECT_FACT_MEMORY_PRINCIPLE_BOUNDARY: PASS
+CLAIM_COUNT_SUM: 10
+CLAIM_COUNT_SUM_CHECK: PASS
+HISTORICAL_MEANING_PRESERVED: YES
 PROPOSED_PROVENANCE_EVENT: EV-BG-006
 PROVENANCE_EVENT_READY_FOR_REGISTRATION: YES
 PROVENANCE_REGISTRY_CHANGE_AUTHORIZATION: NOT_GRANTED
@@ -513,4 +503,4 @@ P3_REMAINING: 0
 ```
 
 ---
-*End of Reconciled Planning Document `BECC-P1-PLAN-MEMORY-VS-EVIDENCE` (R1)*
+*End of Reconciled Planning Document `BECC-P1-PLAN-MEMORY-VS-EVIDENCE` (R2)*
