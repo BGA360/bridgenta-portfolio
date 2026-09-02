@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import LearningLevelBadge from '../components/LearningLevelBadge.astro';
 import LearningStatusNotice from '../components/LearningStatusNotice.astro';
+import LearningContentStatic from '../components/LearningContentStatic.astro';
 
 export interface Props {
   mode: 'published' | 'preview';
@@ -63,6 +64,7 @@ const formattedUpdateDate = entry.data.updatedAt
   title={isPreview ? `[Vorschau] ${entry.data.seoTitle || entry.data.title}` : (entry.data.seoTitle || entry.data.title)}
   description={entry.data.seoDescription || entry.data.description}
   robots={isPreview ? "noindex, nofollow" : "index, follow"}
+  suppressPublicUrlMetadata={isPreview}
   pageKind="learning-article"
   learningBreadcrumbs={learningBreadcrumbs}
   learningArticle={learningArticle}
@@ -103,9 +105,9 @@ const formattedUpdateDate = entry.data.updatedAt
         )}
       </header>
 
-      <section class="tina-content">
+      <LearningContentStatic>
         <Content />
-      </section>
+      </LearningContentStatic>
 
       <footer class="learning-article__footer">
         <div class="learning-article__project-context">
@@ -130,11 +132,4 @@ const formattedUpdateDate = entry.data.updatedAt
       </footer>
     </article>
   </main>
-  <script>
-    document.querySelectorAll('.tina-content blockquote').forEach((bq) => {
-      if (bq.innerHTML.includes('[!IMPORTANT]')) {
-        bq.innerHTML = bq.innerHTML.replace('[!IMPORTANT]', '<strong class="learning-important-label" style="display: block; margin-bottom: 0.5rem; color: var(--magenta-deep);">Wichtiger Hinweis:</strong>');
-      }
-    });
-  </script>
 </Layout>

@@ -1,0 +1,11 @@
+---
+const html = await Astro.slots.render('default');
+const transformedHtml = html.replace(
+  /<blockquote>\s*<p>\[!IMPORTANT\]\s*/g,
+  '<blockquote class="learning-callout-important"><p><strong class="learning-important-label" style="display: block; margin-bottom: 0.5rem; color: var(--magenta-deep);">Wichtiger Hinweis:</strong>'
+);
+---
+
+<section class="tina-content">
+  <Fragment set:html={transformedHtml} />
+</section>
