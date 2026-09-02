@@ -3,7 +3,9 @@ title: "Erinnerung vs. Beleg: Lektionen zur Beleg-Rückverfolgbarkeit"
 description: "Warum selbst ein echtes Ereignis noch kein belastbarer Projektnachweis ist – und weshalb KI-gestützte Entwicklung dauerhafte Belege braucht."
 category: "ai-entwicklung"
 learningLevel: "public"
-publicationState: "draft"
+publicationState: "published"
+publishedAt: "2026-09-02"
+provenanceRef: "EV-BG-006"
 ---
 
 In einem laufenden Softwareprojekt entstand im Zuge der Entwicklung eine nützliche Arbeitsweise: Änderungen an Dateien wurden vor dem Speichern im Versionsverwaltungssystem (Git) möglichst gezielt und einzeln geprüft, um unbeabsichtigte Nebeneffekte zu vermeiden.
