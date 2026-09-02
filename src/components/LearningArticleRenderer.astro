@@ -130,4 +130,11 @@ const formattedUpdateDate = entry.data.updatedAt
       </footer>
     </article>
   </main>
+  <script>
+    document.querySelectorAll('.tina-content blockquote').forEach((bq) => {
+      if (bq.innerHTML.includes('[!IMPORTANT]')) {
+        bq.innerHTML = bq.innerHTML.replace('[!IMPORTANT]', '<strong class="learning-important-label" style="display: block; margin-bottom: 0.5rem; color: var(--magenta-deep);">Wichtiger Hinweis:</strong>');
+      }
+    });
+  </script>
 </Layout>
