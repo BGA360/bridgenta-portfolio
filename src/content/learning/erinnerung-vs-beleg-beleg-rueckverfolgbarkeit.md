@@ -6,25 +6,25 @@ learningLevel: "public"
 publicationState: "draft"
 ---
 
-Ein Entwicklungsteam arbeitet intensiv an einem Softwareprojekt. Über Monate hinweg werden neue Funktionen gebaut, Fehler behoben und Anpassungen vorgenommen. Im Entwicklungsalltag hält sich das Team dabei an eine bewährte Praxis: Änderungen an Dateien werden vor dem Speichern im Versionsverwaltungssystem (Git) gezielt und einzeln geprüft, um unbeabsichtigte Nebeneffekte zu vermeiden.
+In einem laufenden Softwareprojekt entstand im Zuge der Entwicklung eine nützliche Arbeitsweise: Änderungen an Dateien wurden vor dem Speichern im Versionsverwaltungssystem (Git) möglichst gezielt und einzeln geprüft, um unbeabsichtigte Nebeneffekte zu vermeiden.
 
-Später entscheidet das Team, diese sinnvolle Arbeitsweise in einem schriftlichen Leitfaden formell festzuhalten.
+Später entschied das Team, diese Arbeitsweise erstmals schriftlich in einem Leitfaden festzuhalten.
 
-Während des Verfassens taucht eine berechtigte Frage auf: Wo genau im Projektarchiv ist diese Arbeitsweise früher eigentlich dokumentiert worden?
+Während des Verfassens tauchte eine berechtigte Frage auf: Wo genau im Projektarchiv ist diese Arbeitsweise früher eigentlich dokumentiert worden?
 
 ## Eine Erinnerung im Gespräch
 
-Bei der Erstellung des Leitfadens unterstützt ein KI-Coding-Assistent das Team. Im Verlauf des Gesprächs erinnert sich der KI-Assistent an einen früheren Vorfall aus dem Projekt: Bei einer breiteren Staging-Aktion waren damals versehentlich auch Dateien in einen Commit geraten, die zu einer anderen Aufgabe gehörten.
+Bei der Erstellung des Leitfadens unterstützte ein KI-Coding-Assistent das Team. Im Verlauf des Gesprächs erinnerte sich der KI-Assistent an einen früheren Vorfall aus dem Projekt: Bei einer breiteren Staging-Aktion waren damals versehentlich auch Dateien in einen Commit geraten, die zu einer anderen Aufgabe gehörten.
 
-Der KI-Assistent berichtet weiter, dass der Vorfall damals durch einen technischen Abgleich (einen kryptografischen SHA-256 Hash-Vergleich) geprüft worden sei. Die betroffenen Dateien seien dabei als unverändert und unbeschädigt bestätigt worden.
+Der KI-Assistent berichtete weiter, dass der Vorfall damals durch einen technischen Abgleich (einen kryptografischen SHA-256 Hash-Vergleich) geprüft worden sei. Die betroffenen Dateien seien dabei als unverändert und unbeschädigt bestätigt worden.
 
-Diese Schilderung klingt schlüssig. Sie passt zur gemeinsamen Erinnerung der Beteiligten und vermittelt ein beruhigendes Gefühl der Sicherheit.
+Diese Schilderung klingt schlüssig und passt zum bisherigen Gesprächskontext. Sie vermittelt zunächst ein beruhigendes Gefühl der Sicherheit.
 
 ## Die Suche im Projektarchiv
 
-Das Team möchte diese technische Verifikation im neuen Leitfaden als konkretes Beispiel anführen. Dafür sucht es im Repository nach dem dauerhaften Beleg: Terminal-Protokollen, Testberichten oder Commit-Notizen, die den damaligen Hash-Abgleich dokumentieren.
+Das Team wollte diese technische Verifikation im neuen Leitfaden als konkretes Beispiel anführen. Dafür suchte es im Repository nach dem dauerhaften Beleg: Terminal-Protokollen, Testberichten oder Commit-Notizen, die den damaligen Hash-Abgleich dokumentieren.
 
-Das Ergebnis der Nachforschung ist eindeutig: Im definierten Suchbereich existiert kein dauerhafter Eintrag über diese Prüfung.
+Das Ergebnis der Nachforschung war eindeutig: Im definierten Suchbereich existiert kein dauerhafter Eintrag über diese Prüfung.
 
 Das bedeutet nicht zwingend, dass die Prüfung niemals stattfand. Es bedeutet jedoch, dass im Projektarchiv kein zitierbarer Nachweis vorhanden ist.
 
@@ -38,7 +38,7 @@ Eine Erinnerung – ob von einem Menschen oder einem KI-System – ist ein wertv
 
 **Die epistemische Grenze im Projekt:**
 * **Echtes Ereignis**: Etwas kann in der Realität stattgefunden haben.
-* **Belegbares Faktum**: Eine Aussage ist erst dann ein Projektnachweis, wenn eine dauerhafte, zitierbare Quelle existiert.
+* **Gesicherte Projektaussage**: Eine Aussage sollte erst dann als gesicherte Projekttatsache behandelt werden, wenn sie durch eine dauerhafte, überprüfbare Quelle gestützt wird.
 
 </div>
 
@@ -50,7 +50,7 @@ Für diese Anforderung gibt es einen klaren Begriff: **Beleg-Rückverfolgbarkeit
 
 Beleg-Rückverfolgbarkeit bedeutet, dass eine Behauptung oder technische Aussage lückenlos auf eine dauerhafte, überprüfbare und zitierbare Quelle zurückgeführt werden kann.
 
-Eine Quelle kann ein Git-Commit, ein Testprotokoll, ein Freigabedokument oder ein Verzeichniscode sein. Liegt kein dauerhafter Beleg vor, bleibt die Aussage eine Vermutung oder Erinnerung – egal wie überzeugend sie klingt.
+Eine Quelle kann ein Git-Commit, ein Testprotokoll, ein Freigabedokument oder ein Repository-Eintrag sein. Liegt kein ausreichender dauerhafter Beleg vor, darf die Aussage im Projekt nicht als gesicherte Tatsache behandelt werden.
 
 ## Was der Projektbestand wirklich zeigt
 
@@ -63,7 +63,7 @@ Die detaillierte Untersuchung des Quellprojekts (ein internes WordPress-Plugin-P
 
 Auch das Fehlen eines Belegs lässt sich präzise beschreiben: Ein fehlender Beleg ist selbst kein Beleg-Objekt. Was jedoch dauerhaft dokumentiert werden kann, ist die durchgeführte Suche und ihr negatives Ergebnis.
 
-## Vier Regeln für den Projektalltag (Anwenden)
+## Vier Regeln für den Projektalltag
 
 Um Beleg-Rückverfolgbarkeit in KI-gestützten Projekten sicherzustellen, helfen vier einfache Grundsätze:
 
