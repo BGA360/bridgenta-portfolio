@@ -6,9 +6,9 @@
 *   **Ziel-Kategorie:** `ai-entwicklung`
 *   **Ziel-Lernniveau:** `public`
 *   **Ziel-Status:** `draft`
-*   **Phase:** `C4.3-P1-R3 — Claim-Class Mapping & Ephemeral-Locator Final Closure`
+*   **Phase:** `C4.3-P1-R4 — Historical-Practice Evidence Strength & Absence-State Source Semantics Closure`
 *   **Vorheriger Merge-Commit (PR #257):** `06b1f2b9303301a07553fb84b23e741d63fd001b`
-*   **PR #258 R2 HEAD:** `cfc443ab73efe37931afee2797e949382aaa60c2`
+*   **PR #258 Preflight HEAD:** `616301fd8ede494087574e1a71d7499b8688bd5b`
 *   **Autorität:** Project Owner / Constitutional Architect
 
 ---
@@ -17,7 +17,7 @@
 
 Diese Planungsanalyse bereitet den nächsten öffentlichen BridGenta-Lernartikel (*Public Post*) auf Basis eines realen Software-Entwicklungsereignisses vor. 
 
-Die primäre Aufgabe dieser Phase C4.3-P1-R3 ist **ausschließlich die finale Harmonisierung von Claim-Klassen, Normierung der Kanon-Taxonomie und Entkopplung flüchtiger Gesprächs-Locators von dauerhaften Quellen**. Es erfolgt in dieser Phase **keine Artikelerstellung**, keine Veröffentlichung und keine Anpassung von kanonischen Standards oder Baselines.
+Die primäre Aufgabe dieser Phase C4.3-P1-R4 ist **ausschließlich die finale Evidenzstärke-Klassifizierung historischer Praxisregeln (CLM-01) und die Modellierung von Abwesenheits-Zuständen (SRC-03)**. Es erfolgt in dieser Phase **keine Artikelerstellung**, keine Veröffentlichung und keine Anpassung von kanonischen Standards oder Baselines.
 
 Der Zweck ist die methodische Ermittlung:
 $$\text{Tatsächliches Geschehen} \longrightarrow \text{Dauerhaft belegte Fakten} \longrightarrow \text{Gesprächs-Erinnerungen} \longrightarrow \text{Publikationsfähiger Rahmen}$$
@@ -67,13 +67,6 @@ $$\text{TRUE} \neq \text{VERIFIED} \neq \text{CITABLE}$$
 
 *(Historischer Stand aus PR #257)*
 
-| Quell-ID | Pfad / Locator | System | Typ | Zustand | Verfügbarkeit | Nachweis-Klasse |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SRC-01** | Git-Historiendiff (Staging Commit) | Git | Audit / Diff | Historisch | Verfügbar | `RECONSTRUCTED_EVIDENCE` |
-| **SRC-02** | Governance-Entwurf (`GOV-STAGING-RULE.md`) | Repository | Dokument | Aktuell | Verfügbar | `DIRECT_EVIDENCE` |
-| **SRC-03** | Projekt-Archiv / Log-Suche (SHA-256) | Terminal/Logs | Audit | Historisch | Nicht vorhanden | `NOT_AVAILABLE` |
-| **SRC-04** | KI-Gesprächsprotokoll / Chat-Memory | Chat-System | Konversation | Historisch | Nur gesprächsbasiert | `CONVERSATIONAL_RECOLLECTION` |
-
 ---
 
 ## 5. Conversation-Memory Boundary (Grenze der Gesprächs-Erinnerung)
@@ -84,98 +77,44 @@ Reine Erinnerungen aus dem Gesprächskontext (sowohl des Menschen als auch der K
 > **Formelle Regelung:**
 > * `AI_RECOLLECTION != PROJECT_EVIDENCE`
 > * `HUMAN_RECOLLECTION != PROJECT_EVIDENCE`
-> 
-> Eine Behauptung aus dem Chat-Verlauf darf niemals ohne SSoT-Beleg als gesicherte Projekt-Tatsache dargestellt werden.
 
 ---
 
 ## 6. High-Risk Claim Analysis (Analyse risikoreicher Aussagen)
 
-### 1. Kryptografische Hash-Verifikation (SHA-256 Byte-Prüfung)
-* **Status:** `HASH_VERIFICATION_DURABLE_RECORD: NOT_FOUND`
-* **Begrenzung:** Der zukünftige Artikel darf keinesfalls behaupten, dass im Projekt ein dauerhafter Nachweis für diese Hash-Prüfung existiert. Die Prüfung darf ausschließlich als *Erinnerung des KI-Assistenten* gerahmt werden.
-
-### 2. Status „Confirmed Safe“
-* **Status:** `CONFIRMED_SAFE_DURABLE_RECORD: NOT_FOUND`
-* **Begrenzung:** Die Freigabe/Sicherheit der mitgezogenen Dateien darf nicht als historisch bewiesene Projekttatsache formuliert werden, sondern als ungeklärte Evidenzlücke.
-
-### 3. Ursprünglicher Staging-Vorfall
-* **Status:** `ORIGINAL_STAGING_INCIDENT_EVIDENCE: RECONSTRUCTED_FROM_GIT_HISTORY`
-* **Begrenzung:** Dass unbeabsichtigt Dateien mitgecommittet wurden, ist im Git-Diff rekonstruierbar. Genaue Prompt-Texte aus der damaligen Sitzung bleiben jedoch kognitiv rekonstruiert.
-
 ---
 
 ## 7. Original Staging Incident Evidence (Evidenz des Staging-Vorfalls)
-
-* **Befund:** Der Git-Commit-Verlauf belegt, dass mehrere Dateien in einem einzelnen Schritt verarbeitet wurden, die logisch nicht zusammengehörten.
-* **Klassifizierung:** `RECONSTRUCTED_EVIDENCE`
-* **Erlaubte öffentliche Formulierung:** „In einer früheren Projektphase wurden bei einer breiten Staging-Aktion versehentlich auch nicht direkt betroffene Dateien in den Commit-Bereich aufgenommen.“
-* **Verbotene Überhöhung:** Behauptung des exakten Wortlauts von Befehlen oder Prompts, die nicht im Git-Log protokoliert sind.
 
 ---
 
 ## 8. Hash Verification Evidence (Evidenz der Hash-Verifikation)
 
-* **Befund:** Die Verifikations-Suche ergab 0 Treffer für abgespeicherte SHA-256 Prfprotokolle.
-* **Klassifizierung:** `CONVERSATIONAL_RECOLLECTION` / `NOT_AVAILABLE`
-* **Erlaubte öffentliche Formulierung:** „Der KI-Assistent erinnerte sich im Gespräch an eine angeblich durchgeführte Hash-Prüfung – eine Nachforschung im Projektarchiv ergab jedoch keinen auffindbaren Beleg dafür.“
-* **Verbotene Überhöhung:** „Die Dateien wurden nachweislich durch einen SHA-256-Abgleich als byte-identisch bestätigt.“
-
 ---
 
 ## 9. Governance Rule Evidence (Evidenz der Governance-Regel)
-
-* **Befund:** Die Praxis des selektiven Staging existierte im Entwicklungsalltag, wurde aber erst durch das neue Governance-Dokument formell fixiert.
-* **Klassifizierung:** Governance-Entwurf = `DIRECT_EVIDENCE`; Frühere Praxis = `RECONSTRUCTED_EVIDENCE`
-* **Erlaubte öffentliche Formulierung:** „Die Regel zum gezielten Staging wurde im Entwicklungsalltag bereits gelebt, bevor sie in einem schriftlichen Governance-Dokument verankert wurde.“
 
 ---
 
 ## 10. Meta-Incident Evidence (Evidenz des Meta-Vorfalls)
 
-* **Befund:** Bei der Erstellung eines Dokuments gegen undokumentierte Praxis stieß das Team auf eine undokumentierte Evidenz-Erinnerung der KI selbst.
-* **Klassifizierung:** `DIRECT_EVIDENCE` (aus dem Erstellungsprozess des Governance-Dokuments)
-* **Erlaubte öffentliche Formulierung:** „Während ein Governance-Dokument verfasst wurde, um undokumentierte Regeln abzuschaffen, deckte der Prozess eine undokumentierte Evidenz-Lücke in den Aussagen der KI auf.“
-
 ---
 
 ## 11. Evidence Classification (Evidenz-Klassifizierung)
-
-Es wird folgende Taxonomie gemäß `BECC-LCMB-v1.0` angewendet:
-* `CLAIM` (Erinnerung / Behauptung der KI)
-* `SPECIFICATION` (Governance-Anforderung)
-* `IMPLEMENTATION` (Git-Codebestand)
-* `EXECUTION` (Pipeline-Lauf)
-* `VERIFICATION` (Test- / Hash-Protokoll)
-* `ASSURANCE` (Formelle Freigabe)
 
 Kanonische Nachweis-Klassen: `DIRECT_EVIDENCE`, `RECONSTRUCTED_EVIDENCE`, `CONVERSATIONAL_RECOLLECTION`, `INFERENCE`, `SPECIFICATION`, `OPEN`, `UNSUPPORTED`.
 
 ---
 
-## 12. Claim Ledger (Historisches P1-Register)
-
-*(Historischer Stand aus PR #257)*
+## 12. Claim Ledger (Historisch P1/R1/R2/R3)
 
 ---
 
 ## 13. Evidence Gaps (Evidenzlücken-Register)
 
-```yaml
-BLOCKING_EVIDENCE_GAPS: 0
-NON_BLOCKING_EVIDENCE_GAPS: 1
-```
-
 ---
 
 ## 14. Public Disclosure Boundary (Öffentliche Offenlegungsgrenze)
-
-Aus Gründen des Datenschutz- und Vertraulichkeitsschutzes gilt:
-* Keine Nennung von Kunden- oder Mandantennamen.
-* Keine Preisgabe von Zugangsdaten, privaten URIs oder internen Konto-IDs.
-* Keine Veröffentlichung vollständiger Prompt-Chains oder interner Chat-Protokolle.
-* **Projektreferenz:** Anonymisiert als *„ein laufendes internes WordPress-Plugin-Projekt“*.
-* `SOURCE_PROJECT != BRIDGENTA_PRODUCT`
 
 ---
 
@@ -185,23 +124,13 @@ Aus Gründen des Datenschutz- und Vertraulichkeitsschutzes gilt:
 Etwas kann wirklich passiert sein und trotzdem nicht ausreichend belegbar sein.
 ```
 
-```yaml
-CENTRAL_LESSON_EVIDENCE_BOUND: YES
-PUBLIC_SAFE: YES
-```
-
 ---
 
 ## 16. Transferability Boundary (Transferbarkeits-Grenzen)
 
-$$\text{TRANSFERABLE} \neq \text{UNIVERSAL}$$
-$$\text{REUSABLE} \neq \text{ABSOLUTE}$$
-
 ---
 
 ## 17. Public Narrative Architecture (Pädagogische Erzählarchitektur)
-
-Die Didaktik folgt strikt der Sequenz **VERSTEHEN → BENENNEN → BELEGEN → ANWENDEN**.
 
 ---
 
@@ -219,9 +148,6 @@ Die Didaktik folgt strikt der Sequenz **VERSTEHEN → BENENNEN → BELEGEN → A
 
 ## 21. Terminology Plan (Terminologie-Plan)
 
-* **Kandidaten-Begriff:** `Beleg-Rückverfolgbarkeit`
-* **Status:** `TERM_STATUS: ACCEPTABLE_NEW_PUBLIC_TERM`
-
 ---
 
 ## 22. Practical Lessons Plan (Praktische Regeln)
@@ -236,129 +162,137 @@ Die Didaktik folgt strikt der Sequenz **VERSTEHEN → BENENNEN → BELEGEN → A
 
 ---
 
-## 25. Publication Readiness Decision (Historisch P1)
+## 25. Publication Readiness Decision (Historisch P1/R1/R2/R3)
 
 ---
 
-## R1 — Durable Source Locator & Evidence Definition Reconciliation (Historisch)
+# ## R4 — Historical-Practice Evidence Strength & Absence-State Source Semantics Closure
 
----
-
-## R2 — Source-Identity, Audit-Locator & Claim-Count Deterministic Closure (Historisch)
-
----
-
-# ## R3 — Claim-Class Mapping & Ephemeral-Locator Final Closure
-
-**Status der Überarbeitung:** `APPROVED / RECONCILED / CANONICAL_CLOSURE`
+**Status der Überarbeitung:** `APPROVED / RECONCILED / FINAL_CLOSURE`
 **Datum der Überarbeitung:** 2026-09-02
-**Ziel:** Auflösung von R3-01 (Kanonische Normierung von CLM-01 und Claim-Klassen) und R3-02 (Entkopplung flüchtiger Gesprächs-Locators von dauerhaften Quellen-Feldern).
+**Ziel:** Auflösung von R4-01 (Präzisierung der Evidenzstärke von CLM-01 auf INFERENCE) und R4-02 (Semantische Modellierung von Abwesenheits-Zuständen bei SRC-03).
 
 ---
 
-### 26. CLM-01 Final Evidence Class Decision & Justification (R3-01)
+### 26. Pre-Policy Evidence Analysis & CLM-01 Re-classification (R4-01)
 
-In früheren Entwürfen existierte eine Diskrepanz zwischen dem Ledger (`INFERRED`) und der Auszähltabelle (`RECONSTRUCTED_EVIDENCE`).
+Die systematische Prüfung der vor-dokumentarischen Beleglage im Quellprojekt (`bridgenta-wp-broker-ops`) bezüglich **CLM-01** (*„Die Governance-Regel wurde vor ihrer Dokumentation in der Praxis gelebt“*) ergab folgenden Befund:
 
-Die systematische Prüfung der Evidenzgrundlage von **CLM-01** (*„Eine Governance-Regel wurde vor ihrer Dokumentation in der Praxis gelebt“*) führt zu folgender Entscheidung:
+#### Dediziertes Pre-Policy Evidenz-Register:
+
+| Evidenz-ID | Pfad / Locator | Commit / Revision | Was bewiesen ist | Was nicht bewiesen ist |
+| :--- | :--- | :--- | :--- | :--- |
+| **EVD-PRE-01** | `commits/diff-staging-batch-04.patch` | `e7f81a9c3d4e` | Rekonstruiert den konkreten Staging-Vorfall | Beweist keine monatelange, protokollierte Regel-Historie |
 
 ```yaml
-CLM_01_FINAL_EVIDENCE_CLASS: RECONSTRUCTED_EVIDENCE
+CLM_01_PRE_POLICY_RECORD_COUNT: 1
+CLM_01_REPEATED_PRACTICE_PROVEN: NO
+CLM_01_FINAL_EVIDENCE_CLASS: INFERENCE
 CLM_01_CLASS_JUSTIFICATION: >
-  Dauerhafte Git-Commit-Historiendiffs (SRC-01-V4: commits/diff-staging-batch-04.patch,
-  Commit e7f81a9c3d4e) rekonstruieren direkt das wiederholte historische Muster
-  selektiven Datei-Stagings in der Praxis vor der schriftlichen Verankerung der Policy.
+  Dauerhafte Git-Commit-Diffs (EVD-PRE-01) belegen unzweifelhaft den spezifischen
+  Staging-Vorfall. Es existiert jedoch nur 1 pre-policy Commit-Diff im Projektarchiv.
+  Die Aussage, dass dies eine seit Monaten etablierte Praxisregel vor der Dokumentation
+  darstellte, ist eine begründete Schlussfolgerung (INFERENCE) und keine RECONSTRUCTED_EVIDENCE
+  einer dokumentierten Praxisreihe.
+CLM_01_PUBLIC_WORDING: >
+  Die vorhandene Entwicklungshistorie deutet darauf hin, dass gezieltes Staging bereits vor
+  der formellen Dokumentation in der Praxis angewendet wurde.
+CLM_01_PUBLIC_WORDING_BOUND: YES
 ```
+
+> [!IMPORTANT]
+> **Formulierungs-Grenze für CLM-01:** Da CLM-01 als `INFERENCE` eingestuft ist, darf der öffentliche Artikel nicht behaupten, die Regel sei „nachweislich monatelang konsequent gelebt worden“. Die öffentliche Formulierung muss den Vermutungs-Charakter wahren („deutet darauf hin“).
 
 ---
 
-### 27. Source Inventory v4 (Strict Durability & Ephemeral Separation) (R3-02)
+### 27. Absence-State Source Remodeling (SRC-03 vs. SRC-04) (R4-02)
 
-Das Quellen-Schema wurde erweitert, um flüchtige Gesprächs-Referenzen strikt von dauerhaften Repository-Locators zu trennen:
+In R3 wurde `SRC-03-V4` widersprüchlich als `DURABLE` deklariert, obwohl es keinen dauerhaften Beleg-Objekt-Locator besitzt. R4 modelliert das Fehlen von Belegen semantisch korrekt:
 
-| Source ID | Source Project | System | Durable Locator | Conversational / Ephemeral Locator | Revision | Durability | Local Availability | Remote Availability | Evidence Class | Supports Claims |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SRC-01-V4** | `bridgenta-wp-broker-ops` | Git | `commits/diff-staging-batch-04.patch` | `NOT_APPLICABLE` | `e7f81a9c3d4e2b01` | `DURABLE` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `RECONSTRUCTED_EVIDENCE` | CLM-01, CLM-03 |
-| **SRC-02-V4** | `bridgenta-wp-broker-ops` | Git | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | `NOT_APPLICABLE` | `f91c82b04e6a71d3` | `DURABLE` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `DIRECT_EVIDENCE` | CLM-02, CLM-07 |
-| **SRC-03-V4** | `bridgenta-wp-broker-ops` | Git/CI/Logs | `NOT_AVAILABLE` (0 Treffer bei SHA-256 Log-Suche) | `NOT_APPLICABLE` | `f91c82b04e6a71d3` | `DURABLE` | `NO_LOG_RECORD` | `NOT_AVAILABLE` | `CONVERSATIONAL_RECOLLECTION` | CLM-04 |
-| **SRC-04-V4** | `bridgenta-wp-broker-ops` | Git | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (History Audit Note) | `NOT_APPLICABLE` | `f91c82b04e6a71d3` | `DURABLE` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `DIRECT_EVIDENCE` | CLM-05, CLM-06, CLM-08 |
-| **SRC-05-V4** | `bridgenta-wp-broker-ops` | Chat System | `NOT_AVAILABLE` | `session-logs/2026-08-staging-discussion.json` | `NOT_APPLICABLE` | `EPHEMERAL` | `EPHEMERAL` | `NOT_AVAILABLE` | `CONVERSATIONAL_RECOLLECTION` | CLM-04 |
-| **SRC-06-V4** | `bridgenta-portfolio` | Git | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | `NOT_APPLICABLE` | `c09ac8e52e3f` | `DURABLE` | `AVAILABLE_LOCAL` | `AVAILABLE_REMOTE` | `SPECIFICATION` | CLM-09, CLM-10 |
+1. **SRC-03 als ABSENCE_STATE:** `SRC-03-V5` ist kein physisches Dokument und kein Beleg-Objekt, sondern repräsentiert den negativen **Abwesenheits-Zustand** (Search State / Missing Log). Es besitzt daher keinen dauerhaften Locator und den Durability-Typ `NOT_APPLICABLE`.
+2. **SRC-04 als NEGATIVE_EVIDENCE_RECORD:** Das dauerhafte Governance-Dokument (`docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` Section: History Audit Note) ist das reale SSoT-Dokument (`DIRECT_EVIDENCE`), welches das Durchführungsergebnis der Log-Suche (0 Treffer) protokolliert.
+3. **Abgrenzung:**
+$$\text{ABSENCE\_STATE (SRC-03)} \neq \text{NEGATIVE\_EVIDENCE\_RECORD (SRC-04)}$$
 
 ```yaml
-SOURCE_INVENTORY_V4_COMPLETE: YES
-SRC_05_DURABLE_LOCATOR: NOT_AVAILABLE
-SRC_05_CONVERSATIONAL_LOCATOR: session-logs/2026-08-staging-discussion.json
-SRC_05_DURABILITY: EPHEMERAL
-SRC_05_LOCAL_AVAILABILITY: EPHEMERAL
-SRC_05_REMOTE_AVAILABILITY: NOT_AVAILABLE
-SRC_05_EVIDENCE_CLASS: CONVERSATIONAL_RECOLLECTION
-EPHEMERAL_SOURCE_IN_DURABLE_LOCATOR_FIELD: NO
+SRC_03_SOURCE_TYPE: ABSENCE_STATE
+SRC_03_DURABLE_LOCATOR: NOT_AVAILABLE
+SRC_03_DURABILITY: NOT_APPLICABLE
+SRC_03_LOCAL_AVAILABILITY: NO_LOG_RECORD
+SRC_03_REMOTE_AVAILABILITY: NOT_AVAILABLE
+SRC_03_EVIDENCE_CLASS: NOT_AVAILABLE
+ABSENCE_STATE_IN_DURABLE_SOURCE_CLASS: NO
+SRC_04_NEGATIVE_SEARCH_RECORD: DIRECT_EVIDENCE
+CLM_05_SOURCE: SRC-04
+CLM_05_EVIDENCE_CLASS: DIRECT_EVIDENCE
+NEGATIVE_EVIDENCE_SCOPE_EXPLICIT: YES
 ```
 
 ---
 
-### 28. Ephemeral Locator Semantics & CLM-04 Durability Confirmation
+### 28. Source Inventory v5 (Mit explizitem Source Type)
 
-* **Flüchtige Natur:** `SRC-05-V4` ist eine temporäre Chat-Sitzung. Der Dateiname `session-logs/2026-08-staging-discussion.json` ist eine flüchtige Gespraechs-Referenz und **kein dauerhafter Repository-Beleg**.
-* **CLM-04 Beleg-Status:** CLM-04 (*„Die KI erinnerte sich an eine spezifische Hash-Prüfung“*) stützt sich ausschließlich auf diese flüchtige Quelle (`SRC-05-V4`).
-* **Klassifizierung:** Es existiert kein dauerhafter Beleg für die Hash-Prüfung.
+| Source ID | Source Type | Source Project | System | Durable Locator | Conversational / Ephemeral Locator | Revision | Durability | Local Availability | Remote Availability | Evidence Class | Supports Claims |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **SRC-01-V5** | `GIT_DIFF` | `bridgenta-wp-broker-ops` | Git | `commits/diff-staging-batch-04.patch` | `NOT_APPLICABLE` | `e7f81a9c3d4e2b01` | `DURABLE` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `RECONSTRUCTED_EVIDENCE` | CLM-03 |
+| **SRC-02-V5** | `GOVERNANCE_DOC` | `bridgenta-wp-broker-ops` | Git | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | `NOT_APPLICABLE` | `f91c82b04e6a71d3` | `DURABLE` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `DIRECT_EVIDENCE` | CLM-02, CLM-07 |
+| **SRC-03-V5** | `ABSENCE_STATE` | `bridgenta-wp-broker-ops` | Git/CI/Logs | `NOT_AVAILABLE` | `NOT_APPLICABLE` | `f91c82b04e6a71d3` | `NOT_APPLICABLE` | `NO_LOG_RECORD` | `NOT_AVAILABLE` | `NOT_AVAILABLE` | *(Search State)* |
+| **SRC-04-V5** | `AUDIT_NOTE` | `bridgenta-wp-broker-ops` | Git | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (History Audit Note) | `NOT_APPLICABLE` | `f91c82b04e6a71d3` | `DURABLE` | `AVAILABLE_LOCAL` | `NOT_AVAILABLE` | `DIRECT_EVIDENCE` | CLM-01, CLM-05, CLM-06, CLM-08 |
+| **SRC-05-V5** | `CHAT_MEMORY` | `bridgenta-wp-broker-ops` | Chat System | `NOT_AVAILABLE` | `session-logs/2026-08-staging-discussion.json` | `NOT_APPLICABLE` | `EPHEMERAL` | `EPHEMERAL` | `NOT_AVAILABLE` | `CONVERSATIONAL_RECOLLECTION` | CLM-04 |
+| **SRC-06-V5** | `STANDARD` | `bridgenta-portfolio` | Git | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | `NOT_APPLICABLE` | `c09ac8e52e3f` | `DURABLE` | `AVAILABLE_LOCAL` | `AVAILABLE_REMOTE` | `SPECIFICATION` | CLM-09, CLM-10 |
 
 ```yaml
-CLM_04_EVIDENCE_CLASS: CONVERSATIONAL_RECOLLECTION
-CLM_04_DURABLE_EVIDENCE: NOT_AVAILABLE
+SOURCE_INVENTORY_V5_COMPLETE: YES
 ```
 
 ---
 
-### 29. Claim Ledger v4 (Normalized Canonical Vocabulary)
-
-In Claim Ledger v4 werden ausnahmslos die strikten kanonischen Evidenz-Klassennamen verwendet. Shorthand-Aliase (wie `INFERRED` oder `RECONSTRUCTED`) wurden vollständig bereinigt.
+### 29. Claim Ledger v5 (Normalized Canonical Vocabulary)
 
 | ID | Aussage | Evidenz-Klasse (Kanonisch) | Quell-ID | Dauerhafter Locator | Flüchtiger / Conversational Locator | Stärke | Öffentliche Formulierung | Verbotene Überhöhung | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **CLM-01** | Governance-Regel wurde vor Dokumentation gelebt. | `RECONSTRUCTED_EVIDENCE` | `SRC-01-V4` | `commits/diff-staging-batch-04.patch` | `N/A` | `MODERATE` | Ja (als gelebte Praxis gerahmt) | Behauptung eines früheren schriftlichen Regelwerks | CANONICAL_CLOSED |
-| **CLM-02** | Anlass war das Fehlen eines zitierbaren Belegs. | `DIRECT_EVIDENCE` | `SRC-02-V4` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | `N/A` | `STRONG` | Ja (direkte Tatsache) | Behauptung, die Regel sei nie angewendet worden | CANONICAL_CLOSED |
-| **CLM-03** | Breites Staging zog unbeteiligte Arbeiten mit ein. | `RECONSTRUCTED_EVIDENCE` | `SRC-01-V4` | `commits/e7f81a9c3d4e` | `N/A` | `MODERATE` | Ja (rekonstruierter Vorfall) | Erfindung exakter Dialog-Prompts oder CLI-Befehle | CANONICAL_CLOSED |
-| **CLM-04** | KI erinnerte sich an spezifische Hash-Prüfung. | `CONVERSATIONAL_RECOLLECTION` | `SRC-05-V4` | `NOT_AVAILABLE` | `session-logs/2026-08-staging-discussion.json` | `WEAK` | Ja (explizit als KI-Erinnerung) | Darstellung der Prüfung als Projekttatsache | CANONICAL_CLOSED |
-| **CLM-05** | Suche ergab keinen Beleg der Hash-Prüfung. | `DIRECT_EVIDENCE` | `SRC-04-V4` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (Audit Note) | `N/A` | `STRONG` | Ja (Suchergebnis belegt) | Behauptung, das Archiv sei gelöscht worden | CANONICAL_CLOSED |
-| **CLM-06** | KI-Erinnerung wurde nicht als Beleg akzeptiert. | `DIRECT_EVIDENCE` | `SRC-04-V4` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (Audit Note) | `N/A` | `STRONG` | Ja (Entscheidung belegt) | Unterstellung böswilliger Halluzination | CANONICAL_CLOSED |
-| **CLM-07** | Governance-Dokument verankerte Evidenz-Prinzip. | `DIRECT_EVIDENCE` | `SRC-02-V4` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | `N/A` | `STRONG` | Ja (Dokumenteninhalt) | Verallgemeinerung als globales Gesetz | CANONICAL_CLOSED |
-| **CLM-08** | Dokument deckte eigenes Problem bei Erstellung auf. | `INFERENCE` | `SRC-04-V4` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (Audit Note) | `N/A` | `MODERATE` | Ja (als Prozess-Erkenntnis) | Dramatisierende Übertreibung der Ursächlichkeit | CANONICAL_CLOSED |
-| **CLM-09** | Reales Ereignis und Belegbarkeit sind verschieden. | `SPECIFICATION` | `SRC-06-V4` | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | `N/A` | `STRONG` | Ja (didaktisches Prinzip) | Gleichsetzung von „unbelegt“ mit „existiert nicht“ | CANONICAL_CLOSED |
-| **CLM-10** | KI-Erinnerungen sind Hinweise, keine Belege. | `SPECIFICATION` | `SRC-06-V4` | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | `N/A` | `STRONG` | Ja (Kernbotschaft) | Absolute Ablehnung jeglicher KI-Unterstützung | CANONICAL_CLOSED |
+| **CLM-01** | Governance-Regel wurde vor Dokumentation gelebt. | `INFERENCE` | `SRC-04-V5` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (Audit Note) | `N/A` | `MODERATE` | Ja (als begründete Vermutung gerahmt) | Behauptung einer nachgewiesenen Regelhistorie | FINAL_CLOSED |
+| **CLM-02** | Anlass war das Fehlen eines zitierbaren Belegs. | `DIRECT_EVIDENCE` | `SRC-02-V5` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | `N/A` | `STRONG` | Ja (direkte Tatsache) | Behauptung, die Regel sei nie angewendet worden | FINAL_CLOSED |
+| **CLM-03** | Breites Staging zog unbeteiligte Arbeiten mit ein. | `RECONSTRUCTED_EVIDENCE` | `SRC-01-V5` | `commits/e7f81a9c3d4e` | `N/A` | `MODERATE` | Ja (rekonstruierter Vorfall) | Erfindung exakter Dialog-Prompts oder CLI-Befehle | FINAL_CLOSED |
+| **CLM-04** | KI erinnerte sich an spezifische Hash-Prüfung. | `CONVERSATIONAL_RECOLLECTION` | `SRC-05-V5` | `NOT_AVAILABLE` | `session-logs/2026-08-staging-discussion.json` | `WEAK` | Ja (explizit als KI-Erinnerung) | Darstellung der Prüfung als Projekttatsache | FINAL_CLOSED |
+| **CLM-05** | Suche ergab keinen Beleg der Hash-Prüfung. | `DIRECT_EVIDENCE` | `SRC-04-V5` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (Audit Note) | `N/A` | `STRONG` | Ja (Suchergebnis belegt) | Behauptung, das Archiv sei gelöscht worden | FINAL_CLOSED |
+| **CLM-06** | KI-Erinnerung wurde nicht als Beleg akzeptiert. | `DIRECT_EVIDENCE` | `SRC-04-V5` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (Audit Note) | `N/A` | `STRONG` | Ja (Entscheidung belegt) | Unterstellung böswilliger Halluzination | FINAL_CLOSED |
+| **CLM-07** | Governance-Dokument verankerte Evidenz-Prinzip. | `DIRECT_EVIDENCE` | `SRC-02-V5` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | `N/A` | `STRONG` | Ja (Dokumenteninhalt) | Verallgemeinerung als globales Gesetz | FINAL_CLOSED |
+| **CLM-08** | Dokument deckte eigenes Problem bei Erstellung auf. | `INFERENCE` | `SRC-04-V5` | `docs/governance/GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` (Audit Note) | `N/A` | `MODERATE` | Ja (als Prozess-Erkenntnis) | Dramatisierende Übertreibung der Ursächlichkeit | FINAL_CLOSED |
+| **CLM-09** | Reales Ereignis und Belegbarkeit sind verschieden. | `SPECIFICATION` | `SRC-06-V5` | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | `N/A` | `STRONG` | Ja (didaktisches Prinzip) | Gleichsetzung von „unbelegt“ mit „existiert nicht“ | FINAL_CLOSED |
+| **CLM-10** | KI-Erinnerungen sind Hinweise, keine Belege. | `SPECIFICATION` | `SRC-06-V5` | `docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md` | `N/A` | `STRONG` | Ja (Kernbotschaft) | Absolute Ablehnung jeglicher KI-Unterstützung | FINAL_CLOSED |
 
 ```yaml
-CLAIM_LEDGER_V4_COMPLETE: YES
+CLAIM_LEDGER_V5_COMPLETE: YES
 NON_CANONICAL_EVIDENCE_CLASS_LABELS_IN_CURRENT_LEDGER: 0
 ```
 
 ---
 
-### 30. Deterministic Claim Count Table v4 & Mapping Verification
+### 30. Deterministic Claim Count Table v5 & Sum Check (R4)
 
-Exakte Zuordnung der 10 Aussagen aus Claim Ledger v4 auf die 7 kanonischen Evidenz-Klassen:
+Die Zuordnung der 10 Aussagen aus Claim Ledger v5 ergibt folgende exakte Verteilung:
 
 | Kanonische Evidenz-Klasse | Aussagen-IDs | Anzahl |
 | :--- | :--- | :---: |
 | `DIRECT_EVIDENCE` | CLM-02, CLM-05, CLM-06, CLM-07 | 4 |
-| `RECONSTRUCTED_EVIDENCE` | CLM-01, CLM-03 | 2 |
+| `RECONSTRUCTED_EVIDENCE` | CLM-03 | 1 |
 | `CONVERSATIONAL_RECOLLECTION` | CLM-04 | 1 |
-| `INFERENCE` | CLM-08 | 1 |
+| `INFERENCE` | CLM-01, CLM-08 | 2 |
 | `SPECIFICATION` | CLM-09, CLM-10 | 2 |
 | `OPEN` | *(keine)* | 0 |
 | `UNSUPPORTED` | *(keine)* | 0 |
 | **GESAMT (MATERIAL_CLAIM_COUNT)** | **CLM-01 bis CLM-10** | **10** |
 
-$$\text{Summe} = 4 + 2 + 1 + 1 + 2 + 0 + 0 = 10$$
+$$\text{Summe} = 4 + 1 + 1 + 2 + 2 + 0 + 0 = 10$$
 
 ```yaml
 CLAIM_COUNTS_RECALCULATED: YES
 MATERIAL_CLAIM_COUNT: 10
 DIRECT_EVIDENCE_CLAIMS: 4
-RECONSTRUCTED_EVIDENCE_CLAIMS: 2
+RECONSTRUCTED_EVIDENCE_CLAIMS: 1
 CONVERSATIONAL_RECOLLECTION_CLAIMS: 1
-INFERENCE_CLAIMS: 1
+INFERENCE_CLAIMS: 2
 SPECIFICATION_CLAIMS: 2
 OPEN_CLAIMS: 0
 UNSUPPORTED_CLAIMS: 0
@@ -369,53 +303,58 @@ CLAIM_CLASS_MAPPING_CHECK: PASS
 
 ---
 
-### 31. Required Reconciliation Ledger (R3-Abgleichs-Register)
+### 31. Required Reconciliation Ledger (R4-Abgleichs-Register)
 
-| Issue | Before (R2) | After (R3) | Evidence Basis | Status |
+| Issue | Before (R3) | After (R4) | Evidence Basis | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **CLM-01 Evidence Class** | Inkonsistenz (`INFERRED` in Ledger vs `RECONSTRUCTED` in Count) | Determiniert als `RECONSTRUCTED_EVIDENCE` | Git-Commit-Diffs (SRC-01-V4) rekonstruieren historische Staging-Praxis | RESOLVED |
-| **Kanonische Vokabeln** | Mischung aus Aliases (`INFERRED`, `RECONSTRUCTED`) | 100 % kanonische Bezeichnungen in Ledger v4 | BECC-PLS-v1.0 Standard-Klassifikation | RESOLVED |
-| **Claim Mapping Check** | Inkonsistent für CLM-01 | Exakte 1:1 Zuordnung zwischen Ledger v4 und Count Table v4 | Invariante `FOR_EVERY_CLAIM: LEDGER_CLASS == COUNT_TABLE_CLASS` | RESOLVED |
-| **Claim Total Sum** | Invariant | Summen-Invariante $\sum = 4 + 2 + 1 + 1 + 2 + 0 + 0 = 10$ | Mathematische Invariante erfüllt (`PASS`) | RESOLVED |
-| **SRC-05 Locator** | Ephemerer Pfad in `Durable Locator` Spalte | Spaltentrennung: `Durable Locator = NOT_AVAILABLE`, `Conversational Locator` belegt | Durability Semantics (`EPHEMERAL`) | RESOLVED |
-| **CLM-04 Belegbarkeit** | Ambivalent | `CLM_04_DURABLE_EVIDENCE: NOT_AVAILABLE` | Nur flüchtige Chat-Memory vorhanden | RESOLVED |
-| **Provenienz-Bereitschaft** | Bedingt | `PROVENANCE_EVENT_READY_FOR_REGISTRATION: YES` | Alle R3-Kriterien determiniert | RESOLVED |
-| **Public Post Bereitschaft** | Hängend | `PUBLIC_POST_IMPLEMENTATION_READY: YES` | Provenienz-Abdeckung vollständig | RESOLVED |
+| **CLM-01 Evidence Class** | `RECONSTRUCTED_EVIDENCE` | `INFERENCE` | Nur 1 pre-policy Commit-Diff belegt; Regelhistorie ist begründete Vermutung | RESOLVED |
+| **CLM-01 Public Wording** | Zu stark | Auf Vermutungs-Charakter begrenzt („deutet darauf hin“) | Didaktische Wahrheitsbindung gemäß BECC-PLS-v1.0 | RESOLVED |
+| **SRC-03 Source Type** | Fingierter Log-Durable-Eintrag | `ABSENCE_STATE` (`NOT_APPLICABLE` Durability) | Log-Suche ist ein Abwesenheits-Zustand, kein Beleg-Objekt | RESOLVED |
+| **SRC-04 Negative Search** | Implizit | `DIRECT_EVIDENCE` für die protokollierte Audit-Note | SSoT-Dokument `GOV-004-EXPLICIT-FILE-STAGING-POLICY.md` | RESOLVED |
+| **Claim Mapping Check** | CLM-01 = RECONSTRUCTED | CLM-01 = INFERENCE (1 Reconstructed, 2 Inference) | 1:1 Zuordnung zwischen Ledger v5 und Count Table v5 PASS | RESOLVED |
+| **Claim Total Sum** | $\sum = 10$ | $\sum = 4 + 1 + 1 + 2 + 2 + 0 + 0 = 10$ | Mathematische Invariante erfüllt (`PASS`) | RESOLVED |
+| **Provenienz-Bereitschaft** | Ausstehend | `PROVENANCE_EVENT_READY_FOR_REGISTRATION: YES` | Alle R4-Kriterien erfüllt | RESOLVED |
+| **Public Post Bereitschaft** | Ausstehend | `PUBLIC_POST_IMPLEMENTATION_READY: YES` | Provenienz-Abdeckung vollständig | RESOLVED |
 
 ---
 
-### 32. Final R3 Publication & Provenance Readiness Decision
+### 32. Final R4 Publication & Provenance Readiness Decision
 
 ```yaml
-CLM_01_FINAL_EVIDENCE_CLASS: RECONSTRUCTED_EVIDENCE
-CLM_01_CLASS_JUSTIFICATION: "Git commit diffs (SRC-01-V4) reconstruct pre-documentation selective staging practice."
-CLAIM_LEDGER_V4_COMPLETE: YES
+CLM_01_PRE_POLICY_RECORD_COUNT: 1
+CLM_01_FINAL_EVIDENCE_CLASS: INFERENCE
+CLM_01_CLASS_JUSTIFICATION: "Commit diff (EVD-PRE-01) proves staging incident; pre-policy rule duration is an INFERENCE."
+CLM_01_EVIDENCE_TABLE_COMPLETE: YES
+CLM_01_REPEATED_PRACTICE_PROVEN: NO
+CLM_01_PUBLIC_WORDING: "Die vorhandene Entwicklungshistorie deutet darauf hin, dass gezieltes Staging bereits vor der formellen Dokumentation in der Praxis angewendet wurde."
+CLM_01_PUBLIC_WORDING_BOUND: YES
+CLAIM_LEDGER_V5_COMPLETE: YES
 NON_CANONICAL_EVIDENCE_CLASS_LABELS_IN_CURRENT_LEDGER: 0
-SOURCE_INVENTORY_V4_COMPLETE: YES
-SRC_05_DURABLE_LOCATOR: NOT_AVAILABLE
-SRC_05_CONVERSATIONAL_LOCATOR: session-logs/2026-08-staging-discussion.json
-SRC_05_DURABILITY: EPHEMERAL
-SRC_05_LOCAL_AVAILABILITY: EPHEMERAL
-SRC_05_REMOTE_AVAILABILITY: NOT_AVAILABLE
-SRC_05_EVIDENCE_CLASS: CONVERSATIONAL_RECOLLECTION
-EPHEMERAL_SOURCE_IN_DURABLE_LOCATOR_FIELD: NO
-CLM_04_EVIDENCE_CLASS: CONVERSATIONAL_RECOLLECTION
-CLM_04_DURABLE_EVIDENCE: NOT_AVAILABLE
-HISTORICAL_MEANING_PRESERVED: YES
-CURRENT_STATE_UNAMBIGUOUS: YES
-DIRECT_EVIDENCE_CLAIMS_WITHOUT_DURABLE_LOCATOR: 0
-DIRECT_EVIDENCE_CLAIMS_WITHOUT_AVAILABILITY_BOUNDARY: 0
 MATERIAL_CLAIM_COUNT: 10
 DIRECT_EVIDENCE_CLAIMS: 4
-RECONSTRUCTED_EVIDENCE_CLAIMS: 2
+RECONSTRUCTED_EVIDENCE_CLAIMS: 1
 CONVERSATIONAL_RECOLLECTION_CLAIMS: 1
-INFERENCE_CLAIMS: 1
+INFERENCE_CLAIMS: 2
 SPECIFICATION_CLAIMS: 2
 OPEN_CLAIMS: 0
 UNSUPPORTED_CLAIMS: 0
 CLAIM_COUNT_SUM: 10
 CLAIM_COUNT_SUM_CHECK: PASS
 CLAIM_CLASS_MAPPING_CHECK: PASS
+SOURCE_INVENTORY_V5_COMPLETE: YES
+SRC_03_SOURCE_TYPE: ABSENCE_STATE
+SRC_03_DURABLE_LOCATOR: NOT_AVAILABLE
+SRC_03_DURABILITY: NOT_APPLICABLE
+SRC_03_LOCAL_AVAILABILITY: NO_LOG_RECORD
+SRC_03_REMOTE_AVAILABILITY: NOT_AVAILABLE
+SRC_03_EVIDENCE_CLASS: NOT_AVAILABLE
+ABSENCE_STATE_IN_DURABLE_SOURCE_CLASS: NO
+SRC_04_NEGATIVE_SEARCH_RECORD: DIRECT_EVIDENCE
+CLM_05_SOURCE: SRC-04
+CLM_05_EVIDENCE_CLASS: DIRECT_EVIDENCE
+NEGATIVE_EVIDENCE_SCOPE_EXPLICIT: YES
+HISTORICAL_MEANING_PRESERVED: YES
+CURRENT_STATE_UNAMBIGUOUS: YES
 PROPOSED_PROVENANCE_EVENT: EV-BG-006
 PROVENANCE_EVENT_READY_FOR_REGISTRATION: YES
 PROVENANCE_REGISTRY_CHANGE_AUTHORIZATION: NOT_GRANTED
@@ -429,4 +368,4 @@ P3_REMAINING: 0
 ```
 
 ---
-*End of Reconciled Planning Document `BECC-P1-PLAN-MEMORY-VS-EVIDENCE` (R3)*
+*End of Reconciled Planning Document `BECC-P1-PLAN-MEMORY-VS-EVIDENCE` (R4 — Current Authoritative Planning State)*
