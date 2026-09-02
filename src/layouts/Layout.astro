@@ -7,6 +7,7 @@ interface Props {
   title: string;
   description?: string;
   robots?: string;
+  suppressPublicUrlMetadata?: boolean;
   project?: {
     title: string;
     category: string;
@@ -30,6 +31,7 @@ const {
   title,
   description = "Portfolio von Frank Duru – Web Development, AI-assisted Development und SEO/AEO/GEO.",
   robots = "index, follow",
+  suppressPublicUrlMetadata = false,
   project,
   pageKind = 'default',
   learningBreadcrumbs,
@@ -80,19 +82,19 @@ import '../styles/styles.css';
   <link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
   
   <!-- Canonical Link Tag -->
-  <link rel="canonical" href={canonical} />
+  {!suppressPublicUrlMetadata && <link rel="canonical" href={canonical} />}
 
   <!-- Crawler Indexing Directives -->
   <meta name="robots" content={robots} />
 
   <!-- Regional & Language Targeting (hreflang) -->
-  <link rel="alternate" hreflang="de" href={canonical} />
-  <link rel="alternate" hreflang="x-default" href={canonical} />
+  {!suppressPublicUrlMetadata && <link rel="alternate" hreflang="de" href={canonical} />}
+  {!suppressPublicUrlMetadata && <link rel="alternate" hreflang="x-default" href={canonical} />}
 
   <!-- Open Graph & Twitter Cards -->
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:url" content={canonical} />
+  {!suppressPublicUrlMetadata && <meta property="og:url" content={canonical} />}
   <meta property="og:type" content="website" />
   <meta property="og:image" content={`${siteUrl}/images/og-featured.jpg`} />
   <meta name="twitter:card" content="summary_large_image" />
