@@ -1,6 +1,6 @@
 ---
 title: "Der Revert der TinaCMS Build-Integration: Grenzen lokaler Sicherheitsbereiche"
-description: "Warum wir eine TinaCMS-Build-Integration wieder entfernt haben, um die lokale Offline-Grenze des CMS-Adminbereichs zu wahren."
+description: "Eine TinaCMS-Build-Integration wurde wieder entfernt, um die lokale Offline-Grenze des CMS-Adminbereichs zu wahren. Der Artikel zeigt, welche Sicherheitsgrenze dabei entscheidend war."
 category: "softwarearchitektur"
 learningLevel: "beginner"
 publicationState: "published"

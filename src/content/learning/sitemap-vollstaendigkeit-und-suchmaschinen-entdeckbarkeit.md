@@ -1,6 +1,6 @@
 ---
 title: "Wenn der Build grün ist, aber die Seite in der Sitemap fehlt"
-description: "Warum ein erfolgreicher Website-Build noch nicht beweist, dass alle Veröffentlichungsartefakte vollständig sind – und wie automatisierte Build-Artefakt-Prüfungen fehlende Sitemap-Einträge erkennen können."
+description: "Ein grüner Website-Build beweist noch nicht, dass alle Veröffentlichungsartefakte vollständig sind. Automatisierte Build-Artefakt-Prüfungen können fehlende Sitemap-Einträge sichtbar machen."
 category: "softwarearchitektur"
 learningLevel: "intermediate"
 publicationState: "published"

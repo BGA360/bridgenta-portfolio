@@ -1,6 +1,6 @@
 ---
 title: "Layout-Absicherung in mobilen Ansichten: Der mobile Kontakt-Button"
-description: "Warum das Entfernen eines Navigationselements auf kleinen Bildschirmen den Zugang zu rechtlichen Pflichtangaben rettete."
+description: "Ein Navigationselement verdeckte auf kleinen Bildschirmen wichtige rechtliche Pflichtangaben. Der Fall zeigt, wie eine gezielte Vereinfachung das mobile Layout absichert."
 category: "softwarearchitektur"
 learningLevel: "public"
 publicationState: "published"
