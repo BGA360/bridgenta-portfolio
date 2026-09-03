@@ -1,6 +1,6 @@
 ---
 title: "Entwurfs-Vorschau vs. Veröffentlichungsstand: Sichere Sichtprüfung ohne Frühveröffentlichung"
-description: "Wie eine isolierte Vorschau-Route im Frontend-Routing verhindert, dass unveröffentlichte Entwürfe vorzeitig im öffentlichen Such-Index landen."
+description: "Wie eine getrennte Vorschau-Route Entwürfe im echten Seitendesign sichtbar macht, ohne sie als öffentliche Lernartikel zu generieren."
 category: "softwarearchitektur"
 learningLevel: "intermediate"
 publicationState: "draft"
@@ -8,44 +8,44 @@ publicationState: "draft"
 
 Wer Artikel für eine Plattform verfasst, muss das fertige Layout vor der Veröffentlichung prüfen. Textformatierung, Bilder und Hinweis-Boxen sehen im Quellcode anders aus als auf dem Bildschirm.
 
-Beim Aufbau der Veröffentlichungs-Pipeline für BridGenta stand das Entwicklungs-Team vor einer konkreten Architekturfrage: Wie lässt sich ein Entwurf auf der echten Webseite gründlich prüfen, ohne dass er vorzeitig in öffentlichen Übersichten erscheint oder von Suchmaschinen erfasst wird?
+Beim Aufbau der Veröffentlichungs-Pipeline für BridGenta stand das Entwicklungs-Team vor einer konkreten Architekturfrage: Wie lässt sich ein Entwurf lokal im echten Seitendesign der Anwendung prüfen, ohne dass er als regulärer öffentlicher Lernartikel generiert wird?
 
-In diesem Artikel erklären wir am Praxis-Beispiel unserer Routing-Architektur, warum die Verwechslung von Vorschau und Veröffentlichung gefährlich ist und wie eine isolierte Vorschau-Route dieses Problem löst.
+In diesem Artikel erklären wir am Praxis-Beispiel unserer Routing-Architektur, wie eine getrennte Vorschau-Route den Freigabeprozess absichert.
 
 ## Das Schauplatz-Problem im Redaktions-Workflow
 
-Beim Erstellen neuer Lernartikel entsteht zunächst eine Entwurfs-Datei. Dieser Entwurf enthält das Attribut `publicationState: "draft"`. 
+Beim Erstellen neuer Lernartikel entsteht zunächst eine Entwurfs-Datei. Dieser Entwurf enthält das Attribut `publicationState: "draft"`.
 
-Damit die Redaktion den Artikel im originalen Seitendesign bewerten kann, muss das System die Markdown-Datei in HTML umwandeln und anzeigen. Wird hierfür die normale Haupt-Route der Webseite (wie `/lernen/[slug]`) verwendet, entsteht ein ernsthaftes Veröffentlichungs-Risiko:
+Damit die Redaktion den Artikel im originalen Seitendesign bewerten kann, muss das System die Markdown-Datei in HTML umwandeln und anzeigen. Wird hierfür fälschlicherweise die öffentliche Haupt-Route verwendet, könnten unbeabsichtigte Auslieferungsrisiken entstehen:
 
-* Öffentliche Übersichtsseiten greifen auf dieselbe Routen-Logik zu.
-* Automatische Generatoren für Sitemaps oder RSS-Feeds erfassen den Artikel gegebenenfalls ungefragt.
-* Suchmaschinen-Crawler können den unveröffentlichten Entwurf indizieren, bevor der Inhalt überhaupt freigegeben wurde.
+* Öffentliche Übersichtsseiten könnten unfertige Artikel anzeigen.
+* Automatische Sitemaps oder Feed-Generatoren könnten Entwürfe erfassen.
+* Suchmaschinen-Crawler könnten unvollständige Texte verarbeiten.
 
-Eine Sichtprüfung über den normalen Hauptpfad hebelt somit die Freigabegrenze des Systems aus.
+Eine Sichtprüfung über die reguläre öffentliche Route würde somit die gewollte Freigabegrenze untergraben.
 
 ## Warum die Routentrennung entscheidend ist
 
 In einer kontrollierten Software-Architektur gilt das Prinzip der klaren Zustandstrennung. Ein Artikel im Zustand „Entwurf“ unterscheidet sich grundlegend von einem Artikel im Zustand „Veröffentlicht“.
 
-Wenn das Routing nicht strikt zwischen diesen beiden Zuständen unterscheidet, entstehen ungewollte Veröffentlichungen (Draft Leaks). Leser sehen unfertige Texte, und Suchmaschinen speichern fehlerhafte Zwischenstände.
+Wenn die Routengenerierung nicht strikt zwischen diesen beiden Zuständen unterscheidet, entstehen ungewollte Veröffentlichungswege. Leser sehen unfertige Texte, und Suchmaschinen verarbeiten gegebenenfalls Zwischenstände.
 
-Welches Architekturmuster verhindert, dass Entwürfe bei der Vorschau in den öffentlichen Produktions-Index geraten?
+Welches Architekturmuster verhindert, dass Entwürfe bei der Vorschau im öffentlichen Veröffentlichungsweg landen?
 
-## Die technische Lösung: Die isolierte Vorschau-Route
+## Die technische Lösung: Die getrennte Vorschau-Route
 
-Die Lösung besteht in einer vollständigen Entkopplung des Vorschau-Routings vom öffentlichen Hauptpfad.
+Die Lösung besteht in einer klaren Trennung der Routenauswahl im Build-Prozess.
 
-In Commit `d45de9d` wurde eine eigene Vorschau-Route im System verankert (`src/pages/lernen/preview/[slug].astro`). Die Architektur trennt die Pfade nun strikt nach Aufgaben:
+In Commit `d45de9d` wurde eine isolierte Vorschau-Route für die lokale Entwicklung eingeführt (`src/pages/lernen/preview/[slug].astro`). Die Routengenerierung unterscheidet nun strikt:
 
-* **Öffentliche Route (`/lernen/[slug]`):** Filtert die Content-Kollektion streng. Nur Artikel mit dem Status `publicationState: "published"` werden gerendert. Alle Entwürfe werden automatisch ignoriert.
-* **Isolierte Vorschau-Route (`/lernen/preview/[slug]`):** Lädt den gewünschten Entwurf gezielt für die interne Redaktionsansicht. Diese Route ist von der automatischen Sitemap ausgeschlossen und mit Schutz-Signalen für Crawler versehen.
+* **Öffentliche Route (`/lernen/[slug]`):** Filtert die Content-Kollektion. Es werden ausschließlich Artikel generiert, deren Status `publicationState: "published"` lautet.
+* **Isolierte Vorschau-Route (`/lernen/preview/[slug]`):** Steht im lokalen Entwicklungsmodus (`DEV`) zur Verfügung und wählt gezielt Artikel mit `publicationState: "draft"` aus. Die Seite nutzt den gemeinsamen Artikel-Renderer, setzt jedoch Schutz-Signale für Suchmaschinen (`noindex, nofollow`) und unterdrückt öffentliche URL-Metadaten.
 
-Durch diese Aufteilung bleibt der öffentliche Bereich der Webseite garantiert frei von unfertigen Inhalten, während das Redaktions-Team jeden Entwurf im echten Browser-Design prüfen kann.
+Durch diese Aufteilung bleibt der öffentliche Veröffentlichungsweg frei von unfertigen Inhalten, während Entwürfe im lokalen Browser-Design geprüft werden können.
 
 <div class="learning-evidence-boundary">
 
-Die Einführung von src/pages/lernen/preview/[slug].astro in Commit d45de9d belegt die technische Trennung der Vorschau-Route vom öffentlichen Index. Sie garantiert nicht automatisch die Freiheit von Cache-Problemen im Webbrowser, sichert aber das serverseitige Routing ab.
+Die Implementierung in Commit d45de9d belegt die Trennung der Routenauswahl im Build-Prozess (DEV-Vorschau für Entwürfe, öffentliche Route für freigegebene Artikel). Sie beweist nicht automatisch den vollständigen Schutz vor allen externen Indexierungsversuchen oder Caching-Effekten.
 
 </div>
 
@@ -53,19 +53,19 @@ Die Einführung von src/pages/lernen/preview/[slug].astro in Commit d45de9d bele
 
 Wenn Sie Vorschau-Funktionen in inhaltsbasierten Web-Anwendungen bauen, nutzen Sie dieses Drei-Stufen-Prinzip zur Absicherung:
 
-1. **Öffentliche Filterung erzwingen:** Stellen Sie sicher, dass öffentliche Haupt-Routen und Listen-Seiten ausschließlich freigegebene Inhalte abfragen.
-2. **Dedizierte Vorschau-Endpunkte nutzen:** Richten Sie für interne Reviews einen separaten Pfad ein (z. B. `/preview/`), der nicht über öffentliche Links erreichbar ist.
-3. **Indexierung unterbinden:** Schließen Sie Vorschau-Routen explizit aus Sitemaps aus und versehen Sie die HTML-Köpfe dieser Pfade mit entsprechenden Schutz-Tags.
+1. **Öffentliche Filterung erzwingen:** Stellen Sie sicher, dass öffentliche Haupt-Routen ausschließlich freigegebene Inhalte generieren.
+2. **Getrennte Vorschau-Pfade nutzen:** Richten Sie für interne Prüfungen einen separaten Pfad ein, der im Produktions-Build nicht generiert wird.
+3. **Indexierungssignale setzen:** Nutzen Sie Meta-Tags wie `noindex, nofollow` und schließen Sie Vorschau-Pfade aus öffentlichen Sitemaps aus.
 
 ## Die zentrale Erkenntnis
 
 > [!IMPORTANT]
-> Vorschau-Zugriff ist keine Veröffentlichung. Entwürfe gehören zur Sichtprüfung in isolierte Vorschau-Pfade, niemals in den öffentlichen Produktions-Index.
+> Vorschau-Zugriff ist keine Veröffentlichung. Entwürfe gehören zur Sichtprüfung in getrennte Vorschau-Pfade, niemals in den öffentlichen Veröffentlichungsweg.
 
 ## Begriffserklärung
 
 **Content Collection (Inhalts-Kollektion)**
-Eine strukturierte Sammlung von Inhaltsdateien (z. B. Markdown-Dateien), die vom Web-Framework typsicher eingelesen und gefiltert werden kann.
+Eine strukturierte Sammlung von Inhaltsdateien, die vom Web-Framework typsicher eingelesen und gefiltert werden kann.
 
-**Staging und Preview-Route**
-Eine spezielle Adresse im Web-System, die Inhalte ausschließlich zum Zweck der internen Sichtprüfung und Qualitätskontrolle anzeigt.
+**Vorschau-Route (Preview Route)**
+Ein spezieller Pfad im Web-System, der unfertige Inhalte im Entwicklungsmodus ausschließlich zum Zweck der internen Sichtprüfung und Qualitätskontrolle anzeigt.
