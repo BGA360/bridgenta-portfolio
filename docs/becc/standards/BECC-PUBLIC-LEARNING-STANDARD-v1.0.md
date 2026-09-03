@@ -158,22 +158,53 @@ Jeder Lernartikel muss vor der Veröffentlichungsfreigabe zwei separate manuelle
 *   Professionelles, technisches Fachvokabular bleibt erlaubt und notwendig. Fachbegriffe müssen bei Erstverwendung durch eine einfache Erklärung eingeführt werden (Verständnis zuerst, Begriff danach).
 *   Höhere technische Komplexität (z. B. auf Intermediate- oder Advanced-Niveau) darf nicht zu einer unnötig verschachtelten oder komplexen Grammatik führen. Jede Erkenntnis muss in klaren, kurzen Sätzen formuliert werden.
 
-### 9.4 BridGenta Learning Core Teaching Sequence
+### 9.4 BridGenta Learning Core Teaching Sequence & Reader Orientation
 *   **Prinzip:** `BRIDGENTA_LEARNING_CORE_TEACHING_SEQUENCE`.
 *   Jeder Lernartikel muss der didaktischen Reihenfolge **VERSTEHEN → BENENNEN → BELEGEN → ANWENDEN** folgen.
-*   **VERSTEHEN (Understand):** Zuerst muss die konkrete Situation oder das Problem ohne Fachbegriffe verständlich beschrieben werden. Der Leser muss begreifen, was passiert ist, warum das Problem wichtig ist und welche Fragestellung gelöst wird (`SITUATION_FIRST → ABSTRACTION_LATER`).
-*   **BENENNEN (Name):** Erst danach wird der korrekte technische Begriff eingeführt und in einfachem Deutsch erklärt. Fachbegriffe dürfen nicht entfernt werden, sondern müssen verständlich mit der bekannten Situation verknüpft werden (`UNDERSTAND_FIRST → TERM_SECOND`).
-*   **BELEGEN (Evidence):** Die Aussagen und Erkenntnisse müssen durch nachprüfbare Belege (Evidenz) gestützt sein. Der Leser muss zwischen reiner Erklärung, Behauptung, Schlussfolgerung und tatsächlicher Projektevidenz (z. B. Git-Commits oder Testberichte) klar unterscheiden können.
-*   **ANWENDEN (Apply):** Jeder Artikel muss dem Leser mindestens ein übertragbares und direkt anwendbares Werkzeug (eine Frage, eine Regel, eine Unterscheidung, ein mentales Modell, eine Checkliste, ein Entscheidungsprinzip oder eine Methode) mitgeben (`READ → UNDERSTAND → APPLY_ELSEWHERE`).
+*   **Leser-Orientierungs-Gebot (Reader Orientation Requirement):** Der Leser muss in der Lage sein, sich die konkrete Entwicklungs- oder Governance-Situation bildlich vorzustellen, bevor der Artikel ihn auffordert, das abstrakte Konzept zu verstehen. Es gilt: `CONTEXT BEFORE CONCEPT`, `SCENE BEFORE LESSON`, `PROCESS BEFORE ABSTRACTION`.
+*   **VERSTEHEN (Understand):** Zuerst muss die konkrete Situation oder das Problem ohne Fachbegriffe verständlich beschrieben werden. Der Leser muss begreifen, was passiert ist, wo im Prozess man sich befindet, warum das Problem wichtig ist und welche zentrale Frage beantwortet wird (`SITUATION_FIRST → ABSTRACTION_LATER`). Unter-Sequenz: `SCOPE → CONTEXT → EVENT → SIGNIFICANCE → CENTRAL_QUESTION`.
+*   **BENENNEN (Name):** Erst danach wird der korrekte technische Begriff eingeführt und in einfachem Deutsch erklärt. Fachbegriffe dürfen nicht entfernt werden, sondern müssen verständlich mit der bekannten Situation verknüpft werden (`UNDERSTAND_FIRST → TERM_SECOND`). Unter-Sequenz: `TECHNICAL_TERM → SIMPLE_DEFINITION → RELATION_TO_KNOWN_SITUATION`.
+*   **BELEGEN (Evidence):** Die Aussagen und Erkenntnisse müssen durch nachprüfbare Belege (Evidenz) gestützt sein. Der Leser muss zwischen reiner Erklärung, Behauptung, Schlussfolgerung und tatsächlicher Projektevidenz (z. B. Git-Commits oder Testberichte) klar unterscheiden können. Unter-Sequenz: `PROJECT_FACT → EVIDENCE_CLASS → EVIDENCE_LIMIT`.
+*   **ANWENDEN (Apply):** Jeder Artikel muss dem Leser mindestens ein übertragbares und direkt anwendbares Werkzeug (eine Frage, eine Regel, eine Unterscheidung, ein mentales Modell, eine Checkliste, ein Entscheidungsprinzip oder eine Methode) mitgeben (`READ → UNDERSTAND → APPLY_ELSEWHERE`). Unter-Sequenz: `COMPRESSION → REUSABLE_PRINCIPLE → PRACTICAL_TRANSFER`.
 *   **TRANSFERABILITY_BOUNDARY:** Eine übertragbare Lektion darf nicht breiter oder sicherer formuliert werden, als es die Evidenz stützt. Es gilt der Grundsatz: `TRANSFERABLE != UNIVERSAL` und `REUSABLE != ABSOLUTE`. Ein projektspezifischer Befund oder eine Governance-Regel darf nicht als allgemeingültiges technisches Gesetz dargestellt werden.
 
-### 9.5 Die fünf obligatorischen Prüftore (Conformance Gates)
+### 9.5 Pädagogisches Funktions-Modell (Pedagogical Function Model)
+Um didaktische Vollständigkeit zu gewährleisten, ohne Artikel in starre Textschablonen zu zwingen, definiert der Standard zehn **Pädagogische Funktionen (F0–F9)**:
+
+1. **F0 — SCOPE:** Welcher Teil des Systems, des Codes oder des Governance-Prozesses wird betrachtet?
+2. **F1 — CONTEXT:** Wo im realen Entwicklungs- oder Veröffentlichungsprozess befinden wir uns?
+3. **F2 — EVENT:** Was genau ist passiert oder was wurde beobachtet?
+4. **F3 — SIGNIFICANCE:** Warum ist diese Beobachtung wichtig und relevant?
+5. **F4 — EXPLANATION:** Wie funktioniert der technische Mechanismus oder die Unterscheidung?
+6. **F5 — RESPONSE / STATE:** Was wurde geändert, entschieden, korrigiert oder verifiziert – oder was blieb explizit offen? *(Hinweis: Eine Lösung ist didaktisch NICHT zwingend erforderlich, wohl aber der klare Nachweis der Reaktion oder des ungelösten Zustands; `SOLUTION_REQUIRED: NO`, `RESPONSE_OR_STATE_REQUIRED: YES`).*
+7. **F6 — EVIDENCE:** Was stützt die Schlussfolgerung und was beweist diese Evidenz ausdrücklich nicht?
+8. **F7 — COMPRESSION:** Was ist die einprägsame zentrale Regel oder Unterscheidung?
+9. **F8 — APPLICATION:** Wie kann der Leser diese Erkenntnis in anderen Projekten erkennen, wiederverwenden oder anwenden?
+10. **F9 — TERMINOLOGY:** Welche Fachbegriffe benötigen für dieses Lernniveau eine verständliche Orientierung?
+
+* **Gegenstands-Verhältnis:** `PEDAGOGICAL_FUNCTION: GOVERNED` vs. `HEADING_TEXT: VARIABLE`.
+* **Standardisierungs-Grundsatz:** Standardisiere, was der Leser verstehen muss (`STANDARDIZE_WHAT_READER_MUST_UNDERSTAND`), nicht die exakten Überschriften, mit denen dies erreicht wird (`DO_NOT_STANDARDIZE_EXACT_HEADINGS`). Didaktische Konsistenz ist keine visuelle Schablonen-Wiederholung (`PEDAGOGICAL_CONSISTENCY != VISIBLE_TEMPLATE_REPETITION`).
+
+### 9.6 Die fünf obligatorischen Prüftore (Conformance Gates)
 Jeder Lernartikel wird im Review-Prozess gegen fünf Prüftore evaluiert:
-1.  **UNDERSTAND_GATE:** Kann der Leser das Problem verstehen, bevor Fachbegriffe vorausgesetzt werden? (Pass-Kriterium: konkrete Situation zuerst, kein vorzeitiges Jargon-Stacking).
-2.  **NAME_GATE:** Werden Fachbegriffe erst nach der inhaltlichen Hinführung benannt und verständlich eingeführt? (Pass-Kriterium: präzise Fachbegriffe vorhanden, aber didaktisch eingeleitet).
-3.  **EVIDENCE_GATE:** Ist die Evidenz sichtbar und von Interpretationen getrennt? (Pass-Kriterium: Einhaltung der Evidenzgrenzen, keine unbewiesenen Behauptungen).
-4.  **REUSE_GATE:** Bietet der Artikel ein nützliches Werkzeug zur Wiederverwendung in anderen Projekten? (Pass-Kriterium: mindestens ein konkretes Werkzeug wie eine Checkliste oder Entscheidungsregel).
-5.  **TRANSFERABILITY_BOUNDARY_GATE:** Bewahrt die übertragbare Lektion den genauen Gültigkeitsbereich und Grad der Gewissheit der zugrundeliegenden Evidenz? (Pass-Kriterium: keine ungestützte Verallgemeinerung, projektspezifische Governance-Regeln sind als solche gekennzeichnet, allgemeine Leitlinien werden nicht als absolute Gesetze formuliert).
+1. **UNDERSTAND_GATE:** Kann ein Erstleser innerhalb der Einleitung/Eröffnung visualisieren, wo das Ereignis stattgefunden hat, in welchem Prozess oder Systembereich er sich befindet und welchen Geltungsbereich der Artikel abdeckt, bevor Fachbegriffe vorausgesetzt werden? (Pass-Kriterium: konkrete Szene/Prozesskontext und Problemstellung zuerst, kein vorzeitiges Jargon-Stacking; `SITUATION_FIRST`).
+2. **NAME_GATE:** Werden Fachbegriffe erst nach der inhaltlichen Hinführung benannt und verständlich eingeführt? (Pass-Kriterium: präzise Fachbegriffe vorhanden, aber didaktisch eingeleitet).
+3. **EVIDENCE_GATE:** Ist die Evidenz sichtbar und von Interpretationen getrennt? (Pass-Kriterium: Einhaltung der Evidenzgrenzen, keine unbewiesenen Behauptungen).
+4. **REUSE_GATE:** Bietet der Artikel ein nützliches Werkzeug zur Wiederverwendung in anderen Projekten? (Pass-Kriterium: mindestens ein konkretes Werkzeug wie eine Checkliste oder Entscheidungsregel).
+5. **TRANSFERABILITY_BOUNDARY_GATE:** Bewahrt die übertragbare Lektion den genauen Gültigkeitsbereich und Grad der Gewissheit der zugrundeliegenden Evidenz? (Pass-Kriterium: keine ungestützte Verallgemeinerung, projektspezifische Governance-Regeln sind als solche gekennzeichnet, allgemeine Leitlinien werden nicht als absolute Gesetze formuliert).
+
+### 9.7 Lernniveau-differenzierte Orientierung & Terminologie
+Das Ausmaß der Terminologie- und Szene-Orientierung richtet sich nach dem Zielgruppen-Niveau:
+* **PUBLIC:** Starke Szenen-Orientierung, hohes Warum-es-wichtig-ist, einfache Begriffserklärung, eine klare übertragbare Lektion.
+* **BEGINNER:** Stärkste Orientierung, ausführliche Begriffs-Erklärung, expliziter Aufbau eines mentalen Modells, praktische Anwendung.
+* **INTERMEDIATE:** Starke Orientierung, realer Prozess-Kontext, technischer Mechanismus, Evidenz-Abgrenzung, Terminologie-Orientierung bei Bedarf, Anwendung.
+* **ADVANCED:** Szene-Orientierung weiterhin erforderlich, geringere Glossar-Abhängigkeit, maximale Evidenz- und Provenienz-Tiefe, klare Architektur-, Governance- und Autoritätsgrenzen.
+
+### 9.8 Internes Redaktions-Werkzeug (Article Function Map)
+Für die Erstellung von Lernartikeln steht Redakteuren die `ARTICLE_FUNCTION_MAP` als internes Planungswerkzeug zur Verfügung.
+* **Prinzip:** `FUNCTION_MAP: INTERNAL_EDITORIAL_TOOL`, `PUBLIC_TEMPLATE: NO`.
+* Die Function Map dient der Strukturierung des Entwurfs vor dem Schreiben und ersetzt keine öffentlichen Layouts oder Schema-Felder.
+* Die Einführung der Function Map erzeugt keinen neuen formalen Genehmigungsschritt im Routine-Workflow (`NEW_ROUTINE_APPROVAL_STAGE: NO`).
 
 ---
 
@@ -240,6 +271,9 @@ Jede Anforderung wird nachfolgend klassifiziert:
 | **LR-13** | `EVIDENCE_GATE` bestanden | **MUST** | SEMANTIC | Nein | Nein | Ja (Fidelity) | Lead Architect |
 | **LR-14** | `REUSE_GATE` bestanden | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
 | **LR-15** | `TRANSFERABILITY_BOUNDARY_GATE` bestanden | **MUST** | SEMANTIC | Nein | Nein | Ja (Fidelity) | Lead Architect |
+| **LR-16** | `READER_ORIENTATION_REQUIREMENT` erfüllt | **MUST** | SEMANTIC | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
+| **LR-17** | `PEDAGOGICAL_FUNCTION_COMPLETENESS` (F0-F9) gegeben | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
+| **LR-18** | `ARTICLE_FUNCTION_MAP` für Entwurf genutzt | **SHOULD** | EDITORIAL | Nein | Nein | Ja (Editorial) | Lead Editor |
 
 ---
 
