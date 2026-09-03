@@ -1,6 +1,6 @@
 ---
 title: "Wenn die Route im Code steht, aber die Freigabe noch offen ist"
-description: "Warum die technische Konfiguration einer Zieladresse im Quellcode noch keine nachgewiesene Veröffentlichungsfreigabe darstellt – und wie Architektur-Pipelines Quellcode-Fakten von Governance-Entscheidungen trennen."
+description: "Warum die technische Konfiguration einer Zieladresse im Quellcode noch keine nachgewiesene Veröffentlichungsfreigabe darstellt – und warum Quellcode-Fakten von Governance-Entscheidungen getrennt betrachtet werden müssen."
 category: "softwarearchitektur"
 learningLevel: "intermediate"
 publicationState: "draft"
@@ -44,4 +44,4 @@ Die technische Routen-Liste unterscheidet sich von einer fachlichen Veröffentli
 
 Entwicklerteams sollten technische Pfad-Konfigurationen niemals als Nachweis einer Veröffentlichungsentscheidung interpretieren.
 
-Das Prinzip ist auf andere Webanwendungen übertragbar, wenn technische Routen-Konfiguration und fachliche Veröffentlichungsfreigabe getrennte Entscheidungen sind. Indem der Veröffentlichungsprozess Quellcode-Fakten strikt von fachlichen Freigaben unterscheidet, verhindert er falsche Ableitungen zwischen technischer Erreichbarkeit und organisatorischer Autorisierung.
+Das Prinzip ist auf andere Webanwendungen übertragbar, wenn technische Routen-Konfiguration und fachliche Veröffentlichungsfreigabe getrennte Entscheidungen sind. Wenn Quellcode-Fakten und fachliche Freigaben getrennt betrachtet werden, lassen sich falsche Ableitungen zwischen technischer Erreichbarkeit und organisatorischer Autorisierung vermeiden.
