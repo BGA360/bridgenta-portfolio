@@ -1,0 +1,54 @@
+# BECC Routine Article Evidence Packet v1.0
+# Location: stewardship/evidence/routen-konfiguration-vs-veroeffentlichungsfreigabe.yaml
+
+articleId: "routen-konfiguration-vs-veroeffentlichungsfreigabe"
+workingTitle: "Wenn die Route im Code steht, aber die Freigabe noch offen ist"
+learningLevel: "intermediate"
+category: "softwarearchitektur"
+centralLesson: "Die technische Konfiguration von Anwendungsrouten im Quellcode ist ein technischer Fakt, aber keine inhaltliche Veröffentlichungsfreigabe."
+
+claims:
+  - id: "CLM-001"
+    statement: "In src/pages/project-[slug].astro werden Projekt-Routen über ein statisches Slug-Array für die Seitengenerierung bereitgestellt."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "src/pages/project-[slug].astro"
+    historicalLocator: "baf21511c14c607c3e744b923cadc4d73a3a1da5"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-002"
+    statement: "Eine technische Routen-Konfiguration allein belegt nicht, dass die zugehörigen Veröffentlichungs-, Lifecycle- und Clearance-Anforderungen erfüllt sind."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
+    historicalLocator: "5948dd3027bf2d448a3fece43752a0c2cdfd352c"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-003"
+    statement: "GOV-FIND-001 hält ausdrücklich fest, dass aus einem beobachteten Quellcode-Fakt allein keine Veröffentlichungsentscheidung oder Route-Removal-Autorisierung folgt."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
+    historicalLocator: "5948dd3027bf2d448a3fece43752a0c2cdfd352c"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+unsupportedOrOpenClaims: []
+
+transferabilityBoundary: "Das Prinzip ist auf andere Webanwendungen übertragbar, wenn technische Routen-Konfiguration und fachliche Veröffentlichungsfreigabe getrennte Entscheidungen sind."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-008"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "5948dd3027bf2d448a3fece43752a0c2cdfd352c"
