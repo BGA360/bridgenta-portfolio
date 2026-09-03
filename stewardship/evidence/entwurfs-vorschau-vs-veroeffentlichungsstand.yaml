@@ -1,0 +1,32 @@
+articleId: "entwurfs-vorschau-vs-veroeffentlichungsstand"
+workingTitle: "Entwurfs-Vorschau vs. Veröffentlichungsstand: Sichere Sichtprüfung ohne Frühveröffentlichung"
+learningLevel: "intermediate"
+category: "softwarearchitektur"
+centralLesson: "Unveröffentlichte Content-Entwürfe dürfen nicht in öffentlichen Routing-Kollektionen auftauchen, um Frühveröffentlichungen zu vermeiden. Eine dedizierte Vorschau-Route (/preview/[slug]) erlaubt die vollständige visuelle Sichtprüfung bei strikter Trennung vom öffentlichen Produktions-Index."
+
+claims:
+  - id: "CLM-001"
+    statement: "In Commit d45de9d wurde eine isolierte Vorschau-Route src/pages/lernen/preview/[slug].astro eingeführt."
+    sourceType: "git"
+    sourceLocator: "src/pages/lernen/preview/[slug].astro"
+    historicalLocator: "d45de9d7290495da65596465b1b45cfded8dacab"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary: "Die Erstellung von src/pages/lernen/preview/[slug].astro in Commit d45de9d ermöglicht die Vorschau von Entwürfen außerhalb des öffentlichen Produktions-Indexes."
+  - id: "CLM-002"
+    statement: "Öffentliche Routen dürfen Artikel im Entwurfsstatus nicht an anonyme Aufrufer ausliefern."
+    sourceType: "specification"
+    sourceLocator: "docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md"
+    historicalLocator: "b0452ef8a4f57e5dcc1f14d49acd89ae605ca967"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary: "Architekturvorgaben verlangen eine strikte Trennung von ungeprüften Entwürfen und freigegebenen Veröffentlichungen."
+
+unsupportedOrOpenClaims: "Es wird nicht behauptet, dass die Vorschau-Route ein benutzerdefiniertes Authentifizierungssystem ersetzt oder auf externen Staging-Servern läuft."
+transferabilityBoundary: "Die Umsetzung nutzt Astros dateibasierte Routentrennung im BridGenta-Portfolio. Das Grundprinzip der Routentrennung gilt allgemein für Content-Systeme, ist jedoch frameworkspezifisch zu implementieren."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-009"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "src/pages/lernen/preview/[slug].astro"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "d45de9d7290495da65596465b1b45cfded8dacab"
