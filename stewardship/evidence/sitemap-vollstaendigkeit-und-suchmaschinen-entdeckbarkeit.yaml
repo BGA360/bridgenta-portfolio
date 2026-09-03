@@ -31,7 +31,18 @@ claims:
       publicSummaryAllowed: true
 
   - id: "CLM-003"
-    statement: "Das Hinzufügen eines automatisierten sitemap.xml-Prüfschritts im Pre-Merge-Gate blockiert diesen konkreten Fehlerfall automatisch und reduziert das Risiko unentdeckter Auslassungen."
+    statement: "Der automatisierte sitemap.xml-Prüfschritt im BridGenta Publish-Check erkennt eine fehlende Sitemap-Inklusion und beendet die Prüfung mit einem Fehlerstatus."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "tooling/publish_check_learning_article.js"
+    historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-004"
+    statement: "Die Einbindung des Prüfschritts in einen verbindlichen Release-Prozess reduziert das Risiko, dass unvollständige Veröffentlichungsstände online gehen."
     sourceType: "GIT_COMMIT"
     sourceLocator: "tooling/publish_check_learning_article.js"
     historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"

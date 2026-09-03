@@ -12,15 +12,15 @@ In der Praxis entsteht dabei jedoch häufig eine trügerische Sicherheit. Ein fe
 
 ## Die unbemerkte Entdeckbarkeitslücke
 
-Moderne statische Seitengeneratoren erstellen beim Kompilieren zwei unterschiedliche Arten von Ausgabedateien: die eigentlichen HTML-Seiten für menschliche Besucher sowie strukturierte Metadaten-Dateien für Web-Crawler. Die wichtigste Metadaten-Datei ist die XML-Sitemap (`sitemap.xml`).
+Bei einer statisch erzeugten Website können neben den eigentlichen HTML-Seiten für Besucher weitere Veröffentlichungsartefakte entstehen. Bei BridGenta gehört dazu eine strukturierte XML-Sitemap (`sitemap.xml`) für Web-Crawler.
 
-Während des Builds kann es vorkommen, dass eine neue Unterseite erfolgreich als HTML-Datei gerendert wird, ihr Eintrag in der `sitemap.xml` jedoch aufgrund von Filterregeln oder Konfigurationsfehlern fehlt.
+Während des Builds kann eine neue Unterseite erfolgreich als HTML-Datei gerendert werden; es kann jedoch vorkommen, dass eine Seite erzeugt wurde, aber im erwarteten Sitemap-Artefakt fehlt.
 
 Für menschliche Nutzer, die den direkten Link aufrufen oder der Navigation folgen, erscheint die Seite voll funktionsfähig. Für Suchmaschinen fehlt damit jedoch ein wichtiger technischer Hinweis auf die neue Seite. Die Seite kann zwar über direkte Verlinkung gefunden werden, verliert jedoch ein wesentliches Signal für die automatische Entdeckung.
 
 ## Wo ein erfolgreicher Build nicht ausreicht
 
-Herkömmliche Prüfskripte in Continuous-Integration-Pipelines beschränken sich oft darauf, den Beendigungscode (Exit-Code) des Build-Befehls abzufragen.
+Ein Prüfprozess kann zum Beispiel nur kontrollieren, ob der Build erfolgreich beendet wurde.
 
 ```text
 Build-Befehl ausführen -> Exit-Code 0 -> Freigabe zur Veröffentlichung
@@ -57,10 +57,10 @@ Nach dem Generieren der Website prüft ein automatisiertes Skript das Dateisyste
 2. **Ausschluss von Entwürfen:** Befindet sich die Datei außerhalb des Vorschau-Pfads?
 3. **Sitemap-Inklusion:** Enthält `dist/sitemap.xml` die exakte kanonische URL des Artikels?
 
-Sollte der Eintrag in der `sitemap.xml` fehlen, bricht das Prüfskript mit einer klaren Fehlermeldung (`DISCOVERY: FAIL`) und einem Exit-Code ungleich null ab. Das Veröffentlichen wird blockiert, bevor unvollständige Staging-Zustände online gehen.
+Sollte der Eintrag in der `sitemap.xml` fehlen, erkennt der automatisierte Publish-Check diesen konkreten Fehlerfall und beendet die Prüfung mit einem Fehlerstatus (`DISCOVERY: FAIL`). Damit dieser Fehlerstatus eine Veröffentlichung technisch blockiert, muss der Check zusätzlich in einen verbindlichen Merge- oder Release-Prozess eingebunden sein.
 
 ## Übertragbare Erkenntnis für Softwareprojekte
 
 Verifikations-Pipelines sollten niemals nur das Ergebnis von Erzeugungsschritten abfragen, sondern stets die tatsächlichen Endprodukte (Artefakte) untersuchen.
 
-Das Prinzip ist auf andere statisch erzeugte Websites übertragbar, wenn Seiten-Erzeugung und Discovery-/Sitemap-Artefakte getrennt geprüft werden können. Indem Entwickler automatisierte Abgleiche zwischen den generierten Seiten und den zugehörigen Index-Dateien etablieren, reduzieren sie das Risiko unentdeckter Auslassungen und blockieren unvollständige Release-Stände automatisch. So wird aus einem rein technischen Build-Erfolg ein verlässlich überprüfter Veröffentlichungs-Zustand.
+Das Prinzip ist auf andere statisch erzeugte Websites übertragbar, wenn Seiten-Erzeugung und Discovery-/Sitemap-Artefakte getrennt geprüft werden können. Die Einbindung automatisierter Artefakt-Checks in einen verbindlichen Release-Prozess reduziert das Risiko, dass unvollständige Veröffentlichungsstände online gehen. So wird aus einem rein technischen Build-Erfolg ein verlässlich überprüfter Veröffentlichungs-Zustand.
