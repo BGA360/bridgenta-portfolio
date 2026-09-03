@@ -73,6 +73,8 @@ Folgende Aspekte des Lernmodells sind als **INVARIANT** klassifiziert und zwinge
 7.  **Zentraler Erkenntnis-Takeaway:** Jeder Artikel muss am Ende eine komprimierte didaktische Kernbotschaft als Fazit enthalten.
 8.  **Responsive Readability:** Die Lesbarkeit und der Lese-Rhythmus müssen auf Desktop, Tablet und Mobilgeräten gleichermaßen komfortabel sein.
 9.  **Lernniveau-Funktion:** Die inhaltliche Tiefe eines Artikels muss strikt mit der im Frontmatter deklarierten Stufe (`learningLevel`) korrespondieren (`LEARNING_LEVEL_FUNCTION`).
+10. **Leser-Orientierungs-Gebot (READER_ORIENTATION_REQUIREMENT):** Der Leser muss in der Lage sein, sich die konkrete Situation (wo das Ereignis stattfand, in welchem Prozess oder Systembereich man sich befindet) bildlich vorzustellen, bevor er zur Abstraktion aufgefordert wird (`CONTEXT BEFORE CONCEPT`, `SCENE BEFORE LESSON`, `PROCESS BEFORE ABSTRACTION`).
+11. **Pädagogische Funktions-Vollständigkeit (PEDAGOGICAL_FUNCTION_COMPLETENESS):** Die pädagogischen Funktionen `F0–F8` müssen gedanklich ausnahmslos abgedeckt werden. Für `F5` gilt: Es muss nachgewiesen werden, was geändert, entschieden oder verifiziert wurde – oder was explizit offen blieb (`SOLUTION_REQUIRED: NO`, `RESPONSE_OR_STATE_REQUIRED: YES`).
 
 ---
 
@@ -85,6 +87,7 @@ Folgende Aspekte sind als **PREFERRED** klassifiziert (Standard-Empfehlung):
 3.  **Zentrale Leserfrage (CENTRAL_QUESTION_FUNCTION):** Eine explizite, leserorientierte Frage dient als natürlicher Übergang zum Hauptteil.
 4.  **Glossar-Struktur:** Das Anbieten einer Begriffserklärung am Ende des Artikels in einer strukturierten Definitionsliste zur Erhöhung der Lesbarkeit.
 5.  **Glossar-Präsenz (GLOSSARY_FUNCTION):** Das Platzieren eines expliziten Glossars am Ende des Artikels wird standardmäßig empfohlen, um Fachbegriffe zu rekapitulieren.
+6.  **Terminologie-Orientierung (TERMINOLOGY_ORIENTATION):** Die Erfüllung von `F9` (Begriffs-Orientierung) erfolgt zielgruppen- und niveauspezifisch (`GLOSSARY_ALWAYS_MANDATORY: NO`).
 
 ---
 
@@ -92,12 +95,13 @@ Folgende Aspekte sind als **PREFERRED** klassifiziert (Standard-Empfehlung):
 
 Folgende Aspekte sind als **VARIABLE** deklariert, um Starrheit zu vermeiden (*Stand: REFERENCE_NOT_COPYABLE_TEMPLATE: YES*):
 
-1.  **Überschriftenstruktur und -anzahl:** H2-Zwischenüberschriften dürfen sich in Anzahl und Benennung frei nach dem inhaltlichen Bedarf richten.
+1.  **Überschriftenstruktur und -anzahl:** H2-Zwischenüberschriften dürfen sich in Anzahl und Benennung frei nach dem inhaltlichen Bedarf richten (`HEADING_TEXT: VARIABLE`).
 2.  **Absatzanzahl und Textlänge:** Es gibt keine vorgegebene Mindest- oder Höchstzahl von Absätzen.
 3.  **Visuelle Repräsentationsform der Evidenzgrenze (EVIDENCE_BOUNDARY_UI_FORM):** Ob ein Callout-Block (`learning-evidence-boundary`), ein Code-Block oder Fließtext genutzt wird, ist variabel.
 4.  **Visuelle Form des Takeaways (TAKEAWAY_VISUAL_FORM):** Die konkrete Formatierung des abschließenden Takeaways (z. B. mit oder ohne H2-Überschrift, Einrückungstyp) darf variieren.
 5.  **Glossar-Wegfall:** In begründeten Fällen kann auf eine separate Glossar-Tabelle verzichtet werden, sofern alle Fachbegriffe direkt im Fließtext verständlich erklärt werden (wie in Ref 03 bewiesen).
 6.  **Position der zentralen Frage (CENTRAL_QUESTION_EXACT_POSITION):** Die genaue Platzierung der Leserfrage kann sich flexibel nach der Erklärungsstruktur richten.
+7.  **Visuelle Abschnitte der pädagogischen Funktionen (PEDAGOGICAL_FUNCTION_SECTIONS):** Wie die Funktionen `F0–F9` optisch auf Absätze und Überschriften aufgeteilt werden, ist frei wählbar (`STANDARDIZE_WHAT_READER_MUST_UNDERSTAND`, `DO_NOT_STANDARDIZE_EXACT_HEADINGS`).
 
 ---
 
@@ -110,6 +114,8 @@ Folgende Muster sind **PROHIBITED** bzw. wie angegeben eingeschränkt:
 3.  **Duplizierte Webseiten-Signaturen:** Das manuelle Hinzufügen der Signatur (*"Aus echten Projekten lernen..."*) im Markdown-Text ist verboten (dies erfolgt zentral im Layout).
 4.  **Permanente visuelle Abstraktionen während der Kalibrierungsphase (PERMANENT_REUSABLE_ABSTRACTION_DURING_CALIBRATION):** Die Deklaration von wiederverwendbaren UI-Komponenten als permanente System-Primitive ist während der Kalibrierungsphase verboten. Bounded einseitige visuelle Experimente (BOUNDED_ONE_OFF_VISUAL_EXPERIMENT) sind unter Auflagen (barrierefrei, datenschutzkonform, keine Beförderung zu permanenten Primitiven) erlaubt.
 5.  **Permanente artikelspezifische Stil-Primitive (PERMANENT_ARTICLE_SPECIFIC_STYLE_PRIMITIVE):** Artikelspezifische Design-Ausnahmen, die als dauerhafte Primitive dienen, sind verboten. Bounded experimentelle Präsentationen (BOUNDED_EXPERIMENTAL_PRESENTATION) sind unter den gleichen Bedingungen wie visuelle Experimente gestattet.
+6.  **Freie Rekonstruktion für Leser-Orientierung (FREE_RECONSTRUCTION_FOR_ORIENTATION):** Das Erfinden unbewiesener Chronologien, Entwicklerabsichten, Emotionen oder Ausführungszustände unter dem Vorwand der Szene-Orientierung ist streng verboten (`PEDAGOGICAL_CONTEXT != FREE_RECONSTRUCTION`).
+7.  **Erzwungene Überschriften-Schablonen (MANDATORY_EXACT_HEADING_TEMPLATES):** Das Vorgeben starrer, identischer Überschriften über Artikel hinweg zur Erreichung pädagogischer Funktionen ist untersagt (`PEDAGOGICAL_CONSISTENCY != VISIBLE_TEMPLATE_REPETITION`).
 
 ---
 
