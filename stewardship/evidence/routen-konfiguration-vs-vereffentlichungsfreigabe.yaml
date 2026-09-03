@@ -2,17 +2,17 @@
 # Location: stewardship/evidence/routen-konfiguration-vs-vereffentlichungsfreigabe.yaml
 
 articleId: "routen-konfiguration-vs-vereffentlichungsfreigabe"
-workingTitle: "Wenn die Route existiert, aber die Freigabe fehlt"
+workingTitle: "Wenn die Route im Code steht, aber die Freigabe noch offen ist"
 learningLevel: "intermediate"
 category: "softwarearchitektur"
-centralLesson: "Die technische Konfiguration von Anwendungsrouten im Quellcode ist ein technischer Fakt, aber keine inhaltliche oder rechtliche Veröffentlichungsfreigabe."
+centralLesson: "Die technische Konfiguration von Anwendungsrouten im Quellcode ist ein technischer Fakt, aber keine inhaltliche Veröffentlichungsfreigabe."
 
 claims:
   - id: "CLM-001"
     statement: "In src/pages/project-[slug].astro werden Projekt-Routen über ein statisches Slug-Array für die Seitengenerierung bereitgestellt."
     sourceType: "GIT_COMMIT"
     sourceLocator: "src/pages/project-[slug].astro"
-    historicalLocator: "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c"
+    historicalLocator: "baf21511c14c607c3e744b923cadc4d73a3a1da5"
     evidenceClass: "DIRECT_EVIDENCE"
     publicWordingBoundary:
       internalPathsSanitized: true
@@ -20,22 +20,22 @@ claims:
       publicSummaryAllowed: true
 
   - id: "CLM-002"
-    statement: "Wenn die Routen-Generierung ohne Abgleich mit einem Verzeichnis geprüfter Freigaben erfolgt, können technisch erreichbare Seiten ohne formelle Veröffentlichungsfreigabe online gehen."
+    statement: "Eine technische Routen-Konfiguration allein belegt nicht, dass die zugehörigen Veröffentlichungs-, Lifecycle- und Clearance-Anforderungen erfüllt sind."
     sourceType: "GIT_COMMIT"
     sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
-    historicalLocator: "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c"
-    evidenceClass: "INFERENCE"
+    historicalLocator: "c51ac0a054748188a87b7c9d8a10f644ee9e007b"
+    evidenceClass: "DIRECT_EVIDENCE"
     publicWordingBoundary:
       internalPathsSanitized: true
       secretsExcluded: true
       publicSummaryAllowed: true
 
   - id: "CLM-003"
-    statement: "Der Abgleich zwischen technischer Routen-Existenz und formeller Veröffentlichungsfreigabe verhindert, dass unvollständig freigegebene Projektseiten öffentlich indexiert werden."
+    statement: "GOV-FIND-001 hält ausdrücklich fest, dass aus einem beobachteten Quellcode-Fakt allein keine Veröffentlichungsentscheidung oder Route-Removal-Autorisierung folgt."
     sourceType: "GIT_COMMIT"
     sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
-    historicalLocator: "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c"
-    evidenceClass: "INFERENCE"
+    historicalLocator: "c51ac0a054748188a87b7c9d8a10f644ee9e007b"
+    evidenceClass: "DIRECT_EVIDENCE"
     publicWordingBoundary:
       internalPathsSanitized: true
       secretsExcluded: true
@@ -43,12 +43,12 @@ claims:
 
 unsupportedOrOpenClaims: []
 
-transferabilityBoundary: "Das Prinzip ist auf alle Webanwendungen übertragbar, bei denen Routen-Generierung und fachliche Veröffentlichungsrechte getrennt verwaltet werden."
+transferabilityBoundary: "Das Prinzip ist auf andere Webanwendungen übertragbar, wenn technische Routen-Konfiguration und fachliche Veröffentlichungsfreigabe getrennte Entscheidungen sind."
 
 proposedProvenanceEvent:
   eventId: "EV-BG-008"
   sourceProject: "bridgenta-core"
   sourceSystem: "git"
-  sourceLocator: "src/pages/project-[slug].astro"
+  sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
   historicalLocatorState: "AVAILABLE"
-  historicalLocator: "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c"
+  historicalLocator: "c51ac0a054748188a87b7c9d8a10f644ee9e007b"
