@@ -232,11 +232,19 @@ export function publishCheckLearningArticle(slugInput, options = {}) {
         results.articleInSitemap = 'YES';
       } else {
         results.articleInSitemap = 'NO';
+        results.discovery = 'FAIL';
+        errors.push(`[P1] Published article "/lernen/${slug}/" missing from generated sitemap (dist/sitemap.xml).`);
       }
+    } else {
+      results.articleInSitemap = 'NO';
+      results.discovery = 'FAIL';
+      errors.push('[P1] Generated sitemap missing (dist/sitemap.xml).');
     }
 
-    if (results.articleInLearningIndex === 'YES' && results.articleInCategoryOutput === 'YES') {
+    if (results.articleInLearningIndex === 'YES' && results.articleInCategoryOutput === 'YES' && results.articleInSitemap === 'YES') {
       results.discovery = 'PASS';
+    } else {
+      results.discovery = 'FAIL';
     }
   }
 
