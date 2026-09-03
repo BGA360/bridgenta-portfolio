@@ -169,7 +169,7 @@ Jeder Lernartikel muss vor der Veröffentlichungsfreigabe zwei separate manuelle
 *   **TRANSFERABILITY_BOUNDARY:** Eine übertragbare Lektion darf nicht breiter oder sicherer formuliert werden, als es die Evidenz stützt. Es gilt der Grundsatz: `TRANSFERABLE != UNIVERSAL` und `REUSABLE != ABSOLUTE`. Ein projektspezifischer Befund oder eine Governance-Regel darf nicht als allgemeingültiges technisches Gesetz dargestellt werden.
 
 ### 9.5 Pädagogisches Funktions-Modell (Pedagogical Function Model)
-Um didaktische Vollständigkeit zu gewährleisten, ohne Artikel in starre Textschablonen zu zwingen, definiert der Standard zehn **Pädagogische Funktionen (F0–F9)**:
+Um didaktische Vollständigkeit zu gewährleisten, ohne Artikel in starre Textschablonen zu zwingen, definiert der Standard zehn **Pädagogische Funktionen (F0–F9)** (wobei `F0–F8` als inhaltliche Pflichtfunktionen [`MUST / INVARIANT`] und `F9` als lernniveauspezifische Begriffs-Orientierung [`LEVEL_AWARE`] klassifiziert sind):
 
 1. **F0 — SCOPE:** Welcher Teil des Systems, des Codes oder des Governance-Prozesses wird betrachtet?
 2. **F1 — CONTEXT:** Wo im realen Entwicklungs- oder Veröffentlichungsprozess befinden wir uns?
@@ -180,7 +180,7 @@ Um didaktische Vollständigkeit zu gewährleisten, ohne Artikel in starre Textsc
 7. **F6 — EVIDENCE:** Was stützt die Schlussfolgerung und was beweist diese Evidenz ausdrücklich nicht?
 8. **F7 — COMPRESSION:** Was ist die einprägsame zentrale Regel oder Unterscheidung?
 9. **F8 — APPLICATION:** Wie kann der Leser diese Erkenntnis in anderen Projekten erkennen, wiederverwenden oder anwenden?
-10. **F9 — TERMINOLOGY:** Welche Fachbegriffe benötigen für dieses Lernniveau eine verständliche Orientierung?
+10. **F9 — TERMINOLOGY:** Welche Fachbegriffe benötigen für dieses Lernniveau eine verständliche Orientierung? *(Klassifikation: `LEVEL_AWARE`. Ein explizites Glossar ist optional [`DEDICATED_GLOSSARY: OPTIONAL`]. Erstverwendungs-Verständlichkeit `UNDERSTAND_FIRST → TERM_SECOND` bleibt unberührt).*
 
 * **Gegenstands-Verhältnis:** `PEDAGOGICAL_FUNCTION: GOVERNED` vs. `HEADING_TEXT: VARIABLE`.
 * **Standardisierungs-Grundsatz:** Standardisiere, was der Leser verstehen muss (`STANDARDIZE_WHAT_READER_MUST_UNDERSTAND`), nicht die exakten Überschriften, mit denen dies erreicht wird (`DO_NOT_STANDARDIZE_EXACT_HEADINGS`). Didaktische Konsistenz ist keine visuelle Schablonen-Wiederholung (`PEDAGOGICAL_CONSISTENCY != VISIBLE_TEMPLATE_REPETITION`).
@@ -272,8 +272,9 @@ Jede Anforderung wird nachfolgend klassifiziert:
 | **LR-14** | `REUSE_GATE` bestanden | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
 | **LR-15** | `TRANSFERABILITY_BOUNDARY_GATE` bestanden | **MUST** | SEMANTIC | Nein | Nein | Ja (Fidelity) | Lead Architect |
 | **LR-16** | `READER_ORIENTATION_REQUIREMENT` erfüllt | **MUST** | SEMANTIC | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
-| **LR-17** | `PEDAGOGICAL_FUNCTION_COMPLETENESS` (F0-F9) gegeben | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
+| **LR-17** | `PEDAGOGICAL_FUNCTION_COMPLETENESS` (F0-F8) gegeben | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
 | **LR-18** | `ARTICLE_FUNCTION_MAP` für Entwurf genutzt | **SHOULD** | EDITORIAL | Nein | Nein | Ja (Editorial) | Lead Editor |
+| **LR-19** | `TERMINOLOGY_ORIENTATION` (F9) niveau-entsprechend | **SHOULD** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
 
 ---
 
