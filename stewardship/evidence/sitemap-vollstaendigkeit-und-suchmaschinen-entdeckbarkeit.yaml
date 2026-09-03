@@ -2,10 +2,10 @@
 # Location: stewardship/evidence/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit.yaml
 
 articleId: "sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit"
-workingTitle: "Sitemap-Vollständigkeit und Entdeckbarkeit: Wenn der Build grün ist, aber die Route fehlt"
+workingTitle: "Wenn der Build grün ist, aber die Seite in der Sitemap fehlt"
 learningLevel: "intermediate"
 category: "softwarearchitektur"
-centralLesson: "Erfolgreiche HTML-Generierung garantiert noch keine Auffindbarkeit durch Suchmaschinen – Verifikations-Pipelines müssen finale Dist-Artefakte wie sitemap.xml direkt prüfen."
+centralLesson: "Erfolgreiche HTML-Generierung garantiert noch nicht, dass alle erwarteten Veröffentlichungsartefakte vollständig sind. Verifikations-Pipelines sollten deshalb finale Build-Artefakte wie die sitemap.xml direkt prüfen."
 
 claims:
   - id: "CLM-001"

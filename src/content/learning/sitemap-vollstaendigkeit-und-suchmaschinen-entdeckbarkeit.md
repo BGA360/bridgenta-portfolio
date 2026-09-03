@@ -1,14 +1,12 @@
 ---
-title: "Sitemap-Vollständigkeit und Entdeckbarkeit: Wenn der Build grün ist, aber die Route fehlt"
-description: "Warum ein erfolgreicher Website-Build keine Garantie für Suchmaschinen-Sichtbarkeit ist und wie automatisierte Build-Artefakt-Prüfungen Entdeckbarkeitslücken verhindern."
+title: "Wenn der Build grün ist, aber die Seite in der Sitemap fehlt"
+description: "Warum ein erfolgreicher Website-Build noch nicht beweist, dass alle Veröffentlichungsartefakte vollständig sind – und wie automatisierte Build-Artefakt-Prüfungen fehlende Sitemap-Einträge erkennen können."
 category: "softwarearchitektur"
 learningLevel: "intermediate"
 publicationState: "draft"
 ---
 
-Beim Veröffentlichen von Webseiten verlassen sich Entwicklungsteams meist auf automatisierte Build-Pipelines. Wenn das Build-Werkzeug ohne Fehler durchläuft und alle HTML-Seiten ordnungsgemäß erzeugt werden, gilt der Deployment-Prozess als erfolgreich.
-
-In der Praxis entsteht dabei jedoch häufig eine trügerische Sicherheit. Ein fehlerfreier Seitenerzeugungs-Schritt garantiert noch nicht, dass neue Inhalte auch von Suchmaschinen wie Google gefunden und indiziert werden.
+Ein Build läuft ohne Fehler durch. Die HTML-Seite wurde erzeugt. Alles sieht richtig aus. Aber damit ist noch nicht bewiesen, dass alle erwarteten Veröffentlichungsartefakte vollständig sind.
 
 ## Die unbemerkte Entdeckbarkeitslücke
 
