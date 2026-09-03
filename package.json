@@ -13,7 +13,9 @@
     "test:runtime": "npm --prefix becc-runtime test",
     "m5:shadow": "node tooling/prag_provenance_ci_shadow.js",
     "m5:retain": "node tooling/prag_provenance_m5_retain.js",
-    "m5:assess": "node tooling/prag_provenance_m5_readiness.js"
+    "m5:assess": "node tooling/prag_provenance_m5_readiness.js",
+    "learning:validate": "node tooling/validate_learning_article.js",
+    "learning:publish-check": "node tooling/publish_check_learning_article.js"
   },
   "dependencies": {
     "astro": "^4.11.3"
