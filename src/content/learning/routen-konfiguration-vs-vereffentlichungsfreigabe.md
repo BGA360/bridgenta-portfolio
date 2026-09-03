@@ -12,7 +12,7 @@ In der Softwareentwicklung entsteht an dieser Stelle leicht ein Missverständnis
 
 ## Die Lücke zwischen Quellcode und Freigabe
 
-Beim Erstellen dynamischer oder statischer Unterseiten definieren Entwickler oft Routen-Listen im Quellcode. In der Seitengenerierung von BridGenta gab es dafür beispielsweise ein zentrales Array von Projekt-Kennungen (`activeProjectSlugs`), das alle zu erzeugenden Zielseiten auflistete.
+Bei Webanwendungen können Routen oder Projektkennungen im Quellcode definiert werden. In der Seitengenerierung von BridGenta gab es dafür beispielsweise ein zentrales Array von Projekt-Kennungen (`activeProjectSlugs`), das alle zu erzeugenden Zielseiten auflistete.
 
 Solange dieses Array lediglich steuert, welche HTML-Dateien der Compiler bauen soll, handelt es sich um eine reine technische Konfiguration.
 
@@ -31,17 +31,17 @@ Route im Code ≠ Freigabe nachgewiesen ≠ Veröffentlichung autorisiert
 
 Wenn technische Routen-Konfiguration und Freigabe-Nachweise nicht getrennt geprüft werden, kann aus einem Quellcode-Fakt fälschlich eine Veröffentlichungsentscheidung abgeleitet werden. Das Governance-Finding GOV-FIND-001 hält ausdrücklich fest: Ein beobachteter Quellcode-Fakt ist weder eine Governance-Entscheidung noch eine Veröffentlichungsentscheidung.
 
-## Wie die Architektur beide Ebenen trennt
+## Warum beide Ebenen getrennt werden müssen
 
-Um diese Verwechslung zu verhindern, trennt die Verifikations-Pipeline die technische Routen-Erzeugung von der Freigabe-Prüfung:
+Um diese Verwechslung zu verhindern, müssen technische Routen-Erzeugung und Freigabe-Entscheidungen getrennt betrachtet werden:
 
-1. **Routen-Erzeugung:** Der Generator baut die HTML-Seite anhand der technischen Pfadangaben.
-2. **Freigabe-Inspektion:** Eine separate Governance-Entscheidung prüft, ob die erforderlichen Veröffentlichungs- und Freigabekriterien erfüllt sind.
+1. **Technische Routen-Konfiguration:** Zeigt, welche Pfade beim Build technisch berücksichtigt werden können.
+2. **Separate Governance-Entscheidung:** Beantwortet separat, ob die Veröffentlichung tatsächlich autorisiert ist.
 
-Die technische Routen-Liste musste deshalb von einer separaten Governance-Entscheidung unterscheidbar gemacht werden.
+Die technische Routen-Liste unterscheidet sich von einer fachlichen Veröffentlichungsentscheidung. Ein beobachteter Quellcode-Fakt allein stellt keine Governance-Entscheidung und keine Veröffentlichungsautorisierung dar.
 
 ## Übertragbare Erkenntnis für Softwareprojekte
 
 Entwicklerteams sollten technische Pfad-Konfigurationen niemals als Nachweis einer Veröffentlichungsentscheidung interpretieren.
 
-Das Prinzip ist auf andere Webanwendungen übertragbar, wenn technische Routen-Konfiguration und fachliche Veröffentlichungsfreigabe getrennte Entscheidungen sind. Indem Architektur-Pipelines Quellcode-Fakten strikt von fachlichen Freigaben unterscheiden, verhindern sie falsche Ableitungen zwischen technischer Erreichbarkeit und organisatorischer Autorisierung.
+Das Prinzip ist auf andere Webanwendungen übertragbar, wenn technische Routen-Konfiguration und fachliche Veröffentlichungsfreigabe getrennte Entscheidungen sind. Indem der Veröffentlichungsprozess Quellcode-Fakten strikt von fachlichen Freigaben unterscheidet, verhindert er falsche Ableitungen zwischen technischer Erreichbarkeit und organisatorischer Autorisierung.
