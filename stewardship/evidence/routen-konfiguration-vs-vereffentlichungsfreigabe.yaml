@@ -1,0 +1,54 @@
+# BECC Routine Article Evidence Packet v1.0
+# Location: stewardship/evidence/routen-konfiguration-vs-vereffentlichungsfreigabe.yaml
+
+articleId: "routen-konfiguration-vs-vereffentlichungsfreigabe"
+workingTitle: "Wenn die Route existiert, aber die Freigabe fehlt"
+learningLevel: "intermediate"
+category: "softwarearchitektur"
+centralLesson: "Die technische Konfiguration von Anwendungsrouten im Quellcode ist ein technischer Fakt, aber keine inhaltliche oder rechtliche Veröffentlichungsfreigabe."
+
+claims:
+  - id: "CLM-001"
+    statement: "In src/pages/project-[slug].astro werden Projekt-Routen über ein statisches Slug-Array für die Seitengenerierung bereitgestellt."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "src/pages/project-[slug].astro"
+    historicalLocator: "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-002"
+    statement: "Wenn die Routen-Generierung ohne Abgleich mit einem Verzeichnis geprüfter Freigaben erfolgt, können technisch erreichbare Seiten ohne formelle Veröffentlichungsfreigabe online gehen."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
+    historicalLocator: "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-003"
+    statement: "Der Abgleich zwischen technischer Routen-Existenz und formeller Veröffentlichungsfreigabe verhindert, dass unvollständig freigegebene Projektseiten öffentlich indexiert werden."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
+    historicalLocator: "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+unsupportedOrOpenClaims: []
+
+transferabilityBoundary: "Das Prinzip ist auf alle Webanwendungen übertragbar, bei denen Routen-Generierung und fachliche Veröffentlichungsrechte getrennt verwaltet werden."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-008"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "src/pages/project-[slug].astro"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c"
