@@ -28,9 +28,9 @@ VERIFY ONLY ARTICLE-SPECIFIC DELTAS
 
 ---
 
-## 2. Betriebs-Modi (Operating Modes)
+## 2. Betriebs-Modi (Operating Modes) & Pfad-Detektion
 
-Das System unterscheidet deterministisch zwei Modi:
+Das System unterscheidet deterministisch zwei Modi anhand der geänderten Repository-Pfade:
 
 ```text
        ┌───────────────────────────────┐
@@ -65,6 +65,8 @@ Wird ausgelöst, wenn sich das Learning-System selbst ändert:
 *   Änderung globaler Styles (`src/styles/styles.css`) oder Core-Layouts (`Layout.astro`)
 *   Änderungen an Prüfskripten (`tooling/`), `becc-runtime` oder GitHub CI Workflows (`.github/workflows/`)
 
+**Modus-Ergebnis:** Bei Systempfad-Berührung meldet der Prüfer `MODE: CALIBRATION`, `SYSTEM_INVARIANT_CHANGE: YES`, `ESCALATION_REQUIRED: YES`. Wenn kein Geänderte-Dateien-Kontext vorliegt, meldet die Artikel-Validierung wahrheitsgemäß `SYSTEM_INVARIANT_CHANGE: NOT_EVALUATED`.
+
 **Kern-Invariant:**
 ```text
 ROUTINE_ARTICLE_CHANGE != SYSTEM_CHANGE
@@ -98,11 +100,11 @@ Diese mechanischen und didaktischen Prüfungen gelten für jeden einzelnen Artik
 | `LRP-CHK-002` | Evidence classification & boundary declaration | NEIN | JA |
 | `LRP-CHK-003` | Public wording boundary compliance | JA | JA |
 | `LRP-CHK-004` | Frontmatter schema & date ordering validity | JA | NEIN |
-| `LRP-CHK-005` | `provenanceRef` format and resolution in `provenance_registry.json` | JA | NEIN |
+| `LRP-CHK-005` | `provenanceRef` format, resolution & commit verification | JA | NEIN |
 | `LRP-CHK-006` | Provenance event uniqueness (no `eventId` collision) | JA | NEIN |
 | `LRP-CHK-007` | `publishedAt` date validity & presence when state is `published` | JA | NEIN |
 | `LRP-CHK-008` | Article route slug validity (flat directory, no reserved words) | JA | NEIN |
-| `LRP-CHK-009` | Category / index inclusion check | JA | NEIN |
+| `LRP-CHK-009` | Category / index inclusion check via `dist/` build artifacts | JA | NEIN |
 | `LRP-CHK-010` | Content-specific layout overflow or malformed markdown | JA | JA |
 | `LRP-CHK-011` | Malformed article callout or unclosed markdown tags | JA | NEIN |
 | `LRP-CHK-012` | Body separator / section hierarchy compliance | JA | NEIN |
@@ -127,45 +129,9 @@ Gemäß **LRP-P2-CONSTRAINT-01** wird strikt zwischen Quell-Typ (`sourceType`) u
     *   `OPEN` (Offener Punkt / unbestätigt)
     *   `UNSUPPORTED` (Nicht durch Evidenz gedeckte Aussage)
 
-### 4.2 Template-Struktur
-Das Referenz-Template ist in `stewardship/evidence/BECC-LEARNING-ARTICLE-EVIDENCE-PACKET-v1.0.yaml` hinterlegt.
-
-```yaml
-# BECC Routine Article Evidence Packet v1.0
-articleId: "article-slug-name"
-workingTitle: "Titel des Lernartikels"
-learningLevel: "beginner" # public | beginner | intermediate | advanced
-category: "architecture" # matches learningCategories id
-centralLesson: "Eine kurze didaktische Kernlektion."
-
-claims:
-  - id: "CLM-001"
-    statement: "Verifizierbare Aussage aus dem Quellprojekt"
-    sourceType: "GIT_COMMIT"
-    sourceLocator: "bridgenta-workspace/validation/automation_controller.js"
-    historicalLocator: "07aac848a4a48282c8b83169179308bdb17db0c6"
-    evidenceClass: "DIRECT_EVIDENCE"
-    publicWordingBoundary:
-      internalPathsSanitized: true
-      secretsExcluded: true
-      publicSummaryAllowed: true
-
-unsupportedOrOpenClaims: []
-
-transferabilityBoundary: "Gilt für statische Generatoren, nicht für SPAs."
-
-proposedProvenanceEvent:
-  eventId: "EV-BG-007"
-  sourceProject: "bridgenta-core"
-  sourceSystem: "git"
-  sourceLocator: "bridgenta-workspace/validation/automation_controller.js"
-  historicalLocatorState: "AVAILABLE"
-  historicalLocator: "07aac848a4a48282c8b83169179308bdb17db0c6"
-```
-
 ---
 
-## 5. Single Owner Approval Gate & Merging Contract
+## 5. Single Owner Approval Gate, Exact HEAD & Build Artifact Contract
 
 Gemäß **LRP-P2-CONSTRAINT-03** erfordert die Routine-Veröffentlichung **exakt ein** Owner-Freigabe-Gate:
 
@@ -177,22 +143,18 @@ Dieser Entschluss umfasst gleichzeitig:
 1. Inhalts- & Didaktik-Freigabe
 2. Autorisierung der Veröffentlichungs-Metadaten (`publicationState: published`, `publishedAt: YYYY-MM-DD`)
 3. Registrierungs-Autorisierung für das Provenienz-Ereignis in `provenance_registry.json`
-4. Exact-Head-Merge-Autorisierung (vorausgesetzt CI ist grün und kein Head-Drift liegt vor)
+4. Exact-Head-Merge-Autorisierung (vorausgesetzt CI ist grün, keine Mismatch des autorisierten HEAD SHAs vorliegt und die generierten `dist/`-Build-Artefakte verifiziert sind)
 
-**Formale Merge-Bedingung:**
-```text
-OWNER_APPROVAL
-+
-CI_PASS
-+
-NO_HEAD_DRIFT
-+
-NO_P0_P1
-=
-MERGE_AUTHORIZED
-```
+### 5.1 Entkoppelte Arbeitsbaum- & Drift-Prüfung
+Die Veröffentlichungs-Prüfung unterscheidet exakt zwischen zwei Kontrollen:
+*   **`WORKTREE_CLEAN`:** Spiegelt den lokalen Git-Status wider (`YES` wenn clean, `NO` wenn uncommitted Änderungen vorliegen).
+*   **`HEAD_DRIFT`:** Überprüft, ob der aktuelle Git SHA (`CURRENT_HEAD_SHA`) exakt mit dem vom Owner freigegebenen SHA (`AUTHORIZED_HEAD_SHA`) übereinstimmt (`HEAD_DRIFT: NO`). Bei Mismatch schlägt die Prüfung mit `HEAD_DRIFT: YES` fehl. Wenn kein autorsierter HEAD übergeben wird (`--authorized-head`), wird `HEAD_DRIFT: NOT_EVALUATED` gemeldet.
 
-Sollte es zwischen Freigabe und Merge zu einem unerwarteten Git HEAD-Drift kommen (`HEAD_DRIFT = YES`), **STOPPT** der Prozess automatisch und verlangt erneute Owner-Review.
+### 5.2 Echte Artefakt-Verifizierung (`dist/`)
+Die Veröffentlichungs-Prüfung prüft nach dem Build direkt das Dateisystem im Ausgabe-Verzeichnis `dist/`:
+*   `PUBLIC_ROUTE`: Verifiziert die Existenz von `dist/lernen/<slug>/index.html`.
+*   `PREVIEW_EXCLUSION`: Verifiziert das **Fehlen** von Vorschau-Artefakten `dist/lernen/preview/<slug>/index.html`.
+*   `DISCOVERY`: Verifiziert die Verlinkung von `/lernen/<slug>/` in `dist/lernen/index.html` und `dist/lernen/themen/<category>/index.html`.
 
 ---
 
@@ -203,16 +165,14 @@ Mechanische Vorab-Validierung von Entwürfen vor der Owner-Review.
 ```bash
 npm run learning:validate -- <article-slug>
 ```
-*   **Verantwortung:** Frontmatter-Schema, Dateisystem-Slugs, Date-Verpflichtungen, Provenienz-Syntax, Link-Syntax, Body-Regeln (keine doppelten Signaturen, keine unerlaubten HRs).
-*   **Skript:** `tooling/validate_learning_article.js`
+*   **Verantwortung:** Frontmatter-Schema, Dateisystem-Slugs, Date-Verpflichtungen, Provenienz-Syntax, echte Link-Validierung (`LINKS: PASS` / `FAIL`), Body-Regeln (keine doppelten Signaturen, keine unerlaubten HRs).
 
 ### 6.2 `learning:publish-check`
-Finale Veröffentlichungs-Prüfung vor dem Merge auf den Main-Branch.
+Finale Veröffentlichungs-Prüfung vor dem Merge auf den Main-Branch mit exact-head Autorisierung.
 ```bash
-npm run learning:publish-check -- <article-slug>
+npm run learning:publish-check -- <article-slug> --authorized-head <sha>
 ```
-*   **Verantwortung:** `publicationState === published`, `publishedAt` vorhanden, `provenanceRef` in `provenance_registry.json` aufgelöst, öffentliche Routen-Generierung verifiziert, Preview-Exklusion verifiziert, `npm run build` und `npm run m5:shadow` bestanden.
-*   **Skript:** `tooling/publish_check_learning_article.js`
+*   **Verantwortung:** `publicationState === published`, `publishedAt` vorhanden, Provenienz-Eintrag verifiziert (inkl. lokaler Commit-Prüfung), Arbeitsbaum-Sauberkeit (`WORKTREE_CLEAN`), exact-head Entsprechung (`HEAD_DRIFT: NO`), echte Build-Artefakt-Prüfung in `dist/`, M5-Shadow-Prüfung.
 
 ---
 
@@ -224,18 +184,12 @@ npm run learning:publish-check -- <article-slug>
 |---|---:|---:|---:|
 | Artikel-Behauptung unklar / schwach belegt | NEIN | JA (Evidenz-Paket klären) | NEIN |
 | Fehlerhafte Frontmatter-Syntax | NEIN | JA (Frontmatter korrigieren) | NEIN |
-| Fehlender Provenienz-Locator | NEIN | JA (Git-Commit nachschlagen) | NEIN |
+| Fehlender / ungültiger Provenienz-Locator | NEIN | JA (Git-Commit nachschlagen) | NEIN |
 | Renderer-Defekt (`LearningArticleRenderer.astro`) | NEIN | NEIN | JA (System-Änderung) |
 | Zod-Schema-Mischung (`config.ts`) | NEIN | NEIN | JA (System-Änderung) |
 | CI-Skript-Fehler im Workflow | NEIN | JA (Konfigurationsfix) | JA (Workflow-Redesign) |
 | Fließtext-Layout-Überlauf im Artikel | NEIN | JA (Text formulieren) | NEIN |
 | Globale CSS-Regression (`styles.css`) | NEIN | NEIN | JA (System-Änderung) |
-
-### 7.2 Artikel-Defekt vs. System-Defekt
-```text
-ARTICLE_DEFECT → TARGETED_REMEDIATION
-SYSTEM_DEFECT  → CALIBRATION
-```
 
 ---
 
@@ -302,7 +256,7 @@ OWNER_APPROVAL: PUBLISH
 Instructions:
 1. Update frontmatter in src/content/learning/<article-slug>.md: set publicationState to 'published', set publishedAt date to current ISO date, verify provenanceRef.
 2. Append the proposed provenance event from stewardship/evidence/<article-slug>.yaml to src/data/provenance_registry.json if not already present.
-3. Execute publication validation (npm run learning:publish-check -- <article-slug>).
+3. Execute publication validation (npm run learning:publish-check -- <article-slug> --authorized-head <current-head-sha>).
 4. Create feature branch, commit changes, push, and open PR using GitHub CLI (gh pr create).
 5. Monitor GitHub Actions CI.
 6. Merge only the exact verified head to main after CI passes and Owner gives final merge command.

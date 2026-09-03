@@ -1,10 +1,64 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
+
+// System Calibration Trigger Paths
+export const CALIBRATION_TRIGGER_PREFIXES = [
+  'docs/becc/standards/',
+  'docs/becc/learning/BECC-LEARNING-CANONICAL-MODEL-BASELINE-v1.0.md',
+  'src/content/config.ts',
+  'src/components/',
+  'src/pages/lernen/',
+  'src/layouts/',
+  'src/styles/',
+  'tooling/',
+  'becc-runtime/',
+  '.github/workflows/'
+];
+
+export function detectExecutionMode(changedFiles) {
+  if (!changedFiles || !Array.isArray(changedFiles) || changedFiles.length === 0) {
+    return {
+      mode: 'ROUTINE',
+      systemInvariantChange: 'NOT_EVALUATED',
+      escalationRequired: 'NO',
+      triggerPaths: []
+    };
+  }
+
+  const normalized = changedFiles.map((f) => f.replace(/\\/g, '/'));
+  const triggerPaths = [];
+
+  for (const file of normalized) {
+    for (const prefix of CALIBRATION_TRIGGER_PREFIXES) {
+      if (file.startsWith(prefix) || file === prefix) {
+        triggerPaths.push(file);
+        break;
+      }
+    }
+  }
+
+  if (triggerPaths.length > 0) {
+    return {
+      mode: 'CALIBRATION',
+      systemInvariantChange: 'YES',
+      escalationRequired: 'YES',
+      triggerPaths
+    };
+  }
+
+  return {
+    mode: 'ROUTINE',
+    systemInvariantChange: 'NO',
+    escalationRequired: 'NO',
+    triggerPaths: []
+  };
+}
 
 function parseFrontmatter(fileContent) {
   const match = fileContent.match(/^---\r?\n([\s\S]+?)\r?\n---/);
@@ -21,7 +75,6 @@ function parseFrontmatter(fileContent) {
       const key = trimmed.slice(0, colonIndex).trim();
       let val = trimmed.slice(colonIndex + 1).trim();
       
-      // Clean string quotes
       if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
         val = val.slice(1, -1);
       }
@@ -31,7 +84,66 @@ function parseFrontmatter(fileContent) {
   return { data, body, rawFrontmatter: yamlStr };
 }
 
-export function validateSingleArticle(slugInput) {
+function validateArticleLinks(body, filePath, errors) {
+  // Extract Markdown links [text](url)
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let match;
+  let checkCount = 0;
+  let failCount = 0;
+
+  while ((match = linkRegex.exec(body)) !== null) {
+    const linkText = match[1];
+    const linkUrl = match[2].trim();
+
+    // Ignore external URLs and anchors
+    if (linkUrl.startsWith('http://') || linkUrl.startsWith('https://') || linkUrl.startsWith('mailto:') || linkUrl.startsWith('#')) {
+      continue;
+    }
+
+    checkCount++;
+
+    // Internal relative file check
+    if (linkUrl.startsWith('./') || linkUrl.startsWith('../')) {
+      const dir = path.dirname(filePath);
+      const targetPath = path.resolve(dir, linkUrl);
+      if (!fs.existsSync(targetPath)) {
+        errors.push(`[P1] Broken relative markdown link: "[${linkText}](${linkUrl})" -> target "${targetPath}" does not exist.`);
+        failCount++;
+      }
+    } else if (linkUrl.startsWith('/')) {
+      // Internal site route link
+      const publicPath = path.join(rootDir, 'public', linkUrl);
+      const srcPagesPath = path.join(rootDir, 'src', 'pages', linkUrl.replace(/\/$/, '') + '.astro');
+      const srcPagesIndexPath = path.join(rootDir, 'src', 'pages', linkUrl, 'index.astro');
+
+      const exists = fs.existsSync(publicPath) || fs.existsSync(srcPagesPath) || fs.existsSync(srcPagesIndexPath) || linkUrl.startsWith('/lernen/');
+      if (!exists) {
+        errors.push(`[P1] Broken internal site link: "[${linkText}](${linkUrl})" -> route/file target not found.`);
+        failCount++;
+      }
+    }
+  }
+
+  if (failCount > 0) return 'FAIL';
+  if (checkCount === 0) return 'PASS';
+  return 'PASS';
+}
+
+export function getChangedFilesFromGit() {
+  try {
+    const diffOutput = execSync('git diff --name-only origin/main...HEAD', { cwd: rootDir, stdio: 'pipe' }).toString();
+    const statusOutput = execSync('git status --porcelain', { cwd: rootDir, stdio: 'pipe' }).toString();
+
+    const diffFiles = diffOutput.split('\n').map((l) => l.trim()).filter(Boolean);
+    const statusFiles = statusOutput.split('\n').map((l) => l.slice(3).trim()).filter(Boolean);
+
+    return Array.from(new Set([...diffFiles, ...statusFiles]));
+  } catch (_) {
+    return [];
+  }
+}
+
+export function validateSingleArticle(slugInput, options = {}) {
   const slug = slugInput.replace(/\.md$/, '').trim();
   const filePath = path.join(rootDir, 'src', 'content', 'learning', `${slug}.md`);
 
@@ -46,8 +158,13 @@ export function validateSingleArticle(slugInput) {
   };
 
   const errors = [];
-  let escalationRequired = false;
-  let systemInvariantChange = false;
+
+  // Mode detection
+  const changedFiles = options.changedFiles || getChangedFilesFromGit();
+  const modeEval = detectExecutionMode(changedFiles);
+
+  let systemInvariantChange = modeEval.systemInvariantChange;
+  let escalationRequired = modeEval.escalationRequired;
 
   // 1. File existence check
   if (!fs.existsSync(filePath)) {
@@ -186,6 +303,9 @@ export function validateSingleArticle(slugInput) {
       errors.push('[P1] Malformed [!IMPORTANT] callout found outside blockquote markup.');
       checks.bodyRules = 'FAIL';
     }
+
+    // Link validation
+    checks.links = validateArticleLinks(body, filePath, errors);
   }
 
   const p0Count = errors.filter((e) => e.startsWith('[P0]')).length;
@@ -196,6 +316,7 @@ export function validateSingleArticle(slugInput) {
 
   return {
     slug,
+    mode: modeEval.mode,
     checks,
     errors,
     p0Count,
@@ -250,7 +371,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const res = validateSingleArticle(target);
     console.log('BECC_LEARNING_VALIDATE\n');
     console.log(`ARTICLE:\n${res.slug}\n`);
-    console.log(`MODE:\nROUTINE\n`);
+    console.log(`MODE:\n${res.mode}\n`);
     console.log(`FRONTMATTER:\n${res.checks.frontmatter}\n`);
     console.log(`CATEGORY:\n${res.checks.category}\n`);
     console.log(`LEARNING_LEVEL:\n${res.checks.learningLevel}\n`);
@@ -258,8 +379,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.log(`PROVENANCE:\n${res.checks.provenance}\n`);
     console.log(`BODY_RULES:\n${res.checks.bodyRules}\n`);
     console.log(`LINKS:\n${res.checks.links}\n`);
-    console.log(`SYSTEM_INVARIANT_CHANGE:\n${res.systemInvariantChange ? 'YES' : 'NO'}\n`);
-    console.log(`ESCALATION_REQUIRED:\n${res.escalationRequired ? 'YES' : 'NO'}\n`);
+    console.log(`SYSTEM_INVARIANT_CHANGE:\n${res.systemInvariantChange}\n`);
+    console.log(`ESCALATION_REQUIRED:\n${res.escalationRequired}\n`);
 
     if (!res.isPass) {
       console.log(`P0:\n${res.p0Count}\n`);
