@@ -44,6 +44,9 @@ jobs:
       - name: 🔗 Check Markdown Links
         run: npm run check-links
 
+      - name: 🎓 Validate Learning Articles
+        run: npm run learning:validate
+
       - name: 🚀 Build Website
         run: npm run build
 

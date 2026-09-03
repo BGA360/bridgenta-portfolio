@@ -1,0 +1,32 @@
+# BECC Routine Article Evidence Packet Template v1.0
+# Location: stewardship/evidence/<article-slug>.yaml
+
+articleId: "example-article-slug"
+workingTitle: "Arbeitstitel des Lernartikels"
+learningLevel: "beginner" # public | beginner | intermediate | advanced
+category: "architecture" # matches learningCategories id (e.g. governance, architecture, testing)
+centralLesson: "Präzise didaktische Kernbotschaft der Lektion."
+
+claims:
+  - id: "CLM-001"
+    statement: "Verifizierbare Aussage oder Faktum aus dem Quellprojekt SSoT"
+    sourceType: "GIT_COMMIT" # GIT_COMMIT | GIT_DIFF | GOVERNANCE_DOC | TEST_RECORD | LOG_OUTPUT | AUDIT_NOTE | CHAT_MEMORY | ABSENCE_STATE | STANDARD
+    sourceLocator: "bridgenta-workspace/validation/automation_controller.js"
+    historicalLocator: "07aac848a4a48282c8b83169179308bdb17db0c6"
+    evidenceClass: "DIRECT_EVIDENCE" # DIRECT_EVIDENCE | RECONSTRUCTED_EVIDENCE | CONVERSATIONAL_RECOLLECTION | INFERENCE | SPECIFICATION | OPEN | UNSUPPORTED
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+unsupportedOrOpenClaims: []
+
+transferabilityBoundary: "Gilt für statische Generatoren und CI-Pipelines, nicht für dynamische Single-Page-Apps."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-007"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "bridgenta-workspace/validation/automation_controller.js"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "07aac848a4a48282c8b83169179308bdb17db0c6"
