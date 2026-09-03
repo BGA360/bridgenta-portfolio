@@ -3,7 +3,9 @@ title: "Wenn die Route im Code steht, aber die Freigabe noch offen ist"
 description: "Warum die technische Konfiguration einer Zieladresse im Quellcode noch keine nachgewiesene Veröffentlichungsfreigabe darstellt – und warum Quellcode-Fakten von Governance-Entscheidungen getrennt betrachtet werden müssen."
 category: "softwarearchitektur"
 learningLevel: "intermediate"
-publicationState: "draft"
+publicationState: "published"
+publishedAt: "2026-09-03"
+provenanceRef: "EV-BG-008"
 ---
 
 Eine Projektkennung steht in der Routen-Konfiguration. Dadurch kann sie für die Seitengenerierung ausgewählt werden. Aber damit ist noch nicht nachgewiesen, dass die Veröffentlichungs- und Freigabekriterien für diese Seite erfüllt sind.
