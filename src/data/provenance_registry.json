@@ -46,5 +46,13 @@
     "sourceLocator": "docs/becc/learning/public-post-memory-vs-evidence-provenance-plan.md",
     "historicalLocatorState": "AVAILABLE",
     "historicalLocator": "319f96d29f5910691e07ba08796641f80d403cda"
+  },
+  {
+    "eventId": "EV-BG-007",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "tooling/publish_check_learning_article.js",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "cb5b03b2b54a0640396e7c0ce0021727957677eb"
   }
 ]

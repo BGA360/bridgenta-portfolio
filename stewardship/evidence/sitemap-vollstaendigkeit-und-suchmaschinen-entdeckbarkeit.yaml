@@ -1,0 +1,65 @@
+# BECC Routine Article Evidence Packet v1.0
+# Location: stewardship/evidence/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit.yaml
+
+articleId: "sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit"
+workingTitle: "Wenn der Build grün ist, aber die Seite in der Sitemap fehlt"
+learningLevel: "intermediate"
+category: "softwarearchitektur"
+centralLesson: "Erfolgreiche HTML-Generierung garantiert noch nicht, dass alle erwarteten Veröffentlichungsartefakte vollständig sind. Verifikations-Pipelines sollten deshalb finale Build-Artefakte wie die sitemap.xml direkt prüfen."
+
+claims:
+  - id: "CLM-001"
+    statement: "Im BridGenta-Build wird geprüft, ob ein veröffentlichter Lernartikel in der erzeugten dist/sitemap.xml enthalten ist."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "tooling/publish_check_learning_article.js"
+    historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-002"
+    statement: "Wenn ein Prüfprozess nur den Build-Erfolg kontrolliert und die Sitemap nicht separat prüft, kann eine fehlende Sitemap-Inklusion unentdeckt bleiben."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "tooling/publish_check_learning_article.js"
+    historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-003"
+    statement: "Der automatisierte sitemap.xml-Prüfschritt im BridGenta Publish-Check erkennt eine fehlende Sitemap-Inklusion und beendet die Prüfung mit einem Fehlerstatus."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "tooling/publish_check_learning_article.js"
+    historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-004"
+    statement: "Die Einbindung des Prüfschritts in einen verbindlichen Release-Prozess reduziert das Risiko, dass unvollständige Veröffentlichungsstände online gehen."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "tooling/publish_check_learning_article.js"
+    historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+unsupportedOrOpenClaims: []
+
+transferabilityBoundary: "Das Prinzip ist auf andere statisch erzeugte Websites übertragbar, wenn Seiten-Erzeugung und Discovery-/Sitemap-Artefakte getrennt geprüft werden können."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-007"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "tooling/publish_check_learning_article.js"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
