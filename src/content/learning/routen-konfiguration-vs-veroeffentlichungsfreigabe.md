@@ -1,6 +1,6 @@
 ---
 title: "Wenn die Route im Code steht, aber die Freigabe noch offen ist"
-description: "Warum die technische Konfiguration einer Zieladresse im Quellcode noch keine nachgewiesene Veröffentlichungsfreigabe darstellt – und warum Quellcode-Fakten von Governance-Entscheidungen getrennt betrachtet werden müssen."
+description: "Eine Zieladresse im Quellcode ist noch keine nachgewiesene Veröffentlichungsfreigabe. Der Artikel trennt technische Quellcode-Fakten von Governance-Entscheidungen."
 category: "softwarearchitektur"
 learningLevel: "intermediate"
 publicationState: "published"
