@@ -1,7 +1,7 @@
 # BECC Routine Article Evidence Packet v1.0
-# Location: stewardship/evidence/routen-konfiguration-vs-vereffentlichungsfreigabe.yaml
+# Location: stewardship/evidence/routen-konfiguration-vs-veroeffentlichungsfreigabe.yaml
 
-articleId: "routen-konfiguration-vs-vereffentlichungsfreigabe"
+articleId: "routen-konfiguration-vs-veroeffentlichungsfreigabe"
 workingTitle: "Wenn die Route im Code steht, aber die Freigabe noch offen ist"
 learningLevel: "intermediate"
 category: "softwarearchitektur"
