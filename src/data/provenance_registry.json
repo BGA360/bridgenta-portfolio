@@ -62,5 +62,13 @@
     "sourceLocator": "docs/becc/governance/GOV-FIND-001-RECORD.md",
     "historicalLocatorState": "AVAILABLE",
     "historicalLocator": "5948dd3027bf2d448a3fece43752a0c2cdfd352c"
+  },
+  {
+    "eventId": "EV-BG-009",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "src/pages/lernen/preview/[slug].astro",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "d45de9d7290495da65596465b1b45cfded8dacab"
   }
 ]

@@ -3,7 +3,9 @@ title: "Entwurfs-Vorschau vs. Veröffentlichungsstand: Sichere Sichtprüfung ohn
 description: "Wie eine getrennte Vorschau-Route Entwürfe im echten Seitendesign sichtbar macht, ohne sie als öffentliche Lernartikel zu generieren."
 category: "softwarearchitektur"
 learningLevel: "intermediate"
-publicationState: "draft"
+publicationState: "published"
+publishedAt: "2026-09-03"
+provenanceRef: "EV-BG-009"
 ---
 
 Wer Artikel für eine Plattform verfasst, muss das fertige Layout vor der Veröffentlichung prüfen. Textformatierung, Bilder und Hinweis-Boxen sehen im Quellcode anders aus als auf dem Bildschirm.
