@@ -1,0 +1,131 @@
+{
+  "execution": {
+    "branch": "refs/heads/main",
+    "job": "m5-shadow",
+    "runId": "33790568497",
+    "runner": "GitHub Actions 1000001343",
+    "timestamp": "2026-09-03T18:28:44.098Z",
+    "workflow": "Deploy to GitHub Pages"
+  },
+  "observation": {
+    "articleResults": [
+      {
+        "subjectId": "src/content/learning/ai-generierte-nachweise-vs-reale-belege.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/code-fakten-vs-strukturelle-korrektheit.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/entwurfs-vorschau-vs-veroeffentlichungsstand.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/erinnerung-vs-beleg-beleg-rueckverfolgbarkeit.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/grenzen-automatisierter-linter-checks.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/layout-absicherung-in-mobilen-ansichten.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/revert-der-tinacms-build-integration.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/routen-konfiguration-vs-veroeffentlichungsfreigabe.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      }
+    ],
+    "decisionHashes": [
+      {
+        "subjectId": "src/content/learning/ai-generierte-nachweise-vs-reale-belege.md",
+        "decisionHash": "4d17cec9d379d5e829a9f743881c8a07048f7c7c6f3abf956d62a1648d0767c9"
+      },
+      {
+        "subjectId": "src/content/learning/code-fakten-vs-strukturelle-korrektheit.md",
+        "decisionHash": "b480cf472d4181452b79598cc93a5caa0cd939b22cd3648ab101087d065517f3"
+      },
+      {
+        "subjectId": "src/content/learning/entwurfs-vorschau-vs-veroeffentlichungsstand.md",
+        "decisionHash": "bcc37ede3f0560ec8b856803619ced44169417a46f9446492716134ec03edea2"
+      },
+      {
+        "subjectId": "src/content/learning/erinnerung-vs-beleg-beleg-rueckverfolgbarkeit.md",
+        "decisionHash": "6bc0e9e094f7beb434a9e9b2926f7e3f7a8029e53709b719d86563d732c3046c"
+      },
+      {
+        "subjectId": "src/content/learning/grenzen-automatisierter-linter-checks.md",
+        "decisionHash": "1314bb1766065191c6b4068da3cd4a4364d010c676f545f8146ff3788856df1d"
+      },
+      {
+        "subjectId": "src/content/learning/layout-absicherung-in-mobilen-ansichten.md",
+        "decisionHash": "b053d7858c4ec1952ec096a1123f267cbb6f877d03f889ac04d06a3bc0ee515d"
+      },
+      {
+        "subjectId": "src/content/learning/revert-der-tinacms-build-integration.md",
+        "decisionHash": "506bbc89498cf4bcb48f50e859b5e8fd0104af26cb29ad08369f4902027bd9f4"
+      },
+      {
+        "subjectId": "src/content/learning/routen-konfiguration-vs-veroeffentlichungsfreigabe.md",
+        "decisionHash": "b0d863acd66d3bd38eded3bc6d58d643d2b92cba38669ef88d33b1700f3aec89"
+      },
+      {
+        "subjectId": "src/content/learning/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit.md",
+        "decisionHash": "f4bdb361910c8b87de38bcd5734b75dd899a1543fe7cf32037e1bad591d4a05f"
+      }
+    ],
+    "diagnosticMessages": [],
+    "eligibleCount": 0,
+    "evaluatorVersion": "M5-EVALUATOR-1.0",
+    "globalDiagnostics": [],
+    "implementationIdentity": "3e5f71af9a514c70e44cbf791864b98ad4f691217253d14c2e3b6961ed314ed3",
+    "implementationIdentityScheme": "M5-SOURCE-HASH-1",
+    "observationMode": "SHADOW",
+    "policyVersion": "M5-POLICY-1.0",
+    "projectionHash": "3c0385e7dd6f00d7b66580fe9bad9a5719545faf0af375d84bc20ab90a357c2d",
+    "repositoryCommit": "ddbdaa42396a6b1b6017d5c3393a1964ec304483",
+    "schemaVersion": "M5-OBSERVATION-1.0",
+    "shadowGateResult": "SHADOW_ATTENTION",
+    "subjectCount": 9,
+    "undecidedCount": 0,
+    "withheldCount": 9
+  },
+  "observationHash": "1036472cf7cda7a3a5c92484299fc6bb31abf377b4f00cce414a217242e236e1"
+}
