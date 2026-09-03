@@ -16,7 +16,7 @@ Moderne statische Seitengeneratoren erstellen beim Kompilieren zwei unterschiedl
 
 Während des Builds kann es vorkommen, dass eine neue Unterseite erfolgreich als HTML-Datei gerendert wird, ihr Eintrag in der `sitemap.xml` jedoch aufgrund von Filterregeln oder Konfigurationsfehlern fehlt.
 
-Für menschliche Nutzer, die den direkten Link aufrufen oder der Navigation folgen, erscheint die Seite voll funktionsfähig. Für automatisierte Suchmaschinen-Indexierer hingegen bleibt der neue Inhalt unsichtbar.
+Für menschliche Nutzer, die den direkten Link aufrufen oder der Navigation folgen, erscheint die Seite voll funktionsfähig. Für Suchmaschinen fehlt damit jedoch ein wichtiger technischer Hinweis auf die neue Seite. Die Seite kann zwar über direkte Verlinkung gefunden werden, verliert jedoch ein wesentliches Signal für die automatische Entdeckung.
 
 ## Wo ein erfolgreicher Build nicht ausreicht
 
@@ -26,13 +26,21 @@ Herkömmliche Prüfskripte in Continuous-Integration-Pipelines beschränken sich
 Build-Befehl ausführen -> Exit-Code 0 -> Freigabe zur Veröffentlichung
 ```
 
-Diese Prüflogik übersieht inhaltliche Auslassungen. Der Compiler meldet keinen Fehler, weil das Erstellen der HTML-Datei technisch einwandfrei verlief. Die fehlende Registrierung in der Sitemap stellt für den Seitengenerator keinen Syntaxfehler dar.
+Diese Prüflogik übersieht inhaltliche Auslassungen. Der Compiler meldet keinen Fehler, weil das Erstellen der HTML-Datei technisch einwandfrei verlief. Die fehlende Registrierung in der Sitemap stellt für den Seitengenerator keinen Syntaxfehler dar. Wenn ein Prüfprozess nur den Build-Erfolg kontrolliert und die Sitemap nicht separat prüft, kann eine fehlende Sitemap-Inklusion unentdeckt bleiben.
 
 Die zentrale Frage für die Qualitätssicherung lautet daher: Wie lässt sich automatisch sicherstellen, dass jede freigegebene Zielseite nicht nur existiert, sondern auch in allen relevanten Entdeckbarkeits-Verzeichnissen enthalten ist?
 
 ## Erzeugung vs. Entdeckbarkeit
 
-Um dieses Problem dauerhaft zu lösen, muss die Qualitätssicherung zwischen zwei Ebenen unterscheiden:
+Um dieses Problem dauerhaft zu lösen, muss die Qualitätssicherung die didaktische und technische Kette präzise unterscheiden:
+
+```text
+Route erzeugt ≠ in Sitemap enthalten ≠ von Suchmaschine entdeckt ≠ indexiert
+```
+
+Ein Eintrag in der `sitemap.xml` ist ein Signal für die Vollständigkeit des Release-Artefakts. Er ist jedoch noch kein Beweis für die spätere Indexierung durch Suchmaschinen.
+
+Im BridGenta-Build wird daher gezielt geprüft, ob ein veröffentlichter Lernartikel in der erzeugten `dist/sitemap.xml` enthalten ist. Für die Qualitätssicherung unterscheidet das System zwei Ebenen:
 
 1. **Routen-Existenz (Page Generation):** Die HTML-Datei liegt im Ausgabeverzeichnis (`dist/lernen/mein-artikel/index.html`).
 2. **Artefakt-Entdeckbarkeit (Discovery Inclusion):** Die Route ist im Verzeichnis-Index (`dist/lernen/index.html`), im Themen-Index und in der Sitemap (`dist/sitemap.xml`) eingetragen.
@@ -55,4 +63,4 @@ Sollte der Eintrag in der `sitemap.xml` fehlen, bricht das Prüfskript mit einer
 
 Verifikations-Pipelines sollten niemals nur das Ergebnis von Erzeugungsschritten abfragen, sondern stets die tatsächlichen Endprodukte (Artefakte) untersuchen.
 
-Indem Entwickler automatisierte Abgleiche zwischen den generierten Seiten und den zugehörigen Index-Dateien etablieren, verhindern sie Entdeckbarkeitsfehler systematisch. So wird aus einem rein technischen Build-Erfolg ein verlässlich überprüfter Veröffentlichungs-Zustand.
+Das Prinzip ist auf andere statisch erzeugte Websites übertragbar, wenn Seiten-Erzeugung und Discovery-/Sitemap-Artefakte getrennt geprüft werden können. Indem Entwickler automatisierte Abgleiche zwischen den generierten Seiten und den zugehörigen Index-Dateien etablieren, reduzieren sie das Risiko unentdeckter Auslassungen und blockieren unvollständige Release-Stände automatisch. So wird aus einem rein technischen Build-Erfolg ein verlässlich überprüfter Veröffentlichungs-Zustand.

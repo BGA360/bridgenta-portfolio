@@ -9,7 +9,7 @@ centralLesson: "Erfolgreiche HTML-Generierung garantiert noch keine Auffindbarke
 
 claims:
   - id: "CLM-001"
-    statement: "In statischen Websites wird die sitemap.xml beim Build generiert und muss alle öffentlich freigegebenen Routen auflisten."
+    statement: "Im BridGenta-Build wird geprüft, ob ein veröffentlichter Lernartikel in der erzeugten dist/sitemap.xml enthalten ist."
     sourceType: "GIT_COMMIT"
     sourceLocator: "tooling/publish_check_learning_article.js"
     historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
@@ -20,18 +20,18 @@ claims:
       publicSummaryAllowed: true
 
   - id: "CLM-002"
-    statement: "Ein erfolgreicher Build kann trotz fehlendem Eintrag in sitemap.xml grünes Licht geben, wenn der Verifikations-Checker nicht explizit sitemap.xml analysiert."
+    statement: "Wenn ein Prüfprozess nur den Build-Erfolg kontrolliert und die Sitemap nicht separat prüft, kann eine fehlende Sitemap-Inklusion unentdeckt bleiben."
     sourceType: "GIT_COMMIT"
     sourceLocator: "tooling/publish_check_learning_article.js"
     historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
-    evidenceClass: "DIRECT_EVIDENCE"
+    evidenceClass: "INFERENCE"
     publicWordingBoundary:
       internalPathsSanitized: true
       secretsExcluded: true
       publicSummaryAllowed: true
 
   - id: "CLM-003"
-    statement: "Das Hinzufügen eines automatisierten sitemap.xml-Prüfschritts im Pre-Merge-Gate verhindert unentdeckte Veröffentlichungsfehler ohne manuelle Stichproben."
+    statement: "Das Hinzufügen eines automatisierten sitemap.xml-Prüfschritts im Pre-Merge-Gate blockiert diesen konkreten Fehlerfall automatisch und reduziert das Risiko unentdeckter Auslassungen."
     sourceType: "GIT_COMMIT"
     sourceLocator: "tooling/publish_check_learning_article.js"
     historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
@@ -43,7 +43,7 @@ claims:
 
 unsupportedOrOpenClaims: []
 
-transferabilityBoundary: "Gilt für alle statischen Seitengeneratoren (Astro, Next.js SSG, Hugo) und automatisierte CI-Pipelines."
+transferabilityBoundary: "Das Prinzip ist auf andere statisch erzeugte Websites übertragbar, wenn Seiten-Erzeugung und Discovery-/Sitemap-Artefakte getrennt geprüft werden können."
 
 proposedProvenanceEvent:
   eventId: "EV-BG-007"
