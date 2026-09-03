@@ -1,0 +1,54 @@
+# BECC Routine Article Evidence Packet v1.0
+# Location: stewardship/evidence/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit.yaml
+
+articleId: "sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit"
+workingTitle: "Sitemap-Vollständigkeit und Entdeckbarkeit: Wenn der Build grün ist, aber die Route fehlt"
+learningLevel: "intermediate"
+category: "softwarearchitektur"
+centralLesson: "Erfolgreiche HTML-Generierung garantiert noch keine Auffindbarkeit durch Suchmaschinen – Verifikations-Pipelines müssen finale Dist-Artefakte wie sitemap.xml direkt prüfen."
+
+claims:
+  - id: "CLM-001"
+    statement: "In statischen Websites wird die sitemap.xml beim Build generiert und muss alle öffentlich freigegebenen Routen auflisten."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "tooling/publish_check_learning_article.js"
+    historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-002"
+    statement: "Ein erfolgreicher Build kann trotz fehlendem Eintrag in sitemap.xml grünes Licht geben, wenn der Verifikations-Checker nicht explizit sitemap.xml analysiert."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "tooling/publish_check_learning_article.js"
+    historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-003"
+    statement: "Das Hinzufügen eines automatisierten sitemap.xml-Prüfschritts im Pre-Merge-Gate verhindert unentdeckte Veröffentlichungsfehler ohne manuelle Stichproben."
+    sourceType: "GIT_COMMIT"
+    sourceLocator: "tooling/publish_check_learning_article.js"
+    historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+unsupportedOrOpenClaims: []
+
+transferabilityBoundary: "Gilt für alle statischen Seitengeneratoren (Astro, Next.js SSG, Hugo) und automatisierte CI-Pipelines."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-007"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "tooling/publish_check_learning_article.js"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "cb5b03b2b54a0640396e7c0ce0021727957677eb"
