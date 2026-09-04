@@ -85,9 +85,13 @@ Folgende Aspekte sind als **PREFERRED** klassifiziert (Standard-Empfehlung):
 1.  **Einstiegssequenz:** Die Strukturierung des Starts gemäß der Kette `Beobachtung` → `Eindruck` → `Zweifel` → `Zentrale Frage` hat sich als optimaler didaktischer Einstieg bewährt.
 2.  **Satzlängen-Rhythmus (Short Anchor):** Ein Rhythmus aus kurzen Ankersätzen, gefolgt von einer präzisen, etwas längeren Erklärung, gefolgt von einer kognitiven Pause.
 3.  **Zentrale Leserfrage (CENTRAL_QUESTION_FUNCTION):** Eine explizite, leserorientierte Frage dient als natürlicher Übergang zum Hauptteil.
-4.  **Glossar-Struktur:** Das Anbieten einer Begriffserklärung am Ende des Artikels in einer strukturierten Definitionsliste zur Erhöhung der Lesbarkeit.
-5.  **Glossar-Präsenz (GLOSSARY_FUNCTION):** Das Platzieren eines expliziten Glossars am Ende des Artikels wird standardmäßig empfohlen, um Fachbegriffe zu rekapitulieren.
-6.  **Terminologie-Orientierung (TERMINOLOGY_ORIENTATION):** Die Erfüllung von `F9` (Begriffs-Orientierung) erfolgt zielgruppen- und niveauspezifisch (`GLOSSARY_ALWAYS_MANDATORY: NO`).
+4.  **Eröffnungs-Familien-Auswahl (`OPENING_FAMILY_SELECTION`):** Das Quell-Ereignis bestimmt über die `ARTICLE_FUNCTION_MAP` (`F0`–`F3` & `CENTRAL_QUESTION`) eine geeignete Eröffnungs-Familie aus den Kern-Familien O1–O6 (O1 Real Scenario, O2 Problem/Question, O3 Contrast, O4 Context/Background, O5 Direct Topic, O6 Broad → Specific) oder Sonder-Familien O7–O10 unter Wahrung von `CONTEXT BEFORE CONCEPT` (`OPENING_FAMILY_SELECTION: MUST_BE_SOURCE_DRIVEN`).
+5.  **Vergleich mit jüngsten Artikeln (`RECENT_INTRO_COMPARISON`):** Vor der Finalisierung von Entwurf 1 wird die geplante Einleitung mit den letzten 3–5 veröffentlichten Lernartikeln insgesamt sowie Artikeln derselben Kategorie abgeglichen (`RECOMMENDED_INTRO_COMPARISON_SET: LAST_3_5_PUBLISHED`), um sichtbare Muster-Wiederholungen frühzeitig zu erkennen.
+6.  **Flüchtige Einleitungs-Fingerabdrücke (`EPHEMERAL_INTRO_FINGERPRINT`):** Für die Prüfung im Fresh-Reader-Audit wird ein flüchtiger Fingerabdruck (`OPENING_FAMILY`, `FIRST_MOVE`, `QUESTION_POSITION`, `RECOGNIZABLE_SCAFFOLD_PHRASE`, `PARAGRAPH_PROGRESSION`) im Arbeitsspeicher genutzt (`INTRO_FINGERPRINT: EPHEMERAL`, `PERSISTENT_INTRO_FINGERPRINT_STORAGE: NO`, `PERSISTENT_INTRO_REGISTRY: NO`).
+7.  **Zwei-Varianten-Entwurf (`INTERNAL_TWO_VARIANT_DRAFTING: OPTIONAL`):** Das interne Erstellen von zwei Einleitungsvarianten ist optional und wird empfohlen, wenn mehrere Eröffnungs-Familien gleichermaßen passen oder der erste Entwurf schablonenhaft wirkt (`INTERNAL_TWO_VARIANT_DRAFTING: OPTIONAL`).
+8.  **Glossar-Struktur:** Das Anbieten einer Begriffserklärung am Ende des Artikels in einer strukturierten Definitionsliste zur Erhöhung der Lesbarkeit.
+9.  **Glossar-Präsenz (GLOSSARY_FUNCTION):** Das Platzieren eines expliziten Glossars am Ende des Artikels wird standardmäßig empfohlen, um Fachbegriffe zu rekapitulieren.
+10. **Terminologie-Orientierung (TERMINOLOGY_ORIENTATION):** Die Erfüllung von `F9` (Begriffs-Orientierung) erfolgt zielgruppen- und niveauspezifisch (`GLOSSARY_ALWAYS_MANDATORY: NO`).
 
 ---
 
@@ -97,11 +101,13 @@ Folgende Aspekte sind als **VARIABLE** deklariert, um Starrheit zu vermeiden (*S
 
 1.  **Überschriftenstruktur und -anzahl:** H2-Zwischenüberschriften dürfen sich in Anzahl und Benennung frei nach dem inhaltlichen Bedarf richten (`HEADING_TEXT: VARIABLE`).
 2.  **Absatzanzahl und Textlänge:** Es gibt keine vorgegebene Mindest- oder Höchstzahl von Absätzen.
-3.  **Visuelle Repräsentationsform der Evidenzgrenze (EVIDENCE_BOUNDARY_UI_FORM):** Ob ein Callout-Block (`learning-evidence-boundary`), ein Code-Block oder Fließtext genutzt wird, ist variabel.
-4.  **Visuelle Form des Takeaways (TAKEAWAY_VISUAL_FORM):** Die konkrete Formatierung des abschließenden Takeaways (z. B. mit oder ohne H2-Überschrift, Einrückungstyp) darf variieren.
-5.  **Glossar-Wegfall:** In begründeten Fällen kann auf eine separate Glossar-Tabelle verzichtet werden, sofern alle Fachbegriffe direkt im Fließtext verständlich erklärt werden (wie in Ref 03 bewiesen).
-6.  **Position der zentralen Frage (CENTRAL_QUESTION_EXACT_POSITION):** Die genaue Platzierung der Leserfrage kann sich flexibel nach der Erklärungsstruktur richten.
-7.  **Visuelle Abschnitte der pädagogischen Funktionen (PEDAGOGICAL_FUNCTION_SECTIONS):** Wie die Funktionen `F0–F9` optisch auf Absätze und Überschriften aufgeteilt werden, ist frei wählbar (`STANDARDIZE_WHAT_READER_MUST_UNDERSTAND`, `DO_NOT_STANDARDIZE_EXACT_HEADINGS`).
+3.  **Wahl der Eröffnungs-Familie:** Die Wahl der Eröffnungs-Familie variiert von Artikel zu Artikel dynamisch basierend auf dem Quell-Ereignis. Die Verwendung derselben Eröffnungs-Familie in aufeinanderfolgenden Artikeln ist zulässig, solange die konkrete Ausformulierung und der Satzrhythmus natürlich unterschiedlich sind (`FAMILY_REPETITION: ALLOWED`, `VISIBLE_PATTERN_REPETITION: MUST_NOT_BY_DEFAULT`).
+4.  **Interne Quell-Ereignis-Formen (`SOURCE_EVENT_SHAPE`):** Klassifikationen der Ereignisform (`REAL EVENT`, `PROBLEM`, `CONTRADICTION`, `PROCESS MOMENT`, `DECISION`, `BEFORE / AFTER`, `MISCONCEPTION`, `DIRECT EXPLANATION`) dienen als interne redaktionelle Formulierungshilfe (`SOURCE_EVENT_SHAPE: INTERNAL_EDITORIAL_AID`), erzeugen aber keine neue Quell-Taxonomie (`SECOND_SOURCE_ANALYSIS_MODEL: NO`).
+5.  **Visuelle Repräsentationsform der Evidenzgrenze (EVIDENCE_BOUNDARY_UI_FORM):** Ob ein Callout-Block (`learning-evidence-boundary`), ein Code-Block oder Fließtext genutzt wird, ist variabel.
+6.  **Visuelle Form des Takeaways (TAKEAWAY_VISUAL_FORM):** Die konkrete Formatierung des abschließenden Takeaways (z. B. mit oder ohne H2-Überschrift, Einrückungstyp) darf variieren.
+7.  **Glossar-Wegfall:** In begründeten Fällen kann auf eine separate Glossar-Tabelle verzichtet werden, sofern alle Fachbegriffe direkt im Fließtext verständlich erklärt werden (wie in Ref 03 bewiesen).
+8.  **Position der zentralen Frage (CENTRAL_QUESTION_EXACT_POSITION):** Die genaue Platzierung der Leserfrage kann sich flexibel nach der Erklärungsstruktur richten.
+9.  **Visuelle Abschnitte der pädagogischen Funktionen (PEDAGOGICAL_FUNCTION_SECTIONS):** Wie die Funktionen `F0–F9` optisch auf Absätze und Überschriften aufgeteilt werden, ist frei wählbar (`STANDARDIZE_WHAT_READER_MUST_UNDERSTAND`, `DO_NOT_STANDARDIZE_EXACT_HEADINGS`).
 
 ---
 
@@ -115,7 +121,9 @@ Folgende Muster sind **PROHIBITED** bzw. wie angegeben eingeschränkt:
 4.  **Permanente visuelle Abstraktionen während der Kalibrierungsphase (PERMANENT_REUSABLE_ABSTRACTION_DURING_CALIBRATION):** Die Deklaration von wiederverwendbaren UI-Komponenten als permanente System-Primitive ist während der Kalibrierungsphase verboten. Bounded einseitige visuelle Experimente (BOUNDED_ONE_OFF_VISUAL_EXPERIMENT) sind unter Auflagen (barrierefrei, datenschutzkonform, keine Beförderung zu permanenten Primitiven) erlaubt.
 5.  **Permanente artikelspezifische Stil-Primitive (PERMANENT_ARTICLE_SPECIFIC_STYLE_PRIMITIVE):** Artikelspezifische Design-Ausnahmen, die als dauerhafte Primitive dienen, sind verboten. Bounded experimentelle Präsentationen (BOUNDED_EXPERIMENTAL_PRESENTATION) sind unter den gleichen Bedingungen wie visuelle Experimente gestattet.
 6.  **Freie Rekonstruktion für Leser-Orientierung (FREE_RECONSTRUCTION_FOR_ORIENTATION):** Das Erfinden unbewiesener Chronologien, Entwicklerabsichten, Emotionen oder Ausführungszustände unter dem Vorwand der Szene-Orientierung ist streng verboten (`PEDAGOGICAL_CONTEXT != FREE_RECONSTRUCTION`).
-7.  **Erzwungene Überschriften-Schablonen (MANDATORY_EXACT_HEADING_TEMPLATES):** Das Vorgeben starrer, identischer Überschriften über Artikel hinweg zur Erreichung pädagogischer Funktionen ist untersagt (`PEDAGOGICAL_CONSISTENCY != VISIBLE_TEMPLATE_REPETITION`).
+7.  **Fiktive Dramatisierung & Humanisierung (`FAKE_HUMANIZATION: PROHIBITED`):** Das Erfinden unbewiesener Emotionen, Entwickler-Überraschungen oder fiktiver Reaktionen unter dem Vorwand der Humanisierung ist streng verboten (`HUMANIZATION_MUST_NEVER_OVERRIDE_SOURCE_FIDELITY`).
+8.  **Starre Validator-Rotationsregeln (`BRITTLE_ROTATION_RULE: PROHIBITED`):** Brittle CI-Regeln wie das Verbot derselben Einstiegswörter, Quoten für Erstwörter oder erzwungene mechanische Rotationszyklen von Eröffnungs-Familien sind untersagt (`VALIDATOR_CHANGE_REQUIRED: NO`). Die Prüfung erfolgt qualitäts- und sprachdidaktisch im Fresh-Reader-Audit.
+9.  **Erzwungene Überschriften-Schablonen (MANDATORY_EXACT_HEADING_TEMPLATES):** Das Vorgeben starrer, identischer Überschriften über Artikel hinweg zur Erreichung pädagogischer Funktionen ist untersagt (`PEDAGOGICAL_CONSISTENCY != VISIBLE_TEMPLATE_REPETITION`).
 
 ---
 
