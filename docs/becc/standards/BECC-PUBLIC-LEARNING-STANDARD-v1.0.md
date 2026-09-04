@@ -131,14 +131,16 @@ Kein Lerninhalt darf Behauptungen aufstellen, die über die tatsächliche Aussag
 Jeder Lernartikel muss vor der Veröffentlichungsfreigabe zwei separate manuelle Prüfungen durchlaufen. Die Ergebnisse werden in einem **dokumentierten, attribuierbaren und separat attestierbaren Review-Protokoll** erfasst:
 
 *   **Prinzip:** `SEPARATE_AND_SEPARATELY_ATTESTED_REVIEW_DIMENSIONS`
-*   Die beiden Prüfungen können von derselben Person oder von verschiedenen Personen durchgeführt werden (Workflow-Leitlinie), müssen aber als getrennte Nachweis-Schritte protokolliert werden.
-
-### 9.1 Fresh-Reader-Audit (Verständlichkeits-Prüfung)
+*   Die beiden Prüfungen können von derselben Person oder von verschiedenen Personen durchgeführt werden ### 9.1 Fresh-Reader-Audit (Verständlichkeits-Prüfung)
 *   **Fokus:** `COMPREHENSION_REVIEW`. Kognitive Zugänglichkeit, Logik und sprachliche Qualität für Leser ohne internes Projektwissen.
 *   **Prüfpunkte:**
     *   Ist der Text ohne internes Projektwissen verständlich?
     *   Werden Fachbegriffe bei Erstverwendung ausreichend erklärt (First-Use-Regel)?
     *   Werden die advisory Heuristiken (Satzlängen, Absätze) berücksichtigt?
+*   **Einleitungs-Diversitäts-Prüfung (Intro Diversity Audit):**
+    *   *Prüf-Integration:* `FRESH_READER_AUDIT_INTEGRATION: YES` (Sub-Check im Fresh-Reader-Audit; kein neuer Prüf-Schritt oder Genehmigungsstufe `NEW_APPROVAL_STAGE: NO`).
+    *   *Akzeptanz-Frage:* Klingt diese Einleitung materiell unterschiedlich zu kürzlich veröffentlichten Lernartikeln, während sie dennoch natürlich zum Quell-Ereignis passt?
+    *   *Kritischer Befund:* Materielle Wiederholung sichtbarer Einleitungsmuster (gleicher Einstieg + gleicher Absatzverlauf + gleiche Fragenposition + identische redaktionelle Schablonenphrasen) erfordert eine Überarbeitung der Einleitung vor Freigabe.
 *   **Lesbarkeits-Heuristiken:**
     *   *Heuristik-Regel:* `READABILITY_HEURISTICS: ADVISORY`
     *   Linguistische Satz- und Absatzgrenzen (z. B. <15 Wörter) dienen als advisory Heuristik. Abweichungen sind zulässig, wenn die technische Genauigkeit oder natürliche Lesbarkeit dies erfordern.
@@ -168,6 +170,26 @@ Jeder Lernartikel muss vor der Veröffentlichungsfreigabe zwei separate manuelle
 *   **ANWENDEN (Apply):** Jeder Artikel muss dem Leser mindestens ein übertragbares und direkt anwendbares Werkzeug (eine Frage, eine Regel, eine Unterscheidung, ein mentales Modell, eine Checkliste, ein Entscheidungsprinzip oder eine Methode) mitgeben (`READ → UNDERSTAND → APPLY_ELSEWHERE`). Unter-Sequenz: `COMPRESSION → REUSABLE_PRINCIPLE → PRACTICAL_TRANSFER`.
 *   **TRANSFERABILITY_BOUNDARY:** Eine übertragbare Lektion darf nicht breiter oder sicherer formuliert werden, als es die Evidenz stützt. Es gilt der Grundsatz: `TRANSFERABLE != UNIVERSAL` und `REUSABLE != ABSOLUTE`. Ein projektspezifischer Befund oder eine Governance-Regel darf nicht als allgemeingültiges technisches Gesetz dargestellt werden.
 
+### 9.4.1 Einleitungs-Orchestrierung & Eröffnungs-Familien (Introduction Orchestration)
+*   **Hierarchie & Unterordnung:** `INTRO_ORCHESTRATION_PARENT: UNDERSTAND_GATE`. Einleitungs-Orchestrierung ist ein operationaler Mechanismus unterhalb des bestehenden `UNDERSTAND_GATE` und dient der sprachlichen Ausgestaltung der `VERSTEHEN`-Phase (`SCOPE → CONTEXT → EVENT → SIGNIFICANCE → CENTRAL_QUESTION`). Die Leser-Orientierung bleibt uneingeschränkt gewahrt (`READER_ORIENTATION_PRESERVED: YES`).
+*   **Auswahl-Hierarchie:**
+    $$\text{SOURCE TRUTH} \rightarrow \text{PEDAGOGICAL FUNCTION} \rightarrow \text{READER CLARITY} \rightarrow \text{NATURAL HUMAN EXPRESSION} \rightarrow \text{DIVERSITY}$$
+    *   *Quell-Primat:* `OPENING_FAMILY_SELECTION: MUST_BE_SOURCE_DRIVEN`. Das Quell-Ereignis bestimmt die Eröffnungs-Familie. Kürzlich veröffentlichte Artikel beeinflussen die konkrete Satz- und Absatzform. Der Leser bestimmt die Verständlichkeit.
+    *   *Unverletzlichkeit der Wahrheit:* Vielfalt darf die Quellen-Treue niemals überschreiben (`DIVERSITY_CAN_OVERRIDE_SOURCE_FIDELITY: NO`).
+*   **Kanonische Eröffnungs-Familien (Core Opening Families: O1–O6):**
+    1. **O1 — REAL SCENARIO:** Konkretes, dokumentiertes Projektmoment als Einstieg (bei realen Ereignissen mit starker visueller Erfassbarkeit).
+    2. **O2 — PROBLEM / QUESTION:** Echtes Problem, Ungewissheit, Fehler oder Entscheidungsfrage aus der SSoT.
+    3. **O3 — CONTRAST:** Didaktischer Einstieg über fundamentale Gegenüberstellung ($A \neq B$, z. B. `implemented != verified`).
+    4. **O4 — CONTEXT / BACKGROUND:** Systemische oder prozessuale Einordnung des Lesers vor Schilderung des konkreten Ereignisses.
+    5. **O5 — DIRECT TOPIC:** Direkte, sachliche Hinführung bei praxisnahen Lektionen ohne künstliche narrative Spannung.
+    6. **O6 — BROAD → SPECIFIC:** Allgemeine Domänen-Orientierung für Erstleser vor Fokussierung auf das exakte Ereignis.
+*   **Sonder-Eröffnungs-Familien mit strikten Schranken (Special-Use Families: O7–O10):**
+    1. **O7 — DEFINITION / CONCEPT:** Nur zulässig, wenn der Begriff selbst das primäre Einstiegsproblem darstellt (`O7_CONTEXT_BEFORE_CONCEPT: YES`). Es gilt strikt: `SITUATION → TERM → DEFINITION` (kein trockenes Wörterbuch-Zitat als erster Satz).
+    2. **O8 — FACT / STATISTIC:** Nur zulässig bei belegbarem SSoT-Faktum, das die Orientierung materiell verbessert. Dekorative Statistiken sind verboten (`DECORATIVE_STATISTICS: PROHIBITED`).
+    3. **O9 — CLAIM-LED:** Nur zulässig, wenn die Einstiegs-Behauptung direkt evidenzbasiert ist (`UNSOURCED_CLAIM_LED_OPENING: PROHIBITED`).
+    4. **O10 — PROMISE-LED:** Vorrangig für Anleitungen, Leitfäden und Checklisten. Darf nicht als Standard-Formel genutzt werden (`PROMISE_LED_AS_DEFAULT: NO`).
+*   **Kein zweites Quell-Analysemodell:** Die Eignung der Eröffnungs-Familie leitet sich direkt aus der `ARTICLE_FUNCTION_MAP` (`F0`–`F3` & `CENTRAL_QUESTION`) ab (`SECOND_SOURCE_ANALYSIS_MODEL: NO`).
+
 ### 9.5 Pädagogisches Funktions-Modell (Pedagogical Function Model)
 Um didaktische Vollständigkeit zu gewährleisten, ohne Artikel in starre Textschablonen zu zwingen, definiert der Standard zehn **Pädagogische Funktionen (F0–F9)** (wobei `F0–F8` als inhaltliche Pflichtfunktionen [`MUST / INVARIANT`] und `F9` als lernniveauspezifische Begriffs-Orientierung [`LEVEL_AWARE`] klassifiziert sind):
 
@@ -187,7 +209,7 @@ Um didaktische Vollständigkeit zu gewährleisten, ohne Artikel in starre Textsc
 
 ### 9.6 Die fünf obligatorischen Prüftore (Conformance Gates)
 Jeder Lernartikel wird im Review-Prozess gegen fünf Prüftore evaluiert:
-1. **UNDERSTAND_GATE:** Kann ein Erstleser innerhalb der Einleitung/Eröffnung visualisieren, wo das Ereignis stattgefunden hat, in welchem Prozess oder Systembereich er sich befindet und welchen Geltungsbereich der Artikel abdeckt, bevor Fachbegriffe vorausgesetzt werden? (Pass-Kriterium: konkrete Szene/Prozesskontext und Problemstellung zuerst, kein vorzeitiges Jargon-Stacking; `SITUATION_FIRST`).
+1. **UNDERSTAND_GATE:** Kann ein Erstleser innerhalb der Einleitung/Eröffnung visualisieren, wo das Ereignis stattgefunden hat, in welchem Prozess oder Systembereich er sich befindet und welchen Geltungsbereich der Artikel abdeckt, bevor Fachbegriffe vorausgesetzt werden? (Pass-Kriterium: konkrete Szene/Prozesskontext und Problemstellung zuerst, kein vorzeitiges Jargon-Stacking; `SITUATION_FIRST`). Umfasst das obligatorische `INTRO_DIVERSITY_GATE: MUST` (`INTRO_DIVERSITY_GATE_TYPE: HYBRID_EDITORIAL`), welches sichtbare Schablonen-Wiederholungen zu kürzlich erschienenen Artikeln stoppt (`FAMILY_REPETITION: ALLOWED`, `VISIBLE_PATTERN_REPETITION: MUST_NOT_BY_DEFAULT`).
 2. **NAME_GATE:** Werden Fachbegriffe erst nach der inhaltlichen Hinführung benannt und verständlich eingeführt? (Pass-Kriterium: präzise Fachbegriffe vorhanden, aber didaktisch eingeleitet).
 3. **EVIDENCE_GATE:** Ist die Evidenz sichtbar und von Interpretationen getrennt? (Pass-Kriterium: Einhaltung der Evidenzgrenzen, keine unbewiesenen Behauptungen).
 4. **REUSE_GATE:** Bietet der Artikel ein nützliches Werkzeug zur Wiederverwendung in anderen Projekten? (Pass-Kriterium: mindestens ein konkretes Werkzeug wie eine Checkliste oder Entscheidungsregel).
@@ -275,6 +297,9 @@ Jede Anforderung wird nachfolgend klassifiziert:
 | **LR-17** | `PEDAGOGICAL_FUNCTION_COMPLETENESS` (F0-F8) gegeben | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
 | **LR-18** | `ARTICLE_FUNCTION_MAP` für Entwurf genutzt | **SHOULD** | EDITORIAL | Nein | Nein | Ja (Editorial) | Lead Editor |
 | **LR-19** | `TERMINOLOGY_ORIENTATION` (F9) niveau-entsprechend | **SHOULD** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
+| **LR-20** | `OPENING_FAMILY_SELECTION` quell-getrieben & hierarchisch | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
+| **LR-21** | `INTRO_DIVERSITY_GATE` im Fresh-Reader-Audit bestanden | **MUST** | EDITORIAL | Nein | Nein | Ja (Fresh Reader) | Lead Editor |
+| **LR-22** | Humanisierung wahrt SSoT-Wahrheit (`FAKE_HUMANIZATION` verboten) | **MUST** | SEMANTIC | Nein | Nein | Ja (Fidelity) | Lead Editor |
 
 ---
 
@@ -299,8 +324,13 @@ Die prose-Ebene der Lernartikel folgt dem BridGenta Natural Learning Rhythm, um 
 * **SOURCE_LINE_BREAK != COGNITIVE_PAUSE**: Ein Zeilenumbruch im Markdown-Quellcode ist keine hinreichende Bedingung für eine gedankliche Pause des Lesers. Jede kognitive Pause muss im gerenderten Artikel im Browser visuell deutlich wahrnehmbar sein (durch Abstände und Absätze).
 * **SOURCE_FORMATTING_ALONE DOES_NOT_PROVE READER_PERCEIVED_RHYTHM**: Die Formatierung im Quelltext allein garantiert keinen guten Lesefluss; ausschlaggebend ist das im Browser sichtbare Ergebnis.
 
-### 15.2 Stilistische Leitplanken
+### 15.2 Stilistische & Humanisierungs-Leitplanken
+* **HUMANIZED = CONCRETE + NATURAL + READER-ORIENTED + SOURCE-GROUNDED**: Humanisierung bedeutet konkrete Sprache, bildhafte Hinführung und natürlichen Rhythmus, nicht fiktive Dramatisierung.
 * **HUMANIZED != CASUAL**: Der Text bleibt professionell und respektvoll, spricht den Leser aber auf Augenhöhe an.
+* **HUMANIZED != FICTIONAL / MARKETING / EMOTIONAL_EMBELLISHMENT**: Keine künstlichen Marketing-Versprechen oder erfundene Gefühle.
+* **FAKE_HUMANIZATION: PROHIBITED**: Das Erfinden unbewiesener Emotionen oder Reaktionen (*„Wir waren überrascht“*, *„Das Team war schockiert“*, *„Niemand hatte damit gerechnet“*) ist streng untersagt, sofern die SSoT diese Fakten nicht explizit stützt (`HUMANIZATION_MUST_NEVER_OVERRIDE_SOURCE_FIDELITY`).
+* **REDAKTIONELLE SCHABLONEN-PHRASEN (Scaffold Phrase Repetition Audit)**: Wiederkehrende Einleitungsfloskeln (wie *„In diesem Artikel...“*, *„Dieser Artikel zeigt...“*, *„Warum ist das wichtig?“*, *„Beim Aufbau...“*) sind individuell nicht verboten (`SCAFFOLD_PHRASE_BAN: NO`), müssen jedoch im Fresh-Reader-Audit auf übermäßige Wiederholung über jüngste Artikel hinweg geprüft werden (`SCAFFOLD_PHRASE_REPETITION_AUDIT: YES`).
+* **VARIATIONSPRINZIP**: Es gilt das etablierte Variationsprinzip `SAME FUNCTION != SAME SENTENCE FORM` und `PEDAGOGICAL CONSISTENCY != VISIBLE TEMPLATE REPETITION` (`SHARED_VARIATION_PRINCIPLE: YES`).
 * **SIMPLE != SHALLOW**: Fachliche Tiefe wird beibehalten, aber durch klare Sprache zugänglich gemacht.
 * **STRUCTURED != FORMULAIC**: Logischer Aufbau statt starrer Textschablonen.
 * **CONSISTENT != REPETITIVE**: Gleiche didaktische Ziele, aber abwechslungsreiche sprachliche Umsetzung.
