@@ -70,5 +70,13 @@
     "sourceLocator": "src/pages/lernen/preview/[slug].astro",
     "historicalLocatorState": "AVAILABLE",
     "historicalLocator": "d45de9d7290495da65596465b1b45cfded8dacab"
+  },
+  {
+    "eventId": "EV-BG-010",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "ea17fab39a8ebfeebc8a4eb4ea6283ffb5f082bb"
   }
 ]
