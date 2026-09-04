@@ -3,7 +3,8 @@ title: "Wo die Evidenz endet, muss der Claim enden: KI-Diagnosen und Beleggrenze
 description: "Warum plausible KI-Erklärungen in der Software-Entwicklung keine Belege ersetzen und warum beobachtete Laufzeitschritte keine unbelegten Ursachen beweisen."
 category: "ai-entwicklung"
 learningLevel: "intermediate"
-publicationState: "draft"
+publicationState: "published"
+publishedAt: "2026-09-04"
 provenanceRef: "EV-BG-010"
 ---
 
