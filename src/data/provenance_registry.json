@@ -75,8 +75,8 @@
     "eventId": "EV-BG-010",
     "sourceProject": "bridgenta-core",
     "sourceSystem": "git",
-    "sourceLocator": "docs/becc/learning/public-post-memory-vs-evidence-provenance-plan.md",
+    "sourceLocator": "docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md",
     "historicalLocatorState": "AVAILABLE",
-    "historicalLocator": "319f96d29f5910691e07ba08796641f80d403cda"
+    "historicalLocator": "ea17fab39a8ebfeebc8a4eb4ea6283ffb5f082bb"
   }
 ]

@@ -33,11 +33,11 @@ Bei einem internen Werkzeug führte ein Aufruf nach dem Login zu einer leeren Se
 
 Das Problem dabei:
 
-Das System ist ein klassisches WordPress-Plugin. Es nutzt die bekannten Rollen und Rechte von WordPress. Es gab im Quellcode und in der Architektur keinen Beleg dafür, dass überhaupt ein Tenant- oder Workspace-Modell existiert.
+Das System ist als WordPress-Plugin aufgebaut und stützt sich auf die bekannten Rollen und Rechte von WordPress. In den geprüften Quelltexten und Dokumenten lag kein Beleg dafür vor, dass ein Tenant- oder Workspace-Modell existierte.
 
 Noch entscheidender war die stärkere Beobachtung zur Laufzeit:
 
-Die Laufzeit-Evidenz zeigte, dass der Benutzer sich anmelden, die Detailansicht öffnen, das Formular erreichen und die erwartete Benutzeroberfläche rendern konnte.
+Die geschilderten Beobachtungen zeigten, dass der Benutzer sich anmelden, die Detailansicht öffnen, das Formular erreichen und die erwartete Benutzeroberfläche rendern konnte.
 
 Der korrekte Systemzustand lautete daher nicht:
 
