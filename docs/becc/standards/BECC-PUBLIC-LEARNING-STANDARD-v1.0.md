@@ -131,7 +131,9 @@ Kein Lerninhalt darf Behauptungen aufstellen, die über die tatsächliche Aussag
 Jeder Lernartikel muss vor der Veröffentlichungsfreigabe zwei separate manuelle Prüfungen durchlaufen. Die Ergebnisse werden in einem **dokumentierten, attribuierbaren und separat attestierbaren Review-Protokoll** erfasst:
 
 *   **Prinzip:** `SEPARATE_AND_SEPARATELY_ATTESTED_REVIEW_DIMENSIONS`
-*   Die beiden Prüfungen können von derselben Person oder von verschiedenen Personen durchgeführt werden ### 9.1 Fresh-Reader-Audit (Verständlichkeits-Prüfung)
+*   Die beiden Prüfungen können von derselben Person oder von verschiedenen Personen durchgeführt werden (Workflow-Leitlinie), müssen aber als getrennte Nachweis-Schritte protokolliert werden.
+
+### 9.1 Fresh-Reader-Audit (Verständlichkeits-Prüfung)
 *   **Fokus:** `COMPREHENSION_REVIEW`. Kognitive Zugänglichkeit, Logik und sprachliche Qualität für Leser ohne internes Projektwissen.
 *   **Prüfpunkte:**
     *   Ist der Text ohne internes Projektwissen verständlich?
