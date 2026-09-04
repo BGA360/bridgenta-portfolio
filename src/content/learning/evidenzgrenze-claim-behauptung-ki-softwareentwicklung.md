@@ -23,7 +23,7 @@ Das sind alles denkbare Möglichkeiten.
 
 Aber denkbar ist nicht dasselbe wie belegt.
 
-![Visualisierung der Evidenzgrenze zwischen spekulativen KI-Erklärungen und verifizierten Laufzeit-Belegen](/images/learning/evidenzgrenze-claim-behauptung-ki-softwareentwicklung.png)
+![Visualisierung der Evidenzgrenze zwischen spekulativen KI-Erklärungen und verifizierten Laufzeit-Belegen](/images/learning/evidenzgrenze-claim-behauptung-ki-softwareentwicklung.jpg)
 
 ## Ein konkretes Beispiel aus der Praxis
 
@@ -35,9 +35,9 @@ Das Problem dabei:
 
 Das System ist ein klassisches WordPress-Plugin. Es nutzt die bekannten Rollen und Rechte von WordPress. Es gab im Quellcode und in der Architektur keinen Beleg dafür, dass überhaupt ein Tenant- oder Workspace-Modell existiert.
 
-Noch entscheidender war die tatsächliche Evidenz zur Laufzeit:
+Noch entscheidender war die stärkere Beobachtung zur Laufzeit:
 
-Die Protokolle zeigten, dass der Benutzer sich anmelden, die Detailansicht öffnen, das Formular erreichen und die erwartete Benutzeroberfläche vollständig rendern konnte.
+Die Laufzeit-Evidenz zeigte, dass der Benutzer sich anmelden, die Detailansicht öffnen, das Formular erreichen und die erwartete Benutzeroberfläche rendern konnte.
 
 Der korrekte Systemzustand lautete daher nicht:
 
