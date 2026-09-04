@@ -14,11 +14,16 @@ Etwas, das ich in der KI-gestützten Softwareentwicklung immer wieder beobachte:
 
 Eine KI stößt auf ein ungewöhnliches Symptom und beginnt sofort, mögliche Ursachen anzubieten.
 
-* Beschädigtes Benutzerprofil
-* Fehlerhafte Sitzung (Session)
-* Fehlende Berechtigungen
-* Tenant- oder Workspace-Problem
-* Inkonsistenz in der Datenbank
+<div class="learning-callout-box">
+  <span class="learning-callout-box__title">Mögliche Ursachen, die die KI vorgeschlagen hat</span>
+  <ul>
+    <li>Beschädigtes Benutzerprofil</li>
+    <li>Fehlerhafte Sitzung (Session)</li>
+    <li>Fehlende Berechtigungen</li>
+    <li>Tenant- oder Workspace-Problem</li>
+    <li>Inkonsistenz in der Datenbank</li>
+  </ul>
+</div>
 
 Das sind alles denkbare Möglichkeiten.
 

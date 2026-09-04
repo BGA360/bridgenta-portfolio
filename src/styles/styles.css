@@ -2076,8 +2076,9 @@ section[id] { scroll-margin-top: 100px; }
   margin: 0;
 }
 
-/* Learning Evidence Boundary Callout */
-.learning-evidence-boundary {
+/* Learning Evidence Boundary & Callout Box */
+.learning-evidence-boundary,
+.learning-callout-box {
   border-left: 4px solid var(--magenta);
   background-color: #f8fafc;
   padding: 1.25rem 1.5rem;
@@ -2085,14 +2086,16 @@ section[id] { scroll-margin-top: 100px; }
   border-radius: 6px;
 }
 
-.learning-evidence-boundary p {
+.learning-evidence-boundary p,
+.learning-callout-box p {
   margin: 0 0 var(--space-2) 0;
   font-size: 1.02rem;
   line-height: 1.6;
   color: var(--text-dark);
 }
 
-.learning-evidence-boundary p:last-child {
+.learning-evidence-boundary p:last-child,
+.learning-callout-box p:last-child {
   margin: 0;
 }
 
@@ -2100,7 +2103,17 @@ section[id] { scroll-margin-top: 100px; }
   color: var(--magenta-deep);
 }
 
-.learning-evidence-boundary ul {
+.learning-callout-box strong,
+.learning-callout-box__title {
+  display: block;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--magenta-deep);
+  margin-bottom: 0.75rem;
+}
+
+.learning-evidence-boundary ul,
+.learning-callout-box ul {
   list-style: disc;
   padding-left: 1.25rem;
   margin: 0;
@@ -2113,7 +2126,15 @@ section[id] { scroll-margin-top: 100px; }
   color: var(--text-dark);
 }
 
-.learning-evidence-boundary li:last-child {
+.learning-callout-box li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  font-size: 1.02rem;
+  color: var(--text-dark);
+}
+
+.learning-evidence-boundary li:last-child,
+.learning-callout-box li:last-child {
   margin-bottom: 0;
 }
 
