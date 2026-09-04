@@ -1,0 +1,32 @@
+articleId: "evidenzgrenze-claim-behauptung-ki-softwareentwicklung"
+workingTitle: "Wo die Evidenz endet, muss der Claim enden: KI-Diagnosen und Beleggrenzen"
+learningLevel: "intermediate"
+category: "ai-entwicklung"
+centralLesson: "Plausible KI-Erklärungen ersetzen in der Software-Entwicklung keine nachgewiesenen Belege. Wo die Evidenz endet, muss der behauptete Claim enden."
+
+claims:
+  - id: "CLM-001"
+    statement: "Die Analyse von Gesprächserinnerungen vs. dauerhaften Belegen (public-post-memory-vs-evidence-provenance-plan.md) dokumentiert die Evidenzgrenze bei KI-gestützter Software-Diagnose."
+    sourceType: "GOVERNANCE_DOC"
+    sourceLocator: "docs/becc/learning/public-post-memory-vs-evidence-provenance-plan.md"
+    historicalLocator: "5948dd3027bf2d448a3fece43752a0c2cdfd352c"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary: "Die Dokumentation belegt die Notwendigkeit der Abgrenzung von plausiblen KI-Erklärungen gegenüber dauerhaft nachgewiesenen Belegen."
+  - id: "CLM-002"
+    statement: "Laufzeit-Belege zeigen erfolgreiche Login- und UI-Render-Schritte, während spekulative Tenant/Workspace-Fehlerursachen nicht durch System-Belege gestützt waren."
+    sourceType: "LOG_OUTPUT"
+    sourceLocator: "docs/becc/governance/GOV-FIND-001-RECORD.md"
+    historicalLocator: "5948dd3027bf2d448a3fece43752a0c2cdfd352c"
+    evidenceClass: "DIRECT_EVIDENCE"
+    publicWordingBoundary: "Belegbare Protokolle bestätigen den Laufzeit-Zustand, wohingegen vermutete Ursachen ohne Beleglage als unbestätigt klassifiziert bleiben."
+
+unsupportedOrOpenClaims: "Es wird nicht behauptet, dass KI-Modelle keine nützlichen Hypothesen liefern oder dass Fehlerdiagnosen grundsätzlich unmöglich sind."
+transferabilityBoundary: "Das Prinzip 'Wo Evidenz endet, muss der Claim enden' ist ein allgemeingültiges ingenieurmäßiges Abgrenzungsprinzip für Fehlersuche und Qualitätssicherung."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-010"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "docs/becc/learning/public-post-memory-vs-evidence-provenance-plan.md"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "5948dd3027bf2d448a3fece43752a0c2cdfd352c"
