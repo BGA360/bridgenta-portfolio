@@ -1,6 +1,6 @@
 ---
 title: "Wo die Evidenz endet, muss der Claim enden: KI-Diagnosen und Beleggrenzen"
-description: "Warum plausible KI-Erklärungen in der Software-Entwicklung keine Belege ersetzen und wie echte Laufzeitevidenz Spekulationen abgrenzt."
+description: "Warum plausible KI-Erklärungen in der Software-Entwicklung keine Belege ersetzen und warum beobachtete Laufzeitschritte keine unbelegten Ursachen beweisen."
 category: "ai-entwicklung"
 learningLevel: "intermediate"
 publicationState: "draft"
@@ -23,7 +23,7 @@ Das sind alles denkbare Möglichkeiten.
 
 Aber denkbar ist nicht dasselbe wie belegt.
 
-![Visualisierung der Evidenzgrenze zwischen spekulativen KI-Erklärungen und verifizierten Laufzeit-Belegen](/images/learning/evidenzgrenze-claim-behauptung-ki-softwareentwicklung.jpg)
+![Visualisierung der Evidenzgrenze zwischen belegten Aussagen und spekulativen Erweiterungen](/images/learning/evidenzgrenze-claim-behauptung-ki-softwareentwicklung.jpg)
 
 ## Ein konkretes Beispiel aus der Praxis
 
