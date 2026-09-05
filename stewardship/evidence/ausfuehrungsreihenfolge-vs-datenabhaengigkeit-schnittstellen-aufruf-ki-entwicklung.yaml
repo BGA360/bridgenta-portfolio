@@ -1,0 +1,130 @@
+# BECC Routine Article Evidence Packet v1.0
+# Location: stewardship/evidence/ausfuehrungsreihenfolge-vs-datenabhaengigkeit-schnittstellen-aufruf-ki-entwicklung.yaml
+
+articleId: "ausfuehrungsreihenfolge-vs-datenabhaengigkeit-schnittstellen-aufruf-ki-entwicklung"
+workingTitle: "Ausführungsreihenfolge vs. Datenabhängigkeit: Warum ein Ablaufplan Datenflüsse nicht ersetzen kann"
+learningLevel: "intermediate"
+category: "softwarearchitektur"
+centralLesson: "Eine Reihenfolge im Ablaufplan ist noch kein funktionierender Datenfluss."
+
+claims:
+  - id: "CLM-001"
+    statement: "Der Widerspruch zwischen dem geplanten Ablaufplan und der erforderlichen Datenabhängigkeit wurde in der Spezifikationsprüfung erkannt."
+    sourceType: "SPECIFICATION"
+    sourceLocator: "docs/ECP-WP009-001-PROVIDER-EXECUTION-LIFECYCLE-RESOLUTION.md"
+    historicalLocator: "76b6ed570ee490321825933eece3af77d2852e6f"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-002"
+    statement: "WP-009 war als reine Transport- und Adapter-Schicht definiert und durfte keine Prompts erstellen."
+    sourceType: "CLOSURE_CERTIFICATE"
+    sourceLocator: "docs/engineering-communication/v2/engineering/certificates/WP-009-WORK-PACKAGE-CLOSURE-CERTIFICATE.md"
+    historicalLocator: "76b6ed570ee490321825933eece3af77d2852e6f"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-003"
+    statement: "WP-010 besaß die Verantwortlichkeit für die Prompt-Kompilierung und Eingabe-Zusammenstellung."
+    sourceType: "CLOSURE_CERTIFICATE"
+    sourceLocator: "docs/engineering-communication/v2/engineering/certificates/WP-010-WORK-PACKAGE-CLOSURE-CERTIFICATE.md"
+    historicalLocator: "7a644e97eac7d6c26b135adff3da41c5f9878e4a"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-004"
+    statement: "Der ursprüngliche Ablaufplan sah vor, den Transport-Adapter vor der Prompt-Zusammenstellung aufzurufen."
+    sourceType: "SPECIFICATION"
+    sourceLocator: "docs/ECP-WP009-001-PROVIDER-EXECUTION-LIFECYCLE-RESOLUTION.md"
+    historicalLocator: "76b6ed570ee490321825933eece3af77d2852e6f"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-005"
+    statement: "Im ursprünglichen Ablaufplan konnte der Adapter keinen kompilierten Prompt empfangen, weil dieser erst später erzeugt werden sollte."
+    sourceType: "SPECIFICATION"
+    sourceLocator: "docs/ECP-WP009-001-PROVIDER-EXECUTION-LIFECYCLE-RESOLUTION.md"
+    historicalLocator: "76b6ed570ee490321825933eece3af77d2852e6f"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-006"
+    statement: "Modell A (Zwei-Phasen-Transformation) wurde im ECP als architektonische Lösung empfohlen."
+    sourceType: "SPECIFICATION"
+    sourceLocator: "docs/ECP-WP009-001-PROVIDER-EXECUTION-LIFECYCLE-RESOLUTION.md"
+    historicalLocator: "76b6ed570ee490321825933eece3af77d2852e6f"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-007"
+    statement: "Der formale Genehmigungsstatus der Spezifikationsänderung ist in den kanonischen Quelltexten nicht als eigener Beschluss dokumentiert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "docs/engineering-communication/v2/engineering/BECC-v2-RUNTIME-LIFECYCLE-AMENDMENT-SPECIFICATION.md"
+    historicalLocator: "76b6ed570ee490321825933eece3af77d2852e6f"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-008"
+    statement: "Die Zwei-Phasen-Transformation von Modell A wurde in der Laufzeit-Codebasis umgesetzt."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/transformer/communication-transformation.service.ts"
+    historicalLocator: "7a644e97eac7d6c26b135adff3da41c5f9878e4a"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-009"
+    statement: "Ein Produktivausfall durch den ursprünglichen Ablaufplan ist in den Projektquellen nicht belegt."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-010"
+    statement: "Die umgesetzte Zwei-Phasen-Logik wurde durch automatisierte Unit-Tests verifiziert."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/tests/communication-transformation.test.ts"
+    historicalLocator: "7a644e97eac7d6c26b135adff3da41c5f9878e4a"
+    evidenceClass: "VERIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+unsupportedOrOpenClaims: "Ein Produktivausfall durch die ursprüngliche Reihenfolge ist nicht belegt. Die formale Genehmigung der Spezifikationsänderung ist in den kanonischen Quelltexten nicht als eigener Beschluss dokumentiert."
+transferabilityBoundary: "Die Trennung von Ablaufsteuerung und Datenfluss ist auf alle mehrstufigen Software-Pipelines übertragbar, bei denen Komponenten Daten benötigen, die erst in nachgelagerten oder vorgelagerten Schritten erzeugt werden."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-011"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "docs/ECP-WP009-001-PROVIDER-EXECUTION-LIFECYCLE-RESOLUTION.md"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "76b6ed570ee490321825933eece3af77d2852e6f"

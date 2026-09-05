@@ -78,5 +78,13 @@
     "sourceLocator": "docs/becc/standards/BECC-PUBLIC-LEARNING-STANDARD-v1.0.md",
     "historicalLocatorState": "AVAILABLE",
     "historicalLocator": "ea17fab39a8ebfeebc8a4eb4ea6283ffb5f082bb"
+  },
+  {
+    "eventId": "EV-BG-011",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "docs/ECP-WP009-001-PROVIDER-EXECUTION-LIFECYCLE-RESOLUTION.md",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "76b6ed570ee490321825933eece3af77d2852e6f"
   }
 ]
