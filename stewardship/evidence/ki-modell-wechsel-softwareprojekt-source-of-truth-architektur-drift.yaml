@@ -1,0 +1,119 @@
+# BECC Routine Article Evidence Packet v1.0
+# Location: stewardship/evidence/ki-modell-wechsel-softwareprojekt-source-of-truth-architektur-drift.yaml
+
+articleId: "ki-modell-wechsel-softwareprojekt-source-of-truth-architektur-drift"
+workingTitle: "Was passiert, wenn mitten im Softwareprojekt das KI-Modell wechselt?"
+learningLevel: "beginner"
+category: "ai-entwicklung"
+centralLesson: "Das KI-Modell kann wechseln. Die Regeln des Projekts sollten bleiben."
+
+claims:
+  - id: "CLM-001"
+    statement: "Verschiedene KI-Anbieter und KI-Dienste können über generische Provider-Verträge und Capability-Deskriptoren abstrahiert werden."
+    sourceType: "SPECIFICATION"
+    sourceLocator: "docs/engineering-communication/v2/engineering/certificates/WP-008-WORK-PACKAGE-CLOSURE-CERTIFICATE.md"
+    historicalLocator: "301799f07a2139ee8eeef4c84a8ff6dcbc48f3fb"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-002"
+    statement: "Die Auswahl von Providern und KI-Diensten kann deterministisch über Auswahllogik und Prioritäten geregelt werden."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/broker/service-broker.ts"
+    historicalLocator: "6ab72118b935e3afcdf280c9a75963be456c3998"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-003"
+    statement: "Provider-spezifische Details sind von der übergeordneten Projektarchitektur getrennt."
+    sourceType: "CLOSURE_CERTIFICATE"
+    sourceLocator: "docs/engineering-communication/v2/engineering/certificates/WP-008-WORK-PACKAGE-CLOSURE-CERTIFICATE.md"
+    historicalLocator: "301799f07a2139ee8eeef4c84a8ff6dcbc48f3fb"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-004"
+    statement: "Projektregeln und Architekturvorgaben existieren in dauerhaften Projektartefakten außerhalb einzelner KI-Unterhaltungen."
+    sourceType: "SPECIFICATION"
+    sourceLocator: "docs/engineering-communication/v2/architecture/BECC-v2-CONSTITUTIONAL-KNOWLEDGE-RESOLUTION-ARCHITECTURE.md"
+    historicalLocator: "a31fe2504634375f9557a88defe650a34770c696"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-005"
+    statement: "Regelkonformität und Terminologie-Drift sind explizite Prüfgegenstände im Governance-Framework."
+    sourceType: "SPECIFICATION"
+    sourceLocator: "docs/becc/standards/BECC-PUBLIC-TERMINOLOGY-POLICY-v1.1.md"
+    historicalLocator: "ea17fab39a8ebfeebc8a4eb4ea6283ffb5f082bb"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-006"
+    statement: "Der Runtime-Orchestrator besitzt eine dokumentierte Verantwortlichkeitsgrenze."
+    sourceType: "CLOSURE_CERTIFICATE"
+    sourceLocator: "docs/engineering-communication/v2/engineering/certificates/WP-005-WORK-PACKAGE-CLOSURE-CERTIFICATE.md"
+    historicalLocator: "8c1de2ac65d67bec64211477ef4b3e8f96ee324e"
+    evidenceClass: "SPECIFICATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-007"
+    statement: "Ein konkreter historischer KI-Modellwechsel ist in den Projektquellen nicht dokumentiert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-008"
+    statement: "Ein KI-Modellwechsel mit nachgewiesenem Architektur-Drift ist in den Projektquellen nicht dokumentiert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-009"
+    statement: "Ein Produktivausfall durch das Wechseln von KI-Modellen ist in den Projektquellen nicht belegt."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+unsupportedOrOpenClaims: "Ein konkreter Modellwechsel mit nachgewiesenem Drift-Fall oder ein Produktivausfall durch einen Modellwechsel ist in den Projektquellen nicht dokumentiert."
+transferabilityBoundary: "Die Entkopplung von Projektregeln und Entwicklungsmodellen ist auf alle KI-gestützten Softwareprojekte übertragbar, bei denen Modell-Gedächtnis nicht als verbindliche Quelle der Wahrheit dient."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-012"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "docs/engineering-communication/v2/engineering/certificates/WP-008-WORK-PACKAGE-CLOSURE-CERTIFICATE.md"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "301799f07a2139ee8eeef4c84a8ff6dcbc48f3fb"

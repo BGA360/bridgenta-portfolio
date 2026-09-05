@@ -86,5 +86,13 @@
     "sourceLocator": "docs/ECP-WP009-001-PROVIDER-EXECUTION-LIFECYCLE-RESOLUTION.md",
     "historicalLocatorState": "AVAILABLE",
     "historicalLocator": "76b6ed570ee490321825933eece3af77d2852e6f"
+  },
+  {
+    "eventId": "EV-BG-012",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "docs/engineering-communication/v2/engineering/certificates/WP-008-WORK-PACKAGE-CLOSURE-CERTIFICATE.md",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "301799f07a2139ee8eeef4c84a8ff6dcbc48f3fb"
   }
 ]
