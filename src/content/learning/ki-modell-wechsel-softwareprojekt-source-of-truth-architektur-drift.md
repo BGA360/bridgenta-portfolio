@@ -3,7 +3,8 @@ title: "Was passiert, wenn mitten im Softwareprojekt das KI-Modell wechselt?"
 description: "Ein Wechsel des KI-Modells erzeugt leicht unbemerkt Architektur-Drift. Warum verbindliche Projektregeln außerhalb des Modells liegen müssen, damit das System konsistent bleibt."
 category: "ai-entwicklung"
 learningLevel: "beginner"
-publicationState: "draft"
+publicationState: "published"
+publishedAt: "2026-09-05"
 provenanceRef: "EV-BG-012"
 ---
 
