@@ -3,7 +3,8 @@ title: "Ausführungsreihenfolge vs. Datenabhängigkeit: Warum ein Ablaufplan Dat
 description: "Ein Ablaufplan legt fest, was nacheinander passiert. Ein Datenfluss bestimmt, was vorhanden sein muss. Warum eine falsche Reihenfolge beim Schnittstellen-Aufruf zu Datenmangel führt."
 category: "softwarearchitektur"
 learningLevel: "intermediate"
-publicationState: "draft"
+publicationState: "published"
+publishedAt: "2026-09-05"
 provenanceRef: "EV-BG-011"
 ---
 
