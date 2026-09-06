@@ -1,0 +1,196 @@
+# BECC Routine Article Evidence Packet v1.0
+# Location: stewardship/evidence/wer-genau-ist-dieser-ki-agent.yaml
+
+articleId: "wer-genau-ist-dieser-ki-agent"
+workingTitle: "Wer genau ist dieser KI-Agent?"
+learningLevel: "beginner"
+category: "ki-agenten"
+centralLesson: "Eindeutige Identifikation ist eine wichtige Grundlage für gezielte Kontrolle."
+
+claims:
+  - id: "CLM-001"
+    statement: "Das System definiert Provider-Identitäten über eindeutige Bezeichner wie providerId."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/broker/provider-registry.service.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-002"
+    statement: "Transformations- und Laufzeitmetadaten erfassen die verwendete KI-Modell-ID (modelId)."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/shared/types.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-003"
+    statement: "Menschliche Prüferinnen und Prüfer werden im Review-System durch reviewerId repräsentiert."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/human-review/types.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-004"
+    statement: "Review-Autoritäten sind über zugewiesene Projekte, Klassifikationen und zulässige Entscheidungen begrenzt."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/human-review/reviewer-authority.service.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-005"
+    statement: "Laufzeit- und Bewertungsstrukturen führen eindeutige Sitzungsbezeichner (sessionId)."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/shared/types.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-006"
+    statement: "Das Evidenz-System unterstützt signierte Nachweise mit Provider-Identität und Schlüsselreferenz."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/evidence/types.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-007"
+    statement: "Eine eigenständige, dedizierte KI-Agenten-Identität (agentId) ist in den Projektquellen nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-008"
+    statement: "Eine dauerhafte KI-Agenten-Identität über verschiedene Aktionen hinweg ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-009"
+    statement: "Eine eigene Versionsidentität für autonom handelnde KI-Agenten ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-010"
+    statement: "Die Zuordnung externer Aktionen zu einer eigenständigen KI-Agenten-Identität ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-011"
+    statement: "Ein eigener Verifikationsmechanismus für KI-Agenten-Identitäten ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-012"
+    statement: "Eine kryptografisch an einen KI-Agenten gebundene Identität ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-013"
+    statement: "Ein historischer Vorfall mit einem unbekannten KI-Agenten ist in den Quellen nicht belegt."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-014"
+    statement: "Ein historischer Vorfall bezüglich fehlender Autorisierung oder Zuschreibung bei Agenten ist nicht belegt."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-015"
+    statement: "Ein belegter Laufzeit-Nachweis über den praktischen Einsatz von Zugriffsentzug (Revocation) liegt für RUN-07 nicht vor."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-016"
+    statement: "Die überprüften Governance-Mechanismen stellen noch keine vollständige produktive Durchsetzung dar (M5 im Shadow Mode)."
+    sourceType: "CODEBASE"
+    sourceLocator: "src/utils/m5_adapter.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+unsupportedOrOpenClaims: "Eine eigenständige, überprüfbare oder kryptografisch gebundene KI-Agenten-Identität sowie historische Sicherheitsvorfälle durch unbekannte Agenten sind in den Projektquellen nicht dokumentiert."
+transferabilityBoundary: "Die Unterscheidung zwischen Infrastruktur-Identitäten (Provider, Modell, Sitzung) und eigenständiger Akteurs-Identität ist auf alle KI-gestützten Softwareprojekte übertragbar."
+
+proposedProvenanceEvent:
+  eventId: "EV-BG-013"
+  sourceProject: "bridgenta-core"
+  sourceSystem: "git"
+  sourceLocator: "becc-runtime/evidence/ledger-verification.service.ts"
+  historicalLocatorState: "AVAILABLE"
+  historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"

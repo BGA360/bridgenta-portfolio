@@ -94,5 +94,13 @@
     "sourceLocator": "docs/engineering-communication/v2/engineering/certificates/WP-008-WORK-PACKAGE-CLOSURE-CERTIFICATE.md",
     "historicalLocatorState": "AVAILABLE",
     "historicalLocator": "301799f07a2139ee8eeef4c84a8ff6dcbc48f3fb"
+  },
+  {
+    "eventId": "EV-BG-013",
+    "sourceProject": "bridgenta-core",
+    "sourceSystem": "git",
+    "sourceLocator": "becc-runtime/evidence/ledger-verification.service.ts",
+    "historicalLocatorState": "AVAILABLE",
+    "historicalLocator": "184b463b5b9be09bb6954e50329540f69c106c8d"
   }
 ]
