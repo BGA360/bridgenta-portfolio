@@ -1,6 +1,6 @@
 ---
 title: "Wer genau ist dieser KI-Agent?"
-description: "Wenn KI-Systeme eigenständig Aktionen in digitalen Arbeitsumgebungen ausführen, reichen Modellnamen und Infrastruktur-Logs nicht aus. Warum eindeutige Identität die Voraussetzung für Kontrolle ist."
+description: "Wenn KI-Systeme eigenständig Aktionen in digitalen Arbeitsumgebungen ausführen, reichen Modellnamen und Infrastruktur-Logs nicht aus. Warum eindeutige Identifikation eine wichtige Grundlage für gezielte Kontrolle ist."
 category: "ki-agenten"
 learningLevel: "beginner"
 publicationState: "draft"
