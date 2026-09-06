@@ -8,7 +8,7 @@ publishedAt: "2026-08-30"
 provenanceRef: "EV-BG-004"
 ---
 
-Die automatische Prüfung in der Pipeline läuft durch. Das Symbol springt auf Grün. Das System meldet: kein Fehler gefunden. Doch die fertige Seite enthält falsche Überschriften und verletzt wichtige Projekt-Regeln.
+Die automatische [Prüfung](/lernen/evidenzgrenze-claim-behauptung-ki-softwareentwicklung/) in der Pipeline läuft durch. Das Symbol springt auf Grün. Das System meldet: kein Fehler gefunden. Doch die fertige Seite enthält falsche Überschriften und verletzt wichtige Projekt-Regeln.
 
 Der Test war grün. Trotzdem war die Anforderung nicht erfüllt.
 
@@ -33,7 +33,7 @@ Dieser Vorfall verdeutlicht den Unterschied zwischen formaler und inhaltlicher P
 
 <div class="learning-evidence-boundary">
 
-Ein erfolgreicher Linter- oder Build-Lauf beweist nur, dass die formalen Regeln der Syntax erfüllt sind. Er ist kein Beweis dafür, dass der Inhalt fachlich korrekt ist.
+Ein erfolgreicher [Linter- oder Build-Lauf](/lernen/grenzen-automatisierter-linter-checks/) beweist nur, dass die formalen Regeln der Syntax erfüllt sind. Er ist kein Beweis dafür, dass der Inhalt fachlich korrekt ist.
 
 </div>
 
@@ -41,7 +41,7 @@ Ein erfolgreicher Linter- oder Build-Lauf beweist nur, dass die formalen Regeln 
 
 Um semantische Abweichungen in Ihren Projekten zu verhindern, nutzen Sie dieses Prinzip der komplementären Prüfung:
 
-*   **Prinzip 1 (Ebenen-Trennung):** Ein grüner Linter-Status darf im Freigabeprozess niemals als inhaltliche Freigabe gewertet werden.
+*   **Prinzip 1 (Ebenen-Trennung):** Ein grüner Linter-Status darf im Freigabeprozess niemals als [inhaltliche Freigabe](/lernen/routen-konfiguration-vs-veroeffentlichungsfreigabe/) gewertet werden.
     ```text
       [ Code & Syntax OK ]  --> Linter-Status GRÜN (Formelle Ebene)
               ≠
@@ -67,4 +67,4 @@ Die tatsächliche inhaltliche und sachliche Richtigkeit von Texten oder Daten im
 
 **Source-Fidelity-Audit**
 
-Eine manuelle inhaltliche Prüfung. Sie vergleicht, ob ein veröffentlichter Text mit den realen Entwicklungsdaten und Belegen übereinstimmt.
+Eine manuelle inhaltliche Prüfung. Sie vergleicht, ob ein veröffentlichter Text mit den realen Entwicklungsdaten und [Belegen](/lernen/erinnerung-vs-beleg-beleg-rueckverfolgbarkeit/) übereinstimmt.

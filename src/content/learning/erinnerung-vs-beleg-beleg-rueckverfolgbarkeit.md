@@ -24,7 +24,7 @@ Diese Schilderung klingt schlüssig und passt zum bisherigen Gesprächskontext. 
 
 ## Die Suche im Projektarchiv
 
-Das Team wollte diese technische Verifikation im neuen Leitfaden als konkretes Beispiel anführen. Dafür suchte es im Repository nach dem dauerhaften Beleg: Terminal-Protokollen, Testberichten oder Commit-Notizen, die den damaligen Hash-Abgleich dokumentieren.
+Das Team wollte diese technische Verifikation im neuen Leitfaden als konkretes Beispiel anführen. Dafür suchte es im Repository nach dem dauerhaften [Beleg](/lernen/ai-generierte-nachweise-vs-reale-belege/): Terminal-Protokollen, Testberichten oder Commit-Notizen, die den damaligen Hash-Abgleich dokumentieren.
 
 Das Ergebnis der Nachforschung war eindeutig: Im definierten Suchbereich existiert kein dauerhafter Eintrag über diese Prüfung.
 
@@ -44,15 +44,15 @@ Eine Erinnerung – ob von einem Menschen oder einem KI-System – ist ein wertv
 
 </div>
 
-Wenn eine Erinnerung ohne Beleg als bewiesene Projekttatsache übernommen wird, entsteht eine sogenannte Provenienz-Lücke. In der KI-gestützten Softwareentwicklung ist diese Unterscheidung besonders wichtig, da KI-Modelle Zusammenhänge plausibel formulieren können, ohne dass dafür ein dauerhaftes Protokoll im Dateisystem liegt.
+Wenn eine Erinnerung ohne Beleg als bewiesene Projekttatsache übernommen wird, entsteht eine sogenannte Provenienz-Lücke. In der KI-gestützten Softwareentwicklung ist diese Unterscheidung besonders wichtig, da [KI-Modelle](/lernen/evidenzgrenze-claim-behauptung-ki-softwareentwicklung/) Zusammenhänge plausibel formulieren können, ohne dass dafür ein dauerhaftes Protokoll im Dateisystem liegt.
 
 ## Der Fachbegriff: Beleg-Rückverfolgbarkeit
 
-Für diese Anforderung gibt es einen klaren Begriff: **Beleg-Rückverfolgbarkeit** (Traceability).
+Für diese Anforderung gibt es einen klaren Begriff: **Beleg-Rückverfolgbarkeit** ([Traceability](/lernen/ki-modell-wechsel-softwareprojekt-source-of-truth-architektur-drift/)).
 
 Beleg-Rückverfolgbarkeit bedeutet, dass eine Behauptung oder technische Aussage lückenlos auf eine dauerhafte, überprüfbare und zitierbare Quelle zurückgeführt werden kann.
 
-Eine Quelle kann ein Git-Commit, ein Testprotokoll, ein Freigabedokument oder ein Repository-Eintrag sein. Liegt kein ausreichender dauerhafter Beleg vor, darf die Aussage im Projekt nicht als gesicherte Tatsache behandelt werden.
+Eine Quelle kann ein Git-Commit, ein [Testprotokoll](/lernen/code-fakten-vs-strukturelle-korrektheit/), ein Freigabedokument oder ein Repository-Eintrag sein. Liegt kein ausreichender dauerhafter Beleg vor, darf die Aussage im Projekt nicht als gesicherte Tatsache behandelt werden.
 
 ## Was der Projektbestand wirklich zeigt
 

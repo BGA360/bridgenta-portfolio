@@ -8,7 +8,7 @@ publishedAt: "2026-09-03"
 provenanceRef: "EV-BG-008"
 ---
 
-Eine Projektkennung steht in der Routen-Konfiguration. Dadurch kann sie für die Seitengenerierung ausgewählt werden. Aber damit ist noch nicht nachgewiesen, dass die Veröffentlichungs- und Freigabekriterien für diese Seite erfüllt sind.
+Eine Projektkennung steht in der [Routen-Konfiguration](/lernen/entwurfs-vorschau-vs-veroeffentlichungsstand/). Dadurch kann sie für die Seitengenerierung ausgewählt werden. Aber damit ist noch nicht nachgewiesen, dass die Veröffentlichungs- und [Freigabekriterien](/lernen/code-fakten-vs-strukturelle-korrektheit/) für diese Seite erfüllt sind.
 
 In der Softwareentwicklung entsteht an dieser Stelle leicht ein Missverständnis: Quellcode-Einträge werden mit fachlichen Freigaben verwechselt.
 
@@ -37,7 +37,7 @@ Wenn technische Routen-Konfiguration und Freigabe-Nachweise nicht getrennt gepr�
 
 Um diese Verwechslung zu verhindern, müssen technische Routen-Erzeugung und Freigabe-Entscheidungen getrennt betrachtet werden:
 
-1. **Technische Routen-Konfiguration:** Zeigt, welche Pfade beim Build technisch berücksichtigt werden können.
+1. **Technische Routen-Konfiguration:** Zeigt, welche Pfade beim [Build](/lernen/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit/) technisch berücksichtigt werden können.
 2. **Separate Governance-Entscheidung:** Beantwortet separat, ob die Veröffentlichung tatsächlich autorisiert ist.
 
 Die technische Routen-Liste unterscheidet sich von einer fachlichen Veröffentlichungsentscheidung. Ein beobachteter Quellcode-Fakt allein stellt keine Governance-Entscheidung und keine Veröffentlichungsautorisierung dar.
@@ -46,4 +46,4 @@ Die technische Routen-Liste unterscheidet sich von einer fachlichen Veröffentli
 
 Entwicklerteams sollten technische Pfad-Konfigurationen niemals als Nachweis einer Veröffentlichungsentscheidung interpretieren.
 
-Das Prinzip ist auf andere Webanwendungen übertragbar, wenn technische Routen-Konfiguration und fachliche Veröffentlichungsfreigabe getrennte Entscheidungen sind. Wenn Quellcode-Fakten und fachliche Freigaben getrennt betrachtet werden, lassen sich falsche Ableitungen zwischen technischer Erreichbarkeit und organisatorischer Autorisierung vermeiden.
+Das Prinzip ist auf andere Webanwendungen übertragbar, wenn technische Routen-Konfiguration und fachliche Veröffentlichungsfreigabe getrennte Entscheidungen sind. Wenn Quellcode-Fakten und fachliche Freigaben getrennt betrachtet werden, lassen sich falsche Ableitungen zwischen technischer Erreichbarkeit und organisatorischer [Autorisierung](/lernen/wer-genau-ist-dieser-ki-agent/) vermeiden.

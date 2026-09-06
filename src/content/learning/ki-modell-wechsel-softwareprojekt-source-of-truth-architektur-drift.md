@@ -201,7 +201,7 @@ Dafür müssen technische Verträge, Zuständigkeiten und Entscheidungsregeln au
 
 Wichtig ist dabei aber auch die Beleggrenze:
 
-> Wir können daraus nicht automatisch behaupten, dass jeder Modellwechsel zu Architektur-Drift führt.
+> Wir können daraus nicht automatisch behaupten, dass jeder Modellwechsel zu [Architektur-Drift](/lernen/evidenzgrenze-claim-behauptung-ki-softwareentwicklung/) führt.
 
 Dafür müsste ein konkreter Modellwechsel mit einem nachgewiesenen Drift-Fall dokumentiert sein.
 

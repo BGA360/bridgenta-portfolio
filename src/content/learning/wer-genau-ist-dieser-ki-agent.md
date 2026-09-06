@@ -23,9 +23,9 @@ In der digitalen Welt begegnen wir immer häufiger KI-Systemen, die Aufgaben aus
 Es macht einen wichtigen Unterschied, ob ein KI-System lediglich Inhalte erzeugt oder ob es externe Aktionen ausführt:
 
 - **Inhaltserzeugung (Content Generation):** Ein KI-System fasst Texte zusammen, beantwortet Fragen oder erstellt Entwürfe.
-- **Externe Aktionen (External Action):** Ein KI-Agent führt konkrete Befehle in anderen Systemen aus — er liest, schreibt, löscht oder überträgt Daten über Schnittstellen, Datenbanken oder E-Mail-Programme.
+- **Externe Aktionen (External Action):** Ein KI-Agent führt konkrete Befehle in anderen Systemen aus — er liest, schreibt, löscht oder überträgt Daten über [Schnittstellen](/lernen/ausfuehrungsreihenfolge-vs-datenabhaengigkeit-schnittstellen-aufruf-ki-entwicklung/), Datenbanken oder E-Mail-Programme.
 
-Sobald ein KI-System Aktionen in externen Systemen ausführen darf, entstehen zusätzliche Fragen nach Identität, Autorisierung, Berechtigung und Nachvollziehbarkeit.
+Sobald ein KI-System Aktionen in externen Systemen ausführen darf, entstehen zusätzliche Fragen nach Identität, Autorisierung, Berechtigung und [Nachvollziehbarkeit](/lernen/erinnerung-vs-beleg-beleg-rueckverfolgbarkeit/).
 
 ## Die Kernfragen der Agenten-Governance
 
@@ -54,7 +54,7 @@ Die Identität eines Agenten beantwortet noch nicht die Frage, wer für seinen E
 In der Praxis werden diese Ebenen oft verwechselt:
 
 - **Der Provider** bezeichnet die technische KI-Quelle oder Anbindung, über die ein Modell genutzt wird.
-- **Das Modell** ist die konkrete KI-Modellvariante, die Inhalte erzeugt.
+- **Das Modell** ist die konkrete [KI-Modellvariante](/lernen/ki-modell-wechsel-softwareprojekt-source-of-truth-architektur-drift/), die Inhalte erzeugt.
 - **Der KI-Agent** ist die konkrete Instanz, die mit Werkzeugen, Rollen und Aufträgen in einem System agiert.
 
 Wenn ein System speichert, welches Sprachmodell genutzt wurde, wissen wir noch lange nicht, welcher KI-Agent mit welchen Berechtigungen gehandelt hat.
@@ -67,13 +67,13 @@ In diesem Projekt können bereits mehrere technische und menschliche Beteiligte 
 - Das System erfasst das genaue **Modell** (`modelId`).
 - Das System identifiziert die menschliche **Prüferin oder den Prüfer** (`reviewerId`).
 - Das System kennt die konkrete **Laufzeitsitzung** (`sessionId`).
-- Technische Nachweise können kryptografisch signiert werden.
+- [Technische Nachweise](/lernen/ai-generierte-nachweise-vs-reale-belege/) können kryptografisch signiert werden.
 
 Das zeigt: Mehrere technische und menschliche Beteiligte rund um die Ausführung können bereits getrennt erfasst und zugeordnet werden.
 
 ## Die wichtige Beleggrenze
 
-Aus der Analyse unserer Codebasis ergibt sich jedoch eine klare Beleggrenze, die wir transparent festhalten müssen:
+Aus der Analyse unserer Codebasis ergibt sich jedoch eine klare [Beleggrenze](/lernen/evidenzgrenze-claim-behauptung-ki-softwareentwicklung/), die wir transparent festhalten müssen:
 
 1. **Keine eigenständige Agenten-Identität:** Das Projekt unterscheidet Provider und Reviewer, besitzt derzeit aber noch keine dedizierte, eigene Identität für KI-Agenten (`agentId`).
 2. **Keine überprüfbare Agenten-Identität:** Signierte technische Nachweise existieren für Provider-Schlüssel, aber das bedeutet nicht, dass ein einzelner KI-Agent eine eigene überprüfbare Identität besitzt.
