@@ -24,7 +24,7 @@ this.validators = customValidators || [
   // ...
   { name: 'Secret Scanner', clazz: SecretScanner, failFast: false },
   // ...
-  { name: 'Build Validator', clazz: BuildValidator, failFast: false },
+  { name: '[Build Validator](/lernen/code-fakten-vs-strukturelle-korrektheit/)', clazz: BuildValidator, failFast: false },
   { name: 'Evidence Validator', clazz: EvidenceValidator, failFast: false }
 ];
 ```
@@ -40,7 +40,7 @@ Der **Build Validator** führt eine statische Syntax-Prüfung durch. Er prüft u
 
 Der **Secret Scanner** prüft Dateien nach vordefinierten regulären Ausdrücken auf bekannte API-Schlüssel-Muster. Er kann unbekannte Muster nicht sicher ausschließen.
 
-Der **Evidence Validator** prüft, ob die erwarteten Belegdateien vorhanden, nicht leer, registriert und im vorgesehenen Inhalt referenziert sind. Er prüft damit definierte Evidenzstrukturen, nicht die faktische Wahrheit des Beleginhalts.
+Der **Evidence Validator** prüft, ob die erwarteten Belegdateien vorhanden, nicht leer, registriert und im vorgesehenen Inhalt referenziert sind. Er prüft damit definierte [Evidenzstrukturen](/lernen/ai-generierte-nachweise-vs-reale-belege/), nicht die faktische Wahrheit des Beleginhalts.
 
 ## Grenzen statischer Kontrollen
 
@@ -50,7 +50,7 @@ Aus diesem Grund ergänzen wir automatisierte Kontrollen durch manuelle Reviews.
 
 Der **Fresh-Reader-Review** prüft die Verständlichkeit und logische Hinführung ohne internes Vorwissen. Ein menschlicher Leser liest das Dokument aus der Sicht eines Außenstehenden.
 
-Der **Source-Fidelity-Audit** vergleicht die im Text gemachten Aussagen direkt mit den Git-Commits und Protokollen des Quellprojekts (Single Source of Truth). Der Review prüft, ob Aussagen, Chronologien und andere Projektangaben mit den identifizierten Quellen übereinstimmen und die Evidenzgrenzen eingehalten werden.
+Der **Source-Fidelity-Audit** vergleicht die im Text gemachten Aussagen direkt mit den Git-Commits und Protokollen des Quellprojekts ([Single Source of Truth](/lernen/ki-modell-wechsel-softwareprojekt-source-of-truth-architektur-drift/)). Der Review prüft, ob Aussagen, Chronologien und andere Projektangaben mit den identifizierten Quellen übereinstimmen und die Evidenzgrenzen eingehalten werden.
 
 Automatisierte Prüfungen und manuelle Reviews ergänzen sich. Sie beantworten unterschiedliche Fragen und liefern verschiedene Arten von Evidenz.
 

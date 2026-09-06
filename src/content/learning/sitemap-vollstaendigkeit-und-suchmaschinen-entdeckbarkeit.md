@@ -8,11 +8,11 @@ publishedAt: "2026-09-03"
 provenanceRef: "EV-BG-007"
 ---
 
-Ein Build läuft ohne Fehler durch. Die HTML-Seite wurde erzeugt. Alles sieht richtig aus. Aber damit ist noch nicht bewiesen, dass alle erwarteten Veröffentlichungsartefakte vollständig sind.
+Ein [Build](/lernen/code-fakten-vs-strukturelle-korrektheit/) läuft ohne Fehler durch. Die HTML-Seite wurde erzeugt. Alles sieht richtig aus. Aber damit ist noch nicht bewiesen, dass alle erwarteten Veröffentlichungsartefakte vollständig sind.
 
 ## Die unbemerkte Entdeckbarkeitslücke
 
-Bei einer statisch erzeugten Website können neben den eigentlichen HTML-Seiten für Besucher weitere Veröffentlichungsartefakte entstehen. Bei BridGenta gehört dazu eine strukturierte XML-Sitemap (`sitemap.xml`) für Web-Crawler.
+Bei einer statisch erzeugten Website können neben den eigentlichen HTML-Seiten für Besucher weitere Veröffentlichungsartefakte entstehen. Bei BridGenta gehört dazu eine strukturierte XML-[Sitemap](/lernen/routen-konfiguration-vs-veroeffentlichungsfreigabe/) (`sitemap.xml`) für Web-Crawler.
 
 Während des Builds kann eine neue Unterseite erfolgreich als HTML-Datei gerendert werden; es kann jedoch vorkommen, dass eine Seite erzeugt wurde, aber im erwarteten Sitemap-Artefakt fehlt.
 
@@ -54,13 +54,13 @@ Anstatt manuelle Stichproben nach jedem Deployment durchzuführen, wird die Veri
 Nach dem Generieren der Website prüft ein automatisiertes Skript das Dateisystem der fertigen Build-Ausgabe (`dist/`):
 
 1. **Existenz der Ausgabedatei:** Liegt die kompilierte HTML-Datei vor?
-2. **Ausschluss von Entwürfen:** Befindet sich die Datei außerhalb des Vorschau-Pfads?
+2. **Ausschluss von Entwürfen:** Befindet sich die Datei außerhalb des [Vorschau-Pfads](/lernen/entwurfs-vorschau-vs-veroeffentlichungsstand/)?
 3. **Sitemap-Inklusion:** Enthält `dist/sitemap.xml` die exakte kanonische URL des Artikels?
 
 Sollte der Eintrag in der `sitemap.xml` fehlen, erkennt der automatisierte Publish-Check diesen konkreten Fehlerfall und beendet die Prüfung mit einem Fehlerstatus (`DISCOVERY: FAIL`). Damit dieser Fehlerstatus eine Veröffentlichung technisch blockiert, muss der Check zusätzlich in einen verbindlichen Merge- oder Release-Prozess eingebunden sein.
 
 ## Übertragbare Erkenntnis für Softwareprojekte
 
-Verifikations-Pipelines sollten niemals nur das Ergebnis von Erzeugungsschritten abfragen, sondern stets die tatsächlichen Endprodukte (Artefakte) untersuchen.
+[Verifikations-Pipelines](/lernen/grenzen-automatisierter-linter-checks/) sollten niemals nur das Ergebnis von Erzeugungsschritten abfragen, sondern stets die tatsächlichen Endprodukte (Artefakte) untersuchen.
 
 Das Prinzip ist auf andere statisch erzeugte Websites übertragbar, wenn Seiten-Erzeugung und Discovery-/Sitemap-Artefakte getrennt geprüft werden können. Die Einbindung automatisierter Artefakt-Checks in einen verbindlichen Release-Prozess reduziert das Risiko, dass unvollständige Veröffentlichungsstände online gehen. So wird aus einem rein technischen Build-Erfolg ein verlässlich überprüfter Veröffentlichungs-Zustand.

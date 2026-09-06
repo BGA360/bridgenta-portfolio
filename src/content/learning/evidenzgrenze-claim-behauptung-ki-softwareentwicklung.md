@@ -8,7 +8,7 @@ publishedAt: "2026-09-04"
 provenanceRef: "EV-BG-010"
 ---
 
-Wo die Evidenz (Beleglage) endet, muss der Claim (die Behauptung) enden.
+Wo die [Evidenz](/lernen/erinnerung-vs-beleg-beleg-rueckverfolgbarkeit/) (Beleglage) endet, muss der Claim (die Behauptung) enden.
 
 Etwas, das ich in der KI-gestützten Softwareentwicklung immer wieder beobachte:
 

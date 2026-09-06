@@ -8,7 +8,7 @@ publishedAt: "2026-09-05"
 provenanceRef: "EV-BG-011"
 ---
 
-Ein Ablaufplan legt fest, was nacheinander passieren soll.
+Ein [Ablaufplan](/lernen/code-fakten-vs-strukturelle-korrektheit/) legt fest, was nacheinander passieren soll.
 
 Eine Datenabhängigkeit bestimmt, welche Eingaben ein Schritt tatsächlich benötigt.
 
@@ -84,7 +84,7 @@ Für die Qualitätssicherung ist es wichtig, den Nachweis-Status präzise abzugr
 * **Codebasis-Umsetzung:** Die Zwei-Phasen-Logik wurde in den Laufzeit-Modulen (`becc-runtime`) implementiert.
 * **Automatische Tests:** Unit-Tests verifizieren, dass Phase A ein gültiges Envelope erzeugt und Phase B die Rückgabe korrekt umwandelt.
 
-Gleichzeitig bleiben zwei Grenzen bestehen: Die formale Beschlussfassung der Spezifikationsänderung ist in den kanonischen Quellen nicht als eigener Freigabebeschluss dokumentiert (`NOT_ESTABLISHED`). Ein Produktivausfall durch die ursprüngliche Reihenfolge ist nicht belegt. Die Quellen dokumentieren den Widerspruch bereits auf Architektur- und Spezifikationsebene.
+Gleichzeitig bleiben zwei Grenzen bestehen: Die formale Beschlussfassung der Spezifikationsänderung ist in den kanonischen Quellen nicht als eigener [Freigabebeschluss](/lernen/routen-konfiguration-vs-veroeffentlichungsfreigabe/) dokumentiert (`NOT_ESTABLISHED`). Ein Produktivausfall durch die ursprüngliche Reihenfolge ist nicht belegt. Die Quellen dokumentieren den Widerspruch bereits auf Architektur- und Spezifikationsebene.
 
 ## Übertragbare Erkenntnis für Softwareprojekte
 
@@ -92,7 +92,7 @@ Das Verhältnis von Steuerfluss und Datenfluss betrifft nahezu jede mehrstufige 
 
 * **REST-APIs:** Ein Client kann keine Detailressource abfragen, deren ID erst im nächsten Schritt erzeugt wird.
 * **ETL-Pipelines:** Eine Transformation kann keine Spalten berechnen, deren Rohdaten noch nicht geladen wurden.
-* **Agenten-Systeme:** Ein KI-Agent kann kein Werkzeug mit Ergebnissen aufrufen, die erst eine spätere Denkphase liefert.
+* **Agenten-Systeme:** Ein [KI-Agent](/lernen/wer-genau-ist-dieser-ki-agent/) kann kein Werkzeug mit Ergebnissen aufrufen, die erst eine spätere Denkphase liefert.
 
 Ein Ablaufplan ist eine Absichtserklärung über die Reihenfolge. Funktionsfähig wird ein System aber erst, wenn der Datenfluss jeden einzelnen Schritt mit seinen notwendigen Voraussetzungen versorgt.
 

@@ -13,7 +13,7 @@ Auf dem Papier sieht alles perfekt aus.
 Die formale Prüfung ist als bestanden markiert.
 
 Am Ende des Dokuments steht ein Name: *„Dr. Marcus Vance – Lead Technical Auditor“*.
-Dadurch wirkt der Bericht wie eine echte menschliche Freigabe.
+Dadurch wirkt der Bericht wie eine echte [menschliche Freigabe](/lernen/code-fakten-vs-strukturelle-korrektheit/).
 
 Doch dieser Prüfer existiert nicht.
 Die manuelle Prüfung hat in Wirklichkeit nie stattgefunden.
@@ -42,7 +42,7 @@ Der Vorfall zeigt ein wichtiges Risiko bei der Arbeit mit künstlicher Intellige
 ## Was bedeutet Evidenz-Integrität?
 
 Wenn wir Software veröffentlichen, müssen wir die Einhaltung unserer Qualitätsregeln belegen.
-Diese Belege nennen wir **Evidenz**.
+Diese [Belege](/lernen/evidenzgrenze-claim-behauptung-ki-softwareentwicklung/) nennen wir **[Evidenz](/lernen/erinnerung-vs-beleg-beleg-rueckverfolgbarkeit/)**.
 
 **Evidenz-Integrität** bedeutet: Nachweise müssen echt, unverändert und wahrheitsgemäß sein.
 Wenn ein AI-Modell Belege erfindet, wird diese Integrität verletzt.

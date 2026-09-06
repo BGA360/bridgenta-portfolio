@@ -10,9 +10,9 @@ provenanceRef: "EV-BG-009"
 
 Wer Artikel für eine Plattform verfasst, muss das fertige Layout vor der Veröffentlichung prüfen. Textformatierung, Bilder und Hinweis-Boxen sehen im Quellcode anders aus als auf dem Bildschirm.
 
-Beim Aufbau der Veröffentlichungs-Pipeline für BridGenta stand das Entwicklungs-Team vor einer konkreten Architekturfrage: Wie lässt sich ein Entwurf lokal im echten Seitendesign der Anwendung prüfen, ohne dass er als regulärer öffentlicher Lernartikel generiert wird?
+Beim Aufbau der [Veröffentlichungs-Pipeline](/lernen/revert-der-tinacms-build-integration/) für BridGenta stand das Entwicklungs-Team vor einer konkreten Architekturfrage: Wie lässt sich ein Entwurf lokal im echten Seitendesign der Anwendung prüfen, ohne dass er als regulärer öffentlicher Lernartikel generiert wird?
 
-In diesem Artikel erklären wir am Praxis-Beispiel unserer Routing-Architektur, wie eine getrennte Vorschau-Route den Freigabeprozess absichert.
+In diesem Artikel erklären wir am Praxis-Beispiel unserer Routing-Architektur, wie eine getrennte [Vorschau-Route](/lernen/routen-konfiguration-vs-veroeffentlichungsfreigabe/) den Freigabeprozess absichert.
 
 ## Das Schauplatz-Problem im Redaktions-Workflow
 
@@ -21,10 +21,10 @@ Beim Erstellen neuer Lernartikel entsteht zunächst eine Entwurfs-Datei. Dieser 
 Damit die Redaktion den Artikel im originalen Seitendesign bewerten kann, muss das System die Markdown-Datei in HTML umwandeln und anzeigen. Wird hierfür fälschlicherweise die öffentliche Haupt-Route verwendet, könnten unbeabsichtigte Auslieferungsrisiken entstehen:
 
 * Öffentliche Übersichtsseiten könnten unfertige Artikel anzeigen.
-* Automatische Sitemaps oder Feed-Generatoren könnten Entwürfe erfassen.
+* Automatische [Sitemaps](/lernen/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit/) oder Feed-Generatoren könnten Entwürfe erfassen.
 * Suchmaschinen-Crawler könnten unvollständige Texte verarbeiten.
 
-Eine Sichtprüfung über die reguläre öffentliche Route würde somit die gewollte Freigabegrenze untergraben.
+Eine [Sichtprüfung](/lernen/layout-absicherung-in-mobilen-ansichten/) über die reguläre öffentliche Route würde somit die gewollte Freigabegrenze untergraben.
 
 ## Warum die Routentrennung entscheidend ist
 
