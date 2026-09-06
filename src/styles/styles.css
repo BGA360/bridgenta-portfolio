@@ -1947,6 +1947,29 @@ section[id] { scroll-margin-top: 100px; }
   margin-bottom: 1.25rem;
 }
 
+.learning-prose .tina-content a {
+  color: var(--magenta);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  transition: color 0.15s ease;
+}
+
+.learning-prose .tina-content a:visited {
+  color: var(--magenta-deep);
+}
+
+.learning-prose .tina-content a:hover {
+  color: var(--magenta-deep);
+  text-decoration: underline;
+}
+
+.learning-prose .tina-content a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+
 .learning-prose .tina-content h2 {
   font-size: clamp(1.4rem, 2.5vw, 1.8rem);
   margin-top: var(--space-4); /* 2rem */
