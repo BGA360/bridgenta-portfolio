@@ -1,0 +1,19 @@
+{
+  "id": "ki-agenten",
+  "name": "KI-Agenten",
+  "slug": "ki-agenten",
+  "description": "Konzepte, Governance-Modelle und Sicherheitsanforderungen für autonome und teilautonome KI-Agenten im Praxiseinsatz.",
+  "purpose": "Vermittlung von Methoden zur Identität, Autorisierung, Governance und kontrollierten Orchestrierung von KI-Agenten in Softwareprojekten.",
+  "includedTopics": [
+    "Identität, Authentifizierung und Vertrauensmodelle für KI-Agenten",
+    "Berechtigungssteuerung, Tool-Zugriffe und Entzugsmechanismen (Revocation)",
+    "Governance, Verantwortlichkeiten, Action Attribution und Human-in-the-Loop",
+    "Orchestrierung, Delegation und Protokolle in Multi-Agenten-Systemen",
+    "Agenten-Versionierung, Auditierung und nachvollziehbare Entscheidungswege"
+  ],
+  "excludedTopics": [
+    "Allgemeines Prompting und einfache Code-Generierung ohne Agenten-Autorität",
+    "Manuelle Systemadministration ohne autonome Komponenten",
+    "Reine KI-Modellauswahl ohne Governance- oder Berechtigungsfokus"
+  ]
+}
