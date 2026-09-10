@@ -1,0 +1,207 @@
+# BECC Routine Article Evidence Packet v1.0
+# Location: stewardship/evidence/was-ist-ein-ki-agent-einfach-erklaert.yaml
+
+articleId: "was-ist-ein-ki-agent-einfach-erklaert"
+workingTitle: "Was ist ein KI-Agent? Einfach erklärt"
+learningLevel: "beginner"
+category: "ki-agenten"
+centralLesson: "Ein KI-Agent kombiniert ein KI-Modell mit definierten Abläufen, Werkzeugen und Steuerungsgrenzen."
+
+claims:
+  - id: "CLM-001"
+    statement: "Der Gesamtablauf folgt einer festgelegten Zustandsmaschine (RuntimeStateMachine) mit statischem Workflow."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/orchestrator/orchestrator.service.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-002"
+    statement: "Das System definiert Datenstrukturen für Bewertungsanfragen (AssessmentRequest), Kontext (AssessmentContext) und Laufzeitstatus."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/shared/types.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-003"
+    statement: "Provider-Identitäten werden über eindeutige Bezeichner (providerId) registriert und verwaltet."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/broker/provider-registry.service.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-004"
+    statement: "Laufzeitmetadaten erfassen die verwendete Modell-ID (modelId) der KI-Transformation."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/shared/types.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-005"
+    statement: "Menschliche Prüferinnen und Prüfer werden im Review-System durch reviewerId repräsentiert."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/human-review/types.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-006"
+    statement: "Review-Autoritäten sind über zugewiesene Projekte, Klassifikationen und permittedDecisions begrenzt."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/human-review/reviewer-authority.service.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-007"
+    statement: "Ergebnisse durchlaufen vor der Übernahme obligatorische Prüf- und Freigabeschritte (Human-in-the-Loop)."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/human-review/human-review.service.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-008"
+    statement: "Provider-, Modell-, Sitzungs- und Reviewer-Identitäten sind in Rückverfolgbarkeitsstrukturen verknüpft."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/evidence/types.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-009"
+    statement: "Provider-Registrierungen unterstützen die Deaktivierung (enabled = false) einzelner Provider."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/broker/provider-registry.service.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-010"
+    statement: "Evidenzprüfungen unterstützen die Auswertung widerrufener Schlüssel (TrustStatus.KEY_REVOKED)."
+    sourceType: "CODEBASE"
+    sourceLocator: "becc-runtime/evidence/ledger-verification.service.ts"
+    historicalLocator: "184b463b5b9be09bb6954e50329540f69c106c8d"
+    evidenceClass: "IMPLEMENTATION"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-011"
+    statement: "Eine eigenständige KI-Agenten-Akteurs-Identität (agentId) ist in den Projektquellen nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-012"
+    statement: "Ein dynamisches Werkzeugauswahl- und Werkzeugausführungssystem für KI-Agenten ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-013"
+    statement: "Ein modellgetriebener, dynamischer Planungs- und Re-Planungsmechanismus ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-014"
+    statement: "Eine freie, autonome Ausführungsschleife für KI-Agenten ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-015"
+    statement: "Ein langfristiges oder sitzungsübergreifendes KI-Agenten-Gedächtnissystem ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-016"
+    statement: "Ein eigenes Rechte- und Rollensystem für KI-Agenten ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-017"
+    statement: "Ein Widerrufsmechanismus für KI-Agenten-Zugriffe ist nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
+
+  - id: "CLM-018"
+    statement: "Unkontrollierte externe Seiteneffekte durch KI-Agenten sind nicht etabliert."
+    sourceType: "ABSENCE_STATE"
+    sourceLocator: "NONE"
+    historicalLocator: "NOT_AVAILABLE"
+    evidenceClass: "INFERENCE"
+    publicWordingBoundary:
+      internalPathsSanitized: true
+      secretsExcluded: true
+      publicSummaryAllowed: true
