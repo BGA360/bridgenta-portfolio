@@ -3,7 +3,8 @@ title: "Was ist ein KI-Agent? Einfach erklärt"
 description: "Was ist ein KI-Agent? Einfach erklärt: Wie sich Agent, KI-Modell, Provider, Chatbot und Automatisierung unterscheiden und welche Rolle Kontext, Werkzeuge und Software-Regeln spielen."
 category: "ki-agenten"
 learningLevel: "beginner"
-publicationState: "draft"
+publicationState: "published"
+publishedAt: "2026-09-10"
 provenanceRef: "EV-BG-014"
 ---
 
