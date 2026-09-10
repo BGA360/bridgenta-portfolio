@@ -7,10 +7,15 @@ publicationState: "published"
 publishedAt: "2026-09-10"
 provenanceRef: "EV-BG-014"
 ---
+## Was ist ein KI-Agent?
 
 Ein KI-Agent ist mehr als ein einfaches KI-Modell oder ein Chatbot. Während ein KI-Modell lediglich Text auf Basis von Wahrscheinlichkeiten generiert, kombiniert ein KI-Agent dieses Modell mit definierten Abläufen, Schnittstellen und Zielvorgaben, um komplexe Aufgaben schrittweise zu bearbeiten.
 
 Um den Begriff im Alltag und in der Softwareentwicklung richtig einzuordnen, hilft die Unterscheidung zwischen allgemeinen Konzepten und den konkreten Eigenschaften, die in einem Softwaresystem tatsächlich umgesetzt sind.
+
+![Diagramm eines möglichen KI-Agentensystems: Ein KI-Modell ist Teil einer größeren Software mit Auftrag, Kontext, Regeln und möglichen Werkzeugen. Je nach Aufbau kann auch eine menschliche Freigabe vorgesehen sein.](/images/learning/was-ist-ein-ki-agent-einfach-erklaert.webp)
+
+Das KI-Modell kann ein wichtiger Teil eines Agentensystems sein. Das Modell allein ist jedoch noch kein Agent.
 
 ## Der Unterschied zwischen KI-Modell, Chatbot und KI-Agent
 
