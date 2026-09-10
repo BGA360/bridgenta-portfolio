@@ -15,7 +15,7 @@ Um den Begriff im Alltag und in der Softwareentwicklung richtig einzuordnen, hil
 
 In der Praxis werden die Begriffe KI-Modell, Provider, Chatbot und KI-Agent häufig verwechselt. Sie beschreiben jedoch unterschiedliche Ebenen eines Gesamtsystems:
 
-- **KI-Modell (z. B. GPT-4, Claude):** Der mathematische Kern, der nach der Eingabe von Text eine Wahrscheinlichkeitsberechnung durchführt und eine Antwort erzeugt. Das Modell selbst trifft keine unabhängigen Entscheidungen und führt von sich aus keine Aktionen aus.
+- **KI-Modell (z. B. GPT-4, Claude):** Der mathematische Kern, der nach der Eingabe von Text eine Wahrscheinlichkeitsberechnung durchführt und eine Antwort erzeugt. Das Modell selbst trifft keine unabhängigen Entscheidungen und führt von sich aus keine Aktionen aus. Wie Regeln außerhalb des Modells verankert bleiben, [wenn das KI-Modell im Softwareprojekt wechselt](/lernen/ki-modell-wechsel-softwareprojekt-source-of-truth-architektur-drift/), ist für die Stabilität entscheidend.
 - **Provider (z. B. OpenAI, Anthropic):** Der Dienstleister oder die technische Infrastruktur, die das KI-Modell bereitstellt, aufruft und die Abrechnung sowie den Zugriff steuert.
 - **Chatbot:** Eine Benutzeroberfläche, die Texteingaben an ein KI-Modell weiterleitet und die Antwort an den Nutzer zurückgibt. Der Ablauf beschränkt sich meist auf eine direkte Frage-Antwort-Interaktion.
 - **KI-Agent:** Ein Softwaresystem, das ein KI-Modell einbettet und mit Logik, Kontext und Arbeitsfunktionen ausstattet. Ein Agent führt mehrere Schritte nacheinander aus, wertet Zwischenergebnisse aus und arbeitet auf ein festgelegtes Ziel hin.
@@ -38,7 +38,7 @@ Allgemein versteht man unter fortgeschrittenen KI-Agenten oft autonome Systeme, 
 
 ### Konkret im Systemstand umgesetzte Eigenschaften (Nachgewiesen)
 Im aktuellen Systemstand von BridGenta zeigt sich ein präzise geregeltes Bild:
-- **Statische Workflows statt freier Autonomie:** Der Gesamtablauf folgt einer festgelegten Zustandsmaschine (`RuntimeStateMachine`). Jeder Schritt ist deterministisch geregelt.
+- **Statische Workflows statt freier Autonomie:** Der Gesamtablauf folgt einer festgelegten Zustandsmaschine (`RuntimeStateMachine`), in der [Ausführungsreihenfolge und Schnittstellen-Aufrufe](/lernen/ausfuehrungsreihenfolge-vs-datenabhaengigkeit-schnittstellen-aufruf-ki-entwicklung/) deterministisch geregelt sind.
 - **Strikte Identitäts- und Rollentrennung:** Das System unterscheidet eindeutig zwischen Provider-Identität (`providerId`), Modell (`modelId`), Sitzung (`sessionId`) und menschlicher Prüfinstanz (`reviewerId`). Eine eigene, eigenständige „Agenten-Identität“ ist im Systemstand nicht etabliert.
 - **Menschliche Freigabegrenzen (Human-in-the-Loop):** Bevor Ergebnisse übernommen oder freigegeben werden, durchlaufen sie definierte Prüf- und Review-Schritte durch autorisierte Personen.
 
