@@ -11,6 +11,7 @@ import {
   CrossFrameworkScopeSchema,
   ApprovedLessonSchema,
   RefusalCodeEnumSchema,
+  LearningAuthorityLevelEnumSchema,
 } from '../src/index.js';
 
 describe('Canonical Contract Schemas', () => {
@@ -99,5 +100,13 @@ describe('Canonical Contract Schemas', () => {
         status: 'ACTIVE',
       })
     );
+  });
+
+  test('LearningAuthorityLevelEnum accepts exact SSoT values and rejects invalid values', () => {
+    assert.equal(LearningAuthorityLevelEnumSchema.parse('INFORMATIONAL'), 'INFORMATIONAL');
+    assert.equal(LearningAuthorityLevelEnumSchema.parse('ADVISORY'), 'ADVISORY');
+    assert.equal(LearningAuthorityLevelEnumSchema.parse('CONSTITUTIONAL_MANDATE'), 'CONSTITUTIONAL_MANDATE');
+    assert.equal(Object.keys(LearningAuthorityLevelEnumSchema.enum).length, 3);
+    assert.throws(() => LearningAuthorityLevelEnumSchema.parse('INVALID_LEVEL'));
   });
 });

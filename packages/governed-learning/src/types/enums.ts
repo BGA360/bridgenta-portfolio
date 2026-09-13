@@ -38,6 +38,14 @@ export const AuthorityTypeEnumSchema = z.enum([
 ]);
 export type AuthorityTypeEnum = z.infer<typeof AuthorityTypeEnumSchema>;
 
+export const LearningAuthorityLevelEnumSchema = z.enum([
+  'INFORMATIONAL',
+  'ADVISORY',
+  'CONSTITUTIONAL_MANDATE',
+]);
+export type LearningAuthorityLevelEnum = z.infer<typeof LearningAuthorityLevelEnumSchema>;
+
+
 export const ScopeTypeEnumSchema = z.enum(['SINGLE_FRAMEWORK', 'CROSS_FRAMEWORK', 'SYSTEM_WIDE']);
 export type ScopeTypeEnum = z.infer<typeof ScopeTypeEnumSchema>;
 
