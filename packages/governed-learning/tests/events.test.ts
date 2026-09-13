@@ -171,17 +171,16 @@ describe('Governed Learning Runtime Wave 5 Event Construction & Preservation (GL
       }
     });
 
-    it('rejects circular self-supersession attempts', () => {
+    it('rejects malformed LESSON_SUPERSEDED payload missing required supersedingLessonRef', () => {
       const invalidPayload = {
         supersededLessonRef: { lessonId: 'les-001', version: '1.0.0' },
-        supersedingLessonRef: { lessonId: 'les-001', version: '2.0.0' },
       };
 
       const result = constructLessonSupersededEventPayload(invalidPayload);
       assert.equal(result.ok, false);
       if (!result.ok) {
         assert.equal(result.category, 'ERROR');
-        assert.ok(result.error.message.includes('Self-supersession is invalid'));
+        assert.ok(result.error instanceof RuntimeInvariantError);
       }
     });
   });

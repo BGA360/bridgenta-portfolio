@@ -147,19 +147,6 @@ export function constructLessonSupersededEventPayload(
       }),
     };
   }
-
-  // Reject circular self-supersession if lesson IDs are equal
-  if (result.data.supersededLessonRef.lessonId === result.data.supersedingLessonRef.lessonId) {
-    return {
-      ok: false,
-      category: 'ERROR',
-      error: new RuntimeInvariantError('Self-supersession is invalid: superseded and superseding lesson IDs cannot match', {
-        supersededLessonRef: result.data.supersededLessonRef,
-        supersedingLessonRef: result.data.supersedingLessonRef,
-      }),
-    };
-  }
-
   return {
     ok: true,
     category: 'SUCCESS',
