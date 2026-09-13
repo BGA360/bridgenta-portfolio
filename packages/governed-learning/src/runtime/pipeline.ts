@@ -407,20 +407,12 @@ export class GovernanceProcessingPipeline {
         }
 
         case 'IDEMPOTENCY_DETERMINISTIC_CHECK': {
-          // Deterministic commandId presence check (OPEN-GL-RUNTIME-005 policy execution deferred)
-          if (!currentEnvelope || typeof currentEnvelope.commandId !== 'string' || currentEnvelope.commandId.length === 0) {
-            stageSuccess = false;
-            stageError = new RuntimeInvariantError('Invalid or missing commandId for idempotency tracking');
-          }
+          // Pass-through orchestration boundary placeholder (OPEN-GL-RUNTIME-005 policy execution deferred)
           break;
         }
 
         case 'CONCURRENCY_CONTROL_CHECK': {
-          // Deterministic metadata validity check (OPEN-GL-RUNTIME-006 strategy execution deferred)
-          if (!currentEnvelope) {
-            stageSuccess = false;
-            stageError = new RuntimeInvariantError('Missing command envelope for concurrency metadata check');
-          }
+          // Pass-through orchestration boundary placeholder (OPEN-GL-RUNTIME-006 strategy execution deferred)
           break;
         }
 

@@ -181,4 +181,14 @@ describe('Governed Learning Runtime Wave 3 Pipeline & Dispatcher', () => {
     assert.ok(result.error instanceof GovernedLearningRuntimeError);
     assert.equal('refusalCode' in result, false);
   });
+
+  test('Stage 8 (idempotency) and Stage 9 (concurrency) function as pass-through neutral placeholders', () => {
+    const pipeline = new GovernanceProcessingPipeline();
+    const result = pipeline.processCommand(validSubmitObservationCommand);
+    assert.equal(result.ok, true);
+    const stage8 = result.stageOutcomes.find((s: RuntimeExecutionStageOutcome) => s.stageId === 'IDEMPOTENCY_DETERMINISTIC_CHECK');
+    const stage9 = result.stageOutcomes.find((s: RuntimeExecutionStageOutcome) => s.stageId === 'CONCURRENCY_CONTROL_CHECK');
+    assert.equal(stage8?.status, 'COMPLETED');
+    assert.equal(stage9?.status, 'COMPLETED');
+  });
 });
