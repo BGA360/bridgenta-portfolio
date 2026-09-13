@@ -1,0 +1,30 @@
+{
+  "name": "@cep/governed-learning",
+  "version": "0.1.0",
+  "description": "Governed Learning physical schema implementation for the Constitutional Engineering Platform (CEP)",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/**/*.test.js"
+  },
+  "dependencies": {
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.25.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "typescript": "^5.5.2"
+  },
+  "keywords": [
+    "cep",
+    "constitutional-engineering",
+    "governed-learning",
+    "schemas",
+    "zod"
+  ],
+  "author": "BridGenta CEP Platform Team",
+  "license": "UNLICENSED",
+  "private": true
+}
