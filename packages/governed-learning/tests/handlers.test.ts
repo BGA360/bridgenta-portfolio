@@ -106,7 +106,7 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     }
   });
 
-  it('handleCreateLessonCandidateCommand enforces non-empty originating observations', () => {
+  it('handleCreateLessonCandidateCommand creates candidate state from payload refs', () => {
     const env = { ...baseEnvelope, commandType: 'CreateLessonCandidate' as const };
     const validPayload = {
       statement: 'Retry transient timeouts with exponential backoff',
@@ -119,13 +119,7 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     if (resValid.ok && resValid.category === 'SUCCESS') {
       const data = resValid.data as any;
       assert.equal(data.state, 'CANDIDATE');
-    }
-
-    const invalidPayload = { ...validPayload, originatingObservationRefs: [] };
-    const resInvalid = handleCreateLessonCandidateCommand({ envelope: env, payload: invalidPayload });
-    assert.equal(resInvalid.ok, false);
-    if (!resInvalid.ok && resInvalid.category === 'REFUSED') {
-      assert.equal(resInvalid.refusalCode, 'REFUSAL_UNVALIDATED_OBSERVATION');
+      assert.equal(data.originatingObservationCount, 1);
     }
   });
 
@@ -140,17 +134,15 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     }
   });
 
-  it('handleInvalidateLessonCandidateCommand requires non-empty reason', () => {
+  it('handleInvalidateLessonCandidateCommand transitions candidate to REJECTED with reason', () => {
     const env = { ...baseEnvelope, commandType: 'InvalidateLessonCandidate' as const };
     const validPayload = { lessonFamilyRef: { lessonId: 'lsn_3001' }, reason: 'Superseded prior to review' };
     const resValid = handleInvalidateLessonCandidateCommand({ envelope: env, payload: validPayload });
     assert.equal(resValid.ok, true);
-
-    const invalidPayload = { lessonFamilyRef: { lessonId: 'lsn_3001' }, reason: '   ' };
-    const resInvalid = handleInvalidateLessonCandidateCommand({ envelope: env, payload: invalidPayload });
-    assert.equal(resInvalid.ok, false);
-    if (!resInvalid.ok && resInvalid.category === 'REFUSED') {
-      assert.equal(resInvalid.refusalCode, 'REFUSAL_INSUFFICIENT_EVIDENCE');
+    if (resValid.ok && resValid.category === 'SUCCESS') {
+      const data = resValid.data as any;
+      assert.equal(data.state, 'REJECTED');
+      assert.equal(data.reason, 'Superseded prior to review');
     }
   });
 
@@ -262,7 +254,7 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     }
   });
 
-  it('handleBuildGuidanceSetQueryCommand returns refusal for query out of scope', () => {
+  it('handleBuildGuidanceSetQueryCommand returns runtime error for deferred query command', () => {
     const env = { ...baseEnvelope, commandType: 'BuildGuidanceSetQuery' as const };
     const payload = {
       queryId: 'gq_5001',
@@ -271,8 +263,8 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     };
     const res = handleBuildGuidanceSetQueryCommand({ envelope: env, payload });
     assert.equal(res.ok, false);
-    if (!res.ok && res.category === 'REFUSED') {
-      assert.equal(res.refusalCode, 'REFUSAL_SCOPE_MISMATCH');
+    if (!res.ok && res.category === 'ERROR') {
+      assert.match(res.error.message, /BuildGuidanceSetQuery is a query payload deferred/);
     }
   });
 

@@ -1,5 +1,4 @@
 import type { GovernanceCommandEnvelope } from '../contracts/envelopes.js';
-import type { RefusalCodeEnum } from '../types/enums.js';
 import type {
   RuntimeOperationResult,
 } from './types.js';
@@ -33,7 +32,7 @@ export type CommandHandlerOutcome<T = unknown> = RuntimeOperationResult<T>;
 
 /**
  * GL-IMPL-UNIT-004: Governed Learning Runtime Command Handlers
- * Executes domain transition logic for accepted commands.
+ * Executes domain transition logic for accepted commands and produces transition outcome intent DTOs.
  * Preserves separation from event construction, persistence, query/replay, and unresolved governance questions.
  */
 
@@ -116,17 +115,6 @@ export function handleRecordInterpretiveValidationCommand(
 export function handleCreateLessonCandidateCommand(
   input: CommandHandlerInput<z.infer<typeof CreateLessonCandidateCommandPayloadSchema>>
 ): CommandHandlerOutcome {
-  if (
-    !input.payload.originatingObservationRefs ||
-    input.payload.originatingObservationRefs.length === 0
-  ) {
-    return {
-      ok: false,
-      category: 'REFUSED',
-      refusalCode: 'REFUSAL_UNVALIDATED_OBSERVATION',
-      reason: 'Lesson candidate creation requires at least one originating observation reference',
-    };
-  }
   return {
     ok: true,
     category: 'SUCCESS',
@@ -156,14 +144,6 @@ export function handleSubmitLessonForReviewCommand(
 export function handleInvalidateLessonCandidateCommand(
   input: CommandHandlerInput<z.infer<typeof InvalidateLessonCandidateCommandPayloadSchema>>
 ): CommandHandlerOutcome {
-  if (!input.payload.reason || input.payload.reason.trim().length === 0) {
-    return {
-      ok: false,
-      category: 'REFUSED',
-      refusalCode: 'REFUSAL_INSUFFICIENT_EVIDENCE',
-      reason: 'Invalidating a lesson candidate requires a non-empty reason',
-    };
-  }
   return {
     ok: true,
     category: 'SUCCESS',
@@ -295,9 +275,8 @@ export function handleBuildGuidanceSetQueryCommand(
 ): CommandHandlerOutcome {
   return {
     ok: false,
-    category: 'REFUSED',
-    refusalCode: 'REFUSAL_SCOPE_MISMATCH',
-    reason: 'BuildGuidanceSetQuery is a query payload deferred to query/replay wave',
+    category: 'ERROR',
+    error: new RuntimeInvariantError('BuildGuidanceSetQuery is a query payload deferred to query/replay wave'),
   };
 }
 
