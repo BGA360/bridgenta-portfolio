@@ -13,7 +13,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": [
-      "../../becc-runtime/node_modules/@types",
       "./node_modules/@types"
     ]
   },
