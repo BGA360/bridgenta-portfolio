@@ -9,9 +9,7 @@
     "build": "tsc",
     "test": "node --test dist/tests/**/*.test.js"
   },
-  "dependencies": {
-    "@cep/platform-orchestrator": "file:../platform-orchestrator"
-  },
+  "dependencies": {},
   "keywords": [
     "cep",
     "constitutional-engineering",
