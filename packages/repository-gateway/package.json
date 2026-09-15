@@ -11,9 +11,7 @@
   },
   "dependencies": {
     "@cep/assessment-core": "file:../assessment-core",
-    "@cep/evidence-manager": "file:../evidence-manager",
-    "@cep/rule-engine": "file:../rule-engine",
-    "@cep/platform-orchestrator": "file:../platform-orchestrator"
+    "@cep/evidence-manager": "file:../evidence-manager"
   },
   "keywords": [
     "cep",
