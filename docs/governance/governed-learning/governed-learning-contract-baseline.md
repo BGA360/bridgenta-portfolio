@@ -12,7 +12,7 @@
 | **Lifecycle Stage** | `CEP Stage F — Platform Evolution` |
 | **Implementation Relationship** | `UPSTREAM_OF_PHYSICAL_IMPLEMENTATION` |
 | **Repository SSoT Path** | `docs/governance/governed-learning/governed-learning-contract-baseline.md` |
-| **Active Amendments** | [`GL-CONTRACT-AMENDMENT-001`](file:///c:/antigravity/statichtmlpro/fdrefs/docs/governance/governed-learning/governed-learning-contract-amendment-001.md) (Strategy C Lifecycle & Structural Specification Amendment) |
+| **Active Amendments** | [`GL-CONTRACT-AMENDMENT-001`](./governed-learning-contract-amendment-001.md) (Strategy C Lifecycle & Structural Specification Amendment) |
 
 ---
 

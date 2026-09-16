@@ -96,8 +96,13 @@ The following initial waves are formally closed and preserved without modificati
 - `packages/governed-learning/src/runtime/events.ts`
 - `packages/governed-learning/tests/events.test.ts`
 
-### Canonical Physical Event Set (Strategy C Reconciled Discriminators)
-*Governance Alignment Notice (GL-CONTRACT-AMENDMENT-001):* Physical event discriminators below are aligned to canonical Strategy C contract catalog event types (`CTR-GL-013` through `CTR-GL-035`):
+### Target Canonical Event Set for R2 Reconciliation
+The following event discriminators define the authoritative Strategy C target model (`GL-CONTRACT-AMENDMENT-001` / `CTR-GL-013` through `CTR-GL-035`).
+
+They do NOT claim that the current `runtime/events.ts` implementation already emits these discriminators.
+
+Until R2 is implemented and verified, the existing physical runtime remains legacy implementation subject to reconciliation.
+
 1. `OBSERVATION_INGESTED` (former `OBSERVATION_CREATED`, `CTR-GL-013`)
 2. `OBSERVATION_VALIDATED` (`CTR-GL-015`)
 3. `LESSON_CANDIDATE_PROPOSED` (former `LESSON_CANDIDATE_CREATED`, `CTR-GL-018`)
