@@ -12,6 +12,7 @@
 | **Lifecycle Stage** | `CEP Stage F — Platform Evolution` |
 | **Implementation Relationship** | `UPSTREAM_OF_PHYSICAL_IMPLEMENTATION` |
 | **Repository SSoT Path** | `docs/governance/governed-learning/governed-learning-contract-baseline.md` |
+| **Active Amendments** | [`GL-CONTRACT-AMENDMENT-001`](file:///c:/antigravity/statichtmlpro/fdrefs/docs/governance/governed-learning/governed-learning-contract-amendment-001.md) (Strategy C Lifecycle & Structural Specification Amendment) |
 
 ---
 
@@ -27,7 +28,11 @@ The governance hierarchy requires strict upstream-to-downstream derivation:
 
 $$\text{ACCEPTED GOVERNANCE HISTORY} \longrightarrow \text{PERSISTED GOVERNANCE BASELINE} \longrightarrow \text{COMMITTED SSoT} \longrightarrow \text{IMPLEMENTATION VERIFICATION}$$
 
-Physical implementations (`packages/governed-learning/src/`), test suites, or execution artifacts do not define or amend governance baseline rules. The physical implementation must conform to this baseline document.
+Physical implementations (`packages/governed-learning/src/`), test suites, or execution artifacts do not define or amend governance baseline rules. The physical implementation must conform to this baseline document and its active amendments.
+
+### 1.3 Active Governance Amendments
+This frozen baseline is formally extended and amended by:
+- **`GL-CONTRACT-AMENDMENT-001`**: Governed Learning Contract Baseline — Strategy C Lifecycle & Structural Amendment (`docs/governance/governed-learning/governed-learning-contract-amendment-001.md`). Persists Strategy C tri-enum domain separation, candidate identity boundaries (`candidateId`), and 21 R1 property-level structural contract specifications.
 
 ---
 
