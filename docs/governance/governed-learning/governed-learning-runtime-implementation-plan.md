@@ -96,20 +96,28 @@ The following initial waves are formally closed and preserved without modificati
 - `packages/governed-learning/src/runtime/events.ts`
 - `packages/governed-learning/tests/events.test.ts`
 
-### Canonical Physical Event Set (Exactly 7 Discriminators)
-1. `OBSERVATION_CREATED`
-2. `OBSERVATION_VALIDATED`
-3. `LESSON_CANDIDATE_CREATED`
-4. `LESSON_APPROVED`
-5. `LESSON_SUPERSEDED`
-6. `LESSON_RETIRED`
-7. `LESSON_ADOPTED`
+### Target Canonical Event Set for R2 Reconciliation
+The following event discriminators define the authoritative Strategy C target model (`GL-CONTRACT-AMENDMENT-001` / `CTR-GL-013` through `CTR-GL-035`).
+
+They do NOT claim that the current `runtime/events.ts` implementation already emits these discriminators.
+
+Until R2 is implemented and verified, the existing physical runtime remains legacy implementation subject to reconciliation.
+
+1. `OBSERVATION_INGESTED` (former `OBSERVATION_CREATED`, `CTR-GL-013`)
+2. `OBSERVATION_VALIDATED` (`CTR-GL-015`)
+3. `LESSON_CANDIDATE_PROPOSED` (former `LESSON_CANDIDATE_CREATED`, `CTR-GL-018`)
+4. `LESSON_CANDIDATE_APPROVED` (`CTR-GL-020`)
+5. `LESSON_PUBLISHED` (Canonical publication event, `CTR-GL-023`)
+6. `LESSON_DEPRECATED` (former `LESSON_RETIRED`, `CTR-GL-025`)
+7. `LESSON_SUPERSEDED` (`CTR-GL-026`)
+8. `PROSPECTIVE_ADOPTION_ADOPTED` (former `LESSON_ADOPTED`, `CTR-GL-033`)
+9. `PROSPECTIVE_ADOPTION_WITHDRAWN` (`CTR-GL-035`)
 
 ### Key Boundaries & Rules
 - **Handler Result $\neq$ Canonical Event:** Handlers return execution outcome DTOs; Wave 5 event construction constructs physical canonical events from validated handler outcomes.
 - **Event Construction $\neq$ Persistence:** Wave 5 builds event structures in memory; it does not write to a database or append-only store.
 - **Event Construction $\neq$ Emission:** Wave 5 does not emit events over a network or message bus.
-- **Event Construction $\neq$ Authority Decision:** Wave 5 requires explicit recorded decision inputs (`humanReviewerId`, `governanceAuthorityId`) for authority-sensitive events (`OBSERVATION_VALIDATED`, `LESSON_APPROVED`, `LESSON_SUPERSEDED`, `LESSON_RETIRED`, `LESSON_ADOPTED`). It never infers or manufactures authority.
+- **Event Construction $\neq$ Authority Decision:** Wave 5 requires explicit recorded decision inputs (`humanReviewerId`, `governanceAuthorityId`) for authority-sensitive events (`OBSERVATION_VALIDATED`, `LESSON_CANDIDATE_APPROVED`, `LESSON_PUBLISHED`, `LESSON_DEPRECATED`, `LESSON_SUPERSEDED`, `PROSPECTIVE_ADOPTION_ADOPTED`, `PROSPECTIVE_ADOPTION_WITHDRAWN`). It never infers or manufactures authority.
 - **Preservation Meaning:** Structural preservation of unsupported event payload versions using `HistoricalEventPreservationEnvelope` (`CTR-GL-056`) without throwing unhandled parse exceptions. `CTR-GL-057` (`HistoricalCommandPreservationEnvelope`) is deferred to historical replay (Wave 7).
 - **Version Strategy:** Consumes payload schema version provided in input or defaults to current canonical payload schema version under `OPEN-GL-RUNTIME-004` boundary without inventing a version generator.
 - **Event Identity / Timestamp:** Populates structurally required fields in payload/envelope using input references without replacing pipeline execution timestamps.
