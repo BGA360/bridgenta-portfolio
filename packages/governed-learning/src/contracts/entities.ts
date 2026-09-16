@@ -8,6 +8,7 @@ import {
   DigestValueSchema,
   VersionValueSchema,
   RuleCandidateIdSchema,
+  RuleCandidateProposalIdSchema,
   RuleManifestIdSchema,
   ProjectIdSchema,
   WorkstreamIdSchema,
@@ -238,7 +239,7 @@ export type LessonReviewRecord = z.infer<typeof LessonReviewRecordSchema>;
  */
 export const RuleCandidateProposalRecordSchema = z
   .object({
-    proposalId: RuleCandidateIdSchema,
+    proposalId: RuleCandidateProposalIdSchema,
     ruleManifestId: RuleManifestIdSchema,
     proposedRule: z.string().min(1),
     rationale: z.string().min(1),

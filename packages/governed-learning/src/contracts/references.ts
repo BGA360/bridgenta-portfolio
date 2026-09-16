@@ -15,6 +15,7 @@ import {
   ProjectIdSchema,
   WorkstreamIdSchema,
   RuleCandidateIdSchema,
+  RuleCandidateProposalIdSchema,
   CriteriaIdSchema,
 } from '../types/primitives.js';
 import { ActorTypeEnumSchema } from '../types/enums.js';
@@ -105,7 +106,7 @@ export type EventRef = z.infer<typeof EventRefSchema>;
  */
 export const RuleCandidateProposalRefSchema = z
   .object({
-    proposalId: RuleCandidateIdSchema,
+    proposalId: RuleCandidateProposalIdSchema,
   })
   .strict();
 export type RuleCandidateProposalRef = z.infer<typeof RuleCandidateProposalRefSchema>;

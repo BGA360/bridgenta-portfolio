@@ -54,19 +54,14 @@ export type ProspectiveAdoptionStatusEnum = z.infer<typeof ProspectiveAdoptionSt
  */
 export const LessonStatusEnumSchema = z.enum([
   'CANDIDATE',
-  'IN_REVIEW',
   'APPROVED',
-  'REJECTED',
-  'REVISION_REQUESTED',
   'SUPERSEDED',
   'RETIRED',
   'ADOPTED',
-  'PUBLISHED',
-  'DEPRECATED',
 ]);
 export type LessonStatusEnum = z.infer<typeof LessonStatusEnumSchema>;
 
-export const ReviewOutcomeEnumSchema = z.enum(['APPROVE', 'REJECT', 'REQUEST_REVISION']);
+export const ReviewOutcomeEnumSchema = z.enum(['APPROVED', 'REJECTED', 'REVISION_REQUESTED']);
 export type ReviewOutcomeEnum = z.infer<typeof ReviewOutcomeEnumSchema>;
 
 export const ActorTypeEnumSchema = z.enum(['HUMAN', 'AGENT', 'SYSTEM', 'GOVERNANCE_BODY']);

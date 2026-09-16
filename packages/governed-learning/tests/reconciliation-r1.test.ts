@@ -4,7 +4,9 @@ import {
   LessonCandidateStatusEnumSchema,
   PublishedLessonStatusEnumSchema,
   ProspectiveAdoptionStatusEnumSchema,
+  ReviewOutcomeEnumSchema,
 } from '../src/types/enums.js';
+import { RuleCandidateProposalIdSchema } from '../src/types/primitives.js';
 import {
   ObservationRefSchema,
   LessonRefSchema,
@@ -81,15 +83,24 @@ describe('Governed Learning Contract Reconciliation R1 GL-CONTRACT-AMENDMENT-001
     assert.equal(invalidCandidate.success, false);
   });
 
-  it('5. LessonCandidateEvaluationRecord uses candidateRef', () => {
+  it('5. LessonCandidateEvaluationRecord uses candidateRef and canonical ReviewOutcomeEnum', () => {
     const evalRecord = LessonCandidateEvaluationRecordSchema.safeParse({
+      candidateRef: { candidateId: 'CAN-001' },
+      outcome: 'APPROVED',
+      evaluatedAt: '2026-09-01T10:00:00.000Z',
+      evaluatedBy: { actorId: 'ACT-001', actorType: 'HUMAN' },
+      decisionRef: { decisionId: 'DEC-001' },
+    });
+    assert.equal(evalRecord.success, true);
+
+    const legacyOutcomeRecord = LessonCandidateEvaluationRecordSchema.safeParse({
       candidateRef: { candidateId: 'CAN-001' },
       outcome: 'APPROVE',
       evaluatedAt: '2026-09-01T10:00:00.000Z',
       evaluatedBy: { actorId: 'ACT-001', actorType: 'HUMAN' },
       decisionRef: { decisionId: 'DEC-001' },
     });
-    assert.equal(evalRecord.success, true);
+    assert.equal(legacyOutcomeRecord.success, false);
   });
 
   it('6. LessonRef requires lessonId + version', () => {
@@ -220,5 +231,57 @@ describe('Governed Learning Contract Reconciliation R1 GL-CONTRACT-AMENDMENT-001
     assert.ok(LearningContextQuerySchema);
     assert.ok(LearningContextQueryResultSchema);
     assert.ok(GovernancePersistencePortSchema);
+  });
+
+  it('14. ReviewOutcomeEnum accepts APPROVED, REJECTED, REVISION_REQUESTED and rejects legacy values', () => {
+    assert.deepStrictEqual(ReviewOutcomeEnumSchema.options, ['APPROVED', 'REJECTED', 'REVISION_REQUESTED']);
+    assert.equal(ReviewOutcomeEnumSchema.safeParse('APPROVED').success, true);
+    assert.equal(ReviewOutcomeEnumSchema.safeParse('REJECTED').success, true);
+    assert.equal(ReviewOutcomeEnumSchema.safeParse('REVISION_REQUESTED').success, true);
+
+    assert.equal(ReviewOutcomeEnumSchema.safeParse('APPROVE').success, false);
+    assert.equal(ReviewOutcomeEnumSchema.safeParse('REJECT').success, false);
+    assert.equal(ReviewOutcomeEnumSchema.safeParse('REQUEST_REVISION').success, false);
+  });
+
+  it('15. RuleCandidateProposalRef accepts proposalId through RuleCandidateProposalId', () => {
+    const validPropId = RuleCandidateProposalIdSchema.parse('PROP-100');
+    assert.equal(validPropId, 'PROP-100');
+
+    const validRef = RuleCandidateProposalRefSchema.safeParse({ proposalId: 'PROP-100' });
+    assert.equal(validRef.success, true);
+
+    const validRecord = RuleCandidateProposalRecordSchema.safeParse({
+      proposalId: 'PROP-100',
+      ruleManifestId: 'RM-001',
+      proposedRule: 'Pre-commit linting required',
+      rationale: 'Ensures clean code base',
+      sourceLessonRef: { lessonId: 'LES-001', version: '1.0.0' },
+      proposedAt: '2026-09-01T10:00:00.000Z',
+      proposedBy: { actorId: 'ACT-001', actorType: 'HUMAN' },
+    });
+    assert.equal(validRecord.success, true);
+  });
+
+  it('16. RuleCandidateReviewRecord uses canonical ReviewOutcomeEnum', () => {
+    const validReview = RuleCandidateReviewRecordSchema.safeParse({
+      proposalRef: { proposalId: 'PROP-100' },
+      outcome: 'APPROVED',
+      reviewedBy: { actorId: 'ACT-001', actorType: 'HUMAN' },
+      reviewedAt: '2026-09-01T10:00:00.000Z',
+      comments: 'Rule candidate meets governance standards',
+      decisionRef: { decisionId: 'DEC-001' },
+    });
+    assert.equal(validReview.success, true);
+
+    const legacyReview = RuleCandidateReviewRecordSchema.safeParse({
+      proposalRef: { proposalId: 'PROP-100' },
+      outcome: 'APPROVE',
+      reviewedBy: { actorId: 'ACT-001', actorType: 'HUMAN' },
+      reviewedAt: '2026-09-01T10:00:00.000Z',
+      comments: 'Rule candidate meets governance standards',
+      decisionRef: { decisionId: 'DEC-001' },
+    });
+    assert.equal(legacyReview.success, false);
   });
 });
