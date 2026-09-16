@@ -29,7 +29,6 @@ export interface Stage1EligibilityFilterResult {
     readonly lessonId: string;
     readonly reason: string;
   }>;
-  readonly evaluatedAt: string;
 }
 
 /**
@@ -60,7 +59,7 @@ function checkScopeCompatibility(
     return true; // No framework constraint in query
   }
   if (!lessonScope || typeof lessonScope !== 'object') {
-    return true; // Default system-wide compatibility if unconstrained
+    return true; // Unconstrained compatibility if missing explicit scope
   }
 
   const scopeType = lessonScope.scopeType as string | undefined;
@@ -97,7 +96,6 @@ function checkTargetCompatibility(
   queryWorkstreamId?: string,
   queryTargetRef?: Record<string, unknown>
 ): boolean {
-  // Check project adoption constraint if query specifies a project ID
   if (queryProjectId) {
     const adoptedRef = lesson.adoptedByProjectRef as Record<string, unknown> | undefined;
     if (adoptedRef) {
@@ -110,7 +108,6 @@ function checkTargetCompatibility(
     }
   }
 
-  // Check targetRef if provided in query or lesson
   if (queryTargetRef && typeof queryTargetRef === 'object') {
     const targetCategory = queryTargetRef.targetCategory as string | undefined;
 
@@ -137,7 +134,8 @@ function checkTargetCompatibility(
 /**
  * Filter eligible guidance items deterministically (GL-IMPL-UNIT-008).
  * Applies Stage 1 deterministic eligibility rules:
- * - Excludes non-APPROVED lessons (RETIRED, SUPERSEDED, CANDIDATE, REJECTED, DRAFT).
+ * - Enforces TargetRef / target parameter requirement (INV-GL-033).
+ * - Excludes inactive lessons (RETIRED, SUPERSEDED, DEPRECATED, CANDIDATE, IN_REVIEW, REJECTED).
  * - Excludes scope mismatches (frameworkRef).
  * - Excludes target mismatches (projectId, workstreamId, targetRef).
  * - Orders results deterministically by recency (approvedAt / createdAt descending) and lessonId ascending.
@@ -153,12 +151,6 @@ export function filterEligibleGuidance(
       error: new RuntimeInvariantError('Input candidates for deterministic eligibility filter must be an array'),
     };
   }
-
-  const nowIso = new Date().toISOString();
-  const clonedCandidates = candidatesInput.map((item) => deepClone(item) as Record<string, unknown>);
-
-  const eligibleItems: Array<Record<string, unknown>> = [];
-  const exclusionReasons: Array<{ lessonId: string; reason: string }> = [];
 
   // Extract explicit query framework and target criteria
   let frameworkId = queryParams.frameworkId;
@@ -179,17 +171,33 @@ export function filterEligibleGuidance(
     }
   }
 
+  // Enforce INV-GL-033: LearningContextQuery MUST specify TargetRef or target context parameters
+  const hasTargetRef = queryParams.targetRef !== undefined && queryParams.targetRef !== null;
+  const hasTargetContext = Boolean(frameworkId || projectId || workstreamId || queryParams.scope);
+
+  if (!hasTargetRef && !hasTargetContext) {
+    return {
+      ok: false,
+      category: 'ERROR',
+      error: new RuntimeInvariantError('LearningContextQuery must specify TargetRef or target context parameters (INV-GL-033)'),
+    };
+  }
+
+  const clonedCandidates = candidatesInput.map((item) => deepClone(item) as Record<string, unknown>);
+
+  const eligibleItems: Array<Record<string, unknown>> = [];
+  const exclusionReasons: Array<{ lessonId: string; reason: string }> = [];
+
   for (const item of clonedCandidates) {
     const lessonId =
       (item.lessonId as string) ??
       (item.lessonRef as Record<string, unknown>)?.lessonId ??
       'UNKNOWN_LESSON';
 
-    // 1. Exclude non-APPROVED lessons (RETIRED, SUPERSEDED, CANDIDATE, REJECTED, DRAFT)
     const status = item.status as string | undefined;
 
-    if (status === 'RETIRED') {
-      exclusionReasons.push({ lessonId: String(lessonId), reason: 'EXCLUDED_RETIRED_LESSON' });
+    if (status === 'RETIRED' || status === 'DEPRECATED') {
+      exclusionReasons.push({ lessonId: String(lessonId), reason: 'EXCLUDED_INACTIVE_LESSON' });
       continue;
     }
 
@@ -198,14 +206,14 @@ export function filterEligibleGuidance(
       continue;
     }
 
-    if (status === 'CANDIDATE' || status === 'DRAFT' || status === 'IN_REVIEW' || status === 'REJECTED') {
+    if (status === 'CANDIDATE' || status === 'IN_REVIEW' || status === 'REJECTED') {
       exclusionReasons.push({ lessonId: String(lessonId), reason: `EXCLUDED_UNAPPROVED_STATUS_${status}` });
       continue;
     }
 
-    // Require status APPROVED if status property is present
-    if (status !== undefined && status !== 'APPROVED') {
-      exclusionReasons.push({ lessonId: String(lessonId), reason: `EXCLUDED_NON_APPROVED_STATUS_${status}` });
+    // Require active status (PUBLISHED or APPROVED) if status property is present
+    if (status !== undefined && status !== 'APPROVED' && status !== 'PUBLISHED') {
+      exclusionReasons.push({ lessonId: String(lessonId), reason: `EXCLUDED_NON_ACTIVE_STATUS_${status}` });
       continue;
     }
 
@@ -254,7 +262,6 @@ export function filterEligibleGuidance(
     excludedItemsCount: exclusionReasons.length,
     eligibleItems: finalEligibleItems.map((item) => deepClone(item)),
     exclusionReasons: exclusionReasons.map((r) => deepClone(r)),
-    evaluatedAt: nowIso,
   };
 
   return {
@@ -273,22 +280,13 @@ export class DeterministicEligibilityFilter {
 
   /**
    * Filters a candidate set of lessons or guidance items deterministically.
+   * Requires explicit candidate items array. Does NOT fetch or misuse event logs from persistence.
    */
   public filterEligible(
     candidates?: ReadonlyArray<unknown>,
     queryParams?: Stage1EligibilityQueryParams
   ): RuntimeOperationResult<Stage1EligibilityFilterResult> {
-    let itemsToFilter = candidates;
-
-    if (!itemsToFilter && this.persistencePort) {
-      const getRes = this.persistencePort.getEvents();
-      if (!getRes.ok) {
-        return getRes;
-      }
-      itemsToFilter = getRes.data;
-    }
-
-    if (!itemsToFilter) {
+    if (!candidates) {
       return {
         ok: false,
         category: 'ERROR',
@@ -296,6 +294,6 @@ export class DeterministicEligibilityFilter {
       };
     }
 
-    return filterEligibleGuidance(itemsToFilter, queryParams);
+    return filterEligibleGuidance(candidates, queryParams);
   }
 }
