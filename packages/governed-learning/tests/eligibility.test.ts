@@ -17,17 +17,17 @@ describe('DeterministicEligibilityFilter & filterEligibleGuidance (GL-IMPL-UNIT-
     filter = new DeterministicEligibilityFilter(repository);
   });
 
-  it('1. targetRef present -> eligible filtering proceeds', () => {
+  it('1. PUBLISHED lesson with matching target/scope is eligible', () => {
     const candidates = [
       {
         lessonId: 'LES-001',
-        statement: 'Run build validation pre-commit',
-        status: 'APPROVED',
+        statement: 'Published advisory lesson',
+        status: 'PUBLISHED',
         scope: {
           scopeType: 'SINGLE_FRAMEWORK',
           frameworkRef: { frameworkId: 'ASTRO_FW' },
         },
-        approvedAt: '2026-09-01T10:00:00Z',
+        publishedAt: '2026-09-01T10:00:00Z',
       },
     ];
 
@@ -41,12 +41,85 @@ describe('DeterministicEligibilityFilter & filterEligibleGuidance (GL-IMPL-UNIT-
       assert.equal(res.data.totalCandidatesEvaluated, 1);
       assert.equal(res.data.eligibleItemsCount, 1);
       assert.equal(res.data.excludedItemsCount, 0);
+      assert.equal(res.data.eligibleItems[0].status, 'PUBLISHED');
     }
   });
 
-  it('2. no targetRef -> ERROR (INV-GL-033)', () => {
+  it('2. DEPRECATED lesson is excluded', () => {
     const candidates = [
-      { lessonId: 'LES-001', status: 'APPROVED', approvedAt: '2026-09-01T10:00:00Z' },
+      {
+        lessonId: 'LES-002',
+        statement: 'Deprecated lesson',
+        status: 'DEPRECATED',
+      },
+    ];
+
+    const res = filterEligibleGuidance(candidates, { targetRef: validTargetRef });
+    assert.equal(res.ok, true);
+    if (res.ok) {
+      assert.equal(res.data.eligibleItemsCount, 0);
+      assert.equal(res.data.excludedItemsCount, 1);
+      assert.equal(res.data.exclusionReasons[0].reason, 'EXCLUDED_INACTIVE_LESSON');
+    }
+  });
+
+  it('3. SUPERSEDED lesson is excluded', () => {
+    const candidates = [
+      {
+        lessonId: 'LES-003',
+        statement: 'Superseded lesson',
+        status: 'SUPERSEDED',
+      },
+    ];
+
+    const res = filterEligibleGuidance(candidates, { targetRef: validTargetRef });
+    assert.equal(res.ok, true);
+    if (res.ok) {
+      assert.equal(res.data.eligibleItemsCount, 0);
+      assert.equal(res.data.excludedItemsCount, 1);
+      assert.equal(res.data.exclusionReasons[0].reason, 'EXCLUDED_SUPERSEDED_LESSON');
+    }
+  });
+
+  it('4. APPROVED is not treated as equivalent to PUBLISHED', () => {
+    const candidates = [
+      {
+        lessonId: 'LES-004',
+        statement: 'Approved physical schema lesson',
+        status: 'APPROVED',
+      },
+    ];
+
+    const res = filterEligibleGuidance(candidates, { targetRef: validTargetRef });
+    assert.equal(res.ok, true);
+    if (res.ok) {
+      assert.equal(res.data.eligibleItemsCount, 0);
+      assert.equal(res.data.excludedItemsCount, 1);
+      assert.equal(res.data.exclusionReasons[0].reason, 'EXCLUDED_NON_PUBLISHED_STATUS_APPROVED');
+    }
+  });
+
+  it('5. RETIRED is not treated as equivalent to DEPRECATED', () => {
+    const candidates = [
+      {
+        lessonId: 'LES-005',
+        statement: 'Retired physical schema lesson',
+        status: 'RETIRED',
+      },
+    ];
+
+    const res = filterEligibleGuidance(candidates, { targetRef: validTargetRef });
+    assert.equal(res.ok, true);
+    if (res.ok) {
+      assert.equal(res.data.eligibleItemsCount, 0);
+      assert.equal(res.data.excludedItemsCount, 1);
+      assert.equal(res.data.exclusionReasons[0].reason, 'EXCLUDED_NON_PUBLISHED_STATUS_RETIRED');
+    }
+  });
+
+  it('6. missing TargetRef returns ERROR (INV-GL-033)', () => {
+    const candidates = [
+      { lessonId: 'LES-001', status: 'PUBLISHED', publishedAt: '2026-09-01T10:00:00Z' },
     ];
 
     const res = filterEligibleGuidance(candidates, {});
@@ -56,89 +129,26 @@ describe('DeterministicEligibilityFilter & filterEligibleGuidance (GL-IMPL-UNIT-
     }
   });
 
-  it('3. frameworkId without targetRef -> ERROR (INV-GL-033)', () => {
+  it('7. context-only fields cannot substitute for TargetRef', () => {
     const candidates = [
-      { lessonId: 'LES-001', status: 'APPROVED', approvedAt: '2026-09-01T10:00:00Z' },
+      { lessonId: 'LES-001', status: 'PUBLISHED', publishedAt: '2026-09-01T10:00:00Z' },
     ];
 
-    const res = filterEligibleGuidance(candidates, { frameworkId: 'ASTRO_FW' });
-    assert.equal(res.ok, false);
-    if (!res.ok && res.category === 'ERROR') {
-      assert.ok(res.error.message.includes('INV-GL-033'));
+    for (const invalidQuery of [
+      { frameworkId: 'ASTRO_FW' },
+      { projectId: 'PRJ-ALPHA' },
+      { workstreamId: 'WS-001' },
+      { scope: { scopeType: 'SYSTEM_WIDE' } },
+    ]) {
+      const res = filterEligibleGuidance(candidates, invalidQuery as unknown as Record<string, unknown>);
+      assert.equal(res.ok, false);
+      if (!res.ok && res.category === 'ERROR') {
+        assert.ok(res.error.message.includes('INV-GL-033'));
+      }
     }
   });
 
-  it('4. projectId without targetRef -> ERROR (INV-GL-033)', () => {
-    const candidates = [
-      { lessonId: 'LES-001', status: 'APPROVED', approvedAt: '2026-09-01T10:00:00Z' },
-    ];
-
-    const res = filterEligibleGuidance(candidates, { projectId: 'PRJ-ALPHA' });
-    assert.equal(res.ok, false);
-    if (!res.ok && res.category === 'ERROR') {
-      assert.ok(res.error.message.includes('INV-GL-033'));
-    }
-  });
-
-  it('5. workstreamId without targetRef -> ERROR (INV-GL-033)', () => {
-    const candidates = [
-      { lessonId: 'LES-001', status: 'APPROVED', approvedAt: '2026-09-01T10:00:00Z' },
-    ];
-
-    const res = filterEligibleGuidance(candidates, { workstreamId: 'WS-001' });
-    assert.equal(res.ok, false);
-    if (!res.ok && res.category === 'ERROR') {
-      assert.ok(res.error.message.includes('INV-GL-033'));
-    }
-  });
-
-  it('6. scope without targetRef -> ERROR (INV-GL-033)', () => {
-    const candidates = [
-      { lessonId: 'LES-001', status: 'APPROVED', approvedAt: '2026-09-01T10:00:00Z' },
-    ];
-
-    const res = filterEligibleGuidance(candidates, { scope: { scopeType: 'SYSTEM_WIDE' } });
-    assert.equal(res.ok, false);
-    if (!res.ok && res.category === 'ERROR') {
-      assert.ok(res.error.message.includes('INV-GL-033'));
-    }
-  });
-
-  it('7. limit does not exist in query behavior', () => {
-    const candidates = [
-      { lessonId: 'LES-001', status: 'APPROVED', approvedAt: '2026-09-01T10:00:00Z' },
-      { lessonId: 'LES-002', status: 'APPROVED', approvedAt: '2026-09-02T10:00:00Z' },
-      { lessonId: 'LES-003', status: 'APPROVED', approvedAt: '2026-09-03T10:00:00Z' },
-    ];
-
-    const res = filterEligibleGuidance(candidates, { targetRef: validTargetRef });
-    assert.equal(res.ok, true);
-    if (res.ok) {
-      assert.equal(res.data.eligibleItemsCount, 3);
-      assert.equal('limit' in res.data.queryParams, false);
-    }
-  });
-
-  it('8. identical inputs produce deeply equal results (full result determinism)', () => {
-    const candidates = [
-      { lessonId: 'LES-001', status: 'APPROVED', approvedAt: '2026-09-01T10:00:00Z' },
-      { lessonId: 'LES-002', status: 'APPROVED', approvedAt: '2026-09-02T10:00:00Z' },
-    ];
-
-    const queryParams = { targetRef: validTargetRef, frameworkId: 'ASTRO_FW' };
-
-    const run1 = filterEligibleGuidance(candidates, queryParams);
-    const run2 = filterEligibleGuidance(candidates, queryParams);
-
-    assert.equal(run1.ok, true);
-    assert.equal(run2.ok, true);
-    if (run1.ok && run2.ok) {
-      assert.deepStrictEqual(run1, run2);
-      assert.equal((run1.data as unknown as Record<string, unknown>).evaluatedAt, undefined);
-    }
-  });
-
-  it('9. getEvents is never used during eligibility filtering', () => {
+  it('8. getEvents is never called during eligibility filtering', () => {
     let getEventsCalled = false;
     const testSpyRepository = {
       appendEvent: repository.appendEvent.bind(repository),
@@ -161,29 +171,35 @@ describe('DeterministicEligibilityFilter & filterEligibleGuidance (GL-IMPL-UNIT-
     assert.equal(getEventsCalled, false);
   });
 
-  it('10. no implicit lifecycle mapping is introduced (SSoT / schema drift OPEN)', () => {
+  it('9. identical runs return deeply equal results (full result determinism)', () => {
     const candidates = [
-      {
-        lessonId: 'LES-001',
-        statement: 'Physical schema active APPROVED lesson',
-        status: 'APPROVED',
-        approvedAt: '2026-09-01T10:00:00Z',
-      },
-      {
-        lessonId: 'LES-002',
-        statement: 'SSoT active PUBLISHED lesson',
-        status: 'PUBLISHED',
-        approvedAt: '2026-09-02T10:00:00Z',
-      },
+      { lessonId: 'LES-001', status: 'PUBLISHED', publishedAt: '2026-09-01T10:00:00Z' },
+      { lessonId: 'LES-002', status: 'PUBLISHED', publishedAt: '2026-09-02T10:00:00Z' },
+    ];
+
+    const queryParams = { targetRef: validTargetRef, frameworkId: 'ASTRO_FW' };
+
+    const run1 = filterEligibleGuidance(candidates, queryParams);
+    const run2 = filterEligibleGuidance(candidates, queryParams);
+
+    assert.equal(run1.ok, true);
+    assert.equal(run2.ok, true);
+    if (run1.ok && run2.ok) {
+      assert.deepStrictEqual(run1, run2);
+    }
+  });
+
+  it('10. no limit or evaluatedAt behavior exists', () => {
+    const candidates = [
+      { lessonId: 'LES-001', status: 'PUBLISHED', publishedAt: '2026-09-01T10:00:00Z' },
+      { lessonId: 'LES-002', status: 'PUBLISHED', publishedAt: '2026-09-02T10:00:00Z' },
     ];
 
     const res = filterEligibleGuidance(candidates, { targetRef: validTargetRef });
     assert.equal(res.ok, true);
     if (res.ok) {
-      assert.equal(res.data.eligibleItemsCount, 2);
-      // Verify literal status values are preserved without mapping
-      assert.equal(res.data.eligibleItems.find((i) => i.lessonId === 'LES-001')?.status, 'APPROVED');
-      assert.equal(res.data.eligibleItems.find((i) => i.lessonId === 'LES-002')?.status, 'PUBLISHED');
+      assert.equal('limit' in res.data.queryParams, false);
+      assert.equal((res.data as unknown as Record<string, unknown>).evaluatedAt, undefined);
     }
   });
 });

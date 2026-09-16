@@ -195,7 +195,7 @@ export function filterEligibleGuidance(
 
     const status = item.status as string | undefined;
 
-    if (status === 'RETIRED' || status === 'DEPRECATED') {
+    if (status === 'DEPRECATED') {
       exclusionReasons.push({ lessonId: String(lessonId), reason: 'EXCLUDED_INACTIVE_LESSON' });
       continue;
     }
@@ -205,14 +205,10 @@ export function filterEligibleGuidance(
       continue;
     }
 
-    if (status === 'CANDIDATE' || status === 'IN_REVIEW' || status === 'REJECTED') {
-      exclusionReasons.push({ lessonId: String(lessonId), reason: `EXCLUDED_UNAPPROVED_STATUS_${status}` });
-      continue;
-    }
-
-    // Require active status (PUBLISHED or APPROVED) if status property is present
-    if (status !== undefined && status !== 'APPROVED' && status !== 'PUBLISHED') {
-      exclusionReasons.push({ lessonId: String(lessonId), reason: `EXCLUDED_NON_ACTIVE_STATUS_${status}` });
+    // Under SSoT Option A, only PUBLISHED status represents an active advisory lesson eligible for forward query.
+    // Non-PUBLISHED statuses (APPROVED, RETIRED, CANDIDATE, IN_REVIEW, REJECTED, etc.) are excluded without implicit cross-model mapping.
+    if (status !== 'PUBLISHED') {
+      exclusionReasons.push({ lessonId: String(lessonId), reason: `EXCLUDED_NON_PUBLISHED_STATUS_${status ?? 'UNDEFINED'}` });
       continue;
     }
 
@@ -233,10 +229,10 @@ export function filterEligibleGuidance(
     eligibleItems.push(deepClone(item));
   }
 
-  // Deterministic Recency Ordering (approvedAt / createdAt descending, lessonId ascending tiebreaker)
+  // Deterministic Recency Ordering (publishedAt / approvedAt / createdAt descending, lessonId ascending tiebreaker)
   eligibleItems.sort((a, b) => {
-    const tsA = (a.approvedAt as string) ?? (a.createdAt as string) ?? '';
-    const tsB = (b.approvedAt as string) ?? (b.createdAt as string) ?? '';
+    const tsA = (a.publishedAt as string) ?? (a.approvedAt as string) ?? (a.createdAt as string) ?? '';
+    const tsB = (b.publishedAt as string) ?? (b.approvedAt as string) ?? (b.createdAt as string) ?? '';
 
     if (tsA !== '' && tsB !== '') {
       const cmp = tsB.localeCompare(tsA); // recency descending
