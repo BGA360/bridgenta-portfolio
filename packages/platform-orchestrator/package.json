@@ -10,11 +10,11 @@
     "test": "node --test dist/tests/**/*.test.js"
   },
   "dependencies": {
-    "@cep/assessment-core": "file:../assessment-core",
-    "@cep/evidence-manager": "file:../evidence-manager",
-    "@cep/rule-engine": "file:../rule-engine",
-    "@cep/policy-resolver": "file:../policy-resolver",
-    "@cep/certification-engine": "file:../certification-engine"
+    "@cep/assessment-core": "^0.1.0",
+    "@cep/evidence-manager": "^0.1.0",
+    "@cep/rule-engine": "^0.1.0",
+    "@cep/policy-resolver": "^0.1.0",
+    "@cep/certification-engine": "^0.1.0"
   },
   "keywords": [
     "cep",
