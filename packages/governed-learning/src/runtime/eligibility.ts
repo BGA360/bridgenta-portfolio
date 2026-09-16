@@ -12,7 +12,6 @@ export interface Stage1EligibilityQueryParams {
   readonly frameworkId?: string;
   readonly projectId?: string;
   readonly workstreamId?: string;
-  readonly limit?: number;
 }
 
 /**
@@ -134,7 +133,7 @@ function checkTargetCompatibility(
 /**
  * Filter eligible guidance items deterministically (GL-IMPL-UNIT-008).
  * Applies Stage 1 deterministic eligibility rules:
- * - Enforces TargetRef / target parameter requirement (INV-GL-033).
+ * - Enforces TargetRef requirement strictly (INV-GL-033). Context parameter substitution is NOT permitted.
  * - Excludes inactive lessons (RETIRED, SUPERSEDED, DEPRECATED, CANDIDATE, IN_REVIEW, REJECTED).
  * - Excludes scope mismatches (frameworkRef).
  * - Excludes target mismatches (projectId, workstreamId, targetRef).
@@ -152,13 +151,25 @@ export function filterEligibleGuidance(
     };
   }
 
+  // Enforce INV-GL-033: LearningContextQuery MUST specify TargetRef literally.
+  // Context parameter substitution (frameworkId/projectId/workstreamId/scope without targetRef) is strictly forbidden.
+  const hasTargetRef = queryParams.targetRef !== undefined && queryParams.targetRef !== null;
+
+  if (!hasTargetRef) {
+    return {
+      ok: false,
+      category: 'ERROR',
+      error: new RuntimeInvariantError('LearningContextQuery must specify TargetRef (INV-GL-033)'),
+    };
+  }
+
   // Extract explicit query framework and target criteria
   let frameworkId = queryParams.frameworkId;
   let projectId = queryParams.projectId;
   let workstreamId = queryParams.workstreamId;
 
-  // Extract target criteria from targetRef if present
-  if (queryParams.targetRef && typeof queryParams.targetRef === 'object') {
+  // Extract target criteria from targetRef
+  if (typeof queryParams.targetRef === 'object') {
     const targetRefObj = queryParams.targetRef as Record<string, unknown>;
     const targetCategory = targetRefObj.targetCategory as string | undefined;
 
@@ -169,18 +180,6 @@ export function filterEligibleGuidance(
       const wRef = targetRefObj.workstreamRef as Record<string, unknown> | undefined;
       workstreamId = (wRef?.workstreamId as string) ?? (wRef as unknown as string);
     }
-  }
-
-  // Enforce INV-GL-033: LearningContextQuery MUST specify TargetRef or target context parameters
-  const hasTargetRef = queryParams.targetRef !== undefined && queryParams.targetRef !== null;
-  const hasTargetContext = Boolean(frameworkId || projectId || workstreamId || queryParams.scope);
-
-  if (!hasTargetRef && !hasTargetContext) {
-    return {
-      ok: false,
-      category: 'ERROR',
-      error: new RuntimeInvariantError('LearningContextQuery must specify TargetRef or target context parameters (INV-GL-033)'),
-    };
   }
 
   const clonedCandidates = candidatesInput.map((item) => deepClone(item) as Record<string, unknown>);
@@ -249,18 +248,12 @@ export function filterEligibleGuidance(
     return idA.localeCompare(idB);
   });
 
-  // Apply optional limit if specified
-  let finalEligibleItems = eligibleItems;
-  if (queryParams.limit !== undefined && queryParams.limit > 0) {
-    finalEligibleItems = eligibleItems.slice(0, queryParams.limit);
-  }
-
   const result: Stage1EligibilityFilterResult = {
     queryParams: deepClone(queryParams),
     totalCandidatesEvaluated: candidatesInput.length,
-    eligibleItemsCount: finalEligibleItems.length,
+    eligibleItemsCount: eligibleItems.length,
     excludedItemsCount: exclusionReasons.length,
-    eligibleItems: finalEligibleItems.map((item) => deepClone(item)),
+    eligibleItems: eligibleItems.map((item) => deepClone(item)),
     exclusionReasons: exclusionReasons.map((r) => deepClone(r)),
   };
 
