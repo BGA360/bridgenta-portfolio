@@ -8,6 +8,8 @@ import {
   VersionValueSchema,
   RuleCandidateIdSchema,
   RuleManifestIdSchema,
+  ProjectIdSchema,
+  WorkstreamIdSchema,
 } from '../types/primitives.js';
 import {
   DigestAlgorithmEnumSchema,
@@ -15,6 +17,9 @@ import {
   ObservationCategoryEnumSchema,
   ValidationTypeEnumSchema,
   ValidationVerdictEnumSchema,
+  LessonCandidateStatusEnumSchema,
+  PublishedLessonStatusEnumSchema,
+  ProspectiveAdoptionStatusEnumSchema,
   LessonStatusEnumSchema,
   ReviewOutcomeEnumSchema,
   RefusalCodeEnumSchema,
@@ -27,11 +32,13 @@ import {
   LessonRefSchema,
   AuthorityContextRefSchema,
   TargetRefSchema,
+  ProjectRefSchema,
+  WorkstreamRefSchema,
 } from './references.js';
 import { ScopeContractSchema } from './scopes.js';
 
 /**
- * CTR-GL-055: IntegrityDigest — Content Hash Verification
+ * NON_CONTRACT_INTERNAL_TYPE: IntegrityDigest — Content Hash Verification
  */
 export const IntegrityDigestSchema = z
   .object({
@@ -42,7 +49,7 @@ export const IntegrityDigestSchema = z
 export type IntegrityDigest = z.infer<typeof IntegrityDigestSchema>;
 
 /**
- * CTR-GL-043: EvidenceArtifact — Verified Evidence Artifact
+ * NON_CONTRACT_INTERNAL_TYPE: EvidenceArtifact — Verified Evidence Artifact
  */
 export const EvidenceArtifactSchema = z
   .object({
@@ -56,7 +63,26 @@ export const EvidenceArtifactSchema = z
 export type EvidenceArtifact = z.infer<typeof EvidenceArtifactSchema>;
 
 /**
- * CTR-GL-030: ObservationValidationRecord — Result of Validation Step
+ * CTR-GL-012: ObservationRecord — Base Ingested Observation Entity
+ */
+export const ObservationRecordSchema = z
+  .object({
+    observationId: ObservationIdSchema,
+    category: ObservationCategoryEnumSchema,
+    statement: z.string().min(1),
+    evidenceRefs: z.array(EvidenceRefSchema),
+    createdAt: TimestampIsoSchema,
+    createdBy: ActorIdentityRefSchema,
+  })
+  .strict();
+export type ObservationRecord = z.infer<typeof ObservationRecordSchema>;
+
+/** Alias for backward internal compatibility */
+export const ObservationSchema = ObservationRecordSchema;
+export type Observation = ObservationRecord;
+
+/**
+ * CTR-GL-014: ObservationValidationRecord — Documented Validation Result
  */
 export const ObservationValidationRecordSchema = z
   .object({
@@ -70,22 +96,7 @@ export const ObservationValidationRecordSchema = z
 export type ObservationValidationRecord = z.infer<typeof ObservationValidationRecordSchema>;
 
 /**
- * CTR-GL-028: Observation — Base Observation Entity
- */
-export const ObservationSchema = z
-  .object({
-    observationId: ObservationIdSchema,
-    category: ObservationCategoryEnumSchema,
-    statement: z.string().min(1),
-    evidenceRefs: z.array(EvidenceRefSchema),
-    createdAt: TimestampIsoSchema,
-    createdBy: ActorIdentityRefSchema,
-  })
-  .strict();
-export type Observation = z.infer<typeof ObservationSchema>;
-
-/**
- * CTR-GL-029: VerifiedObservation — Terminal Verified Projection
+ * NON_CONTRACT_INTERNAL_TYPE: VerifiedObservation — Terminal Verified Observation Projection
  */
 export const VerifiedObservationSchema = z
   .object({
@@ -101,9 +112,9 @@ export const VerifiedObservationSchema = z
 export type VerifiedObservation = z.infer<typeof VerifiedObservationSchema>;
 
 /**
- * CTR-GL-031: LessonCandidate — Unapproved Draft Lesson
+ * CTR-GL-017: LessonCandidateRecord — Synthesized Lesson Candidate Proposal Record
  */
-export const LessonCandidateSchema = z
+export const LessonCandidateRecordSchema = z
   .object({
     lessonId: LessonIdSchema,
     statement: z.string().min(1),
@@ -112,13 +123,68 @@ export const LessonCandidateSchema = z
     originatingObservationRefs: z.array(ObservationRefSchema),
     createdAt: TimestampIsoSchema,
     createdBy: ActorIdentityRefSchema,
+    status: LessonCandidateStatusEnumSchema.optional(),
   })
   .strict();
-export type LessonCandidate = z.infer<typeof LessonCandidateSchema>;
+export type LessonCandidateRecord = z.infer<typeof LessonCandidateRecordSchema>;
+
+/** Alias for backward physical code compatibility */
+export const LessonCandidateSchema = LessonCandidateRecordSchema;
+export type LessonCandidate = LessonCandidateRecord;
 
 /**
- * CTR-GL-032: ApprovedLesson — Immutable Approved Governance Artifact
- * Contains NO mutable current status fields. nonBinding and prospectiveOnly are literal true.
+ * CTR-GL-019: LessonCandidateEvaluationRecord — Governance Evaluation of Candidate
+ */
+export const LessonCandidateEvaluationRecordSchema = z
+  .object({
+    candidateId: LessonIdSchema,
+    outcome: ReviewOutcomeEnumSchema,
+    evaluatedAt: TimestampIsoSchema,
+    evaluatedBy: ActorIdentityRefSchema,
+    comments: z.string().optional(),
+    decisionRef: DecisionRefSchema,
+  })
+  .strict();
+export type LessonCandidateEvaluationRecord = z.infer<typeof LessonCandidateEvaluationRecordSchema>;
+
+/**
+ * CTR-GL-022: LessonRecord — Canonical Versioned Published Advisory Lesson
+ */
+export const LessonRecordSchema = z
+  .object({
+    lessonId: LessonIdSchema,
+    version: VersionValueSchema,
+    statement: z.string().min(1),
+    rationale: z.string().min(1),
+    scope: ScopeContractSchema,
+    status: PublishedLessonStatusEnumSchema,
+    publishedAt: TimestampIsoSchema,
+    publishedBy: ActorIdentityRefSchema,
+    authorityContextRef: AuthorityContextRefSchema,
+    decisionRef: DecisionRefSchema,
+    supersededByLessonRef: LessonRefSchema.optional(),
+    nonBinding: z.literal(true),
+    prospectiveOnly: z.literal(true),
+  })
+  .strict();
+export type LessonRecord = z.infer<typeof LessonRecordSchema>;
+
+/**
+ * CTR-GL-024: LessonDeprecationRecord — Rationale & Scope for Lesson Deprecation
+ */
+export const LessonDeprecationRecordSchema = z
+  .object({
+    lessonRef: LessonRefSchema,
+    deprecatedAt: TimestampIsoSchema,
+    deprecatedBy: ActorIdentityRefSchema,
+    reason: z.string().min(1),
+    decisionRef: DecisionRefSchema,
+  })
+  .strict();
+export type LessonDeprecationRecord = z.infer<typeof LessonDeprecationRecordSchema>;
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: ApprovedLesson — Candidate Approval Output DTO
  */
 export const ApprovedLessonSchema = z
   .object({
@@ -138,7 +204,7 @@ export const ApprovedLessonSchema = z
 export type ApprovedLesson = z.infer<typeof ApprovedLessonSchema>;
 
 /**
- * CTR-GL-033: DerivedEffectiveState — External Projection of Lesson Status
+ * NON_CONTRACT_INTERNAL_TYPE: DerivedEffectiveState — External Status Projection
  */
 export const DerivedEffectiveStateSchema = z
   .object({
@@ -151,7 +217,7 @@ export const DerivedEffectiveStateSchema = z
 export type DerivedEffectiveState = z.infer<typeof DerivedEffectiveStateSchema>;
 
 /**
- * CTR-GL-034: LessonReviewRecord — Audit Record of Review Action
+ * NON_CONTRACT_INTERNAL_TYPE: LessonReviewRecord — Internal Review Audit Record
  */
 export const LessonReviewRecordSchema = z
   .object({
@@ -167,9 +233,9 @@ export const LessonReviewRecordSchema = z
 export type LessonReviewRecord = z.infer<typeof LessonReviewRecordSchema>;
 
 /**
- * CTR-GL-036: RuleCandidateProposal — Proposal for Rule Engine Candidate
+ * CTR-GL-027: RuleCandidateProposalRecord — Rule Candidate Proposal Record
  */
-export const RuleCandidateProposalSchema = z
+export const RuleCandidateProposalRecordSchema = z
   .object({
     ruleCandidateId: RuleCandidateIdSchema,
     ruleManifestId: RuleManifestIdSchema,
@@ -180,10 +246,61 @@ export const RuleCandidateProposalSchema = z
     proposedBy: ActorIdentityRefSchema,
   })
   .strict();
-export type RuleCandidateProposal = z.infer<typeof RuleCandidateProposalSchema>;
+export type RuleCandidateProposalRecord = z.infer<typeof RuleCandidateProposalRecordSchema>;
+
+/** Alias for backward compatibility */
+export const RuleCandidateProposalSchema = RuleCandidateProposalRecordSchema;
+export type RuleCandidateProposal = RuleCandidateProposalRecord;
 
 /**
- * CTR-GL-046: RefusalContract — Formal Domain Refusal Response
+ * CTR-GL-029: RuleCandidateReviewRecord — Constitutional Review of Rule Candidate
+ */
+export const RuleCandidateReviewRecordSchema = z
+  .object({
+    ruleCandidateId: RuleCandidateIdSchema,
+    outcome: ReviewOutcomeEnumSchema,
+    reviewedAt: TimestampIsoSchema,
+    reviewedBy: ActorIdentityRefSchema,
+    comments: z.string().optional(),
+    decisionRef: DecisionRefSchema,
+  })
+  .strict();
+export type RuleCandidateReviewRecord = z.infer<typeof RuleCandidateReviewRecordSchema>;
+
+/**
+ * CTR-GL-032: ProspectiveAdoptionRecord — Prospective Adoption of Rule Candidate into Context
+ */
+export const ProspectiveAdoptionRecordSchema = z
+  .object({
+    adoptionId: z.string().min(1),
+    ruleCandidateId: RuleCandidateIdSchema,
+    targetProjectRef: ProjectRefSchema.optional(),
+    targetWorkstreamRef: WorkstreamRefSchema.optional(),
+    status: ProspectiveAdoptionStatusEnumSchema,
+    adoptedAt: TimestampIsoSchema,
+    adoptedBy: ActorIdentityRefSchema,
+    decisionRef: DecisionRefSchema,
+  })
+  .strict();
+export type ProspectiveAdoptionRecord = z.infer<typeof ProspectiveAdoptionRecordSchema>;
+
+/**
+ * CTR-GL-034: ProspectiveAdoptionWithdrawnRecord — Formal Withdrawal of Prospective Adoption
+ */
+export const ProspectiveAdoptionWithdrawnRecordSchema = z
+  .object({
+    adoptionId: z.string().min(1),
+    ruleCandidateId: RuleCandidateIdSchema,
+    withdrawnAt: TimestampIsoSchema,
+    withdrawnBy: ActorIdentityRefSchema,
+    reason: z.string().min(1),
+    decisionRef: DecisionRefSchema,
+  })
+  .strict();
+export type ProspectiveAdoptionWithdrawnRecord = z.infer<typeof ProspectiveAdoptionWithdrawnRecordSchema>;
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: RefusalContract — Formal Domain Refusal DTO
  */
 export const RefusalContractSchema = z
   .object({

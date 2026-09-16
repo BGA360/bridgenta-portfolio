@@ -12,6 +12,46 @@ export type ValidationTypeEnum = z.infer<typeof ValidationTypeEnumSchema>;
 export const ValidationVerdictEnumSchema = z.enum(['VALIDATED', 'INVALIDATED', 'INCONCLUSIVE']);
 export type ValidationVerdictEnum = z.infer<typeof ValidationVerdictEnumSchema>;
 
+/**
+ * Canonical Candidate Review Status Enum
+ * Governs the evaluation workflow of unverified draft lesson proposals.
+ */
+export const LessonCandidateStatusEnumSchema = z.enum([
+  'CANDIDATE',
+  'IN_REVIEW',
+  'APPROVED',
+  'REJECTED',
+  'REVISION_REQUESTED',
+]);
+export type LessonCandidateStatusEnum = z.infer<typeof LessonCandidateStatusEnumSchema>;
+
+/**
+ * Canonical Published Advisory Lesson Status Enum
+ * Governs forward advisory query eligibility across learning contexts (SSoT).
+ */
+export const PublishedLessonStatusEnumSchema = z.enum([
+  'PUBLISHED',
+  'DEPRECATED',
+  'SUPERSEDED',
+]);
+export type PublishedLessonStatusEnum = z.infer<typeof PublishedLessonStatusEnumSchema>;
+
+/**
+ * Canonical Prospective Adoption Status Enum
+ * Governs rule-candidate binding to project / workstream context (SSoT CTR-GL-032).
+ */
+export const ProspectiveAdoptionStatusEnumSchema = z.enum([
+  'ADOPTED',
+  'WITHDRAWN',
+  'EXPIRED',
+]);
+export type ProspectiveAdoptionStatusEnum = z.infer<typeof ProspectiveAdoptionStatusEnumSchema>;
+
+/**
+ * @deprecated HISTORICAL_COMPATIBILITY_ONLY
+ * Retained solely to allow un-migrated legacy runtime historical replay decoders to compile.
+ * MUST NOT be used for new canonical contract writes or forward query evaluation.
+ */
 export const LessonStatusEnumSchema = z.enum([
   'CANDIDATE',
   'IN_REVIEW',
@@ -21,6 +61,8 @@ export const LessonStatusEnumSchema = z.enum([
   'SUPERSEDED',
   'RETIRED',
   'ADOPTED',
+  'PUBLISHED',
+  'DEPRECATED',
 ]);
 export type LessonStatusEnum = z.infer<typeof LessonStatusEnumSchema>;
 

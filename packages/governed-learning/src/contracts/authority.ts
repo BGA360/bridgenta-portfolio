@@ -5,7 +5,7 @@ import { ActorIdentityRefSchema, AuthorityContextRefSchema } from './references.
 import { IntegrityDigestSchema } from './entities.js';
 
 /**
- * CTR-GL-041: AuthorityContextContract — Full Governance Context Record
+ * NON_CONTRACT_INTERNAL_TYPE: AuthorityContextContract — Full Governance Context Record
  */
 export const AuthorityContextContractSchema = z
   .object({
@@ -20,7 +20,7 @@ export const AuthorityContextContractSchema = z
 export type AuthorityContextContract = z.infer<typeof AuthorityContextContractSchema>;
 
 /**
- * CTR-GL-042: AttributedDecisionRecord — Governed Attributed Decision
+ * NON_CONTRACT_INTERNAL_TYPE: AttributedDecisionRecord — Governed Attributed Decision
  */
 export const AttributedDecisionRecordSchema = z
   .object({

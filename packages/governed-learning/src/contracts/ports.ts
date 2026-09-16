@@ -1,10 +1,20 @@
 import { z } from 'zod';
-import { LessonRefSchema, LessonFamilyRefSchema, ObservationRefSchema, EventRefSchema, RuleVersionRefSchema } from './references.js';
+import { LessonRefSchema, LessonFamilyRefSchema, ObservationRefSchema, EventRefSchema } from './references.js';
 import { ApprovedLessonSchema, LessonCandidateSchema, ObservationSchema, VerifiedObservationSchema, RuleCandidateProposalSchema } from './entities.js';
 import { RuleCandidateIdSchema } from '../types/primitives.js';
 
 /**
- * CTR-GL-047: LessonStorePort — Schema for Lesson Persistence Operations
+ * CTR-GL-055: GovernancePersistencePort — Shared Persistence Interface Contract
+ */
+export const GovernancePersistencePortSchema = z
+  .object({
+    operation: z.enum(['APPEND_EVENT', 'GET_EVENTS', 'SAVE_OBSERVATION', 'GET_OBSERVATION', 'SAVE_LESSON', 'GET_LESSON', 'SAVE_RULE_PROPOSAL', 'GET_RULE_PROPOSAL']),
+  })
+  .strict();
+export type GovernancePersistencePortContract = z.infer<typeof GovernancePersistencePortSchema>;
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: LessonStorePort — Schema for Lesson Persistence Operations
  */
 export const LessonStorePortSchema = z
   .object({
@@ -18,7 +28,7 @@ export const LessonStorePortSchema = z
 export type LessonStorePort = z.infer<typeof LessonStorePortSchema>;
 
 /**
- * CTR-GL-048: ObservationStorePort — Schema for Observation Persistence Operations
+ * NON_CONTRACT_INTERNAL_TYPE: ObservationStorePort — Schema for Observation Persistence Operations
  */
 export const ObservationStorePortSchema = z
   .object({
@@ -31,7 +41,7 @@ export const ObservationStorePortSchema = z
 export type ObservationStorePort = z.infer<typeof ObservationStorePortSchema>;
 
 /**
- * CTR-GL-049: GovernanceEventStorePort — Schema for Event Persistence Operations
+ * NON_CONTRACT_INTERNAL_TYPE: GovernanceEventStorePort — Schema for Event Persistence Operations
  */
 export const GovernanceEventStorePortSchema = z
   .object({
@@ -42,7 +52,7 @@ export const GovernanceEventStorePortSchema = z
 export type GovernanceEventStorePort = z.infer<typeof GovernanceEventStorePortSchema>;
 
 /**
- * CTR-GL-050: RuleCandidateStorePort — Schema for Rule Candidate Persistence Operations
+ * NON_CONTRACT_INTERNAL_TYPE: RuleCandidateStorePort — Schema for Rule Candidate Persistence Operations
  */
 export const RuleCandidateStorePortSchema = z
   .object({

@@ -4,7 +4,7 @@ import { EventTypeEnumSchema, CommandTypeEnumSchema } from '../types/enums.js';
 import { ActorIdentityRefSchema, AuthorityContextRefSchema } from './references.js';
 
 /**
- * CTR-GL-053: GovernanceEventEnvelope — Canonical Event Envelope
+ * CTR-GL-040: GovernanceEventEnvelope — Canonical Architectural Event Envelope
  */
 export const GovernanceEventEnvelopeSchema = z
   .object({
@@ -20,7 +20,7 @@ export const GovernanceEventEnvelopeSchema = z
 export type GovernanceEventEnvelope = z.infer<typeof GovernanceEventEnvelopeSchema>;
 
 /**
- * CTR-GL-054: GovernanceCommandEnvelope — Canonical Command Envelope
+ * CTR-GL-041: GovernanceCommandEnvelope — Canonical Architectural Command Envelope
  */
 export const GovernanceCommandEnvelopeSchema = z
   .object({
