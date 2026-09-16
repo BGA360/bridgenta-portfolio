@@ -30,6 +30,9 @@ export type EvidenceId = z.infer<typeof EvidenceIdSchema>;
 export const LessonIdSchema = z.string().min(1, 'LessonId must not be empty');
 export type LessonId = z.infer<typeof LessonIdSchema>;
 
+export const LessonCandidateIdSchema = z.string().min(1, 'LessonCandidateId must not be empty');
+export type LessonCandidateId = z.infer<typeof LessonCandidateIdSchema>;
+
 export const RuleManifestIdSchema = z.string().min(1, 'RuleManifestId must not be empty');
 export type RuleManifestId = z.infer<typeof RuleManifestIdSchema>;
 

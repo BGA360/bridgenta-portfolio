@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   LessonIdSchema,
+  LessonCandidateIdSchema,
   VersionValueSchema,
   ObservationIdSchema,
   EvidenceIdSchema,
@@ -44,7 +45,7 @@ export type LessonRef = z.infer<typeof LessonRefSchema>;
  */
 export const LessonCandidateRefSchema = z
   .object({
-    candidateId: z.string().min(1),
+    candidateId: LessonCandidateIdSchema,
   })
   .strict();
 export type LessonCandidateRef = z.infer<typeof LessonCandidateRefSchema>;
@@ -114,7 +115,7 @@ export type RuleCandidateProposalRef = z.infer<typeof RuleCandidateProposalRefSc
  */
 export const AuthorityContextRefSchema = z
   .object({
-    authorityContextId: AuthorityContextIdSchema,
+    authorityId: AuthorityContextIdSchema,
   })
   .strict();
 export type AuthorityContextRef = z.infer<typeof AuthorityContextRefSchema>;
@@ -137,12 +138,12 @@ export type FrameworkCriteriaRef = z.infer<typeof FrameworkCriteriaRefSchema>;
 export const TargetRefSchema = z.discriminatedUnion('targetCategory', [
   z.object({ targetCategory: z.literal('OBSERVATION'), observationRef: ObservationRefSchema }).strict(),
   z.object({ targetCategory: z.literal('LESSON'), lessonRef: LessonRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('LESSON_CANDIDATE'), lessonFamilyRef: LessonFamilyRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('LESSON_CANDIDATE'), candidateRef: LessonCandidateRefSchema }).strict(),
   z.object({ targetCategory: z.literal('WORKSTREAM'), workstreamRef: WorkstreamRefSchema }).strict(),
   z.object({ targetCategory: z.literal('PROJECT'), projectRef: ProjectRefSchema }).strict(),
   z.object({ targetCategory: z.literal('DECISION'), decisionRef: DecisionRefSchema }).strict(),
   z.object({ targetCategory: z.literal('EVENT'), eventRef: EventRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('RULE_CANDIDATE_PROPOSAL'), ruleCandidateId: RuleCandidateIdSchema }).strict(),
+  z.object({ targetCategory: z.literal('RULE_CANDIDATE_PROPOSAL'), proposalRef: RuleCandidateProposalRefSchema }).strict(),
   z.object({ targetCategory: z.literal('AUTHORITY_CONTEXT'), authorityContextRef: AuthorityContextRefSchema }).strict(),
 ]);
 export type TargetRef = z.infer<typeof TargetRefSchema>;

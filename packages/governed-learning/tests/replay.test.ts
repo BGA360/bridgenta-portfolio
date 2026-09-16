@@ -8,8 +8,8 @@ describe('HistoricalReplayEngine & replayHistoricalEvents (GL-IMPL-UNIT-007)', (
   let repository: InMemoryGovernanceRepository;
   let engine: HistoricalReplayEngine;
 
-  const actorRef = { actorId: 'ACTOR-001', role: 'GOVERNANCE_OFFICER' };
-  const authorityContextRef = { authorityId: 'AUTH-001', level: 'SYSTEM' };
+  const actorRef = { actorId: 'ACTOR-001', actorType: 'HUMAN' as const };
+  const authorityContextRef = { authorityId: 'AUTH-001' };
 
   beforeEach(() => {
     repository = new InMemoryGovernanceRepository();

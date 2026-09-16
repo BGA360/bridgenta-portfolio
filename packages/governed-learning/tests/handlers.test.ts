@@ -28,7 +28,7 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     issuedAt: '2026-09-13T16:00:00.000Z',
     payloadVersion: '1.0.0',
     actorRef: { actorId: 'usr_steward_01', actorType: 'HUMAN' },
-    authorityContextRef: { authorityContextId: 'ctx_steward_01' },
+    authorityContextRef: { authorityId: 'ctx_steward_01' },
   };
 
   it('handleDraftObservationCommand creates draft observation intent', () => {

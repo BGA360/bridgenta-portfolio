@@ -3,6 +3,7 @@ import {
   EvidenceIdSchema,
   ObservationIdSchema,
   LessonIdSchema,
+  LessonCandidateIdSchema,
   TimestampIsoSchema,
   DigestValueSchema,
   VersionValueSchema,
@@ -30,6 +31,8 @@ import {
   DecisionRefSchema,
   ObservationRefSchema,
   LessonRefSchema,
+  LessonCandidateRefSchema,
+  RuleCandidateProposalRefSchema,
   AuthorityContextRefSchema,
   TargetRefSchema,
   ProjectRefSchema,
@@ -116,7 +119,7 @@ export type VerifiedObservation = z.infer<typeof VerifiedObservationSchema>;
  */
 export const LessonCandidateRecordSchema = z
   .object({
-    lessonId: LessonIdSchema,
+    candidateId: LessonCandidateIdSchema,
     statement: z.string().min(1),
     rationale: z.string().min(1),
     scope: ScopeContractSchema,
@@ -137,7 +140,7 @@ export type LessonCandidate = LessonCandidateRecord;
  */
 export const LessonCandidateEvaluationRecordSchema = z
   .object({
-    candidateId: LessonIdSchema,
+    candidateRef: LessonCandidateRefSchema,
     outcome: ReviewOutcomeEnumSchema,
     evaluatedAt: TimestampIsoSchema,
     evaluatedBy: ActorIdentityRefSchema,
@@ -164,7 +167,6 @@ export const LessonRecordSchema = z
     decisionRef: DecisionRefSchema,
     supersededByLessonRef: LessonRefSchema.optional(),
     nonBinding: z.literal(true),
-    prospectiveOnly: z.literal(true),
   })
   .strict();
 export type LessonRecord = z.infer<typeof LessonRecordSchema>;
@@ -198,7 +200,6 @@ export const ApprovedLessonSchema = z
     authorityContextRef: AuthorityContextRefSchema,
     decisionRef: DecisionRefSchema,
     nonBinding: z.literal(true),
-    prospectiveOnly: z.literal(true),
   })
   .strict();
 export type ApprovedLesson = z.infer<typeof ApprovedLessonSchema>;
@@ -237,7 +238,7 @@ export type LessonReviewRecord = z.infer<typeof LessonReviewRecordSchema>;
  */
 export const RuleCandidateProposalRecordSchema = z
   .object({
-    ruleCandidateId: RuleCandidateIdSchema,
+    proposalId: RuleCandidateIdSchema,
     ruleManifestId: RuleManifestIdSchema,
     proposedRule: z.string().min(1),
     rationale: z.string().min(1),
@@ -257,7 +258,7 @@ export type RuleCandidateProposal = RuleCandidateProposalRecord;
  */
 export const RuleCandidateReviewRecordSchema = z
   .object({
-    ruleCandidateId: RuleCandidateIdSchema,
+    proposalRef: RuleCandidateProposalRefSchema,
     outcome: ReviewOutcomeEnumSchema,
     reviewedAt: TimestampIsoSchema,
     reviewedBy: ActorIdentityRefSchema,
@@ -273,7 +274,7 @@ export type RuleCandidateReviewRecord = z.infer<typeof RuleCandidateReviewRecord
 export const ProspectiveAdoptionRecordSchema = z
   .object({
     adoptionId: z.string().min(1),
-    ruleCandidateId: RuleCandidateIdSchema,
+    proposalRef: RuleCandidateProposalRefSchema,
     targetProjectRef: ProjectRefSchema.optional(),
     targetWorkstreamRef: WorkstreamRefSchema.optional(),
     status: ProspectiveAdoptionStatusEnumSchema,
@@ -290,7 +291,7 @@ export type ProspectiveAdoptionRecord = z.infer<typeof ProspectiveAdoptionRecord
 export const ProspectiveAdoptionWithdrawnRecordSchema = z
   .object({
     adoptionId: z.string().min(1),
-    ruleCandidateId: RuleCandidateIdSchema,
+    proposalRef: RuleCandidateProposalRefSchema,
     withdrawnAt: TimestampIsoSchema,
     withdrawnBy: ActorIdentityRefSchema,
     reason: z.string().min(1),

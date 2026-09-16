@@ -35,7 +35,7 @@ describe('Version Dispatch & Registries', () => {
       payloadVersion: 'v1.0.0',
       occurredAt: '2026-09-11T12:00:00Z',
       actorRef: { actorId: 'act-1', actorType: 'SYSTEM' },
-      authorityContextRef: { authorityContextId: 'auth-1' },
+      authorityContextRef: { authorityId: 'auth-1' },
       payload: { observationId: 'obs-1', category: 'MECHANICAL', statement: 'Statement', evidenceRefs: [] },
     });
     assert.equal(supportedBranch.branchType, 'SUPPORTED_KNOWN_EVENT');
@@ -47,7 +47,7 @@ describe('Version Dispatch & Registries', () => {
       payloadVersion: 'v99.0.0',
       occurredAt: '2026-09-11T12:00:00Z',
       actorRef: { actorId: 'act-1', actorType: 'SYSTEM' },
-      authorityContextRef: { authorityContextId: 'auth-1' },
+      authorityContextRef: { authorityId: 'auth-1' },
       payload: { opaqueField: 123 },
     });
     assert.equal(unsupportedVersionBranch.branchType, 'UNSUPPORTED_VERSION_HISTORICAL_EVENT');
@@ -59,7 +59,7 @@ describe('Version Dispatch & Registries', () => {
       payloadVersion: 'v1.0.0',
       occurredAt: '2026-09-11T12:00:00Z',
       actorRef: { actorId: 'act-1', actorType: 'SYSTEM' },
-      authorityContextRef: { authorityContextId: 'auth-1' },
+      authorityContextRef: { authorityId: 'auth-1' },
       payload: 'opaque scalar payload',
     });
     assert.equal(unknownTypeBranch.branchType, 'UNKNOWN_TYPE_HISTORICAL_EVENT');
