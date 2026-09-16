@@ -18,7 +18,7 @@ describe('Governed Learning Runtime Wave 2 Parsers', () => {
   };
 
   const validAuthorityContextRef = {
-    authorityContextId: 'actx-00000000-0000-4000-8000-000000000001',
+    authorityId: 'actx-00000000-0000-4000-8000-000000000001',
   };
 
   const validCommandEnvelope = {
@@ -104,7 +104,7 @@ describe('Governed Learning Runtime Wave 2 Parsers', () => {
     assert.equal(result.ok, true);
     assert.equal(result.category, 'SUCCESS');
     if (result.ok) {
-      assert.equal(result.data.authorityContextId, validAuthorityContextRef.authorityContextId);
+      assert.equal(result.data.authorityId, validAuthorityContextRef.authorityId);
     }
   });
 

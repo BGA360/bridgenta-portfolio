@@ -76,7 +76,7 @@ describe('Canonical Contract Schemas', () => {
     );
   });
 
-  test('ApprovedLesson contains no mutable status fields and enforces nonBinding/prospectiveOnly literal true', () => {
+  test('ApprovedLesson contains no mutable status fields and enforces nonBinding literal true', () => {
     const valid = ApprovedLessonSchema.parse({
       lessonId: 'les-1',
       version: '1.0.0',
@@ -85,13 +85,11 @@ describe('Canonical Contract Schemas', () => {
       scope: { scopeType: 'SINGLE_FRAMEWORK', frameworkRef: { frameworkId: 'fw-1' } },
       approvedAt: '2026-09-11T12:00:00Z',
       approvedBy: { actorId: 'act-1', actorType: 'GOVERNANCE_BODY' },
-      authorityContextRef: { authorityContextId: 'auth-1' },
+      authorityContextRef: { authorityId: 'auth-1' },
       decisionRef: { decisionId: 'dec-1' },
       nonBinding: true,
-      prospectiveOnly: true,
     });
     assert.equal(valid.nonBinding, true);
-    assert.equal(valid.prospectiveOnly, true);
 
     // Reject if state or status is added or literals are false
     assert.throws(() =>

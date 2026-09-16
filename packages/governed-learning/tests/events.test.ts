@@ -278,7 +278,7 @@ describe('Governed Learning Runtime Wave 5 Event Construction & Preservation (GL
         payloadVersion: '2.0.0-unsupported',
         occurredAt: '2026-09-13T12:00:00.000Z',
         actorRef: { actorId: 'user-001', actorType: 'HUMAN' },
-        authorityContextRef: { authorityContextId: 'auth-ctx-001' },
+        authorityContextRef: { authorityId: 'auth-ctx-001' },
         payload: opaquePayload,
       };
 

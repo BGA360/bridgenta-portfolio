@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   LessonIdSchema,
+  LessonCandidateIdSchema,
   VersionValueSchema,
   ObservationIdSchema,
   EvidenceIdSchema,
@@ -14,12 +15,23 @@ import {
   ProjectIdSchema,
   WorkstreamIdSchema,
   RuleCandidateIdSchema,
+  RuleCandidateProposalIdSchema,
   CriteriaIdSchema,
 } from '../types/primitives.js';
-import { ActorTypeEnumSchema, TargetCategoryEnumSchema } from '../types/enums.js';
+import { ActorTypeEnumSchema } from '../types/enums.js';
 
 /**
- * CTR-GL-014: LessonRef — Version-Qualified Lesson Identity
+ * CTR-GL-001: ObservationRef — Canonical Observation Identity Reference
+ */
+export const ObservationRefSchema = z
+  .object({
+    observationId: ObservationIdSchema,
+  })
+  .strict();
+export type ObservationRef = z.infer<typeof ObservationRefSchema>;
+
+/**
+ * CTR-GL-002: LessonRef — Version-Qualified Lesson Identity Reference
  */
 export const LessonRefSchema = z
   .object({
@@ -30,7 +42,17 @@ export const LessonRefSchema = z
 export type LessonRef = z.infer<typeof LessonRefSchema>;
 
 /**
- * CTR-GL-015: LessonFamilyRef — Unversioned Lesson Family Identity
+ * CTR-GL-003: LessonCandidateRef — Unverified Candidate Lesson Identity Reference
+ */
+export const LessonCandidateRefSchema = z
+  .object({
+    candidateId: LessonCandidateIdSchema,
+  })
+  .strict();
+export type LessonCandidateRef = z.infer<typeof LessonCandidateRefSchema>;
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: LessonFamilyRef — Unversioned Lesson Family Reference
  */
 export const LessonFamilyRefSchema = z
   .object({
@@ -40,27 +62,27 @@ export const LessonFamilyRefSchema = z
 export type LessonFamilyRef = z.infer<typeof LessonFamilyRefSchema>;
 
 /**
- * CTR-GL-016: ObservationRef
+ * CTR-GL-004: WorkstreamRef — Target Workstream Context Reference
  */
-export const ObservationRefSchema = z
+export const WorkstreamRefSchema = z
   .object({
-    observationId: ObservationIdSchema,
+    workstreamId: WorkstreamIdSchema,
   })
   .strict();
-export type ObservationRef = z.infer<typeof ObservationRefSchema>;
+export type WorkstreamRef = z.infer<typeof WorkstreamRefSchema>;
 
 /**
- * CTR-GL-017: EvidenceRef
+ * CTR-GL-005: ProjectRef — Target Project Context Reference
  */
-export const EvidenceRefSchema = z
+export const ProjectRefSchema = z
   .object({
-    evidenceId: EvidenceIdSchema,
+    projectId: ProjectIdSchema,
   })
   .strict();
-export type EvidenceRef = z.infer<typeof EvidenceRefSchema>;
+export type ProjectRef = z.infer<typeof ProjectRefSchema>;
 
 /**
- * CTR-GL-018: DecisionRef
+ * CTR-GL-006: DecisionRef — Governed Decision Record Reference
  */
 export const DecisionRefSchema = z
   .object({
@@ -70,7 +92,7 @@ export const DecisionRefSchema = z
 export type DecisionRef = z.infer<typeof DecisionRefSchema>;
 
 /**
- * CTR-GL-019: EventRef
+ * CTR-GL-007: EventRef — Append-Only Log Event Instance Reference
  */
 export const EventRefSchema = z
   .object({
@@ -80,7 +102,65 @@ export const EventRefSchema = z
 export type EventRef = z.infer<typeof EventRefSchema>;
 
 /**
- * CTR-GL-020: CommandRef
+ * CTR-GL-008: RuleCandidateProposalRef — Rule Candidate Proposal Identity Reference
+ */
+export const RuleCandidateProposalRefSchema = z
+  .object({
+    proposalId: RuleCandidateProposalIdSchema,
+  })
+  .strict();
+export type RuleCandidateProposalRef = z.infer<typeof RuleCandidateProposalRefSchema>;
+
+/**
+ * CTR-GL-009: AuthorityContextRef — Governance Authority Identity Reference
+ */
+export const AuthorityContextRefSchema = z
+  .object({
+    authorityId: AuthorityContextIdSchema,
+  })
+  .strict();
+export type AuthorityContextRef = z.infer<typeof AuthorityContextRefSchema>;
+
+/**
+ * CTR-GL-010: FrameworkCriteriaRef — Composite Framework Pair Reference
+ */
+export const FrameworkCriteriaRefSchema = z
+  .object({
+    frameworkRef: z.object({ frameworkId: FrameworkIdSchema }).strict(),
+    criteriaId: CriteriaIdSchema,
+    criteriaVersion: VersionValueSchema.optional(),
+  })
+  .strict();
+export type FrameworkCriteriaRef = z.infer<typeof FrameworkCriteriaRefSchema>;
+
+/**
+ * CTR-GL-011: TargetRef — Canonical Discriminated Union of Target References
+ */
+export const TargetRefSchema = z.discriminatedUnion('targetCategory', [
+  z.object({ targetCategory: z.literal('OBSERVATION'), observationRef: ObservationRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('LESSON'), lessonRef: LessonRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('LESSON_CANDIDATE'), candidateRef: LessonCandidateRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('WORKSTREAM'), workstreamRef: WorkstreamRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('PROJECT'), projectRef: ProjectRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('DECISION'), decisionRef: DecisionRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('EVENT'), eventRef: EventRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('RULE_CANDIDATE_PROPOSAL'), proposalRef: RuleCandidateProposalRefSchema }).strict(),
+  z.object({ targetCategory: z.literal('AUTHORITY_CONTEXT'), authorityContextRef: AuthorityContextRefSchema }).strict(),
+]);
+export type TargetRef = z.infer<typeof TargetRefSchema>;
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: EvidenceRef
+ */
+export const EvidenceRefSchema = z
+  .object({
+    evidenceId: EvidenceIdSchema,
+  })
+  .strict();
+export type EvidenceRef = z.infer<typeof EvidenceRefSchema>;
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: CommandRef
  */
 export const CommandRefSchema = z
   .object({
@@ -90,7 +170,7 @@ export const CommandRefSchema = z
 export type CommandRef = z.infer<typeof CommandRefSchema>;
 
 /**
- * CTR-GL-021: FrameworkRef
+ * NON_CONTRACT_INTERNAL_TYPE: FrameworkRef
  */
 export const FrameworkRefSchema = z
   .object({
@@ -100,7 +180,7 @@ export const FrameworkRefSchema = z
 export type FrameworkRef = z.infer<typeof FrameworkRefSchema>;
 
 /**
- * CTR-GL-022: FrameworkVersionRef — Framework Reference + Version
+ * NON_CONTRACT_INTERNAL_TYPE: FrameworkVersionRef
  */
 export const FrameworkVersionRefSchema = z
   .object({
@@ -111,7 +191,7 @@ export const FrameworkVersionRefSchema = z
 export type FrameworkVersionRef = z.infer<typeof FrameworkVersionRefSchema>;
 
 /**
- * CTR-GL-023: RuleVersionRef — Rule Manifest ID + Version
+ * NON_CONTRACT_INTERNAL_TYPE: RuleVersionRef
  */
 export const RuleVersionRefSchema = z
   .object({
@@ -122,17 +202,7 @@ export const RuleVersionRefSchema = z
 export type RuleVersionRef = z.infer<typeof RuleVersionRefSchema>;
 
 /**
- * CTR-GL-024: AuthorityContextRef — Scalar Identity Reference
- */
-export const AuthorityContextRefSchema = z
-  .object({
-    authorityContextId: AuthorityContextIdSchema,
-  })
-  .strict();
-export type AuthorityContextRef = z.infer<typeof AuthorityContextRefSchema>;
-
-/**
- * CTR-GL-025: ActorIdentityRef
+ * NON_CONTRACT_INTERNAL_TYPE: ActorIdentityRef
  */
 export const ActorIdentityRefSchema = z
   .object({
@@ -141,51 +211,3 @@ export const ActorIdentityRefSchema = z
   })
   .strict();
 export type ActorIdentityRef = z.infer<typeof ActorIdentityRefSchema>;
-
-/**
- * CTR-GL-026: ProjectRef
- */
-export const ProjectRefSchema = z
-  .object({
-    projectId: ProjectIdSchema,
-  })
-  .strict();
-export type ProjectRef = z.infer<typeof ProjectRefSchema>;
-
-/**
- * CTR-GL-027: WorkstreamRef
- */
-export const WorkstreamRefSchema = z
-  .object({
-    workstreamId: WorkstreamIdSchema,
-  })
-  .strict();
-export type WorkstreamRef = z.infer<typeof WorkstreamRefSchema>;
-
-/**
- * CTR-GL-056: FrameworkCriteriaRef — Structured Reference to Framework Criteria
- */
-export const FrameworkCriteriaRefSchema = z
-  .object({
-    frameworkRef: FrameworkRefSchema,
-    criteriaId: CriteriaIdSchema,
-    criteriaVersion: VersionValueSchema.optional(),
-  })
-  .strict();
-export type FrameworkCriteriaRef = z.infer<typeof FrameworkCriteriaRefSchema>;
-
-/**
- * CTR-GL-057: TargetRef — Discriminated Union of Target References
- */
-export const TargetRefSchema = z.discriminatedUnion('targetCategory', [
-  z.object({ targetCategory: z.literal('OBSERVATION'), observationRef: ObservationRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('LESSON'), lessonRef: LessonRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('LESSON_CANDIDATE'), lessonFamilyRef: LessonFamilyRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('WORKSTREAM'), workstreamRef: WorkstreamRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('PROJECT'), projectRef: ProjectRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('DECISION'), decisionRef: DecisionRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('EVENT'), eventRef: EventRefSchema }).strict(),
-  z.object({ targetCategory: z.literal('RULE_CANDIDATE_PROPOSAL'), ruleCandidateId: RuleCandidateIdSchema }).strict(),
-  z.object({ targetCategory: z.literal('AUTHORITY_CONTEXT'), authorityContextRef: AuthorityContextRefSchema }).strict(),
-]);
-export type TargetRef = z.infer<typeof TargetRefSchema>;
