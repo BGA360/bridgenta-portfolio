@@ -34,7 +34,7 @@ import {
 } from '../src/contracts/entities.js';
 import { GovernanceEventEnvelopeSchema, GovernanceCommandEnvelopeSchema } from '../src/contracts/envelopes.js';
 import { LearningContextQuerySchema, LearningContextQueryResultSchema } from '../src/contracts/lesson.js';
-import { GovernancePersistencePortSchema } from '../src/contracts/ports.js';
+import type { GovernancePersistencePort } from '../src/contracts/ports.js';
 
 describe('Governed Learning Contract Reconciliation R1 GL-CONTRACT-AMENDMENT-001 Conformance', () => {
   it('1. Candidate review status and published lesson status are separate bounded types', () => {
@@ -230,7 +230,6 @@ describe('Governed Learning Contract Reconciliation R1 GL-CONTRACT-AMENDMENT-001
     assert.ok(GovernanceCommandEnvelopeSchema);
     assert.ok(LearningContextQuerySchema);
     assert.ok(LearningContextQueryResultSchema);
-    assert.ok(GovernancePersistencePortSchema);
   });
 
   it('14. ReviewOutcomeEnum accepts APPROVED, REJECTED, REVISION_REQUESTED and rejects legacy values', () => {
@@ -283,5 +282,10 @@ describe('Governed Learning Contract Reconciliation R1 GL-CONTRACT-AMENDMENT-001
       decisionRef: { decisionId: 'DEC-001' },
     });
     assert.equal(legacyReview.success, false);
+  });
+
+  it('17. CTR-GL-055 GovernancePersistencePort is an architectural interface contract', () => {
+    const _checkPort: GovernancePersistencePort | null = null;
+    assert.equal(_checkPort, null);
   });
 });

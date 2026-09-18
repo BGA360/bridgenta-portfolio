@@ -3,15 +3,16 @@ import { LessonRefSchema, LessonFamilyRefSchema, ObservationRefSchema, EventRefS
 import { ApprovedLessonSchema, LessonCandidateSchema, ObservationSchema, VerifiedObservationSchema, RuleCandidateProposalSchema } from './entities.js';
 import { RuleCandidateIdSchema } from '../types/primitives.js';
 
+import type { GovernancePersistencePort } from '../runtime/persistence.js';
+
 /**
- * CTR-GL-055: GovernancePersistencePort — Shared Persistence Interface Contract
+ * CTR-GL-055: GovernancePersistencePort — Shared Architectural Persistence Interface Contract
+ *
+ * Nature: Architectural persistence interface contract defining persistence operation obligations
+ * (APPEND_EVENT, GET_EVENTS, SAVE_OBSERVATION, GET_OBSERVATION, SAVE_LESSON, GET_LESSON, SAVE_RULE_PROPOSAL, GET_RULE_PROPOSAL).
+ * NOT a serializable payload record or Zod schema.
  */
-export const GovernancePersistencePortSchema = z
-  .object({
-    operation: z.enum(['APPEND_EVENT', 'GET_EVENTS', 'SAVE_OBSERVATION', 'GET_OBSERVATION', 'SAVE_LESSON', 'GET_LESSON', 'SAVE_RULE_PROPOSAL', 'GET_RULE_PROPOSAL']),
-  })
-  .strict();
-export type GovernancePersistencePortContract = z.infer<typeof GovernancePersistencePortSchema>;
+export type { GovernancePersistencePort };
 
 /**
  * NON_CONTRACT_INTERNAL_TYPE: LessonStorePort — Schema for Lesson Persistence Operations
