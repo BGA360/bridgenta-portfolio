@@ -284,8 +284,22 @@ describe('Governed Learning Contract Reconciliation R1 GL-CONTRACT-AMENDMENT-001
     assert.equal(legacyReview.success, false);
   });
 
-  it('17. CTR-GL-055 GovernancePersistencePort is an architectural interface contract', () => {
-    const _checkPort: GovernancePersistencePort | null = null;
-    assert.equal(_checkPort, null);
+  it('17. CTR-GL-055 GovernancePersistencePort is an architectural interface contract in contract layer', () => {
+    type ExpectedGovernancePersistencePort = {
+      appendEvent(event: unknown): unknown;
+      getEvents(filter?: { readonly eventRef?: string; readonly eventType?: string }): unknown;
+      saveObservation(observation: unknown): unknown;
+      getObservationByRef(observationRef: string): unknown;
+      saveLesson(lesson: unknown): unknown;
+      getLessonByRef(lessonRef: string): unknown;
+      saveRuleCandidate(proposal: unknown): unknown;
+      getRuleCandidateById(ruleCandidateId: string): unknown;
+    };
+
+    const _assertPortAssignable:
+      GovernancePersistencePort extends ExpectedGovernancePersistencePort
+        ? true
+        : never = true;
+    assert.equal(_assertPortAssignable, true);
   });
 });

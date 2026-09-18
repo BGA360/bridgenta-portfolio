@@ -18,67 +18,9 @@ function deepClone<T>(val: T): T {
   return JSON.parse(JSON.stringify(val));
 }
 
-/**
- * CTR-GL-055: GovernancePersistencePort — Infrastructure Port Contract
- * Shared persistence interface contract used by the Governed Learning module.
- */
-export interface GovernancePersistencePort {
-  /**
-   * Appends an event to the append-only governance event log.
-   */
-  appendEvent(
-    event: unknown
-  ): RuntimeOperationResult<{ readonly eventRef?: string; readonly appended: boolean }>;
+import type { GovernancePersistencePort } from '../contracts/ports.js';
 
-  /**
-   * Retrieves stored governance events in deterministic append order.
-   */
-  getEvents(
-    filter?: { readonly eventRef?: string; readonly eventType?: string }
-  ): RuntimeOperationResult<ReadonlyArray<unknown>>;
-
-  /**
-   * Stores an observation or verified observation.
-   */
-  saveObservation(
-    observation: unknown
-  ): RuntimeOperationResult<{ readonly observationRef: string; readonly saved: boolean }>;
-
-  /**
-   * Retrieves an observation by reference.
-   */
-  getObservationByRef(
-    observationRef: string
-  ): RuntimeOperationResult<unknown>;
-
-  /**
-   * Stores a lesson candidate or approved lesson.
-   */
-  saveLesson(
-    lesson: unknown
-  ): RuntimeOperationResult<{ readonly lessonRef: string; readonly saved: boolean }>;
-
-  /**
-   * Retrieves a lesson by reference.
-   */
-  getLessonByRef(
-    lessonRef: string
-  ): RuntimeOperationResult<unknown>;
-
-  /**
-   * Stores a rule candidate proposal.
-   */
-  saveRuleCandidate(
-    proposal: unknown
-  ): RuntimeOperationResult<{ readonly ruleCandidateId: string; readonly saved: boolean }>;
-
-  /**
-   * Retrieves a rule candidate proposal by ID.
-   */
-  getRuleCandidateById(
-    ruleCandidateId: string
-  ): RuntimeOperationResult<unknown>;
-}
+export type { GovernancePersistencePort };
 
 /**
  * Bounded transient in-memory repository adapter implementing GovernancePersistencePort (CTR-GL-055).
