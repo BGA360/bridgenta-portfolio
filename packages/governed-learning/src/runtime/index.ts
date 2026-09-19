@@ -94,7 +94,7 @@ export function registerDefaultRuntimeSchemas(): void {
   }
 }
 
-import type { IdempotencyStorePort, GovernanceCommandRecord, ConcurrencyCoordinatorPort, ConcurrencyLease } from '../contracts/ports.js';
+import type { IdempotencyStorePort, GovernanceCommandRecord, ConcurrencyCoordinatorPort, ConcurrencyLease, RuntimeIntegrityUnitOfWork, TransactionContext } from '../contracts/ports.js';
 import type { GovernancePersistencePort } from './persistence.js';
 import { InMemoryIdempotencyStore, createCommandFingerprint } from './idempotency.js';
 import { InMemoryConcurrencyCoordinator, getConcurrencyScope } from './concurrency.js';
@@ -120,6 +120,7 @@ export interface GovernedLearningRuntimeOptions {
   readonly idempotencyStore?: IdempotencyStorePort;
   readonly concurrencyCoordinator?: ConcurrencyCoordinatorPort;
   readonly persistencePort?: GovernancePersistencePort;
+  readonly unitOfWork?: RuntimeIntegrityUnitOfWork;
 }
 
 /**
@@ -131,12 +132,14 @@ export class GovernedLearningRuntime {
   private readonly idempotencyStore: IdempotencyStorePort;
   private readonly concurrencyCoordinator: ConcurrencyCoordinatorPort;
   private readonly persistencePort?: GovernancePersistencePort;
+  private readonly unitOfWork?: RuntimeIntegrityUnitOfWork;
 
   constructor(options?: GovernedLearningRuntimeOptions) {
     registerDefaultRuntimeSchemas();
     this.idempotencyStore = options?.idempotencyStore ?? new InMemoryIdempotencyStore();
     this.concurrencyCoordinator = options?.concurrencyCoordinator ?? new InMemoryConcurrencyCoordinator();
     this.persistencePort = options?.persistencePort;
+    this.unitOfWork = options?.unitOfWork;
     this.pipeline = new GovernanceProcessingPipeline({
       idempotencyStore: this.idempotencyStore,
       concurrencyCoordinator: this.concurrencyCoordinator,
@@ -158,8 +161,226 @@ export class GovernedLearningRuntime {
   }
 
   /**
-   * Executes full pipeline validation and routes valid commands to bounded handlers.
-   * Performs Stage 8 duplicate lookup: exact retries short-circuit and return prior stored results without re-executing handlers.
+   * Retrieves the configured persistence port instance.
+   */
+  public getPersistencePort(): GovernancePersistencePort | undefined {
+    return this.persistencePort;
+  }
+
+  /**
+   * Helper to persist authoritative domain entities & domain events within active transaction.
+   */
+  private persistDomainEntityAndEvent(
+    envelope: any,
+    payload: any,
+    handlerData: any,
+    txContext?: TransactionContext
+  ): RuntimeOperationResult<{ persisted: boolean }> {
+    if (!this.persistencePort) {
+      return { ok: true, category: 'SUCCESS', data: { persisted: false } };
+    }
+
+    const commandType = envelope.commandType;
+
+    switch (commandType) {
+      case 'DraftObservation': {
+        const obsRef = `obs_${envelope.commandId}`;
+        const saveRes = this.persistencePort.saveObservation(
+          {
+            observationRef: obsRef,
+            category: payload.category,
+            statement: payload.statement,
+            state: 'DRAFT',
+            actorId: envelope.actorRef?.actorId,
+          },
+          txContext
+        );
+        if (!saveRes.ok) {
+          return saveRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: saveRes.refusalCode, reason: saveRes.reason }
+            : { ok: false, category: 'ERROR', error: saveRes.error ?? new RuntimeInvariantError(`saveObservation failed`) };
+        }
+
+        const eventRes = this.persistencePort.appendEvent(
+          {
+            eventType: 'OBSERVATION_CREATED',
+            eventRef: `evt_${envelope.commandId}`,
+            payload: {
+              observationRef: { value: obsRef },
+              category: payload.category,
+              statement: payload.statement,
+            },
+          },
+          txContext
+        );
+        if (!eventRes.ok) {
+          return eventRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
+            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent OBSERVATION_CREATED failed`) };
+        }
+        break;
+      }
+
+      case 'CreateLessonCandidate': {
+        const candidateRef = `can_${envelope.commandId}`;
+        const saveRes = this.persistencePort.saveLesson(
+          {
+            lessonCandidateRef: candidateRef,
+            statement: payload.statement,
+            rationale: payload.rationale,
+            scope: payload.scope,
+            state: 'CANDIDATE',
+          },
+          txContext
+        );
+        if (!saveRes.ok) {
+          return saveRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: saveRes.refusalCode, reason: saveRes.reason }
+            : { ok: false, category: 'ERROR', error: saveRes.error ?? new RuntimeInvariantError(`saveLesson candidate failed`) };
+        }
+
+        const eventRes = this.persistencePort.appendEvent(
+          {
+            eventType: 'LESSON_CANDIDATE_CREATED',
+            eventRef: `evt_${envelope.commandId}`,
+            payload: {
+              candidateRef: { candidateId: candidateRef },
+              statement: payload.statement,
+              scope: payload.scope,
+            },
+          },
+          txContext
+        );
+        if (!eventRes.ok) {
+          return eventRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
+            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_CANDIDATE_CREATED failed`) };
+        }
+        break;
+      }
+
+      case 'ApproveLesson': {
+        const lessonId = handlerData?.lessonId ?? `lsn_${payload.candidateRef.candidateId.replace(/^(can_|CAN_?)/, '')}`;
+        const saveRes = this.persistencePort.saveLesson(
+          {
+            lessonRef: lessonId,
+            status: 'PUBLISHED',
+            candidateRef: payload.candidateRef,
+            decisionRef: payload.decisionRef,
+            publishedAt: envelope.issuedAt,
+          },
+          txContext
+        );
+        if (!saveRes.ok) {
+          return saveRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: saveRes.refusalCode, reason: saveRes.reason }
+            : { ok: false, category: 'ERROR', error: saveRes.error ?? new RuntimeInvariantError(`saveLesson approved failed`) };
+        }
+
+        const eventRes = this.persistencePort.appendEvent(
+          {
+            eventType: 'LESSON_APPROVED',
+            eventRef: `evt_${envelope.commandId}`,
+            payload: {
+              lessonRef: { lessonId, version: '1.0.0' },
+              candidateRef: payload.candidateRef,
+            },
+          },
+          txContext
+        );
+        if (!eventRes.ok) {
+          return eventRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
+            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_APPROVED failed`) };
+        }
+        break;
+      }
+
+      case 'SupersedeLesson': {
+        const eventRes = this.persistencePort.appendEvent(
+          {
+            eventType: 'LESSON_SUPERSEDED',
+            eventRef: `evt_${envelope.commandId}`,
+            payload: {
+              supersededLessonRef: payload.supersededLessonRef,
+              supersedingLessonRef: payload.supersedingLessonRef,
+            },
+          },
+          txContext
+        );
+        if (!eventRes.ok) {
+          return eventRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
+            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_SUPERSEDED failed`) };
+        }
+        break;
+      }
+
+      case 'RetireLesson': {
+        const eventRes = this.persistencePort.appendEvent(
+          {
+            eventType: 'LESSON_RETIRED',
+            eventRef: `evt_${envelope.commandId}`,
+            payload: {
+              retiredLessonRef: payload.retiredLessonRef,
+              reason: payload.reason,
+            },
+          },
+          txContext
+        );
+        if (!eventRes.ok) {
+          return eventRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
+            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_RETIRED failed`) };
+        }
+        break;
+      }
+
+      case 'AdoptLesson': {
+        const eventRes = this.persistencePort.appendEvent(
+          {
+            eventType: 'LESSON_ADOPTED',
+            eventRef: `evt_${envelope.commandId}`,
+            payload: {
+              adoptionRef: { adoptionId: handlerData?.adoptionId ?? `adp_${envelope.commandId}` },
+              targetRef: payload.targetProjectRef ?? { value: 'target_proj' },
+            },
+          },
+          txContext
+        );
+        if (!eventRes.ok) {
+          return eventRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
+            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_ADOPTED failed`) };
+        }
+        break;
+      }
+
+      case 'ProposeRuleCandidate': {
+        const ruleId = `rule_${payload.ruleManifestId}`;
+        const saveRes = this.persistencePort.saveRuleCandidate(
+          {
+            ruleCandidateId: ruleId,
+            proposedRule: payload.proposedRule,
+            sourceLessonRef: payload.sourceLessonRef,
+            state: 'RULE_CANDIDATE_PROPOSED',
+          },
+          txContext
+        );
+        if (!saveRes.ok) {
+          return saveRes.category === 'REFUSED'
+            ? { ok: false, category: 'REFUSED', refusalCode: saveRes.refusalCode, reason: saveRes.reason }
+            : { ok: false, category: 'ERROR', error: saveRes.error ?? new RuntimeInvariantError(`saveRuleCandidate failed`) };
+        }
+        break;
+      }
+    }
+
+    return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+  }
+
+  /**
+   * Synchronous command processing method.
    */
   public processAndExecuteCommand(input: unknown): GovernedLearningRuntimeExecutionResult {
     const pipelineReport = this.pipeline.processCommand(input);
@@ -210,83 +431,30 @@ export class GovernedLearningRuntime {
     const lease = pipelineReport.metadata?.concurrencyLease as ConcurrencyLease | undefined;
 
     try {
-      const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
+      if (this.unitOfWork) {
+        const uowResult = this.unitOfWork.execute((txContext) =>
+          this.executeCore(envelope, payload, pipelineReport, txContext)
+        );
 
-      // Cache completed outcomes (SUCCESS or REFUSED) in idempotencyStore
-      let recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined;
+        if (uowResult && typeof (uowResult as any).then === 'function') {
+          throw new RuntimeInvariantError(
+            'Synchronous runtime requires a synchronous UnitOfWork implementation'
+          );
+        }
 
-      if (handlerOutcome.category === 'SUCCESS') {
-        const record: GovernanceCommandRecord = {
-          commandId: envelope.commandId,
-          commandFingerprint: createCommandFingerprint(envelope),
-          commandType: envelope.commandType,
-          payloadVersion: envelope.payloadVersion,
-          issuedAt: envelope.issuedAt,
-          recordedAt: new Date().toISOString(),
-          executionOutcome: {
-            ok: true,
-            category: 'SUCCESS',
-            outcome: 'COMMAND_SUCCESS',
-            data: handlerOutcome.data,
-          },
-        };
-        recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
-      } else if (handlerOutcome.category === 'REFUSED') {
-        const record: GovernanceCommandRecord = {
-          commandId: envelope.commandId,
-          commandFingerprint: createCommandFingerprint(envelope),
-          commandType: envelope.commandType,
-          payloadVersion: envelope.payloadVersion,
-          issuedAt: envelope.issuedAt,
-          recordedAt: new Date().toISOString(),
-          executionOutcome: {
-            ok: false,
-            category: 'REFUSED',
-            outcome: 'COMMAND_REFUSED',
-            refusalCode: handlerOutcome.refusalCode,
-            reason: handlerOutcome.reason,
-          },
-        };
-        recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
+        return uowResult as GovernedLearningRuntimeExecutionResult;
       }
 
-      if (recordWriteResult && !recordWriteResult.ok) {
-        const writeError =
-          recordWriteResult.category === 'ERROR'
-            ? recordWriteResult.error
-            : new RuntimeInvariantError(
-                `Idempotency execution record persistence failed after command execution: ${recordWriteResult.reason}`
-              );
-
-        return {
-          ok: false,
-          category: 'ERROR',
-          error: writeError,
-          pipelineReport,
-          handlerOutcome,
-        };
-      }
-
-      return {
-        ok: handlerOutcome.ok,
-        category: handlerOutcome.category,
-        refusalCode: handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined,
-        reason: handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined,
-        pipelineReport,
-        handlerOutcome,
-      };
+      return this.executeCore(envelope, payload, pipelineReport);
     } finally {
       lease?.release();
     }
   }
 
   /**
-   * Asynchronous variant of processAndExecuteCommand.
-   * Leverages ConcurrencyCoordinatorPort.executeWithinScopeAsync for true queued per-aggregate serialization.
-   * Preserves public synchronous processAndExecuteCommand API while providing a unified concurrency domain.
+   * Asynchronous command processing method.
    */
   public async processAndExecuteCommandAsync(input: unknown): Promise<GovernedLearningRuntimeExecutionResult> {
-    // 1. Run Stages 1-8 pre-validation and Stage 8 idempotency check
     const preReport = this.pipeline.processCommand(input, { skipConcurrencyCheck: true });
 
     // Stage 8 exact retry short-circuit
@@ -320,7 +488,6 @@ export class GovernedLearningRuntime {
       };
     }
 
-    // Stages 1-8 failure (e.g. envelope parse failure or Stage 8 identity collision)
     if (!preReport.ok || !preReport.data?.envelope || !preReport.data?.payload) {
       return {
         ok: false,
@@ -335,104 +502,240 @@ export class GovernedLearningRuntime {
     const { envelope, payload } = preReport.data;
     const scopeKeys = getConcurrencyScope(envelope);
 
-    // 2. Queue and execute within exclusive scope lease using executeWithinScopeAsync
-    const asyncRes = await this.concurrencyCoordinator.executeWithinScopeAsync(scopeKeys, async () => {
-      // Build updated pipeline report showing Stage 9 COMPLETED
-      const updatedOutcomes = preReport.stageOutcomes.map((s) => {
-        if (s.stageId === 'CONCURRENCY_CONTROL_CHECK') {
-          return { stageId: s.stageId, status: 'COMPLETED' as const, timestamp: new Date().toISOString() };
+    const runExecutionWithinScope = async () => {
+      const asyncRes = await this.concurrencyCoordinator.executeWithinScopeAsync(scopeKeys, async () => {
+        const updatedOutcomes = preReport.stageOutcomes.map((s) => {
+          if (s.stageId === 'CONCURRENCY_CONTROL_CHECK') {
+            return { stageId: s.stageId, status: 'COMPLETED' as const, timestamp: new Date().toISOString() };
+          }
+          return s;
+        });
+
+        const pipelineReport: PipelineExecutionReport<CommandDispatchResult> = {
+          ...preReport,
+          stageOutcomes: updatedOutcomes,
+        };
+
+        if (this.unitOfWork) {
+          return this.unitOfWork.execute((txContext) =>
+            this.executeCore(envelope, payload, pipelineReport, txContext)
+          );
         }
-        return s;
+
+        return this.executeCore(envelope, payload, pipelineReport);
       });
 
-      const pipelineReport: PipelineExecutionReport<CommandDispatchResult> = {
-        ...preReport,
-        stageOutcomes: updatedOutcomes,
-      };
-
-      const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
-
-      let recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined;
-
-      if (handlerOutcome.category === 'SUCCESS') {
-        const record: GovernanceCommandRecord = {
-          commandId: envelope.commandId,
-          commandFingerprint: createCommandFingerprint(envelope),
-          commandType: envelope.commandType,
-          payloadVersion: envelope.payloadVersion,
-          issuedAt: envelope.issuedAt,
-          recordedAt: new Date().toISOString(),
-          executionOutcome: {
-            ok: true,
-            category: 'SUCCESS',
-            outcome: 'COMMAND_SUCCESS',
-            data: handlerOutcome.data,
-          },
-        };
-        recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
-      } else if (handlerOutcome.category === 'REFUSED') {
-        const record: GovernanceCommandRecord = {
-          commandId: envelope.commandId,
-          commandFingerprint: createCommandFingerprint(envelope),
-          commandType: envelope.commandType,
-          payloadVersion: envelope.payloadVersion,
-          issuedAt: envelope.issuedAt,
-          recordedAt: new Date().toISOString(),
-          executionOutcome: {
-            ok: false,
-            category: 'REFUSED',
-            outcome: 'COMMAND_REFUSED',
-            refusalCode: handlerOutcome.refusalCode,
-            reason: handlerOutcome.reason,
-          },
-        };
-        recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
-      }
-
-      if (recordWriteResult && !recordWriteResult.ok) {
-        const writeError =
-          recordWriteResult.category === 'ERROR'
-            ? recordWriteResult.error
-            : new RuntimeInvariantError(
-                `Idempotency execution record persistence failed after command execution: ${recordWriteResult.reason}`
-              );
-
+      if (!asyncRes.ok) {
+        const error =
+          asyncRes.category === 'ERROR'
+            ? asyncRes.error
+            : new RuntimeInvariantError(asyncRes.reason ?? 'Coordinator execution refused');
         return {
           ok: false,
-          category: 'ERROR' as const,
-          error: writeError,
-          pipelineReport,
-          handlerOutcome,
+          category: asyncRes.category,
+          refusalCode: asyncRes.category === 'REFUSED' ? asyncRes.refusalCode : undefined,
+          reason: asyncRes.category === 'REFUSED' ? asyncRes.reason : undefined,
+          error,
+          pipelineReport: preReport,
         };
       }
 
-      return {
-        ok: handlerOutcome.ok,
-        category: handlerOutcome.category,
-        refusalCode: handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined,
-        reason: handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined,
-        pipelineReport,
-        handlerOutcome,
-      };
-    });
+      return asyncRes.data;
+    };
 
-    if (!asyncRes.ok) {
-      // Coordinator infrastructure failure or refusal
-      const error =
-        asyncRes.category === 'ERROR'
-          ? asyncRes.error
-          : new RuntimeInvariantError(asyncRes.reason ?? 'Coordinator execution refused');
+    return await runExecutionWithinScope();
+  }
+
+  /**
+   * Inner execution logic that binds handler dispatch, entity/event persistence, and command record insertion.
+   */
+  private executeCore(
+    envelope: any,
+    payload: any,
+    pipelineReport: PipelineExecutionReport<CommandDispatchResult>,
+    txContext?: TransactionContext
+  ): GovernedLearningRuntimeExecutionResult {
+    // Post-BEGIN In-Transaction Command Arbitration Recheck
+    const inTxCheck = this.idempotencyStore.getCommandExecution(envelope.commandId, txContext);
+    if (!inTxCheck.ok) {
+      if (inTxCheck.category === 'ERROR') {
+        return {
+          ok: false,
+          category: 'ERROR',
+          error:
+            inTxCheck.error ??
+            new RuntimeInvariantError(
+              `Post-BEGIN durable idempotency lookup failed for command '${envelope.commandId}'`
+            ),
+          pipelineReport,
+          rollbackRequired: true,
+        };
+      }
       return {
         ok: false,
-        category: asyncRes.category,
-        refusalCode: asyncRes.category === 'REFUSED' ? asyncRes.refusalCode : undefined,
-        reason: asyncRes.category === 'REFUSED' ? asyncRes.reason : undefined,
-        error,
-        pipelineReport: preReport,
+        category: 'REFUSED',
+        refusalCode: inTxCheck.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+        reason: inTxCheck.reason ?? 'Durable idempotency arbitration refused',
+        pipelineReport,
+        rollbackRequired: true,
       };
     }
 
-    return asyncRes.data;
+    if (inTxCheck.data) {
+      const existingRecord = inTxCheck.data;
+      const currentFingerprint = createCommandFingerprint(envelope);
+      const isFingerprintMatch = existingRecord.commandFingerprint === currentFingerprint;
+      const isIssuedAtMatch = !existingRecord.issuedAt || existingRecord.issuedAt === envelope.issuedAt;
+
+      if (isFingerprintMatch && isIssuedAtMatch) {
+        let handlerOutcome: CommandHandlerOutcome | undefined;
+
+        if (existingRecord.executionOutcome.category === 'SUCCESS') {
+          handlerOutcome = {
+            ok: true,
+            category: 'SUCCESS',
+            data: existingRecord.executionOutcome.data,
+          };
+        } else if (existingRecord.executionOutcome.category === 'REFUSED') {
+          handlerOutcome = {
+            ok: false,
+            category: 'REFUSED',
+            refusalCode: existingRecord.executionOutcome.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+            reason: existingRecord.executionOutcome.reason ?? 'Command execution refused',
+          };
+        }
+
+        return {
+          ok: existingRecord.executionOutcome.ok,
+          category: existingRecord.executionOutcome.category,
+          refusalCode: existingRecord.executionOutcome.refusalCode,
+          reason: existingRecord.executionOutcome.reason,
+          pipelineReport,
+          handlerOutcome,
+          replayedResult: true,
+        };
+      } else {
+        return {
+          ok: false,
+          category: 'REFUSED',
+          refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+          reason: `Command execution record collision for commandId '${envelope.commandId}' with mismatched command identity`,
+          pipelineReport,
+          rollbackRequired: true,
+        } as GovernedLearningRuntimeExecutionResult;
+      }
+    }
+
+    const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
+
+    let recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined;
+
+    if (handlerOutcome.category === 'SUCCESS') {
+      const persistRes = this.persistDomainEntityAndEvent(envelope, payload, handlerOutcome.data, txContext);
+      if (!persistRes.ok) {
+        if (persistRes.category === 'REFUSED') {
+          return {
+            ok: false,
+            category: 'REFUSED',
+            refusalCode: persistRes.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+            reason: persistRes.reason ?? 'Domain persistence operation refused',
+            pipelineReport,
+            handlerOutcome: {
+              ok: false,
+              category: 'REFUSED',
+              refusalCode: persistRes.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+              reason: persistRes.reason ?? 'Domain persistence operation refused',
+            },
+            rollbackRequired: true,
+          } as GovernedLearningRuntimeExecutionResult;
+        } else {
+          throw persistRes.error ?? new RuntimeInvariantError(`Domain persistence failed for command '${envelope.commandId}'`);
+        }
+      }
+
+      const record: GovernanceCommandRecord = {
+        commandId: envelope.commandId,
+        commandFingerprint: createCommandFingerprint(envelope),
+        commandType: envelope.commandType,
+        payloadVersion: envelope.payloadVersion,
+        issuedAt: envelope.issuedAt,
+        recordedAt: new Date().toISOString(),
+        executionOutcome: {
+          ok: true,
+          category: 'SUCCESS',
+          outcome: 'COMMAND_SUCCESS',
+          data: handlerOutcome.data,
+        },
+      };
+      recordWriteResult = this.idempotencyStore.recordCommandExecution(record, txContext);
+    } else if (handlerOutcome.category === 'REFUSED') {
+      const record: GovernanceCommandRecord = {
+        commandId: envelope.commandId,
+        commandFingerprint: createCommandFingerprint(envelope),
+        commandType: envelope.commandType,
+        payloadVersion: envelope.payloadVersion,
+        issuedAt: envelope.issuedAt,
+        recordedAt: new Date().toISOString(),
+        executionOutcome: {
+          ok: false,
+          category: 'REFUSED',
+          outcome: 'COMMAND_REFUSED',
+          refusalCode: handlerOutcome.refusalCode,
+          reason: handlerOutcome.reason,
+        },
+      };
+      recordWriteResult = this.idempotencyStore.recordCommandExecution(record, txContext);
+    } else {
+      // ERROR outcome -> throw error to trigger physical transaction ROLLBACK
+      throw handlerOutcome.error ?? new RuntimeInvariantError(`Handler produced ERROR for command '${envelope.commandId}'`);
+    }
+
+    if (recordWriteResult && !recordWriteResult.ok) {
+      if (recordWriteResult.category === 'REFUSED') {
+        return {
+          ok: false,
+          category: 'REFUSED',
+          refusalCode: recordWriteResult.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+          reason: recordWriteResult.reason ?? 'Command execution record collision',
+          pipelineReport,
+          handlerOutcome: {
+            ok: false,
+            category: 'REFUSED',
+            refusalCode: recordWriteResult.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+            reason: recordWriteResult.reason ?? 'Command execution record collision',
+          },
+          rollbackRequired: true,
+        } as GovernedLearningRuntimeExecutionResult;
+      }
+
+      const rawError = recordWriteResult.category === 'ERROR' ? recordWriteResult.error : undefined;
+      const errorMsg =
+        typeof rawError === 'object' && rawError !== null && 'message' in rawError
+          ? String((rawError as any).message)
+          : String(rawError ?? 'Write failed');
+
+      const writeError =
+        rawError instanceof GovernedLearningRuntimeError
+          ? rawError
+          : new RuntimeInvariantError(`Idempotency execution record persistence failed: ${errorMsg}`);
+
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: writeError,
+        pipelineReport,
+        handlerOutcome,
+      };
+    }
+
+    return {
+      ok: handlerOutcome.ok,
+      category: handlerOutcome.category,
+      refusalCode: handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined,
+      reason: handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined,
+      pipelineReport,
+      handlerOutcome,
+    };
   }
 }
 
@@ -444,4 +747,5 @@ export function createGovernedLearningRuntime(
 ): GovernedLearningRuntime {
   return new GovernedLearningRuntime(options);
 }
+
 

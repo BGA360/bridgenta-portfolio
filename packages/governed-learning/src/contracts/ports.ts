@@ -101,6 +101,7 @@ export interface TransactionContext {
   readonly transactionId: string;
   readonly createdAt: string;
   readonly isDurable: boolean;
+  readonly managerId?: string;
 }
 
 /**
