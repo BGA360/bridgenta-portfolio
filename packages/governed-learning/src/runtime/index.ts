@@ -94,9 +94,12 @@ export function registerDefaultRuntimeSchemas(): void {
   }
 }
 
-import type { IdempotencyStorePort, GovernanceCommandRecord } from '../contracts/ports.js';
+import type { IdempotencyStorePort, GovernanceCommandRecord, ConcurrencyCoordinatorPort, ConcurrencyLease } from '../contracts/ports.js';
 import type { GovernancePersistencePort } from './persistence.js';
 import { InMemoryIdempotencyStore, createCommandFingerprint } from './idempotency.js';
+import { InMemoryConcurrencyCoordinator } from './concurrency.js';
+
+export * from './concurrency.js';
 
 /**
  * Wave 9 Runtime Composition Result DTO (GL-IMPL-UNIT-009).
@@ -115,24 +118,28 @@ export interface GovernedLearningRuntimeExecutionResult<T = unknown> {
 
 export interface GovernedLearningRuntimeOptions {
   readonly idempotencyStore?: IdempotencyStorePort;
+  readonly concurrencyCoordinator?: ConcurrencyCoordinatorPort;
   readonly persistencePort?: GovernancePersistencePort;
 }
 
 /**
  * Wave 9 Top-Level Governed Learning Runtime Composition (GL-IMPL-UNIT-009).
- * Composes pipeline validation, Stage 8 idempotency enforcement, envelope/payload dispatch, and command handler execution.
+ * Composes pipeline validation, Stage 8 idempotency enforcement, Stage 9 concurrency control, envelope/payload dispatch, and command handler execution.
  */
 export class GovernedLearningRuntime {
   private readonly pipeline: GovernanceProcessingPipeline;
   private readonly idempotencyStore: IdempotencyStorePort;
+  private readonly concurrencyCoordinator: ConcurrencyCoordinatorPort;
   private readonly persistencePort?: GovernancePersistencePort;
 
   constructor(options?: GovernedLearningRuntimeOptions) {
     registerDefaultRuntimeSchemas();
     this.idempotencyStore = options?.idempotencyStore ?? new InMemoryIdempotencyStore();
+    this.concurrencyCoordinator = options?.concurrencyCoordinator ?? new InMemoryConcurrencyCoordinator();
     this.persistencePort = options?.persistencePort;
     this.pipeline = new GovernanceProcessingPipeline({
       idempotencyStore: this.idempotencyStore,
+      concurrencyCoordinator: this.concurrencyCoordinator,
     });
   }
 
@@ -141,6 +148,13 @@ export class GovernedLearningRuntime {
    */
   public getIdempotencyStore(): IdempotencyStorePort {
     return this.idempotencyStore;
+  }
+
+  /**
+   * Retrieves the configured operational concurrency coordinator instance.
+   */
+  public getConcurrencyCoordinator(): ConcurrencyCoordinatorPort {
+    return this.concurrencyCoordinator;
   }
 
   /**
@@ -193,71 +207,85 @@ export class GovernedLearningRuntime {
     }
 
     const { envelope, payload } = pipelineReport.data;
-    const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
+    const lease = pipelineReport.metadata?.concurrencyLease as ConcurrencyLease | undefined;
 
-    // Cache completed outcomes (SUCCESS or REFUSED) in idempotencyStore
-    let recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined;
+    try {
+      const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
 
-    if (handlerOutcome.category === 'SUCCESS') {
-      const record: GovernanceCommandRecord = {
-        commandId: envelope.commandId,
-        commandFingerprint: createCommandFingerprint(envelope),
-        commandType: envelope.commandType,
-        payloadVersion: envelope.payloadVersion,
-        issuedAt: envelope.issuedAt,
-        recordedAt: new Date().toISOString(),
-        executionOutcome: {
-          ok: true,
-          category: 'SUCCESS',
-          outcome: 'COMMAND_SUCCESS',
-          data: handlerOutcome.data,
-        },
-      };
-      recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
-    } else if (handlerOutcome.category === 'REFUSED') {
-      const record: GovernanceCommandRecord = {
-        commandId: envelope.commandId,
-        commandFingerprint: createCommandFingerprint(envelope),
-        commandType: envelope.commandType,
-        payloadVersion: envelope.payloadVersion,
-        issuedAt: envelope.issuedAt,
-        recordedAt: new Date().toISOString(),
-        executionOutcome: {
+      // Cache completed outcomes (SUCCESS or REFUSED) in idempotencyStore
+      let recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined;
+
+      if (handlerOutcome.category === 'SUCCESS') {
+        const record: GovernanceCommandRecord = {
+          commandId: envelope.commandId,
+          commandFingerprint: createCommandFingerprint(envelope),
+          commandType: envelope.commandType,
+          payloadVersion: envelope.payloadVersion,
+          issuedAt: envelope.issuedAt,
+          recordedAt: new Date().toISOString(),
+          executionOutcome: {
+            ok: true,
+            category: 'SUCCESS',
+            outcome: 'COMMAND_SUCCESS',
+            data: handlerOutcome.data,
+          },
+        };
+        recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
+      } else if (handlerOutcome.category === 'REFUSED') {
+        const record: GovernanceCommandRecord = {
+          commandId: envelope.commandId,
+          commandFingerprint: createCommandFingerprint(envelope),
+          commandType: envelope.commandType,
+          payloadVersion: envelope.payloadVersion,
+          issuedAt: envelope.issuedAt,
+          recordedAt: new Date().toISOString(),
+          executionOutcome: {
+            ok: false,
+            category: 'REFUSED',
+            outcome: 'COMMAND_REFUSED',
+            refusalCode: handlerOutcome.refusalCode,
+            reason: handlerOutcome.reason,
+          },
+        };
+        recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
+      }
+
+      if (recordWriteResult && !recordWriteResult.ok) {
+        const writeError =
+          recordWriteResult.category === 'ERROR'
+            ? recordWriteResult.error
+            : new RuntimeInvariantError(
+                `Idempotency execution record persistence failed after command execution: ${recordWriteResult.reason}`
+              );
+
+        return {
           ok: false,
-          category: 'REFUSED',
-          outcome: 'COMMAND_REFUSED',
-          refusalCode: handlerOutcome.refusalCode,
-          reason: handlerOutcome.reason,
-        },
-      };
-      recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
-    }
-
-    if (recordWriteResult && !recordWriteResult.ok) {
-      const writeError =
-        recordWriteResult.category === 'ERROR'
-          ? recordWriteResult.error
-          : new RuntimeInvariantError(
-              `Idempotency execution record persistence failed after command execution: ${recordWriteResult.reason}`
-            );
+          category: 'ERROR',
+          error: writeError,
+          pipelineReport,
+          handlerOutcome,
+        };
+      }
 
       return {
-        ok: false,
-        category: 'ERROR',
-        error: writeError,
+        ok: handlerOutcome.ok,
+        category: handlerOutcome.category,
+        refusalCode: handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined,
+        reason: handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined,
         pipelineReport,
         handlerOutcome,
       };
+    } finally {
+      lease?.release();
     }
+  }
 
-    return {
-      ok: handlerOutcome.ok,
-      category: handlerOutcome.category,
-      refusalCode: handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined,
-      reason: handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined,
-      pipelineReport,
-      handlerOutcome,
-    };
+  /**
+   * Asynchronous variant of processAndExecuteCommand.
+   * Preserves public synchronous processAndExecuteCommand API while supporting async concurrency coordination.
+   */
+  public async processAndExecuteCommandAsync(input: unknown): Promise<GovernedLearningRuntimeExecutionResult> {
+    return this.processAndExecuteCommand(input);
   }
 }
 

@@ -32,8 +32,9 @@ import {
   EventTypeEnumSchema,
 } from '../types/enums.js';
 import type { RefusalCodeEnum } from '../types/enums.js';
-import type { IdempotencyStorePort } from '../contracts/ports.js';
+import type { IdempotencyStorePort, ConcurrencyCoordinatorPort, ConcurrencyLease } from '../contracts/ports.js';
 import { createCommandFingerprint } from './idempotency.js';
+import { getConcurrencyScope } from './concurrency.js';
 
 export type PipelineStageId =
   | 'ENVELOPE_STRUCTURAL_PARSE'
@@ -82,6 +83,7 @@ export interface PipelineExecutionReport<T = unknown> {
 
 export interface GovernanceProcessingPipelineOptions {
   readonly idempotencyStore?: IdempotencyStorePort;
+  readonly concurrencyCoordinator?: ConcurrencyCoordinatorPort;
 }
 
 /**
@@ -282,9 +284,11 @@ export function dispatchGovernanceEvent(input: unknown): EventDispatchResult {
  */
 export class GovernanceProcessingPipeline {
   private readonly idempotencyStore?: IdempotencyStorePort;
+  private readonly concurrencyCoordinator?: ConcurrencyCoordinatorPort;
 
   constructor(options?: GovernanceProcessingPipelineOptions) {
     this.idempotencyStore = options?.idempotencyStore;
+    this.concurrencyCoordinator = options?.concurrencyCoordinator;
   }
 
   private readonly STAGE_SEQUENCE: ReadonlyArray<PipelineStageId> = [
@@ -309,6 +313,7 @@ export class GovernanceProcessingPipeline {
     let stageError: GovernedLearningRuntimeError | undefined;
     let stageRefusalCode: RefusalCodeEnum | undefined;
     let stageRefusalReason: string | undefined;
+    let currentLease: ConcurrencyLease | undefined;
 
     for (let i = 0; i < this.STAGE_SEQUENCE.length; i++) {
       const stageId = this.STAGE_SEQUENCE[i];
@@ -493,7 +498,23 @@ export class GovernanceProcessingPipeline {
         }
 
         case 'CONCURRENCY_CONTROL_CHECK': {
-          // Pass-through orchestration boundary placeholder (OPEN-GL-RUNTIME-006 strategy execution deferred)
+          if (this.concurrencyCoordinator && currentEnvelope) {
+            const scopeKeys = getConcurrencyScope(currentEnvelope);
+            const leaseRes = this.concurrencyCoordinator.acquireScope(scopeKeys);
+            if (!leaseRes.ok) {
+              stageSuccess = false;
+              if (leaseRes.category === 'REFUSED') {
+                stageRefusalCode = leaseRes.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION';
+                stageRefusalReason = leaseRes.reason ?? 'Concurrency contention on aggregate scope';
+              }
+              stageError =
+                leaseRes.category === 'ERROR'
+                  ? leaseRes.error
+                  : new RuntimeInvariantError(leaseRes.reason ?? 'Concurrency scope acquisition failed');
+            } else {
+              currentLease = leaseRes.data;
+            }
+          }
           break;
         }
 
@@ -524,6 +545,7 @@ export class GovernanceProcessingPipeline {
               currentStage: stageId,
               stageOutcomes: outcomes,
               data: dispatchRes,
+              metadata: currentLease ? { concurrencyLease: currentLease } : undefined,
             };
           }
           break;
@@ -544,6 +566,10 @@ export class GovernanceProcessingPipeline {
           timestamp,
         });
       }
+    }
+
+    if (currentLease) {
+      currentLease.release();
     }
 
     if (stageRefusalCode) {

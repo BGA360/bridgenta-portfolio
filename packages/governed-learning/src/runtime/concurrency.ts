@@ -92,3 +92,168 @@ export function getConcurrencyScope(envelope: GovernanceCommandEnvelope): Readon
   // Deduplicate and sort deterministically
   return Array.from(new Set(keys)).sort();
 }
+
+import type { ConcurrencyLease, ConcurrencyCoordinatorPort } from '../contracts/ports.js';
+import type { RuntimeOperationResult } from './types.js';
+import { GovernedLearningRuntimeError, RuntimeInvariantError } from './errors.js';
+
+export class NoOpConcurrencyLease implements ConcurrencyLease {
+  public readonly scopeKeys: ReadonlyArray<string>;
+  public readonly acquiredAt: string;
+
+  constructor(scopeKeys: ReadonlyArray<string>) {
+    this.scopeKeys = Array.from(new Set(scopeKeys)).sort();
+    this.acquiredAt = new Date().toISOString();
+  }
+
+  public release(): void {
+    // No-op
+  }
+}
+
+/**
+ * Level 1 In-Process Concurrency Coordinator.
+ * Prevents conflicting Governed Learning commands from silently interleaving against the same aggregate state.
+ * Multi-aggregate keys are deterministically deduplicated and sorted to prevent lock inversion/deadlocks.
+ */
+export class InMemoryConcurrencyCoordinator implements ConcurrencyCoordinatorPort {
+  private readonly activeSyncLocks = new Set<string>();
+  private readonly activeAsyncLocks = new Map<string, Promise<void>>();
+
+  /**
+   * Acquires exclusive scope lease for specified aggregate keys.
+   */
+  public acquireScope(scopeKeys: ReadonlyArray<string>): RuntimeOperationResult<ConcurrencyLease> {
+    const sortedKeys = Array.from(new Set(scopeKeys)).sort();
+
+    // Check if any key is currently locked
+    for (const key of sortedKeys) {
+      if (this.activeSyncLocks.has(key)) {
+        return {
+          ok: false,
+          category: 'REFUSED',
+          refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+          reason: `Concurrency contention for scope key '${key}'`,
+        };
+      }
+    }
+
+    // Acquire locks
+    for (const key of sortedKeys) {
+      this.activeSyncLocks.add(key);
+    }
+
+    let isReleased = false;
+    const lease: ConcurrencyLease = {
+      scopeKeys: sortedKeys,
+      acquiredAt: new Date().toISOString(),
+      release: () => {
+        if (isReleased) return;
+        isReleased = true;
+        for (const key of sortedKeys) {
+          this.activeSyncLocks.delete(key);
+        }
+      },
+    };
+
+    return {
+      ok: true,
+      category: 'SUCCESS',
+      data: lease,
+    };
+  }
+
+  /**
+   * Executes a synchronous operation within exclusive scope lease.
+   */
+  public executeWithinScope<T>(
+    scopeKeys: ReadonlyArray<string>,
+    operation: () => T
+  ): RuntimeOperationResult<T> {
+    const acquireRes = this.acquireScope(scopeKeys);
+    if (!acquireRes.ok) {
+      return acquireRes;
+    }
+
+    const lease = acquireRes.data;
+    try {
+      const data = operation();
+      return {
+        ok: true,
+        category: 'SUCCESS',
+        data,
+      };
+    } catch (err) {
+      const error =
+        err instanceof GovernedLearningRuntimeError
+          ? err
+          : new RuntimeInvariantError(err instanceof Error ? err.message : String(err));
+      return {
+        ok: false,
+        category: 'ERROR',
+        error,
+      };
+    } finally {
+      lease.release();
+    }
+  }
+
+  /**
+   * Executes an asynchronous operation within exclusive scope lease.
+   * Queues waiters for aggregate keys in sorted order without deadlocking.
+   */
+  public async executeWithinScopeAsync<T>(
+    scopeKeys: ReadonlyArray<string>,
+    operation: () => Promise<T>
+  ): Promise<RuntimeOperationResult<T>> {
+    const sortedKeys = Array.from(new Set(scopeKeys)).sort();
+
+    // Collect prior promises for required keys synchronously
+    const priorPromises: Promise<void>[] = [];
+    for (const key of sortedKeys) {
+      const prior = this.activeAsyncLocks.get(key);
+      if (prior) {
+        priorPromises.push(prior);
+      }
+    }
+
+    let resolver!: () => void;
+    const nextPromise = new Promise<void>((resolve) => {
+      resolver = resolve;
+    });
+
+    // Register nextPromise synchronously BEFORE yielding execution
+    for (const key of sortedKeys) {
+      this.activeAsyncLocks.set(key, nextPromise);
+    }
+
+    try {
+      if (priorPromises.length > 0) {
+        await Promise.all(priorPromises);
+      }
+      const data = await operation();
+      return {
+        ok: true,
+        category: 'SUCCESS',
+        data,
+      };
+    } catch (err) {
+      const error =
+        err instanceof GovernedLearningRuntimeError
+          ? err
+          : new RuntimeInvariantError(err instanceof Error ? err.message : String(err));
+      return {
+        ok: false,
+        category: 'ERROR',
+        error,
+      };
+    } finally {
+      resolver();
+      for (const key of sortedKeys) {
+        if (this.activeAsyncLocks.get(key) === nextPromise) {
+          this.activeAsyncLocks.delete(key);
+        }
+      }
+    }
+  }
+}
