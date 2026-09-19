@@ -181,10 +181,11 @@ $$\text{Atomic Transaction} = \text{Domain Entity State Mutation} + \text{Domain
 - `GovernancePersistencePort` (Domain Entities & Event Log) and `IdempotencyStorePort` (Operational Command Records) remain **logically separate interface ports**.
 - Both ports accept an optional `transactionContext?: TransactionContext` parameter across all mutating operations (`TRANSACTION_CONTEXT_COMPATIBLE_PORTS: YES`).
 
-### Current Transaction Context Limitation
-- `TransactionContext` currently serves as a contract carrier / extension point (`TRANSACTION_CONTEXT_CURRENTLY_ENFORCES_PHYSICAL_ATOMICITY: NO`).
-- `RuntimeIntegrityUnitOfWork` is currently at `L1_ABSTRACTION_ONLY`.
-- In Level 2 implementations, `TransactionContext` will wrap a real datastore transaction handle (`dbClient` / `txHandle`), ensuring all operations execute within the **same physical database transaction**.
+### Level-2 Transaction Context Implementation
+- Both ports accept an optional `transactionContext?: TransactionContext` parameter across all mutating operations (`TRANSACTION_CONTEXT_COMPATIBLE_PORTS: YES`).
+- In Level 1, `TransactionContext` served as a contract carrier (`TRANSACTION_CONTEXT_CURRENTLY_ENFORCES_PHYSICAL_ATOMICITY: NO_IN_L1`).
+- In `GL-HARDENING-005` Level-2 implementations (`SqliteRuntimeIntegrityUnitOfWork`), `TransactionContext` binds a real database physical transaction handle (`TRANSACTION_CONTEXT_CURRENTLY_ENFORCES_PHYSICAL_ATOMICITY: YES_IN_L2`), ensuring all operations execute within the **same physical database transaction**.
+- `RuntimeIntegrityUnitOfWork` is now implemented at Level-2 (`L2_PHYSICAL_TRANSACTION_OWNER`).
 
 ### Concurrency Model & Lock Ordering
 - Stage 9 is the **logical concurrency policy boundary**. PostgreSQL provides **physical multi-instance transaction enforcement** via row locking.
