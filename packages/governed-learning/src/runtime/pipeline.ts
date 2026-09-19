@@ -12,6 +12,7 @@ import {
 } from './parsers.js';
 import type {
   RuntimeExecutionStageOutcome,
+  RuntimeResultCategory,
 } from './types.js';
 import { GovernedLearningRuntimeError, RuntimeInvariantError } from './errors.js';
 import {
@@ -30,6 +31,9 @@ import {
   CommandTypeEnumSchema,
   EventTypeEnumSchema,
 } from '../types/enums.js';
+import type { RefusalCodeEnum } from '../types/enums.js';
+import type { IdempotencyStorePort } from '../contracts/ports.js';
+import { createCommandFingerprint } from './idempotency.js';
 
 export type PipelineStageId =
   | 'ENVELOPE_STRUCTURAL_PARSE'
@@ -66,11 +70,18 @@ export interface EventDispatchResult {
 
 export interface PipelineExecutionReport<T = unknown> {
   readonly ok: boolean;
-  readonly category: 'SUCCESS' | 'ERROR';
+  readonly category: RuntimeResultCategory;
   readonly currentStage: PipelineStageId;
   readonly stageOutcomes: ReadonlyArray<RuntimeExecutionStageOutcome>;
   readonly data?: T;
+  readonly metadata?: Readonly<Record<string, unknown>>;
   readonly error?: GovernedLearningRuntimeError;
+  readonly refusalCode?: RefusalCodeEnum;
+  readonly reason?: string;
+}
+
+export interface GovernanceProcessingPipelineOptions {
+  readonly idempotencyStore?: IdempotencyStorePort;
 }
 
 /**
@@ -270,6 +281,12 @@ export function dispatchGovernanceEvent(input: unknown): EventDispatchResult {
  * Orchestrates pre-handler processing stages sequentially and short-circuits deterministically on stage failure.
  */
 export class GovernanceProcessingPipeline {
+  private readonly idempotencyStore?: IdempotencyStorePort;
+
+  constructor(options?: GovernanceProcessingPipelineOptions) {
+    this.idempotencyStore = options?.idempotencyStore;
+  }
+
   private readonly STAGE_SEQUENCE: ReadonlyArray<PipelineStageId> = [
     'ENVELOPE_STRUCTURAL_PARSE',
     'TYPE_DISCRIMINATOR_CHECK',
@@ -290,6 +307,8 @@ export class GovernanceProcessingPipeline {
     let currentEnvelope: GovernanceCommandEnvelope | undefined;
     let failedStage: PipelineStageId | undefined;
     let stageError: GovernedLearningRuntimeError | undefined;
+    let stageRefusalCode: RefusalCodeEnum | undefined;
+    let stageRefusalReason: string | undefined;
 
     for (let i = 0; i < this.STAGE_SEQUENCE.length; i++) {
       const stageId = this.STAGE_SEQUENCE[i];
@@ -407,7 +426,69 @@ export class GovernanceProcessingPipeline {
         }
 
         case 'IDEMPOTENCY_DETERMINISTIC_CHECK': {
-          // Pass-through orchestration boundary placeholder (OPEN-GL-RUNTIME-005 policy execution deferred)
+          if (this.idempotencyStore && currentEnvelope) {
+            const lookupRes = this.idempotencyStore.getCommandExecution(currentEnvelope.commandId);
+            if (!lookupRes.ok) {
+              stageSuccess = false;
+              stageError = lookupRes.category === 'ERROR' ? lookupRes.error : new RuntimeInvariantError('Idempotency store lookup failed');
+            } else if (lookupRes.data) {
+              const existingRecord = lookupRes.data;
+              const currentFingerprint = createCommandFingerprint(currentEnvelope);
+
+              // Verify fingerprint match and immutable issuedAt timestamp match
+              const isFingerprintMatch = existingRecord.commandFingerprint === currentFingerprint;
+              const isIssuedAtMatch = !existingRecord.issuedAt || existingRecord.issuedAt === currentEnvelope.issuedAt;
+
+              if (isFingerprintMatch && isIssuedAtMatch) {
+                // Exact Retry (Case B)
+                outcomes.push({
+                  stageId,
+                  status: 'COMPLETED',
+                  timestamp,
+                });
+
+                // Mark downstream stages as SKIPPED
+                for (let j = i + 1; j < this.STAGE_SEQUENCE.length; j++) {
+                  outcomes.push({
+                    stageId: this.STAGE_SEQUENCE[j],
+                    status: 'SKIPPED',
+                    timestamp,
+                  });
+                }
+
+                const dispatchRes: CommandDispatchResult = {
+                  ok: existingRecord.executionOutcome.ok,
+                  outcome: 'SUPPORTED_KNOWN_COMMAND',
+                  commandType: currentEnvelope.commandType,
+                  payloadVersion: currentEnvelope.payloadVersion,
+                  envelope: currentEnvelope,
+                  payload: currentEnvelope.payload,
+                };
+
+                return {
+                  ok: true,
+                  category: 'SUCCESS',
+                  currentStage: stageId,
+                  stageOutcomes: outcomes,
+                  data: dispatchRes,
+                  metadata: {
+                    replayedResult: true,
+                    cachedRecord: existingRecord,
+                  },
+                };
+              } else {
+                // Identity Collision (Case C) - different payload, actor, authority, issuedAt, commandType, or payloadVersion
+                stageSuccess = false;
+                stageRefusalCode = 'REFUSAL_INVARIANT_VIOLATION';
+                let mismatchDetail = 'mismatched fingerprint, payload, actor, authority, commandType, or version';
+                if (!isIssuedAtMatch) {
+                  mismatchDetail = `issuedAt immutable timestamp mismatch ('${existingRecord.issuedAt}' vs '${currentEnvelope.issuedAt}')`;
+                }
+                stageRefusalReason = `Command identity collision for commandId '${currentEnvelope.commandId}' due to ${mismatchDetail}`;
+                stageError = new RuntimeInvariantError(stageRefusalReason);
+              }
+            }
+          }
           break;
         }
 
@@ -463,6 +544,18 @@ export class GovernanceProcessingPipeline {
           timestamp,
         });
       }
+    }
+
+    if (stageRefusalCode) {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        currentStage: failedStage ?? 'IDEMPOTENCY_DETERMINISTIC_CHECK',
+        stageOutcomes: outcomes,
+        refusalCode: stageRefusalCode,
+        reason: stageRefusalReason ?? 'Command execution refused',
+        error: stageError,
+      };
     }
 
     return {

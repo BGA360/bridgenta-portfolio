@@ -75,6 +75,7 @@ export const GovernanceCommandRecordSchema = z
     commandFingerprint: z.string().min(1),
     commandType: CommandTypeEnumSchema,
     payloadVersion: VersionValueSchema,
+    issuedAt: TimestampIsoSchema.optional(),
     recordedAt: TimestampIsoSchema,
     executionOutcome: z
       .object({
