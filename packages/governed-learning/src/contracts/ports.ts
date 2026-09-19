@@ -136,3 +136,46 @@ export interface RuntimeIntegrityUnitOfWork {
   ): Promise<T> | T;
 }
 
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: ConcurrencyLease — Scope Lease Handle
+ * Represents an active exclusive concurrency lease acquired for specified aggregate scope keys.
+ */
+export interface ConcurrencyLease {
+  readonly scopeKeys: ReadonlyArray<string>;
+  readonly acquiredAt: string;
+  release(): void;
+}
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: ConcurrencyCoordinatorPort — Operational Concurrency Control Interface Contract
+ * Dedicated concurrency abstraction for managing per-aggregate serialization.
+ */
+export interface ConcurrencyCoordinatorPort {
+  /**
+   * Acquires exclusive scope lease for specified aggregate keys.
+   * Multi-aggregate keys MUST be deduplicated and sorted before acquisition.
+   */
+  acquireScope(
+    scopeKeys: ReadonlyArray<string>,
+    transactionContext?: TransactionContext
+  ): import('../runtime/types.js').RuntimeOperationResult<ConcurrencyLease>;
+
+  /**
+   * Executes a synchronous operation within exclusive scope lease.
+   */
+  executeWithinScope<T>(
+    scopeKeys: ReadonlyArray<string>,
+    operation: () => T,
+    transactionContext?: TransactionContext
+  ): import('../runtime/types.js').RuntimeOperationResult<T>;
+
+  /**
+   * Executes an asynchronous operation within exclusive scope lease.
+   */
+  executeWithinScopeAsync<T>(
+    scopeKeys: ReadonlyArray<string>,
+    operation: () => Promise<T>,
+    transactionContext?: TransactionContext
+  ): Promise<import('../runtime/types.js').RuntimeOperationResult<T>>;
+}
+
