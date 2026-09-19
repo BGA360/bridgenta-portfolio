@@ -432,9 +432,17 @@ export class GovernedLearningRuntime {
 
     try {
       if (this.unitOfWork) {
-        return this.unitOfWork.execute((txContext) =>
+        const uowResult = this.unitOfWork.execute((txContext) =>
           this.executeCore(envelope, payload, pipelineReport, txContext)
-        ) as GovernedLearningRuntimeExecutionResult;
+        );
+
+        if (uowResult && typeof (uowResult as any).then === 'function') {
+          throw new RuntimeInvariantError(
+            'Synchronous runtime requires a synchronous UnitOfWork implementation'
+          );
+        }
+
+        return uowResult as GovernedLearningRuntimeExecutionResult;
       }
 
       return this.executeCore(envelope, payload, pipelineReport);
@@ -549,7 +557,31 @@ export class GovernedLearningRuntime {
   ): GovernedLearningRuntimeExecutionResult {
     // Post-BEGIN In-Transaction Command Arbitration Recheck
     const inTxCheck = this.idempotencyStore.getCommandExecution(envelope.commandId, txContext);
-    if (inTxCheck.ok && inTxCheck.data) {
+    if (!inTxCheck.ok) {
+      if (inTxCheck.category === 'ERROR') {
+        return {
+          ok: false,
+          category: 'ERROR',
+          error:
+            inTxCheck.error ??
+            new RuntimeInvariantError(
+              `Post-BEGIN durable idempotency lookup failed for command '${envelope.commandId}'`
+            ),
+          pipelineReport,
+          rollbackRequired: true,
+        };
+      }
+      return {
+        ok: false,
+        category: 'REFUSED',
+        refusalCode: inTxCheck.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+        reason: inTxCheck.reason ?? 'Durable idempotency arbitration refused',
+        pipelineReport,
+        rollbackRequired: true,
+      };
+    }
+
+    if (inTxCheck.data) {
       const existingRecord = inTxCheck.data;
       const currentFingerprint = createCommandFingerprint(envelope);
       const isFingerprintMatch = existingRecord.commandFingerprint === currentFingerprint;

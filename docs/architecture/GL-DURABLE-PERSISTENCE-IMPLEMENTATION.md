@@ -27,9 +27,10 @@ ONE PHYSICAL DATABASE TRANSACTION
 
 ### PR #309 Remediation Improvements
 - **Synchronous Public API**: `processAndExecuteCommand` is genuinely synchronous using `DatabaseSync`, returning `GovernedLearningRuntimeExecutionResult` directly (not a Promise).
+- **Synchronous Thenable Guard**: `processAndExecuteCommand` enforces `SYNC_RUNTIME_THENABLE_GUARD: YES`, explicitly rejecting thenable/async `UnitOfWork` instances with an error while releasing Stage 9 scope leases safely.
 - **Stage 9 Scope Lease**: Stage 9 lease/scope spans the physical database transaction commit/rollback end-to-end for both sync (`concurrencyCoordinator.executeWithinScope`) and async (`concurrencyCoordinator.executeWithinScopeAsync`) runtimes.
 - **TransactionContext Enforcement**: All mutating repository/store operations explicitly verify `TransactionContext` manager ownership and active physical status, safely rejecting missing, stale, foreign, or fabricated contexts with `ERROR`.
-- **Post-BEGIN Revalidation & Race Closure**: Post-BEGIN Stage 8 revalidation inside the physical transaction re-checks command records after acquiring the SQLite writer lock. Same fingerprint replays winner result; changed fingerprint returns `REFUSED` (`REFUSAL_INVARIANT_VIOLATION`) and rolls back partial writes.
+- **Post-BEGIN Fail-Closed Revalidation**: Post-BEGIN Stage 8 revalidation inside the physical transaction re-checks command records after acquiring the SQLite writer lock. Storage errors fail closed (`POST_BEGIN_STAGE8_ERROR_FAILS_CLOSED: YES`), aborting handler execution and entity/event writes (0 calls) and rolling back the transaction. Same fingerprint replays winner result; changed fingerprint returns `REFUSED` (`REFUSAL_INVARIANT_VIOLATION`) and rolls back partial writes.
 - **Persistence Refusal Propagation**: Persistence refusals halt dependent event appends and success command records, rolling back partial writes cleanly (`PERSISTENCE_REFUSED_TRANSACTION_COMMITS_DOMAIN_WRITES: NO`).
 - **Two-Connection Concurrent Testing**: Window H tests (`test 25`, `test 26`) verify real concurrent execution using two separate `SqliteDatabaseManager` instances connected to the same physical database file with `PRAGMA busy_timeout = 5000`.
 
@@ -159,7 +160,7 @@ All mutating operations execute through `SqliteRuntimeIntegrityUnitOfWork.execut
 
 ## 6. TEST SUITE EVIDENCE
 
-All 26 test matrix scenarios in `packages/governed-learning/tests/durable_persistence_level2.test.ts` pass cleanly:
+All 28 test matrix scenarios in `packages/governed-learning/tests/durable_persistence_level2.test.ts` pass cleanly:
 
 1. `durable entity persistence survives restart` (PASS)
 2. `durable event persistence survives restart` (PASS)
@@ -187,6 +188,8 @@ All 26 test matrix scenarios in `packages/governed-learning/tests/durable_persis
 24. `persistence refusal halts dependent event append and success command record` (PASS)
 25. `Window H real two-connection concurrent race (same identity) yields one execution + one replay` (PASS)
 26. `Window H real two-connection concurrent race (mismatched identity) yields one execution + one refusal` (PASS)
+27. `post-BEGIN durable idempotency lookup failure aborts handler and rolls back transaction` (PASS)
+28. `synchronous runtime rejects thenable UnitOfWork execution and releases lease` (PASS)
 
 ---
 

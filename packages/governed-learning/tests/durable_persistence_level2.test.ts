@@ -5,13 +5,20 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
   createSqliteGovernedLearningRuntime,
+  GovernedLearningRuntime,
   SqliteDatabaseManager,
   SqliteGovernanceRepository,
   SqliteIdempotencyStore,
   SqliteRuntimeIntegrityUnitOfWork,
   RuntimeInvariantError,
 } from '../src/index.js';
-import type { GovernanceCommandEnvelope, TransactionContext } from '../src/index.js';
+import type {
+  GovernanceCommandEnvelope,
+  TransactionContext,
+  IdempotencyStorePort,
+  GovernancePersistencePort,
+  RuntimeIntegrityUnitOfWork,
+} from '../src/index.js';
 
 function getTempDbPath(name: string): string {
   return join(tmpdir(), `gl_durability_${name}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.db`);
@@ -787,4 +794,123 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
       cleanupDbFile(dbPath);
     }
   });
+
+  it('27. post-BEGIN durable idempotency lookup failure aborts handler and rolls back transaction', async () => {
+    const dbPath = getTempDbPath('post_begin_error');
+    try {
+      const { dbManager, persistencePort: rawRepo, idempotencyStore: rawStore, unitOfWork } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+
+      let postBeginLookupAttempts = 0;
+      let domainPersistenceCalls = 0;
+      let eventAppendCalls = 0;
+
+      const failingIdempotencyStore: IdempotencyStorePort = {
+        getCommandExecution(commandId: string, transactionContext?: TransactionContext) {
+          if (transactionContext !== undefined) {
+            postBeginLookupAttempts++;
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError('Injected post-BEGIN lookup infrastructure failure'),
+            };
+          }
+          return rawStore.getCommandExecution(commandId, transactionContext);
+        },
+        recordCommandExecution(record, txContext) {
+          return rawStore.recordCommandExecution(record, txContext);
+        },
+      };
+
+      const trackedPersistencePort: GovernancePersistencePort = {
+        saveObservation(obs, tx) {
+          domainPersistenceCalls++;
+          return rawRepo.saveObservation(obs, tx);
+        },
+        saveLesson(lesson, tx) {
+          domainPersistenceCalls++;
+          return rawRepo.saveLesson(lesson, tx);
+        },
+        saveRuleCandidate(rule, tx) {
+          domainPersistenceCalls++;
+          return rawRepo.saveRuleCandidate(rule, tx);
+        },
+        getObservationByRef(ref) {
+          return rawRepo.getObservationByRef(ref);
+        },
+        getLessonByRef(ref) {
+          return rawRepo.getLessonByRef(ref);
+        },
+        getRuleCandidateById(id) {
+          return rawRepo.getRuleCandidateById(id);
+        },
+        appendEvent(evt, tx) {
+          eventAppendCalls++;
+          return rawRepo.appendEvent(evt, tx);
+        },
+        getEvents() {
+          return rawRepo.getEvents();
+        },
+      };
+
+      const runtime = new GovernedLearningRuntime({
+        persistencePort: trackedPersistencePort,
+        idempotencyStore: failingIdempotencyStore,
+        unitOfWork,
+      });
+
+      const res = await runtime.processAndExecuteCommandAsync(cloneCmd(sampleObservationCmd));
+
+      assert.strictEqual(res.ok, false);
+      assert.strictEqual(res.category, 'ERROR');
+      assert.ok(res.error?.message.includes('Injected post-BEGIN lookup infrastructure failure'));
+
+      assert.strictEqual(postBeginLookupAttempts, 1);
+      assert.strictEqual(domainPersistenceCalls, 0);
+      assert.strictEqual(eventAppendCalls, 0);
+
+      // Verify physical transaction rollback left database with zero entities/events/records
+      const rawDb = dbManager.getRawDatabase();
+      const obsCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM observations').get()?.count;
+      const evtCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM governance_events').get()?.count;
+      const cmdCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM command_records').get()?.count;
+
+      assert.strictEqual(obsCount, 0);
+      assert.strictEqual(evtCount, 0);
+      assert.strictEqual(cmdCount, 0);
+
+      dbManager.close();
+    } finally {
+      cleanupDbFile(dbPath);
+    }
+  });
+
+  it('28. synchronous runtime rejects thenable UnitOfWork execution and releases lease', () => {
+    const dbPath = getTempDbPath('thenable_uow_guard');
+    try {
+      const { persistencePort, idempotencyStore, dbManager } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+
+      // Custom UnitOfWork that returns a Promise (thenable) from execute
+      const thenableUnitOfWork: RuntimeIntegrityUnitOfWork = {
+        execute<T>(operation: (context: TransactionContext) => Promise<T> | T): Promise<T> | T {
+          return Promise.resolve(operation({ transactionId: 'tx_async_mock', createdAt: new Date().toISOString(), isDurable: false }));
+        },
+      };
+
+      const runtime = new GovernedLearningRuntime({
+        persistencePort,
+        idempotencyStore,
+        unitOfWork: thenableUnitOfWork,
+      });
+
+      assert.throws(
+        () => runtime.processAndExecuteCommand(cloneCmd(sampleObservationCmd)),
+        (err: any) => err?.message?.includes('Synchronous runtime requires a synchronous UnitOfWork implementation')
+      );
+
+      dbManager.close();
+    } finally {
+      cleanupDbFile(dbPath);
+    }
+  });
 });
+
