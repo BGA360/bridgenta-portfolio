@@ -220,7 +220,7 @@ describe('Governed Learning Runtime Wave 5 Event Construction & Preservation (GL
       assert.equal(result.ok, true);
       if (result.ok) {
         assert.equal(result.category, 'SUCCESS');
-        assert.equal(result.data.adoptedByProjectRef.projectId, 'proj-alpha');
+        assert.equal(result.data.adoptedByProjectRef?.projectId, 'proj-alpha');
       }
     });
   });
