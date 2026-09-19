@@ -284,4 +284,47 @@ describe('Governed Learning Contract Reconciliation R1 GL-CONTRACT-AMENDMENT-001
     });
     assert.equal(legacyReview.success, false);
   });
+
+  it('17. Candidate commands enforce candidateRef and reject lessonFamilyRef identity substitution', async () => {
+    const { ApproveLessonCommandPayloadSchema, SubmitLessonForReviewCommandPayloadSchema } = await import('../src/helpers/commands.js');
+    
+    const validApprove = ApproveLessonCommandPayloadSchema.safeParse({
+      candidateRef: { candidateId: 'CAN-100' },
+      decisionRef: { decisionId: 'DEC-001' },
+    });
+    assert.equal(validApprove.success, true);
+
+    const invalidApprove = ApproveLessonCommandPayloadSchema.safeParse({
+      lessonFamilyRef: { lessonId: 'LES-100' },
+      decisionRef: { decisionId: 'DEC-001' },
+    });
+    assert.equal(invalidApprove.success, false);
+
+    const validSubmit = SubmitLessonForReviewCommandPayloadSchema.safeParse({
+      candidateRef: { candidateId: 'CAN-100' },
+    });
+    assert.equal(validSubmit.success, true);
+
+    const invalidSubmit = SubmitLessonForReviewCommandPayloadSchema.safeParse({
+      lessonFamilyRef: { lessonId: 'LES-100' },
+    });
+    assert.equal(invalidSubmit.success, false);
+  });
+
+  it('18. Prospective adoption requires proposalRef and rejects published lesson target', async () => {
+    const { AdoptProposalCommandPayloadSchema } = await import('../src/helpers/commands.js');
+
+    const validAdopt = AdoptProposalCommandPayloadSchema.safeParse({
+      proposalRef: { proposalId: 'PROP-100' },
+      targetProjectRef: { projectId: 'PRJ-001' },
+      decisionRef: { decisionId: 'DEC-001' },
+    });
+    assert.equal(validAdopt.success, true);
+
+    const invalidAdopt = AdoptProposalCommandPayloadSchema.safeParse({
+      lessonRef: { lessonId: 'LES-100', version: '1.0.0' },
+      projectRef: { projectId: 'PRJ-001' },
+    });
+    assert.equal(invalidAdopt.success, false);
+  });
 });

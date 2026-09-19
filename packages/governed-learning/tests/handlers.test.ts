@@ -125,40 +125,44 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
 
   it('handleSubmitLessonForReviewCommand transitions candidate to IN_REVIEW', () => {
     const env = { ...baseEnvelope, commandType: 'SubmitLessonForReview' as const };
-    const payload = { lessonFamilyRef: { lessonId: 'lsn_3001' } };
+    const payload = { candidateRef: { candidateId: 'can_3001' } };
     const res = handleSubmitLessonForReviewCommand({ envelope: env, payload });
     assert.equal(res.ok, true);
     if (res.ok && res.category === 'SUCCESS') {
       const data = res.data as any;
       assert.equal(data.state, 'IN_REVIEW');
+      assert.equal(data.candidateId, 'can_3001');
     }
   });
 
   it('handleInvalidateLessonCandidateCommand transitions candidate to REJECTED with reason', () => {
     const env = { ...baseEnvelope, commandType: 'InvalidateLessonCandidate' as const };
-    const validPayload = { lessonFamilyRef: { lessonId: 'lsn_3001' }, reason: 'Superseded prior to review' };
+    const validPayload = { candidateRef: { candidateId: 'can_3001' }, reason: 'Superseded prior to review' };
     const resValid = handleInvalidateLessonCandidateCommand({ envelope: env, payload: validPayload });
     assert.equal(resValid.ok, true);
     if (resValid.ok && resValid.category === 'SUCCESS') {
       const data = resValid.data as any;
       assert.equal(data.state, 'REJECTED');
+      assert.equal(data.candidateId, 'can_3001');
       assert.equal(data.reason, 'Superseded prior to review');
     }
   });
 
-  it('handleApproveLessonCommand produces non-binding prospective-only approval', () => {
+  it('handleApproveLessonCommand produces canonical published lesson record without prospectiveOnly', () => {
     const env = { ...baseEnvelope, commandType: 'ApproveLesson' as const };
     const payload = {
-      lessonFamilyRef: { lessonId: 'lsn_3001' },
+      candidateRef: { candidateId: 'can_3001' },
       decisionRef: { decisionId: 'dec_2002' },
     };
     const res = handleApproveLessonCommand({ envelope: env, payload });
     assert.equal(res.ok, true);
     if (res.ok && res.category === 'SUCCESS') {
       const data = res.data as any;
-      assert.equal(data.state, 'APPROVED');
+      assert.equal(data.status, 'PUBLISHED');
       assert.equal(data.nonBinding, true);
-      assert.equal(data.prospectiveOnly, true);
+      assert.equal(data.prospectiveOnly, undefined);
+      assert.notEqual(data.lessonId, 'can_3001');
+      assert.equal(data.candidateRef.candidateId, 'can_3001');
     }
   });
 
@@ -166,21 +170,23 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     const envReject = { ...baseEnvelope, commandType: 'RejectLesson' as const };
     const resReject = handleRejectLessonCommand({
       envelope: envReject,
-      payload: { lessonFamilyRef: { lessonId: 'lsn_3001' }, reason: 'Lacks evidence', decisionRef: { decisionId: 'dec_2003' } },
+      payload: { candidateRef: { candidateId: 'can_3001' }, reason: 'Lacks evidence', decisionRef: { decisionId: 'dec_2003' } },
     });
     assert.equal(resReject.ok, true);
     if (resReject.ok && resReject.category === 'SUCCESS') {
       assert.equal((resReject.data as any).state, 'REJECTED');
+      assert.equal((resReject.data as any).candidateId, 'can_3001');
     }
 
     const envRev = { ...baseEnvelope, commandType: 'RequestLessonRevision' as const };
     const resRev = handleRequestLessonRevisionCommand({
       envelope: envRev,
-      payload: { lessonFamilyRef: { lessonId: 'lsn_3001' }, feedback: 'Clarify scope', decisionRef: { decisionId: 'dec_2004' } },
+      payload: { candidateRef: { candidateId: 'can_3001' }, feedback: 'Clarify scope', decisionRef: { decisionId: 'dec_2004' } },
     });
     assert.equal(resRev.ok, true);
     if (resRev.ok && resRev.category === 'SUCCESS') {
       assert.equal((resRev.data as any).state, 'REVISION_REQUESTED');
+      assert.equal((resRev.data as any).candidateId, 'can_3001');
     }
   });
 
@@ -223,18 +229,21 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     }
   });
 
-  it('handleAdoptLessonCommand creates prospective adoption intent', () => {
+  it('handleAdoptProposalCommand creates canonical ProspectiveAdoptionRecord', () => {
     const env = { ...baseEnvelope, commandType: 'AdoptLesson' as const };
     const payload = {
-      lessonRef: { lessonId: 'lsn_3001', version: '1.0.0' },
-      projectRef: { projectId: 'prj_alpha' },
+      proposalRef: { proposalId: 'prop_4001' },
+      targetProjectRef: { projectId: 'prj_alpha' },
+      decisionRef: { decisionId: 'dec_2007' },
     };
-    const res = handleAdoptLessonCommand({ envelope: env, payload });
+    const res = handleAdoptLessonCommand({ envelope: env, payload: payload as any });
     assert.equal(res.ok, true);
     if (res.ok && res.category === 'SUCCESS') {
       const data = res.data as any;
-      assert.equal(data.state, 'ADOPTED');
-      assert.equal(data.prospectiveOnly, true);
+      assert.equal(data.status, 'ADOPTED');
+      assert.equal(data.proposalRef.proposalId, 'prop_4001');
+      assert.equal(data.targetProjectRef.projectId, 'prj_alpha');
+      assert.ok(data.adoptionId);
     }
   });
 
