@@ -1,5 +1,6 @@
 import type { RuntimeOperationResult } from './types.js';
 import { RuntimeInvariantError } from './errors.js';
+import type { TransactionContext } from '../contracts/ports.js';
 
 /**
  * Deep clones an object for defensive immutability.
@@ -27,56 +28,64 @@ export interface GovernancePersistencePort {
    * Appends an event to the append-only governance event log.
    */
   appendEvent(
-    event: unknown
+    event: unknown,
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly eventRef?: string; readonly appended: boolean }>;
 
   /**
    * Retrieves stored governance events in deterministic append order.
    */
   getEvents(
-    filter?: { readonly eventRef?: string; readonly eventType?: string }
+    filter?: { readonly eventRef?: string; readonly eventType?: string },
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<ReadonlyArray<unknown>>;
 
   /**
    * Stores an observation or verified observation.
    */
   saveObservation(
-    observation: unknown
+    observation: unknown,
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly observationRef: string; readonly saved: boolean }>;
 
   /**
    * Retrieves an observation by reference.
    */
   getObservationByRef(
-    observationRef: string
+    observationRef: string,
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown>;
 
   /**
    * Stores a lesson candidate or approved lesson.
    */
   saveLesson(
-    lesson: unknown
+    lesson: unknown,
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly lessonRef: string; readonly saved: boolean }>;
 
   /**
    * Retrieves a lesson by reference.
    */
   getLessonByRef(
-    lessonRef: string
+    lessonRef: string,
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown>;
 
   /**
    * Stores a rule candidate proposal.
    */
   saveRuleCandidate(
-    proposal: unknown
+    proposal: unknown,
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly ruleCandidateId: string; readonly saved: boolean }>;
 
   /**
    * Retrieves a rule candidate proposal by ID.
    */
   getRuleCandidateById(
-    ruleCandidateId: string
+    ruleCandidateId: string,
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown>;
 }
 
@@ -101,7 +110,8 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
    * Appends an event to the append-only log.
    */
   public appendEvent(
-    event: unknown
+    event: unknown,
+    _transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly eventRef?: string; readonly appended: boolean }> {
     if (!event || typeof event !== 'object') {
       return {
@@ -132,7 +142,8 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
    * Retrieves stored events in deterministic append order without mutation.
    */
   public getEvents(
-    filter?: { readonly eventRef?: string; readonly eventType?: string }
+    filter?: { readonly eventRef?: string; readonly eventType?: string },
+    _transactionContext?: TransactionContext
   ): RuntimeOperationResult<ReadonlyArray<unknown>> {
     let result = this.events;
 
@@ -165,7 +176,8 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
    * Stores an observation or verified observation.
    */
   public saveObservation(
-    observation: unknown
+    observation: unknown,
+    _transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly observationRef: string; readonly saved: boolean }> {
     if (!observation || typeof observation !== 'object') {
       return {
@@ -213,7 +225,8 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
    * Retrieves an observation by reference.
    */
   public getObservationByRef(
-    observationRef: string
+    observationRef: string,
+    _transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown> {
     const item = this.observations.get(observationRef);
     if (!item) {
@@ -236,7 +249,8 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
    * Stores a lesson candidate or approved lesson.
    */
   public saveLesson(
-    lesson: unknown
+    lesson: unknown,
+    _transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly lessonRef: string; readonly saved: boolean }> {
     if (!lesson || typeof lesson !== 'object') {
       return {
@@ -286,7 +300,8 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
    * Retrieves a lesson by reference.
    */
   public getLessonByRef(
-    lessonRef: string
+    lessonRef: string,
+    _transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown> {
     const item = this.lessons.get(lessonRef);
     if (!item) {
@@ -309,7 +324,8 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
    * Stores a rule candidate proposal.
    */
   public saveRuleCandidate(
-    proposal: unknown
+    proposal: unknown,
+    _transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly ruleCandidateId: string; readonly saved: boolean }> {
     if (!proposal || typeof proposal !== 'object') {
       return {
@@ -356,7 +372,8 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
    * Retrieves a rule candidate proposal by ID.
    */
   public getRuleCandidateById(
-    ruleCandidateId: string
+    ruleCandidateId: string,
+    _transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown> {
     const item = this.ruleCandidates.get(ruleCandidateId);
     if (!item) {
