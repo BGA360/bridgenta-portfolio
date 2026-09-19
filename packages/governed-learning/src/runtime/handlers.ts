@@ -17,7 +17,7 @@ import type {
   RequestLessonRevisionCommandPayloadSchema,
   SupersedeLessonCommandPayloadSchema,
   RetireLessonCommandPayloadSchema,
-  AdoptLessonCommandPayloadSchema,
+  AdoptProposalCommandPayloadSchema,
   BuildGuidanceSetQueryCommandPayloadSchema,
   ProposeRuleCandidateCommandPayloadSchema,
 } from '../helpers/commands.js';
@@ -135,7 +135,7 @@ export function handleSubmitLessonForReviewCommand(
     ok: true,
     category: 'SUCCESS',
     data: {
-      lessonId: input.payload.lessonFamilyRef.lessonId,
+      candidateId: input.payload.candidateRef.candidateId,
       state: 'IN_REVIEW',
     },
   };
@@ -148,7 +148,7 @@ export function handleInvalidateLessonCandidateCommand(
     ok: true,
     category: 'SUCCESS',
     data: {
-      lessonId: input.payload.lessonFamilyRef.lessonId,
+      candidateId: input.payload.candidateRef.candidateId,
       reason: input.payload.reason,
       state: 'REJECTED',
     },
@@ -158,15 +158,20 @@ export function handleInvalidateLessonCandidateCommand(
 export function handleApproveLessonCommand(
   input: CommandHandlerInput<z.infer<typeof ApproveLessonCommandPayloadSchema>>
 ): CommandHandlerOutcome {
+  const publishedLessonId = `lsn_${input.payload.candidateRef.candidateId.replace(/^(can_|CAN_?)/, '')}`;
   return {
     ok: true,
     category: 'SUCCESS',
     data: {
-      lessonId: input.payload.lessonFamilyRef.lessonId,
-      decisionId: input.payload.decisionRef.decisionId,
+      lessonId: publishedLessonId,
+      version: '1.0.0',
+      candidateRef: input.payload.candidateRef,
+      decisionRef: input.payload.decisionRef,
+      status: 'PUBLISHED',
+      publishedAt: input.envelope.issuedAt,
+      publishedBy: input.envelope.actorRef,
+      authorityContextRef: input.envelope.authorityContextRef,
       nonBinding: true,
-      prospectiveOnly: true,
-      state: 'APPROVED',
     },
   };
 }
@@ -178,7 +183,7 @@ export function handleRejectLessonCommand(
     ok: true,
     category: 'SUCCESS',
     data: {
-      lessonId: input.payload.lessonFamilyRef.lessonId,
+      candidateId: input.payload.candidateRef.candidateId,
       reason: input.payload.reason,
       decisionId: input.payload.decisionRef.decisionId,
       state: 'REJECTED',
@@ -193,7 +198,7 @@ export function handleRequestLessonRevisionCommand(
     ok: true,
     category: 'SUCCESS',
     data: {
-      lessonId: input.payload.lessonFamilyRef.lessonId,
+      candidateId: input.payload.candidateRef.candidateId,
       feedback: input.payload.feedback,
       decisionId: input.payload.decisionRef.decisionId,
       state: 'REVISION_REQUESTED',
@@ -239,21 +244,26 @@ export function handleRetireLessonCommand(
   };
 }
 
-export function handleAdoptLessonCommand(
-  input: CommandHandlerInput<z.infer<typeof AdoptLessonCommandPayloadSchema>>
+export function handleAdoptProposalCommand(
+  input: CommandHandlerInput<z.infer<typeof AdoptProposalCommandPayloadSchema>>
 ): CommandHandlerOutcome {
   return {
     ok: true,
     category: 'SUCCESS',
     data: {
-      lessonId: input.payload.lessonRef.lessonId,
-      lessonVersion: input.payload.lessonRef.version,
-      projectId: input.payload.projectRef.projectId,
-      prospectiveOnly: true,
-      state: 'ADOPTED',
+      adoptionId: `adp_${input.payload.proposalRef.proposalId.replace(/^(prop_|PROP_?)/, '')}`,
+      proposalRef: input.payload.proposalRef,
+      targetProjectRef: input.payload.targetProjectRef,
+      targetWorkstreamRef: input.payload.targetWorkstreamRef,
+      status: 'ADOPTED',
+      adoptedAt: input.envelope.issuedAt,
+      adoptedBy: input.envelope.actorRef,
+      decisionRef: input.payload.decisionRef,
     },
   };
 }
+
+export const handleAdoptLessonCommand = handleAdoptProposalCommand;
 
 export function handleProposeRuleCandidateCommand(
   input: CommandHandlerInput<z.infer<typeof ProposeRuleCandidateCommandPayloadSchema>>

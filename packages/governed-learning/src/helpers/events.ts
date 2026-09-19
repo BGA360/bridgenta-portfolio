@@ -2,13 +2,31 @@ import { z } from 'zod';
 import {
   ObservationIdSchema,
   LessonIdSchema,
+  LessonCandidateIdSchema,
   EvidenceIdSchema,
   VersionValueSchema,
   TimestampIsoSchema,
   ProjectIdSchema,
 } from '../types/primitives.js';
-import { ObservationCategoryEnumSchema, ValidationTypeEnumSchema, ValidationVerdictEnumSchema, EventTypeEnum } from '../types/enums.js';
-import { LessonRefSchema, ObservationRefSchema, EvidenceRefSchema, ActorIdentityRefSchema, DecisionRefSchema } from '../contracts/references.js';
+import {
+  ObservationCategoryEnumSchema,
+  ValidationTypeEnumSchema,
+  ValidationVerdictEnumSchema,
+  PublishedLessonStatusEnumSchema,
+  EventTypeEnumSchema,
+} from '../types/enums.js';
+import type { EventTypeEnum } from '../types/enums.js';
+import {
+  LessonRefSchema,
+  LessonCandidateRefSchema,
+  RuleCandidateProposalRefSchema,
+  ObservationRefSchema,
+  EvidenceRefSchema,
+  ActorIdentityRefSchema,
+  DecisionRefSchema,
+  ProjectRefSchema,
+  WorkstreamRefSchema,
+} from '../contracts/references.js';
 
 // 1. ObservationCreatedEventPayloadSchema
 export const ObservationCreatedEventPayloadSchema = z
@@ -35,7 +53,8 @@ export type ObservationValidatedEventPayload = z.infer<typeof ObservationValidat
 // 3. LessonCandidateCreatedEventPayloadSchema
 export const LessonCandidateCreatedEventPayloadSchema = z
   .object({
-    lessonId: LessonIdSchema,
+    candidateId: LessonCandidateIdSchema.optional(),
+    lessonId: LessonIdSchema.optional(),
     statement: z.string().min(1),
     originatingObservationRefs: z.array(ObservationRefSchema),
   })
@@ -46,7 +65,9 @@ export type LessonCandidateCreatedEventPayload = z.infer<typeof LessonCandidateC
 export const LessonApprovedEventPayloadSchema = z
   .object({
     lessonRef: LessonRefSchema,
+    candidateRef: LessonCandidateRefSchema.optional(),
     decisionRef: DecisionRefSchema,
+    status: PublishedLessonStatusEnumSchema.optional(),
   })
   .strict();
 export type LessonApprovedEventPayload = z.infer<typeof LessonApprovedEventPayloadSchema>;
@@ -72,8 +93,11 @@ export type LessonRetiredEventPayload = z.infer<typeof LessonRetiredEventPayload
 // 7. LessonAdoptedEventPayloadSchema
 export const LessonAdoptedEventPayloadSchema = z
   .object({
-    lessonRef: LessonRefSchema,
-    adoptedByProjectRef: z.object({ projectId: ProjectIdSchema }).strict(),
+    proposalRef: RuleCandidateProposalRefSchema.optional(),
+    lessonRef: LessonRefSchema.optional(),
+    adoptedByProjectRef: z.object({ projectId: ProjectIdSchema }).strict().optional(),
+    targetProjectRef: ProjectRefSchema.optional(),
+    targetWorkstreamRef: WorkstreamRefSchema.optional(),
   })
   .strict();
 export type LessonAdoptedEventPayload = z.infer<typeof LessonAdoptedEventPayloadSchema>;

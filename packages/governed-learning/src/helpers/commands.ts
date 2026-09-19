@@ -8,22 +8,27 @@ import {
   ProjectIdSchema,
   DecisionIdSchema,
   GuidanceQueryIdSchema,
+  WorkstreamIdSchema,
 } from '../types/primitives.js';
 import {
   ObservationCategoryEnumSchema,
   EvidenceTypeEnumSchema,
   ValidationVerdictEnumSchema,
-  CommandTypeEnum,
+  CommandTypeEnumSchema,
   GuidanceMatchStrategyEnumSchema,
 } from '../types/enums.js';
+import type { CommandTypeEnum } from '../types/enums.js';
 import {
   ObservationRefSchema,
   EvidenceRefSchema,
   LessonRefSchema,
-  LessonFamilyRefSchema,
+  LessonCandidateRefSchema,
+  RuleCandidateProposalRefSchema,
   ActorIdentityRefSchema,
   AuthorityContextRefSchema,
   DecisionRefSchema,
+  ProjectRefSchema,
+  WorkstreamRefSchema,
   TargetRefSchema,
 } from '../contracts/references.js';
 import { ScopeContractSchema } from '../contracts/scopes.js';
@@ -83,14 +88,14 @@ export const CreateLessonCandidateCommandPayloadSchema = z
 // 7. SubmitLessonForReviewCommandPayloadSchema
 export const SubmitLessonForReviewCommandPayloadSchema = z
   .object({
-    lessonFamilyRef: LessonFamilyRefSchema,
+    candidateRef: LessonCandidateRefSchema,
   })
   .strict();
 
 // 8. InvalidateLessonCandidateCommandPayloadSchema
 export const InvalidateLessonCandidateCommandPayloadSchema = z
   .object({
-    lessonFamilyRef: LessonFamilyRefSchema,
+    candidateRef: LessonCandidateRefSchema,
     reason: z.string().min(1),
   })
   .strict();
@@ -98,7 +103,7 @@ export const InvalidateLessonCandidateCommandPayloadSchema = z
 // 9. ApproveLessonCommandPayloadSchema
 export const ApproveLessonCommandPayloadSchema = z
   .object({
-    lessonFamilyRef: LessonFamilyRefSchema,
+    candidateRef: LessonCandidateRefSchema,
     decisionRef: DecisionRefSchema,
   })
   .strict();
@@ -106,7 +111,7 @@ export const ApproveLessonCommandPayloadSchema = z
 // 10. RejectLessonCommandPayloadSchema
 export const RejectLessonCommandPayloadSchema = z
   .object({
-    lessonFamilyRef: LessonFamilyRefSchema,
+    candidateRef: LessonCandidateRefSchema,
     reason: z.string().min(1),
     decisionRef: DecisionRefSchema,
   })
@@ -115,7 +120,7 @@ export const RejectLessonCommandPayloadSchema = z
 // 11. RequestLessonRevisionCommandPayloadSchema
 export const RequestLessonRevisionCommandPayloadSchema = z
   .object({
-    lessonFamilyRef: LessonFamilyRefSchema,
+    candidateRef: LessonCandidateRefSchema,
     feedback: z.string().min(1),
     decisionRef: DecisionRefSchema,
   })
@@ -139,13 +144,18 @@ export const RetireLessonCommandPayloadSchema = z
   })
   .strict();
 
-// 14. AdoptLessonCommandPayloadSchema
-export const AdoptLessonCommandPayloadSchema = z
+// 14. AdoptProposalCommandPayloadSchema (Rule candidate prospective adoption)
+export const AdoptProposalCommandPayloadSchema = z
   .object({
-    lessonRef: LessonRefSchema,
-    projectRef: z.object({ projectId: ProjectIdSchema }).strict(),
+    proposalRef: RuleCandidateProposalRefSchema,
+    targetProjectRef: ProjectRefSchema.optional(),
+    targetWorkstreamRef: WorkstreamRefSchema.optional(),
+    decisionRef: DecisionRefSchema,
   })
   .strict();
+
+/** Alias for backward compatibility */
+export const AdoptLessonCommandPayloadSchema = AdoptProposalCommandPayloadSchema;
 
 // 15. BuildGuidanceSetQueryCommandPayloadSchema
 export const BuildGuidanceSetQueryCommandPayloadSchema = z
