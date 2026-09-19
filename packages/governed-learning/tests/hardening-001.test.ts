@@ -189,7 +189,7 @@ describe('GL-HARDENING-001 Runtime Integrity Contracts & Adapters', () => {
     assert.strictEqual(result.category, 'ERROR');
   });
 
-  // --- PART 12: FINGERPRINTING TESTS (8-18) ---
+  // --- PART 12: FINGERPRINTING & IDENTITY METADATA TESTS (8-18) ---
 
   const baseEnvelope: GovernanceCommandEnvelope = {
     commandId: 'cmd_fp_001',
@@ -276,14 +276,21 @@ describe('GL-HARDENING-001 Runtime Integrity Contracts & Adapters', () => {
     assert.strictEqual(createCommandFingerprint(env1), createCommandFingerprint(env2));
   });
 
-  it('18. document/test current issuedAt treatment (issuedAt is excluded from fingerprint)', () => {
+  it('18. compareCommandIdentityMetadata enforces issuedAt immutability while fingerprint excludes issuedAt', () => {
     const env1: GovernanceCommandEnvelope = { ...baseEnvelope, issuedAt: '2026-09-19T10:00:00.000Z' };
     const env2: GovernanceCommandEnvelope = { ...baseEnvelope, issuedAt: '2026-09-19T10:07:00.000Z' };
+
+    // Fingerprints match (business payload intent identity)
     assert.strictEqual(createCommandFingerprint(env1), createCommandFingerprint(env2));
 
-    // compareCommandIdentityMetadata helper verifies exact envelope identity match
+    // But compareCommandIdentityMetadata detects immutable issuedAt mismatch
     const identityMatch = compareCommandIdentityMetadata(env1, env2);
-    assert.strictEqual(identityMatch.matches, true);
+    assert.strictEqual(identityMatch.matches, false);
+    assert.ok(identityMatch.mismatchReason?.includes('issuedAt'));
+
+    // Exact identity matches cleanly
+    const exactMatch = compareCommandIdentityMetadata(env1, { ...env1 });
+    assert.strictEqual(exactMatch.matches, true);
   });
 
   // --- PART 12: UNIT OF WORK / TRANSACTION CONTRACT TESTS (19-21) ---
@@ -318,14 +325,27 @@ describe('GL-HARDENING-001 Runtime Integrity Contracts & Adapters', () => {
     });
   });
 
-  // --- PART 12: CONCURRENCY SCOPE TESTS (22-23) ---
+  // --- PART 12: CONCURRENCY SCOPE & RECORD SHAPE TESTS (22-24) ---
 
-  it('22. getConcurrencyScope extracts deterministic aggregate keys and preserves multi-key sorting', () => {
+  it('22. getConcurrencyScope extracts deterministic aggregate keys across mutating commands', () => {
     const envObs: GovernanceCommandEnvelope = {
       ...baseEnvelope,
       payload: { observationRef: { observationId: 'obs_999' } },
     };
     assert.deepStrictEqual(getConcurrencyScope(envObs), ['obs:obs_999']);
+
+    const envCreateCand: GovernanceCommandEnvelope = {
+      ...baseEnvelope,
+      commandType: 'CreateLessonCandidate',
+      payload: {
+        statement: 'Stmt',
+        rationale: 'Rat',
+        scope: { scopeType: 'SINGLE_FRAMEWORK', frameworkId: 'fw_1' },
+        originatingObservationRefs: [{ observationId: 'obs_b' }, { observationId: 'obs_a' }],
+      },
+    };
+    // Multi-observation creation locks observations in sorted order
+    assert.deepStrictEqual(getConcurrencyScope(envCreateCand), ['obs:obs_a', 'obs:obs_b']);
 
     const envCand: GovernanceCommandEnvelope = {
       ...baseEnvelope,
@@ -345,21 +365,36 @@ describe('GL-HARDENING-001 Runtime Integrity Contracts & Adapters', () => {
     assert.deepStrictEqual(getConcurrencyScope(envSupersede), ['lesson:les_apple', 'lesson:les_zebra']);
   });
 
-  it('23. GovernanceCommandRecordSchema validates correctly', () => {
-    const record: GovernanceCommandRecord = {
-      commandId: 'cmd_schema_check',
-      commandFingerprint: 'fp_schema_check',
+  it('23. GovernanceCommandRecordSchema validates SUCCESS and REFUSED execution outcome shapes losslessly', () => {
+    const successRecord: GovernanceCommandRecord = {
+      commandId: 'cmd_success_check',
+      commandFingerprint: 'fp_success_check',
       commandType: 'DraftObservation',
       payloadVersion: '1.0.0',
       recordedAt: '2026-09-19T10:00:00.000Z',
       executionOutcome: {
         ok: true,
         category: 'SUCCESS',
-        outcome: 'DRAFTED',
+        outcome: 'OBSERVATION_DRAFTED',
+        data: { observationId: 'obs_100', state: 'DRAFT' },
       },
     };
+    assert.strictEqual(GovernanceCommandRecordSchema.safeParse(successRecord).success, true);
 
-    const parseResult = GovernanceCommandRecordSchema.safeParse(record);
-    assert.strictEqual(parseResult.success, true);
+    const refusalRecord: GovernanceCommandRecord = {
+      commandId: 'cmd_refusal_check',
+      commandFingerprint: 'fp_refusal_check',
+      commandType: 'ApproveLesson',
+      payloadVersion: '1.0.0',
+      recordedAt: '2026-09-19T10:00:00.000Z',
+      executionOutcome: {
+        ok: false,
+        category: 'REFUSED',
+        outcome: 'COMMAND_REFUSED',
+        refusalCode: 'REFUSAL_LESSON_NOT_APPROVED',
+        reason: 'Lesson candidate is not in IN_REVIEW status',
+      },
+    };
+    assert.strictEqual(GovernanceCommandRecordSchema.safeParse(refusalRecord).success, true);
   });
 });

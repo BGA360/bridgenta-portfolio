@@ -105,6 +105,12 @@ export function compareCommandIdentityMetadata(
       mismatchReason: `payloadVersion mismatch: '${existingEnvelope.payloadVersion}' vs '${newEnvelope.payloadVersion}'`,
     };
   }
+  if (existingEnvelope.issuedAt !== newEnvelope.issuedAt) {
+    return {
+      matches: false,
+      mismatchReason: `issuedAt immutable timestamp mismatch: '${existingEnvelope.issuedAt}' vs '${newEnvelope.issuedAt}'`,
+    };
+  }
 
   const fingerprintA = createCommandFingerprint(existingEnvelope);
   const fingerprintB = createCommandFingerprint(newEnvelope);

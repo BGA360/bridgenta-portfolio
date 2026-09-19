@@ -18,6 +18,15 @@ export function getConcurrencyScope(envelope: GovernanceCommandEnvelope): Readon
       }
     }
 
+    // 1b. Originating observation references (array on CreateLessonCandidate)
+    if ('originatingObservationRefs' in payload && Array.isArray(payload.originatingObservationRefs)) {
+      for (const ref of payload.originatingObservationRefs) {
+        if (ref && typeof ref === 'object' && typeof (ref as Record<string, unknown>).observationId === 'string') {
+          keys.push(`obs:${(ref as Record<string, unknown>).observationId}`);
+        }
+      }
+    }
+
     // 2. Lesson candidate aggregate
     if ('candidateRef' in payload && payload.candidateRef && typeof payload.candidateRef === 'object') {
       const cand = payload.candidateRef as Record<string, unknown>;

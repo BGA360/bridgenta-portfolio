@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { LessonRefSchema, LessonFamilyRefSchema, ObservationRefSchema, EventRefSchema } from './references.js';
 import { ApprovedLessonSchema, LessonCandidateSchema, ObservationSchema, VerifiedObservationSchema, RuleCandidateProposalSchema } from './entities.js';
 import { RuleCandidateIdSchema, CommandIdSchema, VersionValueSchema, TimestampIsoSchema } from '../types/primitives.js';
-import { CommandTypeEnumSchema } from '../types/enums.js';
+import { CommandTypeEnumSchema, RefusalCodeEnumSchema } from '../types/enums.js';
 
 /**
  * CTR-GL-055: GovernancePersistencePort — Shared Persistence Interface Contract
@@ -82,6 +82,8 @@ export const GovernanceCommandRecordSchema = z
         category: z.enum(['SUCCESS', 'REFUSED', 'ERROR']),
         outcome: z.string(),
         data: z.unknown().optional(),
+        refusalCode: RefusalCodeEnumSchema.optional(),
+        reason: z.string().optional(),
         error: z.unknown().optional(),
       })
       .strict(),
@@ -90,8 +92,9 @@ export const GovernanceCommandRecordSchema = z
 export type GovernanceCommandRecord = z.infer<typeof GovernanceCommandRecordSchema>;
 
 /**
- * NON_CONTRACT_INTERNAL_TYPE: TransactionContext — Explicit Transaction Boundary Token
- * Represents an operational transaction boundary for Level 2/3 atomic writes.
+ * NON_CONTRACT_INTERNAL_TYPE: TransactionContext — Operational Transaction Coordination Boundary Token
+ * Carries transaction metadata and boundary context for operational tracking across storage adapters.
+ * Note: At Level 1 (in-memory), this token provides context tracking only and does NOT enforce durable atomicity or rollback.
  */
 export interface TransactionContext {
   readonly transactionId: string;
@@ -122,8 +125,9 @@ export interface IdempotencyStorePort {
 }
 
 /**
- * NON_CONTRACT_INTERNAL_TYPE: RuntimeIntegrityUnitOfWork — Shared Unit-of-Work Execution Boundary
- * Enforces atomic execution of domain mutations and command record writes across Level 2/3 storage adapters.
+ * NON_CONTRACT_INTERNAL_TYPE: RuntimeIntegrityUnitOfWork — Shared Unit-of-Work Coordination Contract
+ * Abstract boundary for coordinating execution across persistence operations.
+ * Intended for Level 2/3 durable storage adapters that support transactional commits across domain state and command records.
  */
 export interface RuntimeIntegrityUnitOfWork {
   execute<T>(
