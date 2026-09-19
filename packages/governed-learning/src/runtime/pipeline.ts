@@ -305,7 +305,10 @@ export class GovernanceProcessingPipeline {
     'DISPATCH_ROUTER',
   ];
 
-  processCommand(input: unknown): PipelineExecutionReport<CommandDispatchResult> {
+  processCommand(
+    input: unknown,
+    options?: { skipConcurrencyCheck?: boolean }
+  ): PipelineExecutionReport<CommandDispatchResult> {
     const outcomes: RuntimeExecutionStageOutcome[] = [];
     const timestamp = new Date().toISOString();
     let currentEnvelope: GovernanceCommandEnvelope | undefined;
@@ -498,6 +501,14 @@ export class GovernanceProcessingPipeline {
         }
 
         case 'CONCURRENCY_CONTROL_CHECK': {
+          if (options?.skipConcurrencyCheck) {
+            outcomes.push({
+              stageId,
+              status: 'SKIPPED',
+              timestamp,
+            });
+            continue;
+          }
           if (this.concurrencyCoordinator && currentEnvelope) {
             const scopeKeys = getConcurrencyScope(currentEnvelope);
             const leaseRes = this.concurrencyCoordinator.acquireScope(scopeKeys);

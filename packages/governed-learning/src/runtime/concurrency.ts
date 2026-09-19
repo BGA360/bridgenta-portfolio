@@ -117,8 +117,7 @@ export class NoOpConcurrencyLease implements ConcurrencyLease {
  * Multi-aggregate keys are deterministically deduplicated and sorted to prevent lock inversion/deadlocks.
  */
 export class InMemoryConcurrencyCoordinator implements ConcurrencyCoordinatorPort {
-  private readonly activeSyncLocks = new Set<string>();
-  private readonly activeAsyncLocks = new Map<string, Promise<void>>();
+  private readonly activeLocks = new Map<string, Promise<void>>();
 
   /**
    * Acquires exclusive scope lease for specified aggregate keys.
@@ -126,9 +125,9 @@ export class InMemoryConcurrencyCoordinator implements ConcurrencyCoordinatorPor
   public acquireScope(scopeKeys: ReadonlyArray<string>): RuntimeOperationResult<ConcurrencyLease> {
     const sortedKeys = Array.from(new Set(scopeKeys)).sort();
 
-    // Check if any key is currently locked
+    // Check if any key is currently locked by sync or async execution
     for (const key of sortedKeys) {
-      if (this.activeSyncLocks.has(key)) {
+      if (this.activeLocks.has(key)) {
         return {
           ok: false,
           category: 'REFUSED',
@@ -138,9 +137,13 @@ export class InMemoryConcurrencyCoordinator implements ConcurrencyCoordinatorPor
       }
     }
 
-    // Acquire locks
+    let resolver!: () => void;
+    const promise = new Promise<void>((resolve) => {
+      resolver = resolve;
+    });
+
     for (const key of sortedKeys) {
-      this.activeSyncLocks.add(key);
+      this.activeLocks.set(key, promise);
     }
 
     let isReleased = false;
@@ -150,8 +153,11 @@ export class InMemoryConcurrencyCoordinator implements ConcurrencyCoordinatorPor
       release: () => {
         if (isReleased) return;
         isReleased = true;
+        resolver();
         for (const key of sortedKeys) {
-          this.activeSyncLocks.delete(key);
+          if (this.activeLocks.get(key) === promise) {
+            this.activeLocks.delete(key);
+          }
         }
       },
     };
@@ -211,7 +217,7 @@ export class InMemoryConcurrencyCoordinator implements ConcurrencyCoordinatorPor
     // Collect prior promises for required keys synchronously
     const priorPromises: Promise<void>[] = [];
     for (const key of sortedKeys) {
-      const prior = this.activeAsyncLocks.get(key);
+      const prior = this.activeLocks.get(key);
       if (prior) {
         priorPromises.push(prior);
       }
@@ -224,7 +230,7 @@ export class InMemoryConcurrencyCoordinator implements ConcurrencyCoordinatorPor
 
     // Register nextPromise synchronously BEFORE yielding execution
     for (const key of sortedKeys) {
-      this.activeAsyncLocks.set(key, nextPromise);
+      this.activeLocks.set(key, nextPromise);
     }
 
     try {
@@ -250,8 +256,8 @@ export class InMemoryConcurrencyCoordinator implements ConcurrencyCoordinatorPor
     } finally {
       resolver();
       for (const key of sortedKeys) {
-        if (this.activeAsyncLocks.get(key) === nextPromise) {
-          this.activeAsyncLocks.delete(key);
+        if (this.activeLocks.get(key) === nextPromise) {
+          this.activeLocks.delete(key);
         }
       }
     }

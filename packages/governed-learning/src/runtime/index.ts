@@ -97,7 +97,7 @@ export function registerDefaultRuntimeSchemas(): void {
 import type { IdempotencyStorePort, GovernanceCommandRecord, ConcurrencyCoordinatorPort, ConcurrencyLease } from '../contracts/ports.js';
 import type { GovernancePersistencePort } from './persistence.js';
 import { InMemoryIdempotencyStore, createCommandFingerprint } from './idempotency.js';
-import { InMemoryConcurrencyCoordinator } from './concurrency.js';
+import { InMemoryConcurrencyCoordinator, getConcurrencyScope } from './concurrency.js';
 
 export * from './concurrency.js';
 
@@ -282,10 +282,157 @@ export class GovernedLearningRuntime {
 
   /**
    * Asynchronous variant of processAndExecuteCommand.
-   * Preserves public synchronous processAndExecuteCommand API while supporting async concurrency coordination.
+   * Leverages ConcurrencyCoordinatorPort.executeWithinScopeAsync for true queued per-aggregate serialization.
+   * Preserves public synchronous processAndExecuteCommand API while providing a unified concurrency domain.
    */
   public async processAndExecuteCommandAsync(input: unknown): Promise<GovernedLearningRuntimeExecutionResult> {
-    return this.processAndExecuteCommand(input);
+    // 1. Run Stages 1-8 pre-validation and Stage 8 idempotency check
+    const preReport = this.pipeline.processCommand(input, { skipConcurrencyCheck: true });
+
+    // Stage 8 exact retry short-circuit
+    if (preReport.metadata?.replayedResult === true && preReport.metadata?.cachedRecord) {
+      const cachedRecord = preReport.metadata.cachedRecord as GovernanceCommandRecord;
+      let handlerOutcome: CommandHandlerOutcome | undefined;
+
+      if (cachedRecord.executionOutcome.category === 'SUCCESS') {
+        handlerOutcome = {
+          ok: true,
+          category: 'SUCCESS',
+          data: cachedRecord.executionOutcome.data,
+        };
+      } else if (cachedRecord.executionOutcome.category === 'REFUSED') {
+        handlerOutcome = {
+          ok: false,
+          category: 'REFUSED',
+          refusalCode: cachedRecord.executionOutcome.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+          reason: cachedRecord.executionOutcome.reason ?? 'Command execution refused',
+        };
+      }
+
+      return {
+        ok: cachedRecord.executionOutcome.ok,
+        category: cachedRecord.executionOutcome.category,
+        refusalCode: cachedRecord.executionOutcome.refusalCode,
+        reason: cachedRecord.executionOutcome.reason,
+        pipelineReport: preReport,
+        handlerOutcome,
+        replayedResult: true,
+      };
+    }
+
+    // Stages 1-8 failure (e.g. envelope parse failure or Stage 8 identity collision)
+    if (!preReport.ok || !preReport.data?.envelope || !preReport.data?.payload) {
+      return {
+        ok: false,
+        category: preReport.category,
+        refusalCode: preReport.refusalCode,
+        reason: preReport.reason,
+        error: preReport.error,
+        pipelineReport: preReport,
+      };
+    }
+
+    const { envelope, payload } = preReport.data;
+    const scopeKeys = getConcurrencyScope(envelope);
+
+    // 2. Queue and execute within exclusive scope lease using executeWithinScopeAsync
+    const asyncRes = await this.concurrencyCoordinator.executeWithinScopeAsync(scopeKeys, async () => {
+      // Build updated pipeline report showing Stage 9 COMPLETED
+      const updatedOutcomes = preReport.stageOutcomes.map((s) => {
+        if (s.stageId === 'CONCURRENCY_CONTROL_CHECK') {
+          return { stageId: s.stageId, status: 'COMPLETED' as const, timestamp: new Date().toISOString() };
+        }
+        return s;
+      });
+
+      const pipelineReport: PipelineExecutionReport<CommandDispatchResult> = {
+        ...preReport,
+        stageOutcomes: updatedOutcomes,
+      };
+
+      const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
+
+      let recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined;
+
+      if (handlerOutcome.category === 'SUCCESS') {
+        const record: GovernanceCommandRecord = {
+          commandId: envelope.commandId,
+          commandFingerprint: createCommandFingerprint(envelope),
+          commandType: envelope.commandType,
+          payloadVersion: envelope.payloadVersion,
+          issuedAt: envelope.issuedAt,
+          recordedAt: new Date().toISOString(),
+          executionOutcome: {
+            ok: true,
+            category: 'SUCCESS',
+            outcome: 'COMMAND_SUCCESS',
+            data: handlerOutcome.data,
+          },
+        };
+        recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
+      } else if (handlerOutcome.category === 'REFUSED') {
+        const record: GovernanceCommandRecord = {
+          commandId: envelope.commandId,
+          commandFingerprint: createCommandFingerprint(envelope),
+          commandType: envelope.commandType,
+          payloadVersion: envelope.payloadVersion,
+          issuedAt: envelope.issuedAt,
+          recordedAt: new Date().toISOString(),
+          executionOutcome: {
+            ok: false,
+            category: 'REFUSED',
+            outcome: 'COMMAND_REFUSED',
+            refusalCode: handlerOutcome.refusalCode,
+            reason: handlerOutcome.reason,
+          },
+        };
+        recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
+      }
+
+      if (recordWriteResult && !recordWriteResult.ok) {
+        const writeError =
+          recordWriteResult.category === 'ERROR'
+            ? recordWriteResult.error
+            : new RuntimeInvariantError(
+                `Idempotency execution record persistence failed after command execution: ${recordWriteResult.reason}`
+              );
+
+        return {
+          ok: false,
+          category: 'ERROR' as const,
+          error: writeError,
+          pipelineReport,
+          handlerOutcome,
+        };
+      }
+
+      return {
+        ok: handlerOutcome.ok,
+        category: handlerOutcome.category,
+        refusalCode: handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined,
+        reason: handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined,
+        pipelineReport,
+        handlerOutcome,
+      };
+    });
+
+    if (!asyncRes.ok) {
+      // Coordinator infrastructure failure or refusal
+      const error =
+        asyncRes.category === 'ERROR'
+          ? asyncRes.error
+          : new RuntimeInvariantError(asyncRes.reason ?? 'Coordinator execution refused');
+      return {
+        ok: false,
+        category: asyncRes.category,
+        refusalCode: asyncRes.category === 'REFUSED' ? asyncRes.refusalCode : undefined,
+        reason: asyncRes.category === 'REFUSED' ? asyncRes.reason : undefined,
+        error,
+        pipelineReport: preReport,
+      };
+    }
+
+    return asyncRes.data;
   }
 }
 

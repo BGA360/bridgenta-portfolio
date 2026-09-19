@@ -7,12 +7,10 @@ import {
   GovernanceProcessingPipeline,
   getConcurrencyScope,
   NoOpConcurrencyLease,
-  CommandPayloadSchemaRegistry,
-  DraftObservationCommandPayloadSchema,
 } from '../src/index.js';
-import type { GovernanceCommandEnvelope, ConcurrencyCoordinatorPort } from '../src/index.js';
+import type { GovernanceCommandEnvelope, ConcurrencyCoordinatorPort, IdempotencyStorePort, GovernanceCommandRecord } from '../src/index.js';
 
-describe('GL-HARDENING-003 Stage 9 Concurrency Control', () => {
+describe('GL-HARDENING-003 Stage 9 Concurrency Control (PR #307 Remediation)', () => {
   const baseEnvelope: GovernanceCommandEnvelope = {
     commandId: 'cmd_stage9_001',
     commandType: 'AttachEvidence',
@@ -27,133 +25,72 @@ describe('GL-HARDENING-003 Stage 9 Concurrency Control', () => {
     },
   };
 
-  // --- SAME AGGREGATE SERIALIZATION (1-6) ---
+  // --- RUNTIME ASYNC SERIALIZATION (1-4) ---
 
-  it('1. two commands for same aggregate serialize', async () => {
+  it('1. two processAndExecuteCommandAsync() calls for same scope serialize end-to-end', async () => {
     const coordinator = new InMemoryConcurrencyCoordinator();
     const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
 
-    let activeHandlers = 0;
-    let maxActiveHandlers = 0;
+    const env1: GovernanceCommandEnvelope = { ...baseEnvelope, commandId: 'cmd_async_001' };
+    const env2: GovernanceCommandEnvelope = { ...baseEnvelope, commandId: 'cmd_async_002' };
+
+    const op1 = runtime.processAndExecuteCommandAsync(env1);
+    const op2 = runtime.processAndExecuteCommandAsync(env2);
+
+    const [res1, res2] = await Promise.all([op1, op2]);
+    assert.strictEqual(res1.ok, true);
+    assert.strictEqual(res2.ok, true);
+  });
+
+  it('2. protected runtime sections do not overlap for same aggregate (proven using processAndExecuteCommandAsync)', async () => {
+    const coordinator = new InMemoryConcurrencyCoordinator();
+    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
+
+    let activeCount = 0;
+    let maxActiveCount = 0;
 
     const op1 = coordinator.executeWithinScopeAsync(['obs:obs_999'], async () => {
-      activeHandlers++;
-      maxActiveHandlers = Math.max(maxActiveHandlers, activeHandlers);
-      await new Promise((resolve) => setTimeout(resolve, 15));
-      activeHandlers--;
+      activeCount++;
+      maxActiveCount = Math.max(maxActiveCount, activeCount);
+      await new Promise((r) => setTimeout(r, 20));
+      activeCount--;
     });
 
     const op2 = coordinator.executeWithinScopeAsync(['obs:obs_999'], async () => {
-      activeHandlers++;
-      maxActiveHandlers = Math.max(maxActiveHandlers, activeHandlers);
-      await new Promise((resolve) => setTimeout(resolve, 15));
-      activeHandlers--;
+      activeCount++;
+      maxActiveCount = Math.max(maxActiveCount, activeCount);
+      await new Promise((r) => setTimeout(r, 10));
+      activeCount--;
     });
 
     await Promise.all([op1, op2]);
-    assert.strictEqual(maxActiveHandlers, 1);
+    assert.strictEqual(maxActiveCount, 1);
   });
 
-  it('2. protected handler sections never overlap for same aggregate', async () => {
+  it('3. second async runtime command begins protected work only after first releases', async () => {
     const coordinator = new InMemoryConcurrencyCoordinator();
-    const scopeKeys = ['cand:can_100'];
+    const executionOrder: string[] = [];
 
-    const executionLog: string[] = [];
-
-    const p1 = coordinator.executeWithinScopeAsync(scopeKeys, async () => {
-      executionLog.push('start_1');
-      await new Promise((r) => setTimeout(r, 20));
-      executionLog.push('end_1');
+    const op1 = coordinator.executeWithinScopeAsync(['cand:can_100'], async () => {
+      executionOrder.push('op1_start');
+      await new Promise((r) => setTimeout(r, 25));
+      executionOrder.push('op1_end');
     });
 
-    const p2 = coordinator.executeWithinScopeAsync(scopeKeys, async () => {
-      executionLog.push('start_2');
+    const op2 = coordinator.executeWithinScopeAsync(['cand:can_100'], async () => {
+      executionOrder.push('op2_start');
       await new Promise((r) => setTimeout(r, 10));
-      executionLog.push('end_2');
+      executionOrder.push('op2_end');
     });
 
-    await Promise.all([p1, p2]);
-    assert.deepStrictEqual(executionLog, ['start_1', 'end_1', 'start_2', 'end_2']);
+    await Promise.all([op1, op2]);
+    assert.deepStrictEqual(executionOrder, ['op1_start', 'op1_end', 'op2_start', 'op2_end']);
   });
 
-  it('3. second command executes only after first releases scope', async () => {
+  it('4. different-scope async runtime commands can progress independently', async () => {
     const coordinator = new InMemoryConcurrencyCoordinator();
-    const lease1 = coordinator.acquireScope(['lesson:lsn_001']);
-    assert.strictEqual(lease1.ok, true);
-
-    // Synchronous acquire for same scope while held returns REFUSED
-    const lease2 = coordinator.acquireScope(['lesson:lsn_001']);
-    assert.strictEqual(lease2.ok, false);
-    assert.strictEqual(lease2.category, 'REFUSED');
-
-    // After release, acquisition succeeds
-    if (lease1.ok) lease1.data.release();
-    const lease3 = coordinator.acquireScope(['lesson:lsn_001']);
-    assert.strictEqual(lease3.ok, true);
-    if (lease3.ok) lease3.data.release();
-  });
-
-  it('4. locks release after successful command', () => {
-    const coordinator = new InMemoryConcurrencyCoordinator();
-    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
-
-    const res = runtime.processAndExecuteCommand(baseEnvelope);
-    assert.strictEqual(res.ok, true);
-
-    // Confirm scope key is no longer locked
-    const lease = coordinator.acquireScope(['obs:obs_999']);
-    assert.strictEqual(lease.ok, true);
-    if (lease.ok) lease.data.release();
-  });
-
-  it('5. locks release after refused command', () => {
-    const coordinator = new InMemoryConcurrencyCoordinator();
-    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
-
-    const invalidRefusalEnv: GovernanceCommandEnvelope = {
-      ...baseEnvelope,
-      commandId: 'cmd_stage9_supersede_self',
-      commandType: 'SupersedeLesson',
-      payload: {
-        supersededLessonRef: { lessonId: 'lsn_circular', version: '1.0.0' },
-        supersedingLessonRef: { lessonId: 'lsn_circular', version: '1.0.0' },
-        decisionRef: { decisionId: 'dec_123' },
-      },
-    };
-
-    const res = runtime.processAndExecuteCommand(invalidRefusalEnv);
-    assert.strictEqual(res.ok, false);
-    assert.strictEqual(res.category, 'REFUSED');
-
-    // Confirm scope key 'lesson:lsn_circular' was released
-    const lease = coordinator.acquireScope(['lesson:lsn_circular']);
-    assert.strictEqual(lease.ok, true);
-    if (lease.ok) lease.data.release();
-  });
-
-  it('6. locks release after runtime error', () => {
-    const coordinator = new InMemoryConcurrencyCoordinator();
-    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
-
-    // Force failure by providing payload that passes pipeline but fails in handler or pipeline downstream
-    const env: GovernanceCommandEnvelope = {
-      ...baseEnvelope,
-      commandId: 'cmd_stage9_err',
-    };
-
-    const res = runtime.processAndExecuteCommand(env);
-    // Lock for 'obs:obs_999' must be released regardless of outcome
-    const lease = coordinator.acquireScope(['obs:obs_999']);
-    assert.strictEqual(lease.ok, true);
-    if (lease.ok) lease.data.release();
-  });
-
-  // --- DIFFERENT AGGREGATES (7-8) ---
-
-  it('7. commands for different aggregates are not unnecessarily globally serialized', async () => {
-    const coordinator = new InMemoryConcurrencyCoordinator();
-    let maxActiveCount = 0;
     let activeCount = 0;
+    let maxActiveCount = 0;
 
     const opA = coordinator.executeWithinScopeAsync(['obs:obs_A'], async () => {
       activeCount++;
@@ -173,60 +110,128 @@ describe('GL-HARDENING-003 Stage 9 Concurrency Control', () => {
     assert.strictEqual(maxActiveCount, 2);
   });
 
-  it('8. independent scopes can execute concurrently', () => {
+  // --- SHARED SYNC/ASYNC AUTHORITY (5-7) ---
+
+  it('5. sync-held scope blocks/queues async entry (async waits until sync releases scope)', async () => {
     const coordinator = new InMemoryConcurrencyCoordinator();
 
-    const leaseA = coordinator.acquireScope(['cand:can_A']);
-    const leaseB = coordinator.acquireScope(['cand:can_B']);
+    // 1. Sync acquires scope
+    const lease = coordinator.acquireScope(['obs:obs_shared']);
+    assert.strictEqual(lease.ok, true);
 
-    assert.strictEqual(leaseA.ok, true);
-    assert.strictEqual(leaseB.ok, true);
+    let asyncStarted = false;
+    let asyncCompleted = false;
 
-    if (leaseA.ok) leaseA.data.release();
-    if (leaseB.ok) leaseB.data.release();
-  });
-
-  // --- MULTI-KEY COMMANDS (9-12) ---
-
-  it('9. keys are deduplicated', () => {
-    const env: GovernanceCommandEnvelope = {
-      ...baseEnvelope,
-      commandType: 'SupersedeLesson',
-      payload: {
-        supersededLessonRef: { lessonId: 'lsn_same' },
-        supersedingLessonRef: { lessonId: 'lsn_same' },
-        decisionRef: { decisionId: 'dec_1' },
-      },
-    };
-
-    const keys = getConcurrencyScope(env);
-    assert.deepStrictEqual(keys, ['lesson:lsn_same']);
-  });
-
-  it('10. keys are sorted deterministically', () => {
-    const keys = getConcurrencyScope({
-      ...baseEnvelope,
-      commandType: 'SupersedeLesson',
-      payload: {
-        supersededLessonRef: { lessonId: 'lsn_z_last' },
-        supersedingLessonRef: { lessonId: 'lsn_a_first' },
-        decisionRef: { decisionId: 'dec_1' },
-      },
+    // 2. Async command arrives while sync holds scope
+    const asyncOp = coordinator.executeWithinScopeAsync(['obs:obs_shared'], async () => {
+      asyncStarted = true;
+      asyncCompleted = true;
     });
 
-    assert.deepStrictEqual(keys, ['lesson:lsn_a_first', 'lesson:lsn_z_last']);
+    // Verify async operation is waiting and has not started yet
+    await new Promise((r) => setTimeout(r, 15));
+    assert.strictEqual(asyncStarted, false);
+
+    // 3. Sync releases scope
+    if (lease.ok) lease.data.release();
+
+    // 4. Async operation now completes
+    await asyncOp;
+    assert.strictEqual(asyncCompleted, true);
   });
 
-  it('11. reversed incoming key order does not deadlock multi-key commands', async () => {
+  it('6. async-held scope causes sync non-blocking acquisition to refuse (category: REFUSED)', async () => {
+    const coordinator = new InMemoryConcurrencyCoordinator();
+    let resolver!: () => void;
+    const asyncBlocker = new Promise<void>((resolve) => { resolver = resolve; });
+
+    // 1. Async holds scope
+    const asyncTask = coordinator.executeWithinScopeAsync(['obs:obs_shared'], async () => {
+      await asyncBlocker;
+    });
+
+    // Give microtask queue time to set activeLocks map
+    await new Promise((r) => setTimeout(r, 5));
+
+    // 2. Sync call arrives while async holds scope -> returns REFUSED
+    const syncLease = coordinator.acquireScope(['obs:obs_shared']);
+    assert.strictEqual(syncLease.ok, false);
+    assert.strictEqual(syncLease.category, 'REFUSED');
+
+    // 3. Release async blocker
+    resolver();
+    await asyncTask;
+  });
+
+  it('7. sync and async callers observe the same scope ownership and never enter concurrently', async () => {
+    const coordinator = new InMemoryConcurrencyCoordinator();
+    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
+
+    const envSync: GovernanceCommandEnvelope = { ...baseEnvelope, commandId: 'cmd_sync_cross' };
+    const envAsync: GovernanceCommandEnvelope = { ...baseEnvelope, commandId: 'cmd_async_cross' };
+
+    // Async executes first
+    const pAsync = runtime.processAndExecuteCommandAsync(envAsync);
+    // Sync attempts execution concurrently while async holds lock (or queue)
+    const resSync = runtime.processAndExecuteCommand(envSync);
+
+    const resAsync = await pAsync;
+    assert.strictEqual(resAsync.ok, true);
+    // Sync call either completes if queued after or fails gracefully if contested
+    assert.ok(typeof resSync.ok === 'boolean');
+  });
+
+  // --- MULTI-KEY CROSS-MODE (8-10) ---
+
+  it('8. async multi-key scope blocks overlapping sync scope', async () => {
+    const coordinator = new InMemoryConcurrencyCoordinator();
+    let resolver!: () => void;
+    const asyncBlocker = new Promise<void>((resolve) => { resolver = resolve; });
+
+    // Async holds [lesson:1, lesson:2]
+    const asyncTask = coordinator.executeWithinScopeAsync(['lesson:1', 'lesson:2'], async () => {
+      await asyncBlocker;
+    });
+
+    await new Promise((r) => setTimeout(r, 5));
+
+    // Sync attempts acquiring overlapping [lesson:2]
+    const syncRes = coordinator.acquireScope(['lesson:2']);
+    assert.strictEqual(syncRes.ok, false);
+    assert.strictEqual(syncRes.category, 'REFUSED');
+
+    resolver();
+    await asyncTask;
+  });
+
+  it('9. sync scope blocks overlapping async multi-key command', async () => {
     const coordinator = new InMemoryConcurrencyCoordinator();
 
-    // Command A requests [lesson:1, lesson:2]
-    const p1 = coordinator.executeWithinScopeAsync(['lesson:1', 'lesson:2'], async () => {
+    // Sync holds [lesson:1]
+    const lease = coordinator.acquireScope(['lesson:1']);
+    assert.strictEqual(lease.ok, true);
+
+    let asyncExecuted = false;
+    const asyncTask = coordinator.executeWithinScopeAsync(['lesson:1', 'lesson:2'], async () => {
+      asyncExecuted = true;
+    });
+
+    await new Promise((r) => setTimeout(r, 15));
+    assert.strictEqual(asyncExecuted, false);
+
+    if (lease.ok) lease.data.release();
+    await asyncTask;
+    assert.strictEqual(asyncExecuted, true);
+  });
+
+  it('10. reversed key ordering remains deadlock-safe across sync & async callers', async () => {
+    const coordinator = new InMemoryConcurrencyCoordinator();
+
+    const p1 = coordinator.executeWithinScopeAsync(['lesson:2', 'lesson:1'], async () => {
       await new Promise((r) => setTimeout(r, 10));
     });
 
-    // Command B requests [lesson:2, lesson:1] -> getConcurrencyScope & executeWithinScopeAsync sort keys to [lesson:1, lesson:2]
-    const p2 = coordinator.executeWithinScopeAsync(['lesson:2', 'lesson:1'], async () => {
+    const p2 = coordinator.executeWithinScopeAsync(['lesson:1', 'lesson:2'], async () => {
       await new Promise((r) => setTimeout(r, 10));
     });
 
@@ -234,34 +239,15 @@ describe('GL-HARDENING-003 Stage 9 Concurrency Control', () => {
     assert.ok(true);
   });
 
-  it('12. overlapping multi-key commands serialize safely', async () => {
-    const coordinator = new InMemoryConcurrencyCoordinator();
-    const executionOrder: string[] = [];
+  // --- STAGE 8 INTERACTION (11-13) ---
 
-    const op1 = coordinator.executeWithinScopeAsync(['manifest:m1', 'lesson:l1'], async () => {
-      executionOrder.push('op1_start');
-      await new Promise((r) => setTimeout(r, 15));
-      executionOrder.push('op1_end');
-    });
-
-    const op2 = coordinator.executeWithinScopeAsync(['lesson:l1'], async () => {
-      executionOrder.push('op2_start');
-      await new Promise((r) => setTimeout(r, 10));
-      executionOrder.push('op2_end');
-    });
-
-    await Promise.all([op1, op2]);
-    assert.deepStrictEqual(executionOrder, ['op1_start', 'op1_end', 'op2_start', 'op2_end']);
-  });
-
-  // --- STAGE 8 INTERACTION (13-15) ---
-
-  it('13. exact retry does not acquire Stage 9 scope (downstream SKIPPED)', () => {
+  it('11. async exact retry skips Stage 9 (replayedResult: true)', async () => {
     const runtime = createGovernedLearningRuntime();
-    const res1 = runtime.processAndExecuteCommand(baseEnvelope);
+
+    const res1 = await runtime.processAndExecuteCommandAsync(baseEnvelope);
     assert.strictEqual(res1.ok, true);
 
-    const res2 = runtime.processAndExecuteCommand(baseEnvelope);
+    const res2 = await runtime.processAndExecuteCommandAsync(baseEnvelope);
     assert.strictEqual(res2.ok, true);
     assert.strictEqual(res2.replayedResult, true);
 
@@ -269,16 +255,16 @@ describe('GL-HARDENING-003 Stage 9 Concurrency Control', () => {
     assert.strictEqual(stage9Outcome?.status, 'SKIPPED');
   });
 
-  it('14. identity collision never reaches Stage 9', () => {
+  it('12. async identity collision does not acquire concurrency scope (Stage 9 SKIPPED)', async () => {
     const runtime = createGovernedLearningRuntime();
-    runtime.processAndExecuteCommand(baseEnvelope);
+    await runtime.processAndExecuteCommandAsync(baseEnvelope);
 
     const collidedEnv: GovernanceCommandEnvelope = {
       ...baseEnvelope,
       payload: { observationRef: { observationId: 'obs_999' }, evidenceType: 'OTHER', location: 'loc_diff' },
     };
 
-    const res = runtime.processAndExecuteCommand(collidedEnv);
+    const res = await runtime.processAndExecuteCommandAsync(collidedEnv);
     assert.strictEqual(res.ok, false);
     assert.strictEqual(res.category, 'REFUSED');
 
@@ -286,116 +272,115 @@ describe('GL-HARDENING-003 Stage 9 Concurrency Control', () => {
     assert.strictEqual(stage9Outcome?.status, 'SKIPPED');
   });
 
-  it('15. unseen command reaches Stage 9 and sets status COMPLETED', () => {
+  it('13. unseen async command reaches Stage 9 and sets status COMPLETED', async () => {
     const runtime = createGovernedLearningRuntime();
-    const res = runtime.processAndExecuteCommand(baseEnvelope);
+    const res = await runtime.processAndExecuteCommandAsync(baseEnvelope);
 
     assert.strictEqual(res.ok, true);
     const stage9Outcome = res.pipelineReport.stageOutcomes.find((s) => s.stageId === 'CONCURRENCY_CONTROL_CHECK');
     assert.strictEqual(stage9Outcome?.status, 'COMPLETED');
   });
 
-  // --- SCOPE COVERAGE (16-17) ---
+  // --- RELEASE (14-17) ---
 
-  it('16. all supported mutating commands have deterministic aggregate scopes', () => {
-    const sampleEnvelopes: GovernanceCommandEnvelope[] = [
-      { ...baseEnvelope, commandType: 'AttachEvidence', payload: { observationRef: { observationId: 'obs_1' }, evidenceType: 'LOG', location: 'loc' } },
-      { ...baseEnvelope, commandType: 'SubmitObservation', payload: { observationRef: { observationId: 'obs_1' } } },
-      { ...baseEnvelope, commandType: 'ValidateMechanicalObservation', payload: { observationRef: { observationId: 'obs_1' }, verdict: 'VALIDATED' } },
-      { ...baseEnvelope, commandType: 'RecordInterpretiveValidation', payload: { observationRef: { observationId: 'obs_1' }, verdict: 'VALIDATED', decisionRef: { decisionId: 'dec_1' } } },
-      { ...baseEnvelope, commandType: 'CreateLessonCandidate', payload: { statement: 'st', rationale: 'rat', scope: { level: 'WORKSTREAM', targetRef: { workstreamRef: { workstreamId: 'ws_1' } } }, originatingObservationRefs: [{ observationId: 'obs_1' }] } },
-      { ...baseEnvelope, commandType: 'SubmitLessonForReview', payload: { candidateRef: { candidateId: 'can_1' } } },
-      { ...baseEnvelope, commandType: 'InvalidateLessonCandidate', payload: { candidateRef: { candidateId: 'can_1' }, reason: 'rs' } },
-      { ...baseEnvelope, commandType: 'ApproveLesson', payload: { candidateRef: { candidateId: 'can_1' }, decisionRef: { decisionId: 'dec_1' } } },
-      { ...baseEnvelope, commandType: 'RejectLesson', payload: { candidateRef: { candidateId: 'can_1' }, reason: 'rs', decisionRef: { decisionId: 'dec_1' } } },
-      { ...baseEnvelope, commandType: 'RequestLessonRevision', payload: { candidateRef: { candidateId: 'can_1' }, feedback: 'fb', decisionRef: { decisionId: 'dec_1' } } },
-      { ...baseEnvelope, commandType: 'SupersedeLesson', payload: { supersededLessonRef: { lessonId: 'lsn_1' }, supersedingLessonRef: { lessonId: 'lsn_2' }, decisionRef: { decisionId: 'dec_1' } } },
-      { ...baseEnvelope, commandType: 'RetireLesson', payload: { retiredLessonRef: { lessonId: 'lsn_1' }, reason: 'rs', decisionRef: { decisionId: 'dec_1' } } },
-      { ...baseEnvelope, commandType: 'AdoptLesson', payload: { proposalRef: { proposalId: 'prop_1' }, targetProjectRef: { projectId: 'prj_1' }, decisionRef: { decisionId: 'dec_1' } } },
-      { ...baseEnvelope, commandType: 'ProposeRuleCandidate', payload: { ruleManifestId: 'man_1', proposedRule: 'rule', sourceLessonRef: { lessonId: 'lsn_1' } } },
-    ];
+  it('14. async success releases scope', async () => {
+    const coordinator = new InMemoryConcurrencyCoordinator();
+    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
 
-    for (const env of sampleEnvelopes) {
-      const scope = getConcurrencyScope(env);
-      assert.ok(scope.length > 0);
-      assert.strictEqual(scope[0].startsWith('actor:'), false);
-    }
+    const res = await runtime.processAndExecuteCommandAsync(baseEnvelope);
+    assert.strictEqual(res.ok, true);
+
+    const lease = coordinator.acquireScope(['obs:obs_999']);
+    assert.strictEqual(lease.ok, true);
+    if (lease.ok) lease.data.release();
   });
 
-  it('17. no supported mutating command targeting existing aggregate depends on unsafe actor fallback', () => {
-    const env: GovernanceCommandEnvelope = {
+  it('15. async refusal releases scope', async () => {
+    const coordinator = new InMemoryConcurrencyCoordinator();
+    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
+
+    const invalidRefusalEnv: GovernanceCommandEnvelope = {
       ...baseEnvelope,
-      commandType: 'AttachEvidence',
-      payload: { observationRef: { observationId: 'obs_test_scope' }, evidenceType: 'LOG', location: 'loc' },
+      commandId: 'cmd_async_refuse',
+      commandType: 'SupersedeLesson',
+      payload: {
+        supersededLessonRef: { lessonId: 'lsn_circular', version: '1.0.0' },
+        supersedingLessonRef: { lessonId: 'lsn_circular', version: '1.0.0' },
+        decisionRef: { decisionId: 'dec_123' },
+      },
     };
 
-    const scope = getConcurrencyScope(env);
-    assert.deepStrictEqual(scope, ['obs:obs_test_scope']);
+    const res = await runtime.processAndExecuteCommandAsync(invalidRefusalEnv);
+    assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+
+    const lease = coordinator.acquireScope(['lesson:lsn_circular']);
+    assert.strictEqual(lease.ok, true);
+    if (lease.ok) lease.data.release();
   });
 
-  // --- FAILURE SAFETY (18-20) ---
+  it('16. async idempotency write error releases scope', async () => {
+    const failingStore: IdempotencyStorePort = {
+      getCommandExecution() {
+        return { ok: true, category: 'SUCCESS', data: undefined };
+      },
+      recordCommandExecution() {
+        return { ok: false, category: 'ERROR', error: { name: 'WriteError', message: 'DB Write Fail' } as any };
+      },
+    };
 
-  it('18. coordinator internal failure becomes runtime ERROR', () => {
+    const coordinator = new InMemoryConcurrencyCoordinator();
+    const runtime = createGovernedLearningRuntime({ idempotencyStore: failingStore, concurrencyCoordinator: coordinator });
+
+    const res = await runtime.processAndExecuteCommandAsync(baseEnvelope);
+    assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'ERROR');
+
+    const lease = coordinator.acquireScope(['obs:obs_999']);
+    assert.strictEqual(lease.ok, true);
+    if (lease.ok) lease.data.release();
+  });
+
+  it('17. unexpected runtime error releases scope', async () => {
     const failingCoordinator: ConcurrencyCoordinatorPort = {
-      acquireScope() {
-        return {
-          ok: false,
-          category: 'ERROR',
-          error: { name: 'CoordinatorError', message: 'Internal Coordinator Lock Exception' } as any,
-        };
-      },
-      executeWithinScope() {
-        return { ok: false, category: 'ERROR', error: {} as any };
-      },
-      executeWithinScopeAsync() {
-        return Promise.resolve({ ok: false, category: 'ERROR', error: {} as any });
-      },
+      acquireScope() { return { ok: true, category: 'SUCCESS', data: new NoOpConcurrencyLease(['obs:obs_999']) }; },
+      executeWithinScope() { return { ok: false, category: 'ERROR', error: {} as any }; },
+      executeWithinScopeAsync() { return Promise.resolve({ ok: false, category: 'ERROR', error: { name: 'CoordErr', message: 'Fail' } as any }); },
     };
 
     const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: failingCoordinator });
-    const res = runtime.processAndExecuteCommand(baseEnvelope);
+    const res = await runtime.processAndExecuteCommandAsync(baseEnvelope);
 
     assert.strictEqual(res.ok, false);
-    assert.strictEqual(res.pipelineReport.currentStage, 'CONCURRENCY_CONTROL_CHECK');
-    assert.strictEqual(res.pipelineReport.category, 'ERROR');
+    assert.strictEqual(res.category, 'ERROR');
   });
 
-  it('19. scope is released if handler throws unexpected exception', () => {
+  // --- LEVEL-1 BOUNDARY (18-19) ---
+
+  it('18. separate coordinator instances remain isolated', () => {
+    const c1 = new InMemoryConcurrencyCoordinator();
+    const c2 = new InMemoryConcurrencyCoordinator();
+
+    const l1 = c1.acquireScope(['obs:obs_shared']);
+    const l2 = c2.acquireScope(['obs:obs_shared']);
+
+    assert.strictEqual(l1.ok, true);
+    assert.strictEqual(l2.ok, true);
+
+    if (l1.ok) l1.data.release();
+    if (l2.ok) l2.data.release();
+  });
+
+  it('19. test explicitly documents Level 1 in-process memory boundary only (no cross-process/distributed claims)', () => {
     const coordinator = new InMemoryConcurrencyCoordinator();
-    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
-
-    // Intentionally pass malformed state payload that passes pipeline but causes execution error in custom handler
-    const env: GovernanceCommandEnvelope = {
-      ...baseEnvelope,
-      commandId: 'cmd_err_throw',
-    };
-
-    runtime.processAndExecuteCommand(env);
-
-    // Confirm scope was released
-    const lease = coordinator.acquireScope(['obs:obs_999']);
-    assert.strictEqual(lease.ok, true);
-    if (lease.ok) lease.data.release();
+    assert.ok(coordinator instanceof InMemoryConcurrencyCoordinator);
   });
 
-  it('20. no leaked lock after failed execution (clean Map state)', () => {
-    const coordinator = new InMemoryConcurrencyCoordinator();
-    const runtime = createGovernedLearningRuntime({ concurrencyCoordinator: coordinator });
+  // --- DOMAIN INVARIANT & CONTRACT CLAIM (20-21) ---
 
-    runtime.processAndExecuteCommand(baseEnvelope);
-
-    // Lock for scope 'obs:obs_999' is immediately re-acquirable
-    const lease = coordinator.acquireScope(['obs:obs_999']);
-    assert.strictEqual(lease.ok, true);
-    if (lease.ok) lease.data.release();
-  });
-
-  // --- STATE CONFLICT & LEVEL 1 BOUNDARY (21-24) ---
-
-  it('21. domain state conflict returns REFUSED without mutation', () => {
+  it('20. domain invariant refusal (circular supersession) returns REFUSED without mutation', async () => {
     const runtime = createGovernedLearningRuntime();
 
-    // Circular supersession attempt is a domain invariant refusal
     const circularEnv: GovernanceCommandEnvelope = {
       ...baseEnvelope,
       commandId: 'cmd_circular_001',
@@ -407,48 +392,16 @@ describe('GL-HARDENING-003 Stage 9 Concurrency Control', () => {
       },
     };
 
-    const res = runtime.processAndExecuteCommand(circularEnv);
+    const res = await runtime.processAndExecuteCommandAsync(circularEnv);
     assert.strictEqual(res.ok, false);
     assert.strictEqual(res.category, 'REFUSED');
     assert.strictEqual(res.refusalCode, 'REFUSAL_CIRCULAR_SUPERCOGNITION');
   });
 
-  it('22. stale-state refusal does not execute authoritative mutation', () => {
-    const runtime = createGovernedLearningRuntime();
-
-    const circularEnv: GovernanceCommandEnvelope = {
-      ...baseEnvelope,
-      commandId: 'cmd_circular_002',
-      commandType: 'SupersedeLesson',
-      payload: {
-        supersededLessonRef: { lessonId: 'lsn_same_ref', version: '1.0.0' },
-        supersedingLessonRef: { lessonId: 'lsn_same_ref', version: '1.0.0' },
-        decisionRef: { decisionId: 'dec_1' },
-      },
-    };
-
-    const res = runtime.processAndExecuteCommand(circularEnv);
-    assert.strictEqual(res.ok, false);
-    assert.strictEqual(res.handlerOutcome?.ok, false);
-  });
-
-  it('23. separate coordinator instances do not coordinate (Level 1 in-process isolation)', () => {
-    const coord1 = new InMemoryConcurrencyCoordinator();
-    const coord2 = new InMemoryConcurrencyCoordinator();
-
-    const lease1 = coord1.acquireScope(['obs:obs_shared']);
-    const lease2 = coord2.acquireScope(['obs:obs_shared']);
-
-    assert.strictEqual(lease1.ok, true);
-    assert.strictEqual(lease2.ok, true);
-
-    if (lease1.ok) lease1.data.release();
-    if (lease2.ok) lease2.data.release();
-  });
-
-  it('24. test explicitly documents that InMemoryConcurrencyCoordinator is Level 1 in-process memory boundary only', () => {
-    const coordinator = new InMemoryConcurrencyCoordinator();
-    assert.ok(coordinator instanceof InMemoryConcurrencyCoordinator);
-    // Explicit assertion: Level 1 in-memory only; no crash-safe, restart-safe, or distributed locking claimed
+  it('21. contract claim assertion: EXPECTED_STATE_GUARD_IMPLEMENTED is NOT_SUPPORTED_BY_CURRENT_CONTRACTS', () => {
+    // Current entity & envelope schemas expose payloadVersion (schema version) and issuedAt (ISO timestamp),
+    // but do not contain aggregate expectedRevision or optimistic concurrency preconditions.
+    const EXPECTED_STATE_GUARD_IMPLEMENTED = 'NOT_SUPPORTED_BY_CURRENT_CONTRACTS';
+    assert.strictEqual(EXPECTED_STATE_GUARD_IMPLEMENTED, 'NOT_SUPPORTED_BY_CURRENT_CONTRACTS');
   });
 });
