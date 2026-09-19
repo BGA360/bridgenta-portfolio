@@ -1,0 +1,186 @@
+{
+  "execution": {
+    "branch": "refs/heads/main",
+    "job": "m5-shadow",
+    "runId": "35440829087",
+    "runner": "GitHub Actions 1000001668",
+    "timestamp": "2026-09-19T11:44:53.941Z",
+    "workflow": "Deploy to GitHub Pages"
+  },
+  "observation": {
+    "articleResults": [
+      {
+        "subjectId": "src/content/learning/ai-generierte-nachweise-vs-reale-belege.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/ausfuehrungsreihenfolge-vs-datenabhaengigkeit-schnittstellen-aufruf-ki-entwicklung.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/code-fakten-vs-strukturelle-korrektheit.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/entwurfs-vorschau-vs-veroeffentlichungsstand.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/erinnerung-vs-beleg-beleg-rueckverfolgbarkeit.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/evidenzgrenze-claim-behauptung-ki-softwareentwicklung.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/grenzen-automatisierter-linter-checks.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/ki-modell-wechsel-softwareprojekt-source-of-truth-architektur-drift.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/layout-absicherung-in-mobilen-ansichten.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/revert-der-tinacms-build-integration.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/routen-konfiguration-vs-veroeffentlichungsfreigabe.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/was-ist-ein-ki-agent-einfach-erklaert.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      },
+      {
+        "subjectId": "src/content/learning/wer-genau-ist-dieser-ki-agent.md",
+        "publicationEligibility": "PUBLICATION_WITHHELD",
+        "m5Decision": "WITHHELD",
+        "projectionDiagnostics": [],
+        "decisionFinality": "FINAL"
+      }
+    ],
+    "decisionHashes": [
+      {
+        "subjectId": "src/content/learning/ai-generierte-nachweise-vs-reale-belege.md",
+        "decisionHash": "ba30bedcad07f7a18676e0cbb2dc1dc04997986bb33b65c3b9312f4ecd832f7d"
+      },
+      {
+        "subjectId": "src/content/learning/ausfuehrungsreihenfolge-vs-datenabhaengigkeit-schnittstellen-aufruf-ki-entwicklung.md",
+        "decisionHash": "741972bfdd896491a1a4fc6bcc15ca568f44bf6a010cadae86ee06c2f1d364bd"
+      },
+      {
+        "subjectId": "src/content/learning/code-fakten-vs-strukturelle-korrektheit.md",
+        "decisionHash": "c0ca4abb09d4969e2bf89a4506ae592829b5cef02e937709cd6caac0555381fc"
+      },
+      {
+        "subjectId": "src/content/learning/entwurfs-vorschau-vs-veroeffentlichungsstand.md",
+        "decisionHash": "ec2013738a11c3337121f357270220e74d811f5e83d64dd807c5a9de83a8d30d"
+      },
+      {
+        "subjectId": "src/content/learning/erinnerung-vs-beleg-beleg-rueckverfolgbarkeit.md",
+        "decisionHash": "682e7cb9c05065b81504f86f312e92b168b6987c8a621e4cd56fa62f7b93eac9"
+      },
+      {
+        "subjectId": "src/content/learning/evidenzgrenze-claim-behauptung-ki-softwareentwicklung.md",
+        "decisionHash": "b880c939cd7b49d5f1234ffb4505d68165b93a492404a05844e08cebc879a8d9"
+      },
+      {
+        "subjectId": "src/content/learning/grenzen-automatisierter-linter-checks.md",
+        "decisionHash": "6cb4a5657c637ec4a681fe237427c1f979a9d9238915447c7da960d4fbf448d1"
+      },
+      {
+        "subjectId": "src/content/learning/ki-modell-wechsel-softwareprojekt-source-of-truth-architektur-drift.md",
+        "decisionHash": "4268379a9ab23d7d6dff119e36129ed90877fffddad2d05dfc28488f021fddf8"
+      },
+      {
+        "subjectId": "src/content/learning/layout-absicherung-in-mobilen-ansichten.md",
+        "decisionHash": "0736fe1b28fea81173fd6f4f154165cfd43dfbcb6d4f45f596309526795acdb2"
+      },
+      {
+        "subjectId": "src/content/learning/revert-der-tinacms-build-integration.md",
+        "decisionHash": "af35acc933d1bd7ccb38ebbb73e1a1c189fcac3fd57aa9409003d316d4cfbdef"
+      },
+      {
+        "subjectId": "src/content/learning/routen-konfiguration-vs-veroeffentlichungsfreigabe.md",
+        "decisionHash": "04c744c371d349e49399399450c4b145a4588ae413cb36bb482190e77f2d2aff"
+      },
+      {
+        "subjectId": "src/content/learning/sitemap-vollstaendigkeit-und-suchmaschinen-entdeckbarkeit.md",
+        "decisionHash": "cc3d6e4929ae8bb16895ca233895355b11b81bd8ce715235b356b0bebd6c6ffb"
+      },
+      {
+        "subjectId": "src/content/learning/was-ist-ein-ki-agent-einfach-erklaert.md",
+        "decisionHash": "9ecda2b4d7f5df9b011d7203d37151f56acff0457ed0e4ef31a419b986adb887"
+      },
+      {
+        "subjectId": "src/content/learning/wer-genau-ist-dieser-ki-agent.md",
+        "decisionHash": "de970b2f8488d11750a1e8914c2a4ab99a391c795255b84f0890731a3c976fdc"
+      }
+    ],
+    "diagnosticMessages": [],
+    "eligibleCount": 0,
+    "evaluatorVersion": "M5-EVALUATOR-1.0",
+    "globalDiagnostics": [],
+    "implementationIdentity": "3e5f71af9a514c70e44cbf791864b98ad4f691217253d14c2e3b6961ed314ed3",
+    "implementationIdentityScheme": "M5-SOURCE-HASH-1",
+    "observationMode": "SHADOW",
+    "policyVersion": "M5-POLICY-1.0",
+    "projectionHash": "062ca21b13e99d6a3fb53a9298444b2d6e4c2b84827902ff70c734e93a235a17",
+    "repositoryCommit": "89762ab31aecdfb64a470e6e9bdfa1eed8ab467f",
+    "schemaVersion": "M5-OBSERVATION-1.0",
+    "shadowGateResult": "SHADOW_ATTENTION",
+    "subjectCount": 14,
+    "undecidedCount": 0,
+    "withheldCount": 14
+  },
+  "observationHash": "712f68df1ecf3f31981ee9a49480f18a1173e2afab6e9fada9225d1ff0f75651"
+}
