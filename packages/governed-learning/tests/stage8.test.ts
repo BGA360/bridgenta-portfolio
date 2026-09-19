@@ -147,8 +147,12 @@ describe('GL-HARDENING-002 Stage 8 Idempotency Enforcement', () => {
 
     const res = runtime.processAndExecuteCommand(collidedEnv);
     assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+    assert.strictEqual(res.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
     assert.strictEqual(res.pipelineReport.currentStage, 'IDEMPOTENCY_DETERMINISTIC_CHECK');
-    assert.ok(res.pipelineReport.error?.message.includes('Command identity collision'));
+    assert.strictEqual(res.pipelineReport.category, 'REFUSED');
+    assert.strictEqual(res.pipelineReport.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+    assert.strictEqual(res.handlerOutcome, undefined);
   });
 
   it('11. same commandId + different actor is refused', () => {
@@ -162,8 +166,12 @@ describe('GL-HARDENING-002 Stage 8 Idempotency Enforcement', () => {
 
     const res = runtime.processAndExecuteCommand(collidedEnv);
     assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+    assert.strictEqual(res.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
     assert.strictEqual(res.pipelineReport.currentStage, 'IDEMPOTENCY_DETERMINISTIC_CHECK');
-    assert.ok(res.pipelineReport.error?.message.includes('Command identity collision'));
+    assert.strictEqual(res.pipelineReport.category, 'REFUSED');
+    assert.strictEqual(res.pipelineReport.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+    assert.strictEqual(res.handlerOutcome, undefined);
   });
 
   it('12. same commandId + different authority context is refused', () => {
@@ -177,8 +185,12 @@ describe('GL-HARDENING-002 Stage 8 Idempotency Enforcement', () => {
 
     const res = runtime.processAndExecuteCommand(collidedEnv);
     assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+    assert.strictEqual(res.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
     assert.strictEqual(res.pipelineReport.currentStage, 'IDEMPOTENCY_DETERMINISTIC_CHECK');
-    assert.ok(res.pipelineReport.error?.message.includes('Command identity collision'));
+    assert.strictEqual(res.pipelineReport.category, 'REFUSED');
+    assert.strictEqual(res.pipelineReport.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+    assert.strictEqual(res.handlerOutcome, undefined);
   });
 
   it('13. same commandId + different issuedAt is refused (issuedAt immutability)', () => {
@@ -192,8 +204,12 @@ describe('GL-HARDENING-002 Stage 8 Idempotency Enforcement', () => {
 
     const res = runtime.processAndExecuteCommand(collidedEnv);
     assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+    assert.strictEqual(res.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
     assert.strictEqual(res.pipelineReport.currentStage, 'IDEMPOTENCY_DETERMINISTIC_CHECK');
-    assert.ok(res.pipelineReport.error?.message.includes('issuedAt immutable timestamp mismatch'));
+    assert.strictEqual(res.pipelineReport.category, 'REFUSED');
+    assert.strictEqual(res.pipelineReport.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+    assert.strictEqual(res.handlerOutcome, undefined);
   });
 
   it('14. same commandId + different command type is refused', () => {
@@ -208,8 +224,12 @@ describe('GL-HARDENING-002 Stage 8 Idempotency Enforcement', () => {
 
     const res = runtime.processAndExecuteCommand(collidedEnv);
     assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+    assert.strictEqual(res.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
     assert.strictEqual(res.pipelineReport.currentStage, 'IDEMPOTENCY_DETERMINISTIC_CHECK');
-    assert.ok(res.pipelineReport.error?.message.includes('Command identity collision'));
+    assert.strictEqual(res.pipelineReport.category, 'REFUSED');
+    assert.strictEqual(res.pipelineReport.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+    assert.strictEqual(res.handlerOutcome, undefined);
   });
 
   it('15. same commandId + different payload version is refused', () => {
@@ -228,8 +248,12 @@ describe('GL-HARDENING-002 Stage 8 Idempotency Enforcement', () => {
 
     const res = runtime.processAndExecuteCommand(collidedEnv);
     assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+    assert.strictEqual(res.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
     assert.strictEqual(res.pipelineReport.currentStage, 'IDEMPOTENCY_DETERMINISTIC_CHECK');
-    assert.ok(res.pipelineReport.error?.message.includes('Command identity collision'));
+    assert.strictEqual(res.pipelineReport.category, 'REFUSED');
+    assert.strictEqual(res.pipelineReport.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+    assert.strictEqual(res.handlerOutcome, undefined);
   });
 
   // --- OUTCOME CACHING (16-18) ---
@@ -317,7 +341,7 @@ describe('GL-HARDENING-002 Stage 8 Idempotency Enforcement', () => {
     assert.strictEqual(res.pipelineReport.category, 'ERROR');
   });
 
-  it('20. record persistence failure returns runtime ERROR or safe outcome', () => {
+  it('20. record persistence failure returns runtime ERROR and exposes partial execution risk', () => {
     const failingStore: IdempotencyStorePort = {
       getCommandExecution() {
         return { ok: true, category: 'SUCCESS', data: undefined };
@@ -334,9 +358,11 @@ describe('GL-HARDENING-002 Stage 8 Idempotency Enforcement', () => {
     const runtime = createGovernedLearningRuntime({ idempotencyStore: failingStore });
     const res = runtime.processAndExecuteCommand(baseEnvelope);
 
-    // Command execution succeeds at handler level, even if store write fails
-    assert.strictEqual(res.ok, true);
+    // Top-level runtime result must be ERROR even though handler executed
+    assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'ERROR');
     assert.strictEqual(res.handlerOutcome?.ok, true);
+    assert.ok(res.error?.message.includes('Write Failure') || res.error?.message.includes('persistence failed'));
   });
 
   it('21. no infrastructure failure is misclassified as domain REFUSED', () => {

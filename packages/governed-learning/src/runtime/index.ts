@@ -31,8 +31,10 @@ import {
   LessonRetiredEventPayloadSchema,
   LessonAdoptedEventPayloadSchema,
 } from '../helpers/events.js';
-import type { CommandTypeEnum, EventTypeEnum } from '../types/enums.js';
+import type { CommandTypeEnum, EventTypeEnum, RefusalCodeEnum } from '../types/enums.js';
 import type { z } from 'zod';
+import type { RuntimeResultCategory, RuntimeOperationResult } from './types.js';
+import { GovernedLearningRuntimeError, RuntimeInvariantError } from './errors.js';
 
 export * from './types.js';
 export * from './errors.js';
@@ -102,6 +104,10 @@ import { InMemoryIdempotencyStore, createCommandFingerprint } from './idempotenc
  */
 export interface GovernedLearningRuntimeExecutionResult<T = unknown> {
   readonly ok: boolean;
+  readonly category?: RuntimeResultCategory;
+  readonly refusalCode?: RefusalCodeEnum;
+  readonly reason?: string;
+  readonly error?: GovernedLearningRuntimeError;
   readonly pipelineReport: PipelineExecutionReport<CommandDispatchResult>;
   readonly handlerOutcome?: CommandHandlerOutcome<T>;
   readonly replayedResult?: boolean;
@@ -166,6 +172,9 @@ export class GovernedLearningRuntime {
 
       return {
         ok: cachedRecord.executionOutcome.ok,
+        category: cachedRecord.executionOutcome.category,
+        refusalCode: cachedRecord.executionOutcome.refusalCode,
+        reason: cachedRecord.executionOutcome.reason,
         pipelineReport,
         handlerOutcome,
         replayedResult: true,
@@ -175,6 +184,10 @@ export class GovernedLearningRuntime {
     if (!pipelineReport.ok || !pipelineReport.data?.envelope || !pipelineReport.data?.payload) {
       return {
         ok: false,
+        category: pipelineReport.category,
+        refusalCode: pipelineReport.refusalCode,
+        reason: pipelineReport.reason,
+        error: pipelineReport.error,
         pipelineReport,
       };
     }
@@ -183,6 +196,8 @@ export class GovernedLearningRuntime {
     const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
 
     // Cache completed outcomes (SUCCESS or REFUSED) in idempotencyStore
+    let recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined;
+
     if (handlerOutcome.category === 'SUCCESS') {
       const record: GovernanceCommandRecord = {
         commandId: envelope.commandId,
@@ -198,7 +213,7 @@ export class GovernedLearningRuntime {
           data: handlerOutcome.data,
         },
       };
-      this.idempotencyStore.recordCommandExecution(record);
+      recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
     } else if (handlerOutcome.category === 'REFUSED') {
       const record: GovernanceCommandRecord = {
         commandId: envelope.commandId,
@@ -215,11 +230,31 @@ export class GovernedLearningRuntime {
           reason: handlerOutcome.reason,
         },
       };
-      this.idempotencyStore.recordCommandExecution(record);
+      recordWriteResult = this.idempotencyStore.recordCommandExecution(record);
+    }
+
+    if (recordWriteResult && !recordWriteResult.ok) {
+      const writeError =
+        recordWriteResult.category === 'ERROR'
+          ? recordWriteResult.error
+          : new RuntimeInvariantError(
+              `Idempotency execution record persistence failed after command execution: ${recordWriteResult.reason}`
+            );
+
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: writeError,
+        pipelineReport,
+        handlerOutcome,
+      };
     }
 
     return {
       ok: handlerOutcome.ok,
+      category: handlerOutcome.category,
+      refusalCode: handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined,
+      reason: handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined,
       pipelineReport,
       handlerOutcome,
     };

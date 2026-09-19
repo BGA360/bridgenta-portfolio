@@ -12,6 +12,7 @@ import {
 } from './parsers.js';
 import type {
   RuntimeExecutionStageOutcome,
+  RuntimeResultCategory,
 } from './types.js';
 import { GovernedLearningRuntimeError, RuntimeInvariantError } from './errors.js';
 import {
@@ -30,6 +31,7 @@ import {
   CommandTypeEnumSchema,
   EventTypeEnumSchema,
 } from '../types/enums.js';
+import type { RefusalCodeEnum } from '../types/enums.js';
 import type { IdempotencyStorePort } from '../contracts/ports.js';
 import { createCommandFingerprint } from './idempotency.js';
 
@@ -68,12 +70,14 @@ export interface EventDispatchResult {
 
 export interface PipelineExecutionReport<T = unknown> {
   readonly ok: boolean;
-  readonly category: 'SUCCESS' | 'ERROR';
+  readonly category: RuntimeResultCategory;
   readonly currentStage: PipelineStageId;
   readonly stageOutcomes: ReadonlyArray<RuntimeExecutionStageOutcome>;
   readonly data?: T;
   readonly metadata?: Readonly<Record<string, unknown>>;
   readonly error?: GovernedLearningRuntimeError;
+  readonly refusalCode?: RefusalCodeEnum;
+  readonly reason?: string;
 }
 
 export interface GovernanceProcessingPipelineOptions {
@@ -303,6 +307,8 @@ export class GovernanceProcessingPipeline {
     let currentEnvelope: GovernanceCommandEnvelope | undefined;
     let failedStage: PipelineStageId | undefined;
     let stageError: GovernedLearningRuntimeError | undefined;
+    let stageRefusalCode: RefusalCodeEnum | undefined;
+    let stageRefusalReason: string | undefined;
 
     for (let i = 0; i < this.STAGE_SEQUENCE.length; i++) {
       const stageId = this.STAGE_SEQUENCE[i];
@@ -471,15 +477,15 @@ export class GovernanceProcessingPipeline {
                   },
                 };
               } else {
-                // Identity Collision (Case C) - different payload, actor, authority, or issuedAt
+                // Identity Collision (Case C) - different payload, actor, authority, issuedAt, commandType, or payloadVersion
                 stageSuccess = false;
-                let mismatchDetail = 'mismatched fingerprint or payload';
+                stageRefusalCode = 'REFUSAL_INVARIANT_VIOLATION';
+                let mismatchDetail = 'mismatched fingerprint, payload, actor, authority, commandType, or version';
                 if (!isIssuedAtMatch) {
                   mismatchDetail = `issuedAt immutable timestamp mismatch ('${existingRecord.issuedAt}' vs '${currentEnvelope.issuedAt}')`;
                 }
-                stageError = new RuntimeInvariantError(
-                  `Command identity collision for commandId '${currentEnvelope.commandId}' due to ${mismatchDetail}`
-                );
+                stageRefusalReason = `Command identity collision for commandId '${currentEnvelope.commandId}' due to ${mismatchDetail}`;
+                stageError = new RuntimeInvariantError(stageRefusalReason);
               }
             }
           }
@@ -538,6 +544,18 @@ export class GovernanceProcessingPipeline {
           timestamp,
         });
       }
+    }
+
+    if (stageRefusalCode) {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        currentStage: failedStage ?? 'IDEMPOTENCY_DETERMINISTIC_CHECK',
+        stageOutcomes: outcomes,
+        refusalCode: stageRefusalCode,
+        reason: stageRefusalReason ?? 'Command execution refused',
+        error: stageError,
+      };
     }
 
     return {
