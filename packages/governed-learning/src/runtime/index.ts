@@ -114,6 +114,7 @@ export interface GovernedLearningRuntimeExecutionResult<T = unknown> {
   readonly pipelineReport: PipelineExecutionReport<CommandDispatchResult>;
   readonly handlerOutcome?: CommandHandlerOutcome<T>;
   readonly replayedResult?: boolean;
+  readonly rollbackRequired?: boolean;
 }
 
 export interface GovernedLearningRuntimeOptions {
@@ -121,6 +122,16 @@ export interface GovernedLearningRuntimeOptions {
   readonly concurrencyCoordinator?: ConcurrencyCoordinatorPort;
   readonly persistencePort?: GovernancePersistencePort;
   readonly unitOfWork?: RuntimeIntegrityUnitOfWork;
+}
+
+function maybeAsync<T, R>(
+  val: T | Promise<T>,
+  fn: (v: T) => R | Promise<R>
+): R | Promise<R> {
+  if (val && typeof (val as any).then === 'function') {
+    return (val as Promise<T>).then(fn);
+  }
+  return fn(val as T);
 }
 
 /**
@@ -175,7 +186,7 @@ export class GovernedLearningRuntime {
     payload: any,
     handlerData: any,
     txContext?: TransactionContext
-  ): RuntimeOperationResult<{ persisted: boolean }> {
+  ): RuntimeOperationResult<{ persisted: boolean }> | Promise<RuntimeOperationResult<{ persisted: boolean }>> {
     if (!this.persistencePort) {
       return { ok: true, category: 'SUCCESS', data: { persisted: false } };
     }
@@ -195,30 +206,36 @@ export class GovernedLearningRuntime {
           },
           txContext
         );
-        if (!saveRes.ok) {
-          return saveRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: saveRes.refusalCode, reason: saveRes.reason }
-            : { ok: false, category: 'ERROR', error: saveRes.error ?? new RuntimeInvariantError(`saveObservation failed`) };
-        }
 
-        const eventRes = this.persistencePort.appendEvent(
-          {
-            eventType: 'OBSERVATION_CREATED',
-            eventRef: `evt_${envelope.commandId}`,
-            payload: {
-              observationRef: { value: obsRef },
-              category: payload.category,
-              statement: payload.statement,
+        return maybeAsync(saveRes, (sRes) => {
+          if (!sRes.ok) {
+            return sRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: sRes.refusalCode, reason: sRes.reason }
+              : { ok: false, category: 'ERROR', error: sRes.error ?? new RuntimeInvariantError(`saveObservation failed`) };
+          }
+
+          const eventRes = this.persistencePort!.appendEvent(
+            {
+              eventType: 'OBSERVATION_CREATED',
+              eventRef: `evt_${envelope.commandId}`,
+              payload: {
+                observationRef: { value: obsRef },
+                category: payload.category,
+                statement: payload.statement,
+              },
             },
-          },
-          txContext
-        );
-        if (!eventRes.ok) {
-          return eventRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
-            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent OBSERVATION_CREATED failed`) };
-        }
-        break;
+            txContext
+          );
+
+          return maybeAsync(eventRes, (eRes) => {
+            if (!eRes.ok) {
+              return eRes.category === 'REFUSED'
+                ? { ok: false, category: 'REFUSED', refusalCode: eRes.refusalCode, reason: eRes.reason }
+                : { ok: false, category: 'ERROR', error: eRes.error ?? new RuntimeInvariantError(`appendEvent OBSERVATION_CREATED failed`) };
+            }
+            return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+          });
+        });
       }
 
       case 'CreateLessonCandidate': {
@@ -233,30 +250,36 @@ export class GovernedLearningRuntime {
           },
           txContext
         );
-        if (!saveRes.ok) {
-          return saveRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: saveRes.refusalCode, reason: saveRes.reason }
-            : { ok: false, category: 'ERROR', error: saveRes.error ?? new RuntimeInvariantError(`saveLesson candidate failed`) };
-        }
 
-        const eventRes = this.persistencePort.appendEvent(
-          {
-            eventType: 'LESSON_CANDIDATE_CREATED',
-            eventRef: `evt_${envelope.commandId}`,
-            payload: {
-              candidateRef: { candidateId: candidateRef },
-              statement: payload.statement,
-              scope: payload.scope,
+        return maybeAsync(saveRes, (sRes) => {
+          if (!sRes.ok) {
+            return sRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: sRes.refusalCode, reason: sRes.reason }
+              : { ok: false, category: 'ERROR', error: sRes.error ?? new RuntimeInvariantError(`saveLesson candidate failed`) };
+          }
+
+          const eventRes = this.persistencePort!.appendEvent(
+            {
+              eventType: 'LESSON_CANDIDATE_CREATED',
+              eventRef: `evt_${envelope.commandId}`,
+              payload: {
+                candidateRef: { candidateId: candidateRef },
+                statement: payload.statement,
+                scope: payload.scope,
+              },
             },
-          },
-          txContext
-        );
-        if (!eventRes.ok) {
-          return eventRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
-            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_CANDIDATE_CREATED failed`) };
-        }
-        break;
+            txContext
+          );
+
+          return maybeAsync(eventRes, (eRes) => {
+            if (!eRes.ok) {
+              return eRes.category === 'REFUSED'
+                ? { ok: false, category: 'REFUSED', refusalCode: eRes.refusalCode, reason: eRes.reason }
+                : { ok: false, category: 'ERROR', error: eRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_CANDIDATE_CREATED failed`) };
+            }
+            return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+          });
+        });
       }
 
       case 'ApproveLesson': {
@@ -271,29 +294,35 @@ export class GovernedLearningRuntime {
           },
           txContext
         );
-        if (!saveRes.ok) {
-          return saveRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: saveRes.refusalCode, reason: saveRes.reason }
-            : { ok: false, category: 'ERROR', error: saveRes.error ?? new RuntimeInvariantError(`saveLesson approved failed`) };
-        }
 
-        const eventRes = this.persistencePort.appendEvent(
-          {
-            eventType: 'LESSON_APPROVED',
-            eventRef: `evt_${envelope.commandId}`,
-            payload: {
-              lessonRef: { lessonId, version: '1.0.0' },
-              candidateRef: payload.candidateRef,
+        return maybeAsync(saveRes, (sRes) => {
+          if (!sRes.ok) {
+            return sRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: sRes.refusalCode, reason: sRes.reason }
+              : { ok: false, category: 'ERROR', error: sRes.error ?? new RuntimeInvariantError(`saveLesson approved failed`) };
+          }
+
+          const eventRes = this.persistencePort!.appendEvent(
+            {
+              eventType: 'LESSON_APPROVED',
+              eventRef: `evt_${envelope.commandId}`,
+              payload: {
+                lessonRef: { lessonId, version: '1.0.0' },
+                candidateRef: payload.candidateRef,
+              },
             },
-          },
-          txContext
-        );
-        if (!eventRes.ok) {
-          return eventRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
-            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_APPROVED failed`) };
-        }
-        break;
+            txContext
+          );
+
+          return maybeAsync(eventRes, (eRes) => {
+            if (!eRes.ok) {
+              return eRes.category === 'REFUSED'
+                ? { ok: false, category: 'REFUSED', refusalCode: eRes.refusalCode, reason: eRes.reason }
+                : { ok: false, category: 'ERROR', error: eRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_APPROVED failed`) };
+            }
+            return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+          });
+        });
       }
 
       case 'SupersedeLesson': {
@@ -308,12 +337,15 @@ export class GovernedLearningRuntime {
           },
           txContext
         );
-        if (!eventRes.ok) {
-          return eventRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
-            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_SUPERSEDED failed`) };
-        }
-        break;
+
+        return maybeAsync(eventRes, (eRes) => {
+          if (!eRes.ok) {
+            return eRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: eRes.refusalCode, reason: eRes.reason }
+              : { ok: false, category: 'ERROR', error: eRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_SUPERSEDED failed`) };
+          }
+          return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+        });
       }
 
       case 'RetireLesson': {
@@ -328,12 +360,15 @@ export class GovernedLearningRuntime {
           },
           txContext
         );
-        if (!eventRes.ok) {
-          return eventRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
-            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_RETIRED failed`) };
-        }
-        break;
+
+        return maybeAsync(eventRes, (eRes) => {
+          if (!eRes.ok) {
+            return eRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: eRes.refusalCode, reason: eRes.reason }
+              : { ok: false, category: 'ERROR', error: eRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_RETIRED failed`) };
+          }
+          return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+        });
       }
 
       case 'AdoptLesson': {
@@ -348,12 +383,15 @@ export class GovernedLearningRuntime {
           },
           txContext
         );
-        if (!eventRes.ok) {
-          return eventRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: eventRes.refusalCode, reason: eventRes.reason }
-            : { ok: false, category: 'ERROR', error: eventRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_ADOPTED failed`) };
-        }
-        break;
+
+        return maybeAsync(eventRes, (eRes) => {
+          if (!eRes.ok) {
+            return eRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: eRes.refusalCode, reason: eRes.reason }
+              : { ok: false, category: 'ERROR', error: eRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_ADOPTED failed`) };
+          }
+          return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+        });
       }
 
       case 'ProposeRuleCandidate': {
@@ -367,12 +405,15 @@ export class GovernedLearningRuntime {
           },
           txContext
         );
-        if (!saveRes.ok) {
-          return saveRes.category === 'REFUSED'
-            ? { ok: false, category: 'REFUSED', refusalCode: saveRes.refusalCode, reason: saveRes.reason }
-            : { ok: false, category: 'ERROR', error: saveRes.error ?? new RuntimeInvariantError(`saveRuleCandidate failed`) };
-        }
-        break;
+
+        return maybeAsync(saveRes, (sRes) => {
+          if (!sRes.ok) {
+            return sRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: sRes.refusalCode, reason: sRes.reason }
+              : { ok: false, category: 'ERROR', error: sRes.error ?? new RuntimeInvariantError(`saveRuleCandidate failed`) };
+          }
+          return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+        });
       }
     }
 
@@ -445,7 +486,14 @@ export class GovernedLearningRuntime {
         return uowResult as GovernedLearningRuntimeExecutionResult;
       }
 
-      return this.executeCore(envelope, payload, pipelineReport);
+      const coreRes = this.executeCore(envelope, payload, pipelineReport);
+      if (coreRes && typeof (coreRes as any).then === 'function') {
+        throw new RuntimeInvariantError(
+          'Synchronous runtime requires a synchronous UnitOfWork implementation'
+        );
+      }
+
+      return coreRes as GovernedLearningRuntimeExecutionResult;
     } finally {
       lease?.release();
     }
@@ -517,12 +565,12 @@ export class GovernedLearningRuntime {
         };
 
         if (this.unitOfWork) {
-          return this.unitOfWork.execute((txContext) =>
+          return await this.unitOfWork.execute((txContext) =>
             this.executeCore(envelope, payload, pipelineReport, txContext)
           );
         }
 
-        return this.executeCore(envelope, payload, pipelineReport);
+        return await this.executeCore(envelope, payload, pipelineReport);
       });
 
       if (!asyncRes.ok) {
@@ -554,142 +602,219 @@ export class GovernedLearningRuntime {
     payload: any,
     pipelineReport: PipelineExecutionReport<CommandDispatchResult>,
     txContext?: TransactionContext
-  ): GovernedLearningRuntimeExecutionResult {
+  ): GovernedLearningRuntimeExecutionResult | Promise<GovernedLearningRuntimeExecutionResult> {
     // Post-BEGIN In-Transaction Command Arbitration Recheck
     const inTxCheck = this.idempotencyStore.getCommandExecution(envelope.commandId, txContext);
-    if (!inTxCheck.ok) {
-      if (inTxCheck.category === 'ERROR') {
-        return {
-          ok: false,
-          category: 'ERROR',
-          error:
-            inTxCheck.error ??
-            new RuntimeInvariantError(
-              `Post-BEGIN durable idempotency lookup failed for command '${envelope.commandId}'`
-            ),
-          pipelineReport,
-          rollbackRequired: true,
-        };
-      }
-      return {
-        ok: false,
-        category: 'REFUSED',
-        refusalCode: inTxCheck.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
-        reason: inTxCheck.reason ?? 'Durable idempotency arbitration refused',
-        pipelineReport,
-        rollbackRequired: true,
-      };
-    }
 
-    if (inTxCheck.data) {
-      const existingRecord = inTxCheck.data;
-      const currentFingerprint = createCommandFingerprint(envelope);
-      const isFingerprintMatch = existingRecord.commandFingerprint === currentFingerprint;
-      const isIssuedAtMatch = !existingRecord.issuedAt || existingRecord.issuedAt === envelope.issuedAt;
-
-      if (isFingerprintMatch && isIssuedAtMatch) {
-        let handlerOutcome: CommandHandlerOutcome | undefined;
-
-        if (existingRecord.executionOutcome.category === 'SUCCESS') {
-          handlerOutcome = {
-            ok: true,
-            category: 'SUCCESS',
-            data: existingRecord.executionOutcome.data,
-          };
-        } else if (existingRecord.executionOutcome.category === 'REFUSED') {
-          handlerOutcome = {
+    return maybeAsync(inTxCheck, (checkResult) => {
+      if (!checkResult.ok) {
+        if (checkResult.category === 'ERROR') {
+          return {
             ok: false,
-            category: 'REFUSED',
-            refusalCode: existingRecord.executionOutcome.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
-            reason: existingRecord.executionOutcome.reason ?? 'Command execution refused',
+            category: 'ERROR',
+            error:
+              checkResult.error ??
+              new RuntimeInvariantError(
+                `Post-BEGIN durable idempotency lookup failed for command '${envelope.commandId}'`
+              ),
+            pipelineReport,
+            rollbackRequired: true,
           };
         }
-
-        return {
-          ok: existingRecord.executionOutcome.ok,
-          category: existingRecord.executionOutcome.category,
-          refusalCode: existingRecord.executionOutcome.refusalCode,
-          reason: existingRecord.executionOutcome.reason,
-          pipelineReport,
-          handlerOutcome,
-          replayedResult: true,
-        };
-      } else {
         return {
           ok: false,
           category: 'REFUSED',
-          refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
-          reason: `Command execution record collision for commandId '${envelope.commandId}' with mismatched command identity`,
+          refusalCode: checkResult.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+          reason: checkResult.reason ?? 'Durable idempotency arbitration refused',
           pipelineReport,
           rollbackRequired: true,
-        } as GovernedLearningRuntimeExecutionResult;
+        };
       }
-    }
 
-    const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
+      if (checkResult.data) {
+        const existingRecord = checkResult.data;
+        const currentFingerprint = createCommandFingerprint(envelope);
+        const isFingerprintMatch = existingRecord.commandFingerprint === currentFingerprint;
+        const isIssuedAtMatch = !existingRecord.issuedAt || existingRecord.issuedAt === envelope.issuedAt;
 
-    let recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined;
+        if (isFingerprintMatch && isIssuedAtMatch) {
+          let handlerOutcome: CommandHandlerOutcome | undefined;
 
-    if (handlerOutcome.category === 'SUCCESS') {
-      const persistRes = this.persistDomainEntityAndEvent(envelope, payload, handlerOutcome.data, txContext);
-      if (!persistRes.ok) {
-        if (persistRes.category === 'REFUSED') {
+          if (existingRecord.executionOutcome.category === 'SUCCESS') {
+            handlerOutcome = {
+              ok: true,
+              category: 'SUCCESS',
+              data: existingRecord.executionOutcome.data,
+            };
+          } else if (existingRecord.executionOutcome.category === 'REFUSED') {
+            handlerOutcome = {
+              ok: false,
+              category: 'REFUSED',
+              refusalCode: existingRecord.executionOutcome.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+              reason: existingRecord.executionOutcome.reason ?? 'Command execution refused',
+            };
+          }
+
+          return {
+            ok: existingRecord.executionOutcome.ok,
+            category: existingRecord.executionOutcome.category,
+            refusalCode: existingRecord.executionOutcome.refusalCode,
+            reason: existingRecord.executionOutcome.reason,
+            pipelineReport,
+            handlerOutcome,
+            replayedResult: true,
+          };
+        } else {
           return {
             ok: false,
             category: 'REFUSED',
-            refusalCode: persistRes.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
-            reason: persistRes.reason ?? 'Domain persistence operation refused',
+            refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+            reason: `Command execution record collision for commandId '${envelope.commandId}' with mismatched command identity`,
             pipelineReport,
-            handlerOutcome: {
-              ok: false,
-              category: 'REFUSED',
-              refusalCode: persistRes.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
-              reason: persistRes.reason ?? 'Domain persistence operation refused',
-            },
             rollbackRequired: true,
           } as GovernedLearningRuntimeExecutionResult;
-        } else {
-          throw persistRes.error ?? new RuntimeInvariantError(`Domain persistence failed for command '${envelope.commandId}'`);
         }
       }
 
-      const record: GovernanceCommandRecord = {
-        commandId: envelope.commandId,
-        commandFingerprint: createCommandFingerprint(envelope),
-        commandType: envelope.commandType,
-        payloadVersion: envelope.payloadVersion,
-        issuedAt: envelope.issuedAt,
-        recordedAt: new Date().toISOString(),
-        executionOutcome: {
-          ok: true,
-          category: 'SUCCESS',
-          outcome: 'COMMAND_SUCCESS',
-          data: handlerOutcome.data,
-        },
-      };
-      recordWriteResult = this.idempotencyStore.recordCommandExecution(record, txContext);
-    } else if (handlerOutcome.category === 'REFUSED') {
-      const record: GovernanceCommandRecord = {
-        commandId: envelope.commandId,
-        commandFingerprint: createCommandFingerprint(envelope),
-        commandType: envelope.commandType,
-        payloadVersion: envelope.payloadVersion,
-        issuedAt: envelope.issuedAt,
-        recordedAt: new Date().toISOString(),
-        executionOutcome: {
-          ok: false,
-          category: 'REFUSED',
-          outcome: 'COMMAND_REFUSED',
-          refusalCode: handlerOutcome.refusalCode,
-          reason: handlerOutcome.reason,
-        },
-      };
-      recordWriteResult = this.idempotencyStore.recordCommandExecution(record, txContext);
-    } else {
-      // ERROR outcome -> throw error to trigger physical transaction ROLLBACK
-      throw handlerOutcome.error ?? new RuntimeInvariantError(`Handler produced ERROR for command '${envelope.commandId}'`);
-    }
+      const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
 
+      if (handlerOutcome.category === 'SUCCESS') {
+        const persistRes = this.persistDomainEntityAndEvent(envelope, payload, handlerOutcome.data, txContext);
+
+        return maybeAsync(persistRes, (pRes) => {
+          if (!pRes.ok) {
+            if (pRes.category === 'REFUSED') {
+              const winnerCheck = this.idempotencyStore.getCommandExecution(envelope.commandId, txContext);
+              return maybeAsync(winnerCheck, (wCheck) => {
+                const processWinnerRecord = (existingRecord: GovernanceCommandRecord): GovernedLearningRuntimeExecutionResult => {
+                  const currentFingerprint = createCommandFingerprint(envelope);
+                  const isFingerprintMatch = existingRecord.commandFingerprint === currentFingerprint;
+                  const isIssuedAtMatch = !existingRecord.issuedAt || existingRecord.issuedAt === envelope.issuedAt;
+
+                  if (isFingerprintMatch && isIssuedAtMatch) {
+                    let winnerHandlerOutcome: CommandHandlerOutcome | undefined;
+                    if (existingRecord.executionOutcome.category === 'SUCCESS') {
+                      winnerHandlerOutcome = {
+                        ok: true,
+                        category: 'SUCCESS',
+                        data: existingRecord.executionOutcome.data,
+                      };
+                    } else if (existingRecord.executionOutcome.category === 'REFUSED') {
+                      winnerHandlerOutcome = {
+                        ok: false,
+                        category: 'REFUSED',
+                        refusalCode: existingRecord.executionOutcome.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+                        reason: existingRecord.executionOutcome.reason ?? 'Command execution refused',
+                      };
+                    }
+
+                    return {
+                      ok: existingRecord.executionOutcome.ok,
+                      category: existingRecord.executionOutcome.category,
+                      refusalCode: existingRecord.executionOutcome.refusalCode,
+                      reason: existingRecord.executionOutcome.reason,
+                      pipelineReport,
+                      handlerOutcome: winnerHandlerOutcome,
+                      replayedResult: true,
+                      rollbackRequired: true,
+                    };
+                  } else {
+                    return {
+                      ok: false,
+                      category: 'REFUSED',
+                      refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+                      reason: `Command execution record collision for commandId '${envelope.commandId}' with mismatched command identity`,
+                      pipelineReport,
+                      rollbackRequired: true,
+                    } as GovernedLearningRuntimeExecutionResult;
+                  }
+                };
+
+                if (wCheck.ok && wCheck.data) {
+                  return processWinnerRecord(wCheck.data);
+                }
+
+                // Fallback check outside txContext to see if another committed transaction won the commandId race
+                const fallbackCheck = this.idempotencyStore.getCommandExecution(envelope.commandId);
+                return maybeAsync(fallbackCheck, (fCheck) => {
+                  if (fCheck.ok && fCheck.data) {
+                    return processWinnerRecord(fCheck.data);
+                  }
+
+                  return {
+                    ok: false,
+                    category: 'REFUSED',
+                    refusalCode: pRes.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+                    reason: pRes.reason ?? 'Domain persistence operation refused',
+                    pipelineReport,
+                    handlerOutcome: {
+                      ok: false,
+                      category: 'REFUSED',
+                      refusalCode: pRes.refusalCode ?? 'REFUSAL_INVARIANT_VIOLATION',
+                      reason: pRes.reason ?? 'Domain persistence operation refused',
+                    },
+                    rollbackRequired: true,
+                  };
+                });
+              });
+            } else {
+              throw pRes.error ?? new RuntimeInvariantError(`Domain persistence failed for command '${envelope.commandId}'`);
+            }
+          }
+
+          const record: GovernanceCommandRecord = {
+            commandId: envelope.commandId,
+            commandFingerprint: createCommandFingerprint(envelope),
+            commandType: envelope.commandType,
+            payloadVersion: envelope.payloadVersion,
+            issuedAt: envelope.issuedAt,
+            recordedAt: new Date().toISOString(),
+            executionOutcome: {
+              ok: true,
+              category: 'SUCCESS',
+              outcome: 'COMMAND_SUCCESS',
+              data: handlerOutcome.data,
+            },
+          };
+
+          const recRes = this.idempotencyStore.recordCommandExecution(record, txContext);
+          return maybeAsync(recRes, (rwRes) => {
+            return this.processRecordWriteResult(rwRes, pipelineReport, handlerOutcome);
+          });
+        });
+      } else if (handlerOutcome.category === 'REFUSED') {
+        const record: GovernanceCommandRecord = {
+          commandId: envelope.commandId,
+          commandFingerprint: createCommandFingerprint(envelope),
+          commandType: envelope.commandType,
+          payloadVersion: envelope.payloadVersion,
+          issuedAt: envelope.issuedAt,
+          recordedAt: new Date().toISOString(),
+          executionOutcome: {
+            ok: false,
+            category: 'REFUSED',
+            outcome: 'COMMAND_REFUSED',
+            refusalCode: handlerOutcome.refusalCode,
+            reason: handlerOutcome.reason,
+          },
+        };
+
+        const recRes = this.idempotencyStore.recordCommandExecution(record, txContext);
+        return maybeAsync(recRes, (rwRes) => {
+          return this.processRecordWriteResult(rwRes, pipelineReport, handlerOutcome);
+        });
+      } else {
+        // ERROR outcome -> throw error to trigger physical transaction ROLLBACK
+        throw handlerOutcome.error ?? new RuntimeInvariantError(`Handler produced ERROR for command '${envelope.commandId}'`);
+      }
+    });
+  }
+
+  private processRecordWriteResult(
+    recordWriteResult: RuntimeOperationResult<{ recorded: boolean; record: GovernanceCommandRecord }> | undefined,
+    pipelineReport: PipelineExecutionReport<CommandDispatchResult>,
+    handlerOutcome: CommandHandlerOutcome
+  ): GovernedLearningRuntimeExecutionResult {
     if (recordWriteResult && !recordWriteResult.ok) {
       if (recordWriteResult.category === 'REFUSED') {
         return {
@@ -717,7 +842,7 @@ export class GovernedLearningRuntime {
       const writeError =
         rawError instanceof GovernedLearningRuntimeError
           ? rawError
-          : new RuntimeInvariantError(`Idempotency execution record persistence failed: ${errorMsg}`);
+          : new RuntimeInvariantError(`Command execution record persistence failed: ${errorMsg}`);
 
       return {
         ok: false,
@@ -725,14 +850,20 @@ export class GovernedLearningRuntime {
         error: writeError,
         pipelineReport,
         handlerOutcome,
+        rollbackRequired: true,
       };
     }
+
+    const refusalCode = handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined;
+    const reason = handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined;
+    const error = handlerOutcome.category === 'ERROR' ? handlerOutcome.error : undefined;
 
     return {
       ok: handlerOutcome.ok,
       category: handlerOutcome.category,
-      refusalCode: handlerOutcome.category === 'REFUSED' ? handlerOutcome.refusalCode : undefined,
-      reason: handlerOutcome.category === 'REFUSED' ? handlerOutcome.reason : undefined,
+      refusalCode,
+      reason,
+      error,
       pipelineReport,
       handlerOutcome,
     };

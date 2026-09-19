@@ -382,10 +382,18 @@ export class HistoricalReplayEngine {
 
     if (!eventsToReplay && this.persistencePort) {
       const getRes = this.persistencePort.getEvents();
-      if (!getRes.ok) {
-        return getRes;
+      if (getRes && typeof (getRes as any).then === 'function') {
+        return {
+          ok: false,
+          category: 'ERROR',
+          error: new RuntimeInvariantError('Synchronous replay requires a synchronous persistence port'),
+        };
       }
-      eventsToReplay = getRes.data;
+      const syncGetRes = getRes as RuntimeOperationResult<ReadonlyArray<unknown>>;
+      if (!syncGetRes.ok) {
+        return syncGetRes as any;
+      }
+      eventsToReplay = syncGetRes.data;
     }
 
     if (!eventsToReplay) {
@@ -415,10 +423,19 @@ export class HistoricalReplayEngine {
     }
 
     const getRes = this.persistencePort.getEvents();
-    if (!getRes.ok) {
-      return getRes;
+    if (getRes && typeof (getRes as any).then === 'function') {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Synchronous replay requires a synchronous persistence port'),
+      };
     }
 
-    return replayHistoricalEvents(getRes.data, params);
+    const syncGetRes = getRes as RuntimeOperationResult<ReadonlyArray<unknown>>;
+    if (!syncGetRes.ok) {
+      return syncGetRes as any;
+    }
+
+    return replayHistoricalEvents(syncGetRes.data, params);
   }
 }

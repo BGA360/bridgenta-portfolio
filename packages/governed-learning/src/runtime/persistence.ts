@@ -30,7 +30,9 @@ export interface GovernancePersistencePort {
   appendEvent(
     event: unknown,
     transactionContext?: TransactionContext
-  ): RuntimeOperationResult<{ readonly eventRef?: string; readonly appended: boolean }>;
+  ):
+    | Promise<RuntimeOperationResult<{ readonly eventRef?: string; readonly appended: boolean }>>
+    | RuntimeOperationResult<{ readonly eventRef?: string; readonly appended: boolean }>;
 
   /**
    * Retrieves stored governance events in deterministic append order.
@@ -38,7 +40,7 @@ export interface GovernancePersistencePort {
   getEvents(
     filter?: { readonly eventRef?: string; readonly eventType?: string },
     transactionContext?: TransactionContext
-  ): RuntimeOperationResult<ReadonlyArray<unknown>>;
+  ): Promise<RuntimeOperationResult<ReadonlyArray<unknown>>> | RuntimeOperationResult<ReadonlyArray<unknown>>;
 
   /**
    * Stores an observation or verified observation.
@@ -46,7 +48,9 @@ export interface GovernancePersistencePort {
   saveObservation(
     observation: unknown,
     transactionContext?: TransactionContext
-  ): RuntimeOperationResult<{ readonly observationRef: string; readonly saved: boolean }>;
+  ):
+    | Promise<RuntimeOperationResult<{ readonly observationRef: string; readonly saved: boolean }>>
+    | RuntimeOperationResult<{ readonly observationRef: string; readonly saved: boolean }>;
 
   /**
    * Retrieves an observation by reference.
@@ -54,7 +58,7 @@ export interface GovernancePersistencePort {
   getObservationByRef(
     observationRef: string,
     transactionContext?: TransactionContext
-  ): RuntimeOperationResult<unknown>;
+  ): Promise<RuntimeOperationResult<unknown>> | RuntimeOperationResult<unknown>;
 
   /**
    * Stores a lesson candidate or approved lesson.
@@ -62,7 +66,9 @@ export interface GovernancePersistencePort {
   saveLesson(
     lesson: unknown,
     transactionContext?: TransactionContext
-  ): RuntimeOperationResult<{ readonly lessonRef: string; readonly saved: boolean }>;
+  ):
+    | Promise<RuntimeOperationResult<{ readonly lessonRef: string; readonly saved: boolean }>>
+    | RuntimeOperationResult<{ readonly lessonRef: string; readonly saved: boolean }>;
 
   /**
    * Retrieves a lesson by reference.
@@ -70,7 +76,7 @@ export interface GovernancePersistencePort {
   getLessonByRef(
     lessonRef: string,
     transactionContext?: TransactionContext
-  ): RuntimeOperationResult<unknown>;
+  ): Promise<RuntimeOperationResult<unknown>> | RuntimeOperationResult<unknown>;
 
   /**
    * Stores a rule candidate proposal.
@@ -78,7 +84,9 @@ export interface GovernancePersistencePort {
   saveRuleCandidate(
     proposal: unknown,
     transactionContext?: TransactionContext
-  ): RuntimeOperationResult<{ readonly ruleCandidateId: string; readonly saved: boolean }>;
+  ):
+    | Promise<RuntimeOperationResult<{ readonly ruleCandidateId: string; readonly saved: boolean }>>
+    | RuntimeOperationResult<{ readonly ruleCandidateId: string; readonly saved: boolean }>;
 
   /**
    * Retrieves a rule candidate proposal by ID.
@@ -86,7 +94,7 @@ export interface GovernancePersistencePort {
   getRuleCandidateById(
     ruleCandidateId: string,
     transactionContext?: TransactionContext
-  ): RuntimeOperationResult<unknown>;
+  ): Promise<RuntimeOperationResult<unknown>> | RuntimeOperationResult<unknown>;
 }
 
 /**
