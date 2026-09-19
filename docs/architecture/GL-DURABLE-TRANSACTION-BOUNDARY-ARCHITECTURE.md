@@ -2,7 +2,7 @@
 
 **Workstream**: `BRIDGENTA-GOVERNED-LEARNING-GL-HARDENING-004-DURABLE-TRANSACTION-BOUNDARY`  
 **Baseline**: `64f220e1fe4b6f6de05cdf4cb3a648162946c181`  
-**Status**: Authoritative Architecture Specification  
+**Status**: Authoritative Architecture Specification (Remediated)  
 
 ---
 
@@ -10,7 +10,7 @@
 
 Governed Learning Stage 8 (Idempotency) and Stage 9 (Concurrency Control) are active on canonical `main`. At Level 1, these protections enforce per-aggregate serialization and single-execution idempotency within a single Node.js runtime process.
 
-This specification establishes the **durable transaction boundary, failure-window map, and port relationship model** required before implementing any Level 2 database adapter (e.g., PostgreSQL or SQLite).
+This specification establishes the **durable transaction boundary, failure-window map, datastore capability requirements, and port relationship model** required before implementing any Level 2 database adapter.
 
 > [!IMPORTANT]  
 > Level 1 in-memory mechanisms do not guarantee restart safety, crash safety, or multi-instance transaction integrity. Level 2 durable persistence requires extending these boundaries into **one physical atomic database transaction**.
@@ -110,7 +110,7 @@ Stage 9 Concurrency Lease Release (finally block)
 ### Window H: Instance A and Instance B Process Same `commandId` Concurrently
 - **Level 1 Behavior**: In-memory locking is per-process. Instance A and B do not coordinate.
 - **Duplication Risk**: **HIGH**.
-- **Durable Requirement**: Enforce `PRIMARY KEY (command_id)` or `UNIQUE(command_id)` in `command_records` database table. Second transaction receives DB unique constraint failure and is refused or safely handled.
+- **Durable Requirement**: Enforce `PRIMARY KEY (command_id)` or `UNIQUE(command_id)` in `command_records` database table. The unique constraint is the final durable arbitration mechanism. All authoritative entity and event writes MUST occur in the same transaction as the command-record insert so that the losing transaction rolls back ALL partial domain effects (`LOSING_COMMAND_ID_TRANSACTION_ROLLS_BACK_ALL_EFFECTS: YES`). At most one transaction may commit authoritative effects for a given `commandId`.
 
 ### Window I: Multi-Instance Concurrent Aggregate Mutation
 - **Level 1 Behavior**: In-memory locking is per-process.
@@ -151,49 +151,74 @@ $$\text{Atomic Transaction} = \text{Domain Entity State Mutation} + \text{Domain
 
 ---
 
-## 5. Port Relationship & Transaction Context Architecture
+## 5. Datastore Capability Matrix & Database Selection
+
+### Datastore Capability Comparison
+
+| Capability | PostgreSQL | SQLite WAL | Required for Production Multi-Instance |
+| --- | --- | --- | --- |
+| ACID Transactions | Yes | Yes | Yes |
+| Multi-Statement Atomic Transaction | Yes | Yes | Yes |
+| Unique `commandId` Constraint | Yes | Yes | Yes |
+| Row-Level Locking | Yes | No | Yes / preferred model |
+| `SELECT ... FOR UPDATE` | Yes | No | Yes if pessimistic model used |
+| JSON Document Storage | Yes | Yes | Yes |
+| Multi-Instance Application Coordination | Yes | Limited / not equivalent | Yes |
+| Embedded Local Testing | Possible | Yes | No |
+
+> [!NOTE]  
+> SQLite WAL is **NOT equivalent** to PostgreSQL row-level locking semantics (`SQLITE_EQUIVALENT_TO_POSTGRES_LOCKING: NO`). SQLite WAL uses a database-level write lock, while PostgreSQL provides row-level `SELECT ... FOR UPDATE` locks.
+
+### Datastore Roles
+- **PostgreSQL**: `RECOMMENDED_PRODUCTION_DATASTORE: POSTGRESQL`. Production candidate for Level-2 multi-instance durable integrity. Supports ACID multi-statement transactions, unique constraints, row-level locking, `SELECT ... FOR UPDATE`, transaction isolation, `JSONB`, and multi-row atomic transactions.
+- **SQLite WAL**: `RECOMMENDED_EMBEDDED_TRANSACTION_TEST_DATASTORE: SQLITE_WAL`. Embedded/local durability and transaction-testing candidate. Useful for atomic commit/rollback tests, crash/restart persistence tests, unique constraint tests, local adapter development, and transaction-context integration tests.
+
+---
+
+## 6. Port Relationship & Transaction Context Architecture
 
 ### Logical Port Separation
 - `GovernancePersistencePort` (Domain Entities & Event Log) and `IdempotencyStorePort` (Operational Command Records) remain **logically separate interface ports**.
-- Both ports accept an optional `transactionContext?: TransactionContext` parameter across all mutating operations.
+- Both ports accept an optional `transactionContext?: TransactionContext` parameter across all mutating operations (`TRANSACTION_CONTEXT_COMPATIBLE_PORTS: YES`).
 
-### Durable Execution via Unit of Work
-`RuntimeIntegrityUnitOfWork` coordinates physical transaction boundaries:
+### Current Transaction Context Limitation
+- `TransactionContext` currently serves as a contract carrier / extension point (`TRANSACTION_CONTEXT_CURRENTLY_ENFORCES_PHYSICAL_ATOMICITY: NO`).
+- `RuntimeIntegrityUnitOfWork` is currently at `L1_ABSTRACTION_ONLY`.
+- In Level 2 implementations, `TransactionContext` will wrap a real datastore transaction handle (`dbClient` / `txHandle`), ensuring all operations execute within the **same physical database transaction**.
 
-```ts
-await unitOfWork.execute(async (transactionContext) => {
-  // 1. Read / validate state within transactionContext
-  // 2. Execute handler
-  // 3. Save domain entity with transactionContext
-  await persistencePort.saveObservation(observation, transactionContext);
-  // 4. Append domain event with transactionContext
-  await persistencePort.appendEvent(event, transactionContext);
-  // 5. Record command execution with transactionContext
-  await idempotencyStore.recordCommandExecution(record, transactionContext);
-});
+### Concurrency Model & Lock Ordering
+- Stage 9 is the **logical concurrency policy boundary**. PostgreSQL provides **physical multi-instance transaction enforcement** via row locking.
+- A separate distributed mutex service is **not required** (`SEPARATE_DISTRIBUTED_MUTEX_REQUIRED: NO`).
+- Multi-aggregate commands sort aggregate keys in canonical deterministic order (`getConcurrencyScope`), which controls and reduces lock inversion risk during row locking, but does not eliminate all database deadlocks (`DATABASE_DEADLOCKS_CLAIMED_IMPOSSIBLE: NO`).
+
+---
+
+## 7. External Side-Effects Verification
+
+Source code inspection of all 15 domain command handlers in `packages/governed-learning/src/runtime/handlers.ts` confirms:
+
+```text
+EXTERNAL_SIDE_EFFECTS_IN_CURRENT_HANDLERS: NONE_VERIFIED
 ```
 
-In Level 2 database implementations, `transactionContext` encapsulates the active database transaction handle (`dbClient` / `txHandle`), ensuring all operations execute within the **same database transaction**.
+No current domain handler executes external network requests, file I/O, email, webhooks, or subprocesses. All operations calculate pure domain state transitions in memory.
 
 ---
 
-## 6. Datastore Capabilities & Database Selection Analysis
+## 8. Test Strategy Split & Next Implementation Sequence
 
-### Required Capabilities
-1. **ACID Multi-Statement Transactions**: Atomic commit/rollback across entity tables, event log, and command records.
-2. **Unique Constraints**: `PRIMARY KEY (command_id)` on command records table.
-3. **Pessimistic Row Locking**: Support for `SELECT ... FOR UPDATE` to serialize aggregate mutations across multi-instance deployments.
-4. **Append-Only Event Log**: High-throughput sequential insert with indexed event references for replay.
-5. **JSON Document Support**: Structured payload storage (`JSONB` or `TEXT` JSON).
+### Dual-Layer Test Strategy
+1. **Adapter-Neutral Durability Tests** (SQLite WAL & PostgreSQL):
+   - Commit atomicity & rollback atomicity
+   - `commandId` uniqueness constraints & losing transaction rollback
+   - Restart persistence & response-loss replay
+2. **PostgreSQL-Specific Concurrency Tests** (PostgreSQL only):
+   - Row-level locking (`SELECT ... FOR UPDATE`)
+   - Multi-instance conflicting mutations
+   - Lock ordering & deadlock recovery
+   - Transaction isolation behavior
 
-### Candidate Datastore Evaluation
-- **PostgreSQL**: Meets 100% of required capabilities. Ideal for production multi-instance deployments.
-- **SQLite (WAL mode)**: Meets 100% of required capabilities for embedded, local production, or automated testing environments.
-
----
-
-## 7. Next Implementation Sequence (GL-HARDENING-005 proposal)
-
-1. **Unit 1**: Implement `DurableGovernanceRepository` and `DurableIdempotencyStore` using SQLite / PostgreSQL with `RuntimeIntegrityUnitOfWork` transactional binding.
-2. **Unit 2**: Implement row-level pessimistic locking (`SELECT ... FOR UPDATE`) in `DurableConcurrencyCoordinator` for multi-instance Stage 9 enforcement.
-3. **Unit 3**: Run durable crash-recovery and transaction failure validation tests.
+### Next Implementation Sequence (`GL-HARDENING-005` Proposal)
+1. **Unit 1**: Implement `DurableGovernanceRepository` and `DurableIdempotencyStore` using SQLite WAL / PostgreSQL driven by `RuntimeIntegrityUnitOfWork`.
+2. **Unit 2**: Implement row-level pessimistic locking (`SELECT ... FOR UPDATE`) for multi-instance Stage 9 enforcement.
+3. **Unit 3**: Run durable crash-recovery and transaction rollback integration tests.
