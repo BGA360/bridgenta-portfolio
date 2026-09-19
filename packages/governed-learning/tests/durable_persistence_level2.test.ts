@@ -11,7 +11,7 @@ import {
   SqliteRuntimeIntegrityUnitOfWork,
   RuntimeInvariantError,
 } from '../src/index.js';
-import type { GovernanceCommandEnvelope } from '../src/index.js';
+import type { GovernanceCommandEnvelope, TransactionContext } from '../src/index.js';
 
 function getTempDbPath(name: string): string {
   return join(tmpdir(), `gl_durability_${name}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.db`);
@@ -198,7 +198,7 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
         payload: { category: 'MECHANICAL', statement: 'MUTATED STATEMENT DIFFERENCE' },
       };
 
-      const resB = await runtimeB.processAndExecuteCommandAsync(cloneCmd(mutatedCmd));
+      const resB = await runtimeB.processAndExecuteCommandAsync(mutatedCmd);
       assert.strictEqual(resB.ok, false);
       assert.strictEqual(resB.category, 'REFUSED');
       assert.strictEqual(resB.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
@@ -210,32 +210,34 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
   });
 
   it('7. ERROR transaction produces no command record', async () => {
-    const dbPath = getTempDbPath('error_no_record');
-    const queryCmd: GovernanceCommandEnvelope = {
-      commandId: 'cmd_dur_query_004',
-      commandType: 'BuildGuidanceSetQuery',
-      payloadVersion: '1.0.0',
-      issuedAt: '2026-09-19T18:15:00.000Z',
-      actorRef: { actorId: 'agent_alice', actorType: 'AGENT' },
-      authorityContextRef: { authorityId: 'auth_sys' },
-      payload: { queryId: 'q1' },
-    };
+    const dbManager = new SqliteDatabaseManager(':memory:');
+    const store = new SqliteIdempotencyStore(dbManager);
+    const unitOfWork = new SqliteRuntimeIntegrityUnitOfWork(dbManager);
 
     try {
-      const { runtime, dbManager, idempotencyStore } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
-      const res = await runtime.processAndExecuteCommandAsync(cloneCmd(queryCmd));
-
-      assert.strictEqual(res.ok, false);
-      assert.strictEqual(res.category, 'ERROR');
-
-      const recordRes = idempotencyStore.getCommandExecution(queryCmd.commandId);
-      assert.strictEqual(recordRes.ok, true);
-      assert.strictEqual(recordRes.data, undefined);
-
-      dbManager.close();
-    } finally {
-      cleanupDbFile(dbPath);
+      await unitOfWork.execute((tx) => {
+        store.recordCommandExecution(
+          {
+            commandId: 'cmd_err_001',
+            commandFingerprint: 'fp_err',
+            commandType: 'DraftObservation',
+            payloadVersion: '1.0.0',
+            recordedAt: new Date().toISOString(),
+            executionOutcome: { ok: true, category: 'SUCCESS', outcome: 'COMMAND_SUCCESS' },
+          },
+          tx
+        );
+        throw new RuntimeInvariantError('Simulated infrastructure failure');
+      });
+    } catch {
+      // Expected exception
     }
+
+    const check = store.getCommandExecution('cmd_err_001');
+    assert.strictEqual(check.ok, true);
+    assert.strictEqual(check.data, undefined); // Rolled back
+
+    dbManager.close();
   });
 
   it('8. entity-write failure rolls back event + command record', async () => {
@@ -369,22 +371,25 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
       );
     });
 
-    // Second transaction attempts insert of same commandId
-    const res2 = store.recordCommandExecution(
-      {
-        commandId: 'cmd_race_001',
-        commandFingerprint: 'fp_first',
-        commandType: 'DraftObservation',
-        payloadVersion: '1.0.0',
-        recordedAt: new Date().toISOString(),
-        executionOutcome: { ok: true, category: 'SUCCESS', outcome: 'COMMAND_SUCCESS' },
-      }
-    );
+    // Second transaction attempts insert of same commandId inside active transaction
+    await unitOfWork.execute((tx) => {
+      const res2 = store.recordCommandExecution(
+        {
+          commandId: 'cmd_race_001',
+          commandFingerprint: 'fp_first',
+          commandType: 'DraftObservation',
+          payloadVersion: '1.0.0',
+          recordedAt: new Date().toISOString(),
+          executionOutcome: { ok: true, category: 'SUCCESS', outcome: 'COMMAND_SUCCESS' },
+        },
+        tx
+      );
 
-    assert.strictEqual(res2.ok, true);
-    if (res2.ok) {
-      assert.strictEqual(res2.data.recorded, false); // Existing record returned, duplicate refused
-    }
+      assert.strictEqual(res2.ok, true);
+      if (res2.ok) {
+        assert.strictEqual(res2.data.recorded, false); // Existing record returned, duplicate refused
+      }
+    });
 
     dbManager.close();
   });
@@ -410,32 +415,28 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
       );
     });
 
-    // Attempt second transaction with SAME commandId but different fingerprint -> throws error in transaction
-    try {
-      await unitOfWork.execute((tx) => {
-        repo.saveObservation({ observationRef: 'obs_losing_tx', category: 'TEST', statement: 'Statement' }, tx);
-        repo.appendEvent({ eventType: 'OBSERVATION_CREATED', payload: { observationRef: 'obs_losing_tx' } }, tx);
+    // Attempt second transaction with SAME commandId but different fingerprint -> returns REFUSED
+    await unitOfWork.execute((tx) => {
+      repo.saveObservation({ observationRef: 'obs_losing_tx', category: 'TEST', statement: 'Statement' }, tx);
+      repo.appendEvent({ eventType: 'OBSERVATION_CREATED', payload: { observationRef: 'obs_losing_tx' } }, tx);
 
-        const recRes = store.recordCommandExecution(
-          {
-            commandId: 'cmd_race_002',
-            commandFingerprint: 'fp_DIFFERENT',
-            commandType: 'DraftObservation',
-            payloadVersion: '1.0.0',
-            recordedAt: new Date().toISOString(),
-            executionOutcome: { ok: true, category: 'SUCCESS', outcome: 'COMMAND_SUCCESS' },
-          },
-          tx
-        );
+      const recRes = store.recordCommandExecution(
+        {
+          commandId: 'cmd_race_002',
+          commandFingerprint: 'fp_DIFFERENT',
+          commandType: 'DraftObservation',
+          payloadVersion: '1.0.0',
+          recordedAt: new Date().toISOString(),
+          executionOutcome: { ok: true, category: 'SUCCESS', outcome: 'COMMAND_SUCCESS' },
+        },
+        tx
+      );
 
-        if (!recRes.ok && recRes.category === 'ERROR') {
-          throw recRes.error;
-        }
-      });
-      assert.fail('Should have failed on duplicate commandId mismatch');
-    } catch {
-      // Expected rollback
-    }
+      assert.strictEqual(recRes.ok, false);
+      assert.strictEqual(recRes.category, 'REFUSED');
+      assert.strictEqual(recRes.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+      return recRes;
+    });
 
     // Verify losing transaction's observation and event were rolled back
     const obsLookup = repo.getObservationByRef('obs_losing_tx');
@@ -472,10 +473,13 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
 
   it('15. event log remains append-only', async () => {
     const dbManager = new SqliteDatabaseManager(':memory:');
+    const unitOfWork = new SqliteRuntimeIntegrityUnitOfWork(dbManager);
     const repo = new SqliteGovernanceRepository(dbManager);
 
-    repo.appendEvent({ eventRef: 'evt_100', eventType: 'OBSERVATION_CREATED' });
-    repo.appendEvent({ eventRef: 'evt_101', eventType: 'OBSERVATION_VALIDATED' });
+    await unitOfWork.execute((tx) => {
+      repo.appendEvent({ eventRef: 'evt_100', eventType: 'OBSERVATION_CREATED' }, tx);
+      repo.appendEvent({ eventRef: 'evt_101', eventType: 'OBSERVATION_VALIDATED' }, tx);
+    });
 
     const rawDb = dbManager.getRawDatabase();
     const rows = rawDb.prepare<{ id: number; event_type: string }>('SELECT id, event_type FROM governance_events ORDER BY id ASC').all();
@@ -489,10 +493,12 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
   it('16. database reopen preserves deterministic read order', async () => {
     const dbPath = getTempDbPath('read_order');
     try {
-      const { persistencePort: portA, dbManager: dbA } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
-      portA.appendEvent({ eventRef: 'evt_seq_1', eventType: 'OBSERVATION_CREATED' });
-      portA.appendEvent({ eventRef: 'evt_seq_2', eventType: 'LESSON_CANDIDATE_CREATED' });
-      portA.appendEvent({ eventRef: 'evt_seq_3', eventType: 'LESSON_APPROVED' });
+      const { persistencePort: portA, dbManager: dbA, unitOfWork: uowA } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+      await uowA.execute((tx) => {
+        portA.appendEvent({ eventRef: 'evt_seq_1', eventType: 'OBSERVATION_CREATED' }, tx);
+        portA.appendEvent({ eventRef: 'evt_seq_2', eventType: 'LESSON_CANDIDATE_CREATED' }, tx);
+        portA.appendEvent({ eventRef: 'evt_seq_3', eventType: 'LESSON_APPROVED' }, tx);
+      });
       dbA.close();
 
       const { persistencePort: portB, dbManager: dbB } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
@@ -605,5 +611,180 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
     // Architectural assertion guard
     const SQLITE_EQUIVALENT_TO_POSTGRES_ROW_LOCKING = false;
     assert.strictEqual(SQLITE_EQUIVALENT_TO_POSTGRES_ROW_LOCKING, false);
+  });
+
+  it('22. sync processAndExecuteCommand returns real synchronous result', () => {
+    const dbPath = getTempDbPath('sync_api_test');
+    try {
+      const { runtime, dbManager, persistencePort } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+      const res = runtime.processAndExecuteCommand(cloneCmd(sampleObservationCmd));
+
+      assert.strictEqual(res instanceof Promise, false);
+      assert.strictEqual(res.ok, true);
+      assert.strictEqual(res.category, 'SUCCESS');
+
+      // Verify database state is already committed synchronously before return
+      const obs = persistencePort.getObservationByRef('obs_cmd_dur_obs_001');
+      assert.strictEqual(obs.ok, true);
+
+      dbManager.close();
+    } finally {
+      cleanupDbFile(dbPath);
+    }
+  });
+
+  it('23. transaction context enforcement rejects stale, foreign, or missing contexts', async () => {
+    const dbManagerA = new SqliteDatabaseManager(':memory:');
+    const dbManagerB = new SqliteDatabaseManager(':memory:');
+    const unitOfWorkA = new SqliteRuntimeIntegrityUnitOfWork(dbManagerA);
+    const repoA = new SqliteGovernanceRepository(dbManagerA);
+    const repoB = new SqliteGovernanceRepository(dbManagerB);
+
+    // 1. Missing context on mutating operation returns ERROR
+    const missingRes = repoA.saveObservation({ observationRef: 'obs_no_tx', category: 'TEST', statement: 'Statement' });
+    assert.strictEqual(missingRes.ok, false);
+    assert.strictEqual(missingRes.category, 'ERROR');
+    assert.ok(missingRes.error?.message.includes('missing physical transaction context'));
+
+    // 2. Fabricated context returns ERROR
+    const fabricatedTx: TransactionContext = { transactionId: 'tx_fake_123', createdAt: new Date().toISOString(), isDurable: true };
+    const fabRes = repoA.saveObservation({ observationRef: 'obs_fake_tx', category: 'TEST', statement: 'Statement' }, fabricatedTx);
+    assert.strictEqual(fabRes.ok, false);
+    assert.strictEqual(fabRes.category, 'ERROR');
+
+    let staleTx: TransactionContext | undefined;
+    await unitOfWorkA.execute((txA) => {
+      staleTx = txA;
+      // Valid active context works
+      const validRes = repoA.saveObservation({ observationRef: 'obs_valid_tx', category: 'TEST', statement: 'Statement' }, txA);
+      assert.strictEqual(validRes.ok, true);
+
+      // 3. Foreign context (using txA on repoB) returns ERROR
+      const foreignRes = repoB.saveObservation({ observationRef: 'obs_foreign_tx', category: 'TEST', statement: 'Statement' }, txA);
+      assert.strictEqual(foreignRes.ok, false);
+      assert.strictEqual(foreignRes.category, 'ERROR');
+    });
+
+    // 4. Stale context (using txA after transaction has committed) returns ERROR
+    assert.ok(staleTx);
+    const staleRes = repoA.saveObservation({ observationRef: 'obs_stale_tx', category: 'TEST', statement: 'Statement' }, staleTx);
+    assert.strictEqual(staleRes.ok, false);
+    assert.strictEqual(staleRes.category, 'ERROR');
+
+    dbManagerA.close();
+    dbManagerB.close();
+  });
+
+  it('24. persistence refusal stops event append and command success record', async () => {
+    const dbPath = getTempDbPath('persist_refusal');
+    try {
+      const { runtime, dbManager, persistencePort } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+
+      // Pre-insert observation ref obs_cmd_dur_obs_001 directly inside unit of work
+      const uow = new SqliteRuntimeIntegrityUnitOfWork(dbManager);
+      uow.execute((tx) => {
+        persistencePort.saveObservation({ observationRef: 'obs_cmd_dur_obs_001', category: 'MECHANICAL', statement: 'First statement' }, tx);
+      });
+
+      // Execute command attempting to overwrite obs_cmd_dur_obs_001 -> saveObservation returns REFUSED
+      const res = await runtime.processAndExecuteCommandAsync(cloneCmd(sampleObservationCmd));
+      assert.strictEqual(res.ok, false);
+      assert.strictEqual(res.category, 'REFUSED');
+      assert.strictEqual(res.refusalCode, 'REFUSAL_HISTORICAL_MUTATION_DENIED');
+
+      // Verify zero event appended, zero command record created
+      const rawDb = dbManager.getRawDatabase();
+      const evtCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM governance_events').get()?.count;
+      const cmdCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM command_records').get()?.count;
+
+      assert.strictEqual(evtCount, 0);
+      assert.strictEqual(cmdCount, 0);
+
+      dbManager.close();
+    } finally {
+      cleanupDbFile(dbPath);
+    }
+  });
+
+  it('25. Window H real two-connection concurrent execution with same identity yields exactly one winner and one replay', async () => {
+    const dbPath = getTempDbPath('window_h_same');
+    try {
+      const { runtime: runtimeA, dbManager: dbManagerA } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+      const { runtime: runtimeB, dbManager: dbManagerB } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+
+      const cmdA = cloneCmd(sampleObservationCmd);
+      const cmdB = cloneCmd(sampleObservationCmd);
+
+      const [resA, resB] = await Promise.all([
+        runtimeA.processAndExecuteCommandAsync(cmdA),
+        runtimeB.processAndExecuteCommandAsync(cmdB),
+      ]);
+
+      assert.strictEqual(resA.ok, true);
+      assert.strictEqual(resB.ok, true);
+
+      const replayedCount = (resA.replayedResult ? 1 : 0) + (resB.replayedResult ? 1 : 0);
+      assert.strictEqual(replayedCount, 1);
+
+      const rawDb = dbManagerA.getRawDatabase();
+      const obsCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM observations').get()?.count;
+      const evtCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM governance_events').get()?.count;
+      const cmdCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM command_records').get()?.count;
+
+      assert.strictEqual(obsCount, 1);
+      assert.strictEqual(evtCount, 1);
+      assert.strictEqual(cmdCount, 1);
+
+      dbManagerA.close();
+      dbManagerB.close();
+    } finally {
+      cleanupDbFile(dbPath);
+    }
+  });
+
+  it('26. Window H real two-connection concurrent execution with mismatched identity yields one winner and one REFUSED', async () => {
+    const dbPath = getTempDbPath('window_h_diff');
+    try {
+      const { runtime: runtimeA, dbManager: dbManagerA } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+      const { runtime: runtimeB, dbManager: dbManagerB } = createSqliteGovernedLearningRuntime({ databasePath: dbPath });
+
+      const cmdA: GovernanceCommandEnvelope = {
+        ...sampleObservationCmd,
+        commandId: 'cmd_race_diff_001',
+        payload: { category: 'MECHANICAL', statement: 'Statement from A' },
+      };
+
+      const cmdB: GovernanceCommandEnvelope = {
+        ...sampleObservationCmd,
+        commandId: 'cmd_race_diff_001',
+        payload: { category: 'MECHANICAL', statement: 'Statement from B (DIFFERENT)' },
+      };
+
+      const [resA, resB] = await Promise.all([
+        runtimeA.processAndExecuteCommandAsync(cmdA),
+        runtimeB.processAndExecuteCommandAsync(cmdB),
+      ]);
+
+      const okResults = [resA, resB].filter((r) => r.ok);
+      const refusedResults = [resA, resB].filter((r) => !r.ok && r.category === 'REFUSED');
+
+      assert.strictEqual(okResults.length, 1);
+      assert.strictEqual(refusedResults.length, 1);
+      assert.strictEqual(refusedResults[0].refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+
+      const rawDb = dbManagerA.getRawDatabase();
+      const obsCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM observations').get()?.count;
+      const evtCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM governance_events').get()?.count;
+      const cmdCount = rawDb.prepare<{ count: number }>('SELECT COUNT(*) as count FROM command_records').get()?.count;
+
+      assert.strictEqual(obsCount, 1);
+      assert.strictEqual(evtCount, 1);
+      assert.strictEqual(cmdCount, 1);
+
+      dbManagerA.close();
+      dbManagerB.close();
+    } finally {
+      cleanupDbFile(dbPath);
+    }
   });
 });

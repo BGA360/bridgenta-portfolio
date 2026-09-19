@@ -28,21 +28,25 @@ function deepClone<T>(val: T): T {
 
 /**
  * SQLite Database Manager for Level-2 Durable Persistence.
- * Configures WAL mode, enables foreign keys, manages physical schema, and provides transaction handles.
+ * Configures WAL mode, busy timeout, foreign keys, manages physical schema, and provides physical transaction handles.
  */
 export class SqliteDatabaseManager {
   private readonly db: DatabaseSync;
+  private readonly managerId: string;
   private inTransaction = false;
+  private activeTransactionId: string | null = null;
 
   constructor(location: string = ':memory:') {
+    this.managerId = `mgr_sqlite_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     this.db = new DatabaseSync(location);
     this.initSchema();
   }
 
   private initSchema(): void {
-    // Enable WAL journal mode for concurrency & durability
+    // Enable WAL journal mode, busy timeout & foreign keys for concurrency & durability
     try {
       this.db.exec('PRAGMA journal_mode = WAL;');
+      this.db.exec('PRAGMA busy_timeout = 5000;');
       this.db.exec('PRAGMA foreign_keys = ON;');
     } catch {
       // In-memory databases may use memory journal mode
@@ -92,25 +96,53 @@ export class SqliteDatabaseManager {
     return this.db;
   }
 
+  public getManagerId(): string {
+    return this.managerId;
+  }
+
+  public getActiveTransactionId(): string | null {
+    return this.activeTransactionId;
+  }
+
   public isTransactionActive(): boolean {
     return this.inTransaction;
   }
 
-  public beginTransaction(): void {
+  public verifyTransactionContext(txContext?: TransactionContext): boolean {
+    if (!txContext) return false;
+    if (!this.inTransaction || !this.activeTransactionId) return false;
+    if (txContext.managerId !== this.managerId) return false;
+    if (txContext.transactionId !== this.activeTransactionId) return false;
+    return true;
+  }
+
+  public beginTransaction(): TransactionContext {
     if (!this.inTransaction) {
       this.db.exec('BEGIN IMMEDIATE;');
       this.inTransaction = true;
+      this.activeTransactionId = `tx_sqlite_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     }
+
+    return {
+      transactionId: this.activeTransactionId!,
+      createdAt: new Date().toISOString(),
+      isDurable: true,
+      managerId: this.managerId,
+    };
   }
 
-  public commitTransaction(): void {
+  public commitTransaction(txContext?: TransactionContext): void {
+    if (txContext && !this.verifyTransactionContext(txContext)) {
+      throw new RuntimeInvariantError('Attempted to commit with invalid, foreign, or stale transaction context');
+    }
     if (this.inTransaction) {
       this.db.exec('COMMIT;');
       this.inTransaction = false;
+      this.activeTransactionId = null;
     }
   }
 
-  public rollbackTransaction(): void {
+  public rollbackTransaction(txContext?: TransactionContext): void {
     if (this.inTransaction) {
       try {
         this.db.exec('ROLLBACK;');
@@ -118,6 +150,7 @@ export class SqliteDatabaseManager {
         // Ignore rollback error if transaction already ended
       } finally {
         this.inTransaction = false;
+        this.activeTransactionId = null;
       }
     }
   }
@@ -133,6 +166,7 @@ export class SqliteDatabaseManager {
 
 /**
  * Level-2 Durable RuntimeIntegrityUnitOfWork Adapter backed by SQLite physical transactions.
+ * Supports both synchronous and asynchronous transactional execution without type-casting promises to sync values.
  */
 export class SqliteRuntimeIntegrityUnitOfWork implements RuntimeIntegrityUnitOfWork {
   private readonly dbManager: SqliteDatabaseManager;
@@ -141,36 +175,59 @@ export class SqliteRuntimeIntegrityUnitOfWork implements RuntimeIntegrityUnitOfW
     this.dbManager = dbManager;
   }
 
-  public async execute<T>(
+  public execute<T>(
     operation: (context: TransactionContext) => Promise<T> | T
-  ): Promise<T> {
+  ): Promise<T> | T {
     const isTopLevel = !this.dbManager.isTransactionActive();
+    let txContext: TransactionContext;
 
     if (isTopLevel) {
-      this.dbManager.beginTransaction();
+      txContext = this.dbManager.beginTransaction();
+    } else {
+      txContext = {
+        transactionId: this.dbManager.getActiveTransactionId() ?? 'tx_nested',
+        createdAt: new Date().toISOString(),
+        isDurable: true,
+        managerId: this.dbManager.getManagerId(),
+      };
     }
 
-    const txContext: TransactionContext = {
-      transactionId: `tx_sqlite_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-      createdAt: new Date().toISOString(),
-      isDurable: true,
-    };
-
     try {
-      const result = await operation(txContext);
+      const result = operation(txContext);
+
+      if (result && typeof (result as any).then === 'function') {
+        return (result as Promise<T>).then(
+          (res) => {
+            if (isTopLevel) {
+              if (res && typeof res === 'object' && ((res as any).category === 'ERROR' || (res as any).rollbackRequired === true)) {
+                this.dbManager.rollbackTransaction(txContext);
+              } else {
+                this.dbManager.commitTransaction(txContext);
+              }
+            }
+            return res;
+          },
+          (err) => {
+            if (isTopLevel) {
+              this.dbManager.rollbackTransaction(txContext);
+            }
+            throw err;
+          }
+        );
+      }
 
       if (isTopLevel) {
-        if (result && typeof result === 'object' && (result as any).category === 'ERROR') {
-          this.dbManager.rollbackTransaction();
+        if (result && typeof result === 'object' && ((result as any).category === 'ERROR' || (result as any).rollbackRequired === true)) {
+          this.dbManager.rollbackTransaction(txContext);
         } else {
-          this.dbManager.commitTransaction();
+          this.dbManager.commitTransaction(txContext);
         }
       }
 
       return result;
     } catch (err) {
       if (isTopLevel) {
-        this.dbManager.rollbackTransaction();
+        this.dbManager.rollbackTransaction(txContext);
       }
       throw err;
     }
@@ -189,8 +246,16 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
 
   public appendEvent(
     event: unknown,
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly eventRef?: string; readonly appended: boolean }> {
+    if (!transactionContext || !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, stale, or missing physical transaction context'),
+      };
+    }
+
     if (!event || typeof event !== 'object') {
       return {
         ok: false,
@@ -240,8 +305,16 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
 
   public getEvents(
     filter?: { readonly eventRef?: string; readonly eventType?: string },
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<ReadonlyArray<unknown>> {
+    if (transactionContext && !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, or stale physical transaction context'),
+      };
+    }
+
     try {
       const db = this.dbManager.getRawDatabase();
       let sql = 'SELECT data, event_ref, event_type FROM governance_events ORDER BY id ASC';
@@ -279,8 +352,16 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
 
   public saveObservation(
     observation: unknown,
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly observationRef: string; readonly saved: boolean }> {
+    if (!transactionContext || !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, stale, or missing physical transaction context'),
+      };
+    }
+
     if (!observation || typeof observation !== 'object') {
       return {
         ok: false,
@@ -313,7 +394,8 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
           category: 'REFUSED',
           refusalCode: 'REFUSAL_HISTORICAL_MUTATION_DENIED',
           reason: `Observation reference ${ref} already exists and historical mutation is denied`,
-        };
+          rollbackRequired: true,
+        } as any;
       }
 
       const stmt = db.prepare(
@@ -340,8 +422,16 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
 
   public getObservationByRef(
     observationRef: string,
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown> {
+    if (transactionContext && !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, or stale physical transaction context'),
+      };
+    }
+
     try {
       const db = this.dbManager.getRawDatabase();
       const stmt = db.prepare<{ data: string }>(
@@ -374,8 +464,16 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
 
   public saveLesson(
     lesson: unknown,
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly lessonRef: string; readonly saved: boolean }> {
+    if (!transactionContext || !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, stale, or missing physical transaction context'),
+      };
+    }
+
     if (!lesson || typeof lesson !== 'object') {
       return {
         ok: false,
@@ -410,7 +508,8 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
           category: 'REFUSED',
           refusalCode: 'REFUSAL_HISTORICAL_MUTATION_DENIED',
           reason: `Lesson reference ${ref} already exists and historical mutation is denied`,
-        };
+          rollbackRequired: true,
+        } as any;
       }
 
       const stmt = db.prepare(
@@ -437,8 +536,16 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
 
   public getLessonByRef(
     lessonRef: string,
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown> {
+    if (transactionContext && !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, or stale physical transaction context'),
+      };
+    }
+
     try {
       const db = this.dbManager.getRawDatabase();
       const stmt = db.prepare<{ data: string }>(
@@ -470,25 +577,32 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
   }
 
   public saveRuleCandidate(
-    proposal: unknown,
-    _transactionContext?: TransactionContext
+    ruleCandidate: unknown,
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly ruleCandidateId: string; readonly saved: boolean }> {
-    if (!proposal || typeof proposal !== 'object') {
+    if (!transactionContext || !this.dbManager.verifyTransactionContext(transactionContext)) {
       return {
         ok: false,
         category: 'ERROR',
-        error: new RuntimeInvariantError('Cannot save null or invalid rule candidate proposal'),
+        error: new RuntimeInvariantError('Invalid, foreign, stale, or missing physical transaction context'),
       };
     }
 
-    const idObj = (proposal as Record<string, unknown>)?.ruleCandidateId;
-    const id = typeof idObj === 'object' && idObj !== null ? (idObj as Record<string, unknown>).value : idObj;
+    if (!ruleCandidate || typeof ruleCandidate !== 'object') {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Cannot save null or invalid rule candidate'),
+      };
+    }
+
+    const id = (ruleCandidate as Record<string, unknown>)?.ruleCandidateId;
 
     if (!id || typeof id !== 'string') {
       return {
         ok: false,
         category: 'ERROR',
-        error: new RuntimeInvariantError('Rule candidate proposal must possess a valid ruleCandidateId'),
+        error: new RuntimeInvariantError('Rule candidate must possess a valid ruleCandidateId'),
       };
     }
 
@@ -504,14 +618,15 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
           ok: false,
           category: 'REFUSED',
           refusalCode: 'REFUSAL_HISTORICAL_MUTATION_DENIED',
-          reason: `Rule candidate ID ${id} already exists and historical mutation is denied`,
-        };
+          reason: `Rule candidate ${id} already exists and historical mutation is denied`,
+          rollbackRequired: true,
+        } as any;
       }
 
       const stmt = db.prepare(
         'INSERT INTO rule_candidates (rule_candidate_id, data, created_at) VALUES (?, ?, ?)'
       );
-      stmt.run(id, JSON.stringify(deepClone(proposal)), new Date().toISOString());
+      stmt.run(id, JSON.stringify(deepClone(ruleCandidate)), new Date().toISOString());
 
       return {
         ok: true,
@@ -532,8 +647,16 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
 
   public getRuleCandidateById(
     ruleCandidateId: string,
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<unknown> {
+    if (transactionContext && !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, or stale physical transaction context'),
+      };
+    }
+
     try {
       const db = this.dbManager.getRawDatabase();
       const stmt = db.prepare<{ data: string }>(
@@ -577,8 +700,16 @@ export class SqliteIdempotencyStore implements IdempotencyStorePort {
 
   public getCommandExecution(
     commandId: string,
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<GovernanceCommandRecord | undefined> {
+    if (transactionContext && !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, or stale physical transaction context'),
+      };
+    }
+
     try {
       const db = this.dbManager.getRawDatabase();
       const stmt = db.prepare<{
@@ -627,8 +758,16 @@ export class SqliteIdempotencyStore implements IdempotencyStorePort {
 
   public recordCommandExecution(
     record: GovernanceCommandRecord,
-    _transactionContext?: TransactionContext
+    transactionContext?: TransactionContext
   ): RuntimeOperationResult<{ readonly recorded: boolean; readonly record: GovernanceCommandRecord }> {
+    if (!transactionContext || !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, stale, or missing physical transaction context'),
+      };
+    }
+
     const parseResult = GovernanceCommandRecordSchema.safeParse(record);
     if (!parseResult.success) {
       return {
@@ -641,18 +780,18 @@ export class SqliteIdempotencyStore implements IdempotencyStorePort {
     const cloned = deepClone(parseResult.data);
     const db = this.dbManager.getRawDatabase();
 
-    // Check if commandId already exists
-    const existingRes = this.getCommandExecution(cloned.commandId);
+    // Check if commandId already exists inside active transaction
+    const existingRes = this.getCommandExecution(cloned.commandId, transactionContext);
     if (existingRes.ok && existingRes.data) {
       const existing = existingRes.data;
       if (existing.commandFingerprint !== cloned.commandFingerprint) {
         return {
           ok: false,
-          category: 'ERROR',
-          error: new RuntimeInvariantError(
-            `Duplicate execution record for commandId '${cloned.commandId}' with mismatched fingerprint`
-          ),
-        };
+          category: 'REFUSED',
+          refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+          reason: `Command execution record collision for commandId '${cloned.commandId}' with mismatched command identity`,
+          rollbackRequired: true,
+        } as any;
       }
       return {
         ok: true,
@@ -681,11 +820,10 @@ export class SqliteIdempotencyStore implements IdempotencyStorePort {
         data: { recorded: true, record: cloned },
       };
     } catch (err) {
-      // Catch UNIQUE constraint failure
+      // Catch UNIQUE / PRIMARY KEY constraint failure if another transaction committed during arbitration
       const errStr = String(err);
-      if (errStr.includes('UNIQUE constraint failed')) {
-        // Re-query to determine if exact retry or identity collision
-        const lookup = this.getCommandExecution(cloned.commandId);
+      if (errStr.includes('UNIQUE constraint failed') || errStr.includes('PRIMARY KEY')) {
+        const lookup = this.getCommandExecution(cloned.commandId, transactionContext);
         if (lookup.ok && lookup.data) {
           if (lookup.data.commandFingerprint === cloned.commandFingerprint) {
             return {
@@ -693,13 +831,16 @@ export class SqliteIdempotencyStore implements IdempotencyStorePort {
               category: 'SUCCESS',
               data: { recorded: false, record: lookup.data },
             };
+          } else {
+            return {
+              ok: false,
+              category: 'REFUSED',
+              refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+              reason: `Command execution record collision for commandId '${cloned.commandId}' with mismatched command identity`,
+              rollbackRequired: true,
+            } as any;
           }
         }
-        return {
-          ok: false,
-          category: 'ERROR',
-          error: new RuntimeInvariantError(`PRIMARY KEY (command_id) uniqueness race lost for '${cloned.commandId}'`),
-        };
       }
 
       return {
