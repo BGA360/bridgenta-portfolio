@@ -43,6 +43,8 @@ export * from './handlers.js';
 export * from './persistence.js';
 export * from './replay.js';
 export * from './eligibility.js';
+export * from './idempotency.js';
+export * from './concurrency.js';
 
 /**
  * Registers default canonical '1.0.0' payload schemas for supported runtime commands and events.
@@ -62,7 +64,6 @@ export function registerDefaultRuntimeSchemas(): void {
     ['RequestLessonRevision', RequestLessonRevisionCommandPayloadSchema],
     ['SupersedeLesson', SupersedeLessonCommandPayloadSchema],
     ['RetireLesson', RetireLessonCommandPayloadSchema],
-    ['AdoptProposal', AdoptProposalCommandPayloadSchema],
     ['AdoptLesson', AdoptProposalCommandPayloadSchema],
     ['BuildGuidanceSetQuery', BuildGuidanceSetQueryCommandPayloadSchema],
     ['ProposeRuleCandidate', ProposeRuleCandidateCommandPayloadSchema],

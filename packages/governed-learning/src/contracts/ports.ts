@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { LessonRefSchema, LessonFamilyRefSchema, ObservationRefSchema, EventRefSchema } from './references.js';
 import { ApprovedLessonSchema, LessonCandidateSchema, ObservationSchema, VerifiedObservationSchema, RuleCandidateProposalSchema } from './entities.js';
-import { RuleCandidateIdSchema } from '../types/primitives.js';
+import { RuleCandidateIdSchema, CommandIdSchema, VersionValueSchema, TimestampIsoSchema } from '../types/primitives.js';
+import { CommandTypeEnumSchema, RefusalCodeEnumSchema } from '../types/enums.js';
 
 /**
  * CTR-GL-055: GovernancePersistencePort — Shared Persistence Interface Contract
@@ -62,3 +63,75 @@ export const RuleCandidateStorePortSchema = z
   })
   .strict();
 export type RuleCandidateStorePort = z.infer<typeof RuleCandidateStorePortSchema>;
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: GovernanceCommandRecord — Operational Command Execution Record
+ * Operational state recording completed command execution results.
+ * Excluded from domain event history and HistoricalReplayEngine.
+ */
+export const GovernanceCommandRecordSchema = z
+  .object({
+    commandId: CommandIdSchema,
+    commandFingerprint: z.string().min(1),
+    commandType: CommandTypeEnumSchema,
+    payloadVersion: VersionValueSchema,
+    recordedAt: TimestampIsoSchema,
+    executionOutcome: z
+      .object({
+        ok: z.boolean(),
+        category: z.enum(['SUCCESS', 'REFUSED', 'ERROR']),
+        outcome: z.string(),
+        data: z.unknown().optional(),
+        refusalCode: RefusalCodeEnumSchema.optional(),
+        reason: z.string().optional(),
+        error: z.unknown().optional(),
+      })
+      .strict(),
+  })
+  .strict();
+export type GovernanceCommandRecord = z.infer<typeof GovernanceCommandRecordSchema>;
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: TransactionContext — Operational Transaction Coordination Boundary Token
+ * Carries transaction metadata and boundary context for operational tracking across storage adapters.
+ * Note: At Level 1 (in-memory), this token provides context tracking only and does NOT enforce durable atomicity or rollback.
+ */
+export interface TransactionContext {
+  readonly transactionId: string;
+  readonly createdAt: string;
+  readonly isDurable: boolean;
+}
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: IdempotencyStorePort — Operational Idempotency Persistence Interface Contract
+ * Dedicated persistence abstraction for tracking command execution idempotency.
+ */
+export interface IdempotencyStorePort {
+  /**
+   * Retrieves prior execution record for a command by ID.
+   */
+  getCommandExecution(
+    commandId: string,
+    transactionContext?: TransactionContext
+  ): import('../runtime/types.js').RuntimeOperationResult<GovernanceCommandRecord | undefined>;
+
+  /**
+   * Records completed command execution details.
+   */
+  recordCommandExecution(
+    record: GovernanceCommandRecord,
+    transactionContext?: TransactionContext
+  ): import('../runtime/types.js').RuntimeOperationResult<{ readonly recorded: boolean; readonly record: GovernanceCommandRecord }>;
+}
+
+/**
+ * NON_CONTRACT_INTERNAL_TYPE: RuntimeIntegrityUnitOfWork — Shared Unit-of-Work Coordination Contract
+ * Abstract boundary for coordinating execution across persistence operations.
+ * Intended for Level 2/3 durable storage adapters that support transactional commits across domain state and command records.
+ */
+export interface RuntimeIntegrityUnitOfWork {
+  execute<T>(
+    operation: (context: TransactionContext) => Promise<T> | T
+  ): Promise<T> | T;
+}
+
