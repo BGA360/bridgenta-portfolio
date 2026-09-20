@@ -15,18 +15,21 @@ export class GovernedLearningRuntimeError extends Error {
   readonly category: RuntimeErrorCategory;
   readonly isInternal: boolean;
   readonly details?: Readonly<Record<string, unknown>>;
+  readonly databaseCode?: string;
 
   constructor(
     message: string,
     category: RuntimeErrorCategory,
     isInternal: boolean = true,
-    details?: Readonly<Record<string, unknown>>
+    details?: Readonly<Record<string, unknown>>,
+    databaseCode?: string
   ) {
     super(message);
     this.name = 'GovernedLearningRuntimeError';
     this.category = category;
     this.isInternal = isInternal;
     this.details = details;
+    this.databaseCode = databaseCode;
 
     // Restore prototype chain for ES5/ES6 compatibility
     Object.setPrototypeOf(this, new.target.prototype);
@@ -47,8 +50,12 @@ export class RuntimeConfigurationError extends GovernedLearningRuntimeError {
  * Thrown when an internal runtime execution invariant is violated.
  */
 export class RuntimeInvariantError extends GovernedLearningRuntimeError {
-  constructor(message: string, details?: Readonly<Record<string, unknown>>) {
-    super(message, 'INVARIANT_ERROR', true, details);
+  constructor(
+    message: string,
+    details?: Readonly<Record<string, unknown>>,
+    databaseCode?: string
+  ) {
+    super(message, 'INVARIANT_ERROR', true, details, databaseCode);
     this.name = 'RuntimeInvariantError';
   }
 }

@@ -14,7 +14,12 @@ function toRuntimeError(err: unknown, fallbackMessage = 'Database error'): Gover
   if (err instanceof GovernedLearningRuntimeError) {
     return err;
   }
-  return new RuntimeInvariantError(err instanceof Error ? err.message : fallbackMessage);
+  const message = err instanceof Error ? err.message : fallbackMessage;
+  const dbCode =
+    err && typeof err === 'object' && 'code' in err && typeof (err as any).code === 'string'
+      ? (err as any).code
+      : undefined;
+  return new RuntimeInvariantError(message, dbCode ? { databaseCode: dbCode } : undefined, dbCode);
 }
 
 export interface PostgresDatabaseManagerOptions {

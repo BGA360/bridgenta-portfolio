@@ -42,13 +42,13 @@ ONE PostgreSQL Transaction
 - **Parent Context Policy**:
   - No parent context supplied: Creates a new top-level physical transaction.
   - Valid explicit parent context supplied: Reuses parent transaction (`isTopLevel = false`).
-  - Stale / foreign / invalid parent context supplied: Fails closed immediately with `RuntimeInvariantError` (`EXPLICIT_PARENT_TRANSACTION_POLICY_TEST: PASS`).
+  - Stale / foreign / invalid parent context supplied: Fails closed immediately with `RuntimeInvariantError` (`EXPLICIT_PARENT_TRANSACTION_POLICY: FAIL_CLOSED`, `FOREIGN_PARENT_TRANSACTION_CONTEXT_REJECTED: PASS`).
 
 ### Transaction Context Security
 - **Physical Binding**: `TransactionContext` contains `transactionId`, `managerId`, `createdAt`, and `isDurable: true`.
 - **Validation**:
   - `STALE_TRANSACTION_CONTEXT_REJECTED`: Operations after `COMMIT` or `ROLLBACK` are rejected.
-  - `FOREIGN_TRANSACTION_CONTEXT_REJECTED`: Contexts from another manager instance are rejected.
+  - `FOREIGN_TRANSACTION_CONTEXT_REJECTED`: Contexts from another manager instance are rejected (`PASS`).
   - `FABRICATED_TRANSACTION_CONTEXT_REJECTED`: Unregistered context IDs are rejected.
   - `MISSING_TRANSACTION_CONTEXT_REJECTED`: Write calls without an active transaction context fail closed with `RuntimeInvariantError`.
 
@@ -63,7 +63,7 @@ ONE PostgreSQL Transaction
 
 ### Deadlock Handling & 40P01 Integration Evidence
 - **Real Deadlock Test**: Certified via Test 14 in `durable_persistence_postgres_real.test.ts` on PostgreSQL 18.4 server. Two concurrent transactions locking rows in reverse order trigger native PostgreSQL cyclic wait detection (`REAL_POSTGRES_DEADLOCK_TEST: PASS`).
-- **SQLSTATE 40P01**: PostgreSQL aborts the losing transaction with SQLSTATE `40P01` (`deadlock_detected`). The runtime catches the error, rolls back the losing transaction context, releases the pool connection, and returns `category: 'ERROR'`, allowing caller retry under Stage 8 idempotency rules (`DEADLOCK_40P01_OBSERVED: YES`, `DEADLOCK_HANDLING_STATUS: INTEGRATION_CERTIFIED`).
+- **SQLSTATE 40P01**: PostgreSQL aborts the losing transaction with SQLSTATE `40P01` (`deadlock_detected`). The runtime captures `err.code` into `GovernedLearningRuntimeError.databaseCode` and `details.databaseCode`, rolls back the losing transaction context, releases the pool connection, and returns `category: 'ERROR'`, allowing caller retry under Stage 8 idempotency rules (`DEADLOCK_40P01_OBSERVED: YES`, `DEADLOCK_SQLSTATE_ASSERTED: YES`, `DEADLOCK_HANDLING_STATUS: INTEGRATION_CERTIFIED`).
 
 ### Post-BEGIN Command Arbitration
 ```text

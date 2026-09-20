@@ -475,6 +475,7 @@ describe('Real PostgreSQL Level-2B Production Integration & Concurrency Test Sui
     const errorRes: any = [resA, resB].find((r: any) => r && !r.ok && r.category === 'ERROR');
     assert.ok(errorRes, 'Expected one transaction to return category ERROR on deadlock');
     assert.match(errorRes.error?.message ?? '', /deadlock/i);
+    assert.strictEqual(errorRes.error?.databaseCode, '40P01');
 
     assert.strictEqual(pool.totalCount, pool.idleCount);
     await dbManager.close();
@@ -507,11 +508,31 @@ describe('Real PostgreSQL Level-2B Production Integration & Concurrency Test Sui
     let errorCaught = false;
     try {
       await uow.execute(async () => {}, staleContext);
-    } catch {
-      errorCaught = true;
+    } catch (err: any) {
+      if (err?.message?.includes('stale or invalid')) {
+        errorCaught = true;
+      }
     }
     assert.strictEqual(errorCaught, true);
 
+    // Foreign parent context from manager B fails closed when used with manager A UoW
+    const dbManagerB = new PostgresDatabaseManager({ pool });
+    await dbManagerB.initializeSchema();
+    const foreignTx = await dbManagerB.beginTransaction();
+
+    let foreignErrorCaught = false;
+    try {
+      await uow.execute(async () => {}, foreignTx);
+    } catch (err: any) {
+      if (err?.message?.includes('foreign database manager')) {
+        foreignErrorCaught = true;
+      }
+    } finally {
+      await dbManagerB.rollbackTransaction(foreignTx);
+    }
+    assert.strictEqual(foreignErrorCaught, true);
+
+    await dbManagerB.close();
     await dbManager.close();
   });
 });
