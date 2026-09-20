@@ -57,7 +57,8 @@ export interface GovernancePersistencePort {
    */
   getObservationByRef(
     observationRef: string,
-    transactionContext?: TransactionContext
+    transactionContext?: TransactionContext,
+    forUpdate?: boolean
   ): Promise<RuntimeOperationResult<unknown>> | RuntimeOperationResult<unknown>;
 
   /**
@@ -75,7 +76,8 @@ export interface GovernancePersistencePort {
    */
   getLessonByRef(
     lessonRef: string,
-    transactionContext?: TransactionContext
+    transactionContext?: TransactionContext,
+    forUpdate?: boolean
   ): Promise<RuntimeOperationResult<unknown>> | RuntimeOperationResult<unknown>;
 
   /**
@@ -93,7 +95,8 @@ export interface GovernancePersistencePort {
    */
   getRuleCandidateById(
     ruleCandidateId: string,
-    transactionContext?: TransactionContext
+    transactionContext?: TransactionContext,
+    forUpdate?: boolean
   ): Promise<RuntimeOperationResult<unknown>> | RuntimeOperationResult<unknown>;
 }
 

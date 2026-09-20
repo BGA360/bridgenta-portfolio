@@ -136,17 +136,18 @@ export class PostgresDatabaseManager {
   public async beginTransaction(
     isolationLevel: 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE' = 'READ COMMITTED'
   ): Promise<TransactionContext> {
+    const validLevels = ['READ COMMITTED', 'REPEATABLE READ', 'SERIALIZABLE'];
+    const level = validLevels.includes(isolationLevel) ? isolationLevel : 'READ COMMITTED';
     const client = await this.pool.connect();
-    const txId = `tx_pg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const txId = `tx_pg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}_${Math.random().toString(36).substring(2, 5)}`;
     try {
-      await client.query('BEGIN');
+      await client.query(`BEGIN ISOLATION LEVEL ${level}`);
       const backup = this.pgMemDb ? this.pgMemDb.backup() : undefined;
       this.activeTransactions.set(txId, {
         client,
         createdAt: new Date().toISOString(),
         backup,
       });
-      this.activeTransactionId = txId;
 
       return {
         transactionId: txId,
@@ -175,9 +176,6 @@ export class PostgresDatabaseManager {
       await txEntry.client.query('COMMIT');
     } finally {
       this.activeTransactions.delete(txContext.transactionId);
-      if (this.activeTransactionId === txContext.transactionId) {
-        this.activeTransactionId = null;
-      }
       txEntry.client.release();
     }
   }
@@ -197,9 +195,6 @@ export class PostgresDatabaseManager {
       // Ignore rollback errors if transaction already ended
     } finally {
       this.activeTransactions.delete(txContext.transactionId);
-      if (this.activeTransactionId === txContext.transactionId) {
-        this.activeTransactionId = null;
-      }
       txEntry.client.release();
     }
   }
@@ -255,7 +250,6 @@ export class PostgresDatabaseManager {
       }
     }
     this.activeTransactions.clear();
-    this.activeTransactionId = null;
 
     if (this.isPoolOwned) {
       await this.pool.end();
@@ -266,6 +260,7 @@ export class PostgresDatabaseManager {
 /**
  * Level-2 Durable RuntimeIntegrityUnitOfWork Adapter backed by PostgreSQL physical transactions.
  * Supports asynchronous transactional execution without casting promises to sync values.
+ * Execution-scoped transaction ownership prevents cross-request transaction context sharing.
  */
 export class PostgresRuntimeIntegrityUnitOfWork implements RuntimeIntegrityUnitOfWork {
   private readonly dbManager: PostgresDatabaseManager;
@@ -280,20 +275,16 @@ export class PostgresRuntimeIntegrityUnitOfWork implements RuntimeIntegrityUnitO
   }
 
   public async execute<T>(
-    operation: (context: TransactionContext) => Promise<T> | T
+    operation: (context: TransactionContext) => Promise<T> | T,
+    parentTxContext?: TransactionContext
   ): Promise<T> {
-    const isTopLevel = !this.dbManager.isTransactionActive();
+    const isTopLevel = !parentTxContext || !this.dbManager.verifyTransactionContext(parentTxContext).ok;
     let txContext: TransactionContext;
 
     if (isTopLevel) {
       txContext = await this.dbManager.beginTransaction(this.isolationLevel);
     } else {
-      txContext = {
-        transactionId: this.dbManager.getActiveTransactionId() ?? 'tx_nested',
-        createdAt: new Date().toISOString(),
-        isDurable: true,
-        managerId: this.dbManager.getManagerId(),
-      };
+      txContext = parentTxContext!;
     }
 
     try {
@@ -395,7 +386,8 @@ export class PostgresGovernanceRepository implements GovernancePersistencePort {
 
   public async getObservationByRef(
     ref: string,
-    transactionContext?: TransactionContext
+    transactionContext?: TransactionContext,
+    forUpdate?: boolean
   ): Promise<RuntimeOperationResult<unknown>> {
     try {
       let clientOrPool: any;
@@ -409,10 +401,11 @@ export class PostgresGovernanceRepository implements GovernancePersistencePort {
         clientOrPool = this.dbManager.getPool();
       }
 
-      const res = await clientOrPool.query(
-        'SELECT data FROM observations WHERE observation_ref = $1',
-        [ref]
-      );
+      const sql = forUpdate && transactionContext
+        ? 'SELECT data FROM observations WHERE observation_ref = $1 FOR UPDATE'
+        : 'SELECT data FROM observations WHERE observation_ref = $1';
+
+      const res = await clientOrPool.query(sql, [ref]);
       const rows = res?.rows ?? [];
       if (rows.length === 0) {
         return {
@@ -464,7 +457,8 @@ export class PostgresGovernanceRepository implements GovernancePersistencePort {
 
   public async getLessonByRef(
     ref: string,
-    transactionContext?: TransactionContext
+    transactionContext?: TransactionContext,
+    forUpdate?: boolean
   ): Promise<RuntimeOperationResult<unknown>> {
     try {
       let clientOrPool: any;
@@ -478,10 +472,11 @@ export class PostgresGovernanceRepository implements GovernancePersistencePort {
         clientOrPool = this.dbManager.getPool();
       }
 
-      const res = await clientOrPool.query(
-        'SELECT data FROM lessons WHERE lesson_ref = $1',
-        [ref]
-      );
+      const sql = forUpdate && transactionContext
+        ? 'SELECT data FROM lessons WHERE lesson_ref = $1 FOR UPDATE'
+        : 'SELECT data FROM lessons WHERE lesson_ref = $1';
+
+      const res = await clientOrPool.query(sql, [ref]);
       const rows = res?.rows ?? [];
       if (rows.length === 0) {
         return {
@@ -533,7 +528,8 @@ export class PostgresGovernanceRepository implements GovernancePersistencePort {
 
   public async getRuleCandidateById(
     id: string,
-    transactionContext?: TransactionContext
+    transactionContext?: TransactionContext,
+    forUpdate?: boolean
   ): Promise<RuntimeOperationResult<unknown>> {
     try {
       let clientOrPool: any;
@@ -547,10 +543,11 @@ export class PostgresGovernanceRepository implements GovernancePersistencePort {
         clientOrPool = this.dbManager.getPool();
       }
 
-      const res = await clientOrPool.query(
-        'SELECT data FROM rule_candidates WHERE rule_candidate_id = $1',
-        [id]
-      );
+      const sql = forUpdate && transactionContext
+        ? 'SELECT data FROM rule_candidates WHERE rule_candidate_id = $1 FOR UPDATE'
+        : 'SELECT data FROM rule_candidates WHERE rule_candidate_id = $1';
+
+      const res = await clientOrPool.query(sql, [id]);
       const rows = res?.rows ?? [];
       if (rows.length === 0) {
         return {
