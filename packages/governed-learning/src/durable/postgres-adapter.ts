@@ -39,7 +39,6 @@ export class PostgresDatabaseManager {
     string,
     { client: PoolClient; createdAt: string; backup?: any }
   >();
-  private activeTransactionId: string | null = null;
   private isPoolOwned = false;
 
   constructor(options: PostgresDatabaseManagerOptions = {}) {
@@ -75,10 +74,6 @@ export class PostgresDatabaseManager {
 
   public isTransactionActive(): boolean {
     return this.activeTransactions.size > 0;
-  }
-
-  public getActiveTransactionId(): string | null {
-    return this.activeTransactionId;
   }
 
   public async initializeSchema(): Promise<void> {
@@ -278,13 +273,19 @@ export class PostgresRuntimeIntegrityUnitOfWork implements RuntimeIntegrityUnitO
     operation: (context: TransactionContext) => Promise<T> | T,
     parentTxContext?: TransactionContext
   ): Promise<T> {
-    const isTopLevel = !parentTxContext || !this.dbManager.verifyTransactionContext(parentTxContext).ok;
+    let isTopLevel = false;
     let txContext: TransactionContext;
 
-    if (isTopLevel) {
-      txContext = await this.dbManager.beginTransaction(this.isolationLevel);
+    if (parentTxContext) {
+      const verification = this.dbManager.verifyTransactionContext(parentTxContext);
+      if (!verification.ok) {
+        throw verification.error ?? new RuntimeInvariantError('Invalid explicit parent transaction context');
+      }
+      txContext = parentTxContext;
+      isTopLevel = false;
     } else {
-      txContext = parentTxContext!;
+      isTopLevel = true;
+      txContext = await this.dbManager.beginTransaction(this.isolationLevel);
     }
 
     try {

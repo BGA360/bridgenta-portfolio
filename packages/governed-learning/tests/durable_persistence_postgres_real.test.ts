@@ -439,4 +439,79 @@ describe('Real PostgreSQL Level-2B Production Integration & Concurrency Test Sui
 
     await dbManager.close();
   });
+
+  it('14. Real PostgreSQL deadlock 40P01 detection and transaction rollback', async () => {
+    const { pool } = createRealPgPool();
+    const dbManager = new PostgresDatabaseManager({ pool });
+    await dbManager.initializeSchema();
+    const repo = new PostgresGovernanceRepository(dbManager);
+    const uow = new PostgresRuntimeIntegrityUnitOfWork(dbManager);
+
+    await uow.execute(async (tx) => {
+      await repo.saveObservation({ observationRef: 'obs_dl_1', category: 'TEST', statement: 'Statement 1' }, tx);
+      await repo.saveObservation({ observationRef: 'obs_dl_2', category: 'TEST', statement: 'Statement 2' }, tx);
+    });
+
+    let deadlockCaught = false;
+
+    const pA = uow.execute(async (txA) => {
+      const client = dbManager.getClient(txA);
+      await client.query("SET deadlock_timeout = '50ms';");
+      await repo.getObservationByRef('obs_dl_1', txA, true);
+      await new Promise((r) => setTimeout(r, 150));
+      return await repo.getObservationByRef('obs_dl_2', txA, true);
+    });
+
+    const pB = uow.execute(async (txB) => {
+      const client = dbManager.getClient(txB);
+      await client.query("SET deadlock_timeout = '50ms';");
+      await new Promise((r) => setTimeout(r, 50));
+      await repo.getObservationByRef('obs_dl_2', txB, true);
+      return await repo.getObservationByRef('obs_dl_1', txB, true);
+    });
+
+    const [resA, resB] = await Promise.all([pA, pB]);
+
+    const errorRes: any = [resA, resB].find((r: any) => r && !r.ok && r.category === 'ERROR');
+    assert.ok(errorRes, 'Expected one transaction to return category ERROR on deadlock');
+    assert.match(errorRes.error?.message ?? '', /deadlock/i);
+
+    assert.strictEqual(pool.totalCount, pool.idleCount);
+    await dbManager.close();
+  });
+
+  it('15. Real PostgreSQL explicit parent transaction context policy', async () => {
+    const { pool } = createRealPgPool();
+    const dbManager = new PostgresDatabaseManager({ pool });
+    await dbManager.initializeSchema();
+    const uow = new PostgresRuntimeIntegrityUnitOfWork(dbManager);
+
+    // Valid parent context reuse
+    await uow.execute(async (parentTx) => {
+      const parentClient = dbManager.getClient(parentTx);
+      await uow.execute(async (childTx) => {
+        assert.strictEqual(childTx.transactionId, parentTx.transactionId);
+        const childClient = dbManager.getClient(childTx);
+        assert.strictEqual(childClient, parentClient);
+      }, parentTx);
+    });
+
+    // Invalid / stale parent context fails closed
+    const staleContext: TransactionContext = {
+      transactionId: 'tx_stale_999',
+      createdAt: new Date().toISOString(),
+      isDurable: true,
+      managerId: dbManager.getManagerId(),
+    };
+
+    let errorCaught = false;
+    try {
+      await uow.execute(async () => {}, staleContext);
+    } catch {
+      errorCaught = true;
+    }
+    assert.strictEqual(errorCaught, true);
+
+    await dbManager.close();
+  });
 });
