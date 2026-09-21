@@ -32,7 +32,7 @@ import {
   EventTypeEnumSchema,
 } from '../types/enums.js';
 import type { RefusalCodeEnum } from '../types/enums.js';
-import type { IdempotencyStorePort, ConcurrencyCoordinatorPort, ConcurrencyLease } from '../contracts/ports.js';
+import type { IdempotencyStorePort, ConcurrencyCoordinatorPort, ConcurrencyLease, GovernanceCommandRecord } from '../contracts/ports.js';
 import { createCommandFingerprint } from './idempotency.js';
 import { getConcurrencyScope } from './concurrency.js';
 
@@ -436,11 +436,23 @@ export class GovernanceProcessingPipeline {
         case 'IDEMPOTENCY_DETERMINISTIC_CHECK': {
           if (this.idempotencyStore && currentEnvelope) {
             const lookupRes = this.idempotencyStore.getCommandExecution(currentEnvelope.commandId);
-            if (!lookupRes.ok) {
+            if (lookupRes && typeof (lookupRes as any).then === 'function') {
+              // Async idempotency store: pre-check skipped in sync pipeline pass;
+              // post-BEGIN in-transaction recheck enforces authoritative Stage 8.
+              outcomes.push({
+                stageId,
+                status: 'SKIPPED',
+                timestamp,
+              });
+              continue;
+            }
+
+            const syncRes = lookupRes as import('./types.js').RuntimeOperationResult<GovernanceCommandRecord | undefined>;
+            if (!syncRes.ok) {
               stageSuccess = false;
-              stageError = lookupRes.category === 'ERROR' ? lookupRes.error : new RuntimeInvariantError('Idempotency store lookup failed');
-            } else if (lookupRes.data) {
-              const existingRecord = lookupRes.data;
+              stageError = syncRes.category === 'ERROR' ? syncRes.error : new RuntimeInvariantError('Idempotency store lookup failed');
+            } else if (syncRes.data) {
+                const existingRecord = syncRes.data;
               const currentFingerprint = createCommandFingerprint(currentEnvelope);
 
               // Verify fingerprint match and immutable issuedAt timestamp match

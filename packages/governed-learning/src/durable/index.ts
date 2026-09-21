@@ -5,6 +5,7 @@ import type { GovernancePersistencePort } from '../runtime/persistence.js';
 import type { IdempotencyStorePort, RuntimeIntegrityUnitOfWork } from '../contracts/ports.js';
 
 export * from './sqlite-adapter.js';
+export * from './postgres-adapter.js';
 
 export interface SqliteGovernedLearningRuntimeOptions extends GovernedLearningRuntimeOptions {
   readonly databasePath?: string;
@@ -19,14 +20,14 @@ export function createSqliteGovernedLearningRuntime(
 ): {
   runtime: GovernedLearningRuntime;
   dbManager: SqliteDatabaseManager;
-  persistencePort: GovernancePersistencePort;
-  idempotencyStore: IdempotencyStorePort;
-  unitOfWork: RuntimeIntegrityUnitOfWork;
+  persistencePort: SqliteGovernanceRepository;
+  idempotencyStore: SqliteIdempotencyStore;
+  unitOfWork: SqliteRuntimeIntegrityUnitOfWork;
 } {
   const dbManager = options?.dbManager ?? new SqliteDatabaseManager(options?.databasePath ?? ':memory:');
-  const persistencePort = options?.persistencePort ?? new SqliteGovernanceRepository(dbManager);
-  const idempotencyStore = options?.idempotencyStore ?? new SqliteIdempotencyStore(dbManager);
-  const unitOfWork = options?.unitOfWork ?? new SqliteRuntimeIntegrityUnitOfWork(dbManager);
+  const persistencePort = (options?.persistencePort as SqliteGovernanceRepository | undefined) ?? new SqliteGovernanceRepository(dbManager);
+  const idempotencyStore = (options?.idempotencyStore as SqliteIdempotencyStore | undefined) ?? new SqliteIdempotencyStore(dbManager);
+  const unitOfWork = (options?.unitOfWork as SqliteRuntimeIntegrityUnitOfWork | undefined) ?? new SqliteRuntimeIntegrityUnitOfWork(dbManager);
 
   const runtime = new GovernedLearningRuntime({
     ...options,
@@ -43,3 +44,4 @@ export function createSqliteGovernedLearningRuntime(
     unitOfWork,
   };
 }
+

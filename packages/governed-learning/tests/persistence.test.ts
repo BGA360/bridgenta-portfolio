@@ -5,7 +5,7 @@ import type { GovernancePersistencePort } from '../src/runtime/persistence.js';
 
 describe('Wave 6 Persistence — GovernancePersistencePort & InMemoryGovernanceRepository', () => {
   let repo: InMemoryGovernanceRepository;
-  let port: GovernancePersistencePort;
+  let port: InMemoryGovernanceRepository;
 
   beforeEach(() => {
     repo = new InMemoryGovernanceRepository();

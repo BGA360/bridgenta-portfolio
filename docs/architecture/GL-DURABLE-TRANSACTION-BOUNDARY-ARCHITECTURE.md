@@ -184,11 +184,12 @@ $$\text{Atomic Transaction} = \text{Domain Entity State Mutation} + \text{Domain
 ### Level-2 Transaction Context Implementation
 - Both ports accept an optional `transactionContext?: TransactionContext` parameter across all mutating operations (`TRANSACTION_CONTEXT_COMPATIBLE_PORTS: YES`).
 - In Level 1, `TransactionContext` served as a contract carrier (`TRANSACTION_CONTEXT_CURRENTLY_ENFORCES_PHYSICAL_ATOMICITY: NO_IN_L1`).
-- In `GL-HARDENING-005` Level-2 implementations (`SqliteRuntimeIntegrityUnitOfWork`), `TransactionContext` binds a real database physical transaction handle (`TRANSACTION_CONTEXT_CURRENTLY_ENFORCES_PHYSICAL_ATOMICITY: YES_IN_L2`), ensuring all operations execute within the **same physical database transaction**.
-- `RuntimeIntegrityUnitOfWork` is now implemented at Level-2 (`L2_PHYSICAL_TRANSACTION_OWNER`).
+- In `GL-HARDENING-005` (Level-2A SQLite, `SqliteRuntimeIntegrityUnitOfWork`) and `GL-HARDENING-006` (Level-2B PostgreSQL, `PostgresRuntimeIntegrityUnitOfWork`), `TransactionContext` binds a real database physical transaction handle (`TRANSACTION_CONTEXT_CURRENTLY_ENFORCES_PHYSICAL_ATOMICITY: YES_IN_L2`), ensuring all operations execute within the **same physical database transaction**.
+- `RuntimeIntegrityUnitOfWork` is implemented at Level-2 (`L2_PHYSICAL_TRANSACTION_OWNER`) using execution-scoped transaction context ownership.
 
 ### Concurrency Model & Lock Ordering
-- Stage 9 is the **logical concurrency policy boundary**. PostgreSQL provides **physical multi-instance transaction enforcement** via row locking.
+- Stage 9 is the **logical concurrency policy boundary**. PostgreSQL provides **physical multi-instance transaction enforcement** via database constraints and pessimistic row locking (`SELECT ... FOR UPDATE`).
+- Configured isolation level (`BEGIN ISOLATION LEVEL READ COMMITTED`) is verified at runtime via `SHOW transaction_isolation;`.
 - A separate distributed mutex service is **not required** (`SEPARATE_DISTRIBUTED_MUTEX_REQUIRED: NO`).
 - Multi-aggregate commands sort aggregate keys in canonical deterministic order (`getConcurrencyScope`), which controls and reduces lock inversion risk during row locking, but does not eliminate all database deadlocks (`DATABASE_DEADLOCKS_CLAIMED_IMPOSSIBLE: NO`).
 
@@ -206,20 +207,18 @@ No current domain handler executes external network requests, file I/O, email, w
 
 ---
 
-## 8. Test Strategy Split & Next Implementation Sequence
+## 8. Level Implementation Status Summary
 
-### Dual-Layer Test Strategy
-1. **Adapter-Neutral Durability Tests** (SQLite WAL & PostgreSQL):
-   - Commit atomicity & rollback atomicity
-   - `commandId` uniqueness constraints & losing transaction rollback
-   - Restart persistence & response-loss replay
-2. **PostgreSQL-Specific Concurrency Tests** (PostgreSQL only):
-   - Row-level locking (`SELECT ... FOR UPDATE`)
-   - Multi-instance conflicting mutations
-   - Lock ordering & deadlock recovery
-   - Transaction isolation behavior
+### Level 1 (Completed in `GL-HARDENING-003` / PR #307)
+- Process-local in-memory transaction integrity and concurrency serialization.
 
-### Next Implementation Sequence (`GL-HARDENING-005` Proposal)
-1. **Unit 1**: Implement `DurableGovernanceRepository` and `DurableIdempotencyStore` using SQLite WAL / PostgreSQL driven by `RuntimeIntegrityUnitOfWork`.
-2. **Unit 2**: Implement row-level pessimistic locking (`SELECT ... FOR UPDATE`) for multi-instance Stage 9 enforcement.
-3. **Unit 3**: Run durable crash-recovery and transaction rollback integration tests.
+### Level 2A (Completed in `GL-HARDENING-005` / PR #309)
+- Embedded SQLite durable single-file transaction integrity (`SqliteRuntimeIntegrityUnitOfWork`).
+
+### Level 2B (Completed in `GL-HARDENING-006` / PR #310)
+- Production PostgreSQL multi-instance transaction integrity (`PostgresRuntimeIntegrityUnitOfWork`). Certified against native PostgreSQL 18.4 server instance via 13 real-server integration tests (`npm run test:postgres`).
+
+### Level 3 (Not Implemented)
+- Distributed external side-effect coordination (`LEVEL_3_EXTERNAL_EFFECTS: NOT_IMPLEMENTED`).
+
+

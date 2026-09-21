@@ -7,14 +7,19 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "node --test dist/tests/**/*.test.js"
+    "test": "node --test dist/tests/**/*.test.js",
+    "test:postgres": "node --test dist/tests/durable_persistence_postgres_real.test.js"
   },
   "dependencies": {
+    "@types/pg": "^8.23.1",
+    "pg": "^8.23.0",
     "zod": "^3.25.76",
     "zod-to-json-schema": "^3.25.2"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
+    "embedded-postgres": "^18.4.0-beta.17",
+    "pg-mem": "^3.0.14",
     "typescript": "^5.5.2"
   },
   "keywords": [

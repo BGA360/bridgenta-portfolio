@@ -26,6 +26,7 @@ export interface RuntimeRefusalResult {
   readonly refusalCode: RefusalCodeEnum;
   readonly reason: string;
   readonly details?: Readonly<Record<string, unknown>>;
+  readonly rollbackRequired?: boolean;
 }
 
 /**

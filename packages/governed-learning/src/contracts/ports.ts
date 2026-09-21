@@ -115,7 +115,9 @@ export interface IdempotencyStorePort {
   getCommandExecution(
     commandId: string,
     transactionContext?: TransactionContext
-  ): import('../runtime/types.js').RuntimeOperationResult<GovernanceCommandRecord | undefined>;
+  ):
+    | Promise<import('../runtime/types.js').RuntimeOperationResult<GovernanceCommandRecord | undefined>>
+    | import('../runtime/types.js').RuntimeOperationResult<GovernanceCommandRecord | undefined>;
 
   /**
    * Records completed command execution details.
@@ -123,7 +125,17 @@ export interface IdempotencyStorePort {
   recordCommandExecution(
     record: GovernanceCommandRecord,
     transactionContext?: TransactionContext
-  ): import('../runtime/types.js').RuntimeOperationResult<{ readonly recorded: boolean; readonly record: GovernanceCommandRecord }>;
+  ):
+    | Promise<
+        import('../runtime/types.js').RuntimeOperationResult<{
+          readonly recorded: boolean;
+          readonly record: GovernanceCommandRecord;
+        }>
+      >
+    | import('../runtime/types.js').RuntimeOperationResult<{
+        readonly recorded: boolean;
+        readonly record: GovernanceCommandRecord;
+      }>;
 }
 
 /**
