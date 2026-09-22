@@ -9,6 +9,7 @@
     "test": "tsc && node --test dist/tests/**/*.test.js"
   },
   "dependencies": {
+    "@cep/governed-learning": "file:../packages/governed-learning",
     "yaml": "^2.4.5"
   },
   "devDependencies": {
