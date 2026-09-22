@@ -13,7 +13,7 @@ import {
   type BECCFindingEscalationInput,
 } from '../governed-learning/index.js';
 
-describe('BECC v2 IMPL-012: Governed Learning Integration Adapter Remediation Test Suite', () => {
+describe('BECC v2 IMPL-012: Governed Learning Integration Adapter Final IssuedAt Remediation Test Suite', () => {
   const validActorRef: ActorIdentityRef = {
     actorId: 'act_becc_agent_001',
     actorType: 'AGENT',
@@ -198,7 +198,7 @@ describe('BECC v2 IMPL-012: Governed Learning Integration Adapter Remediation Te
       commandId,
       commandType: 'DraftObservation' as const,
       payloadVersion: '1.0.0',
-      issuedAt: sampleFindingInput.issuedAt!,
+      issuedAt: sampleFindingInput.issuedAt,
       actorRef: validActorRef,
       authorityContextRef: validAuthorityContextRef,
       payload: mismatchedPayload,
@@ -211,7 +211,39 @@ describe('BECC v2 IMPL-012: Governed Learning Integration Adapter Remediation Te
     assert.strictEqual(mismatchRes.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
   });
 
-  it('11. Boundary Verification: Zero Direct Database or Transaction Leakage (NO_DIRECT_DB_OR_TRANSACTION_LEAKAGE)', () => {
+  it('11. Missing Mandatory IssuedAt Fails Closed (MISSING_ISSUED_AT_TEST)', async () => {
+    const runtime = new GovernedLearningRuntime();
+    const adapter = new DefaultGovernedLearningIntegrationAdapter({ runtime });
+
+    const missingIssuedAtInput = {
+      ...sampleFindingInput,
+      issuedAt: undefined,
+    } as any;
+
+    const res = await adapter.draftObservation(missingIssuedAtInput);
+    assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+    assert.strictEqual(res.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+    assert.ok(res.reason?.includes('issuedAt timestamp is required'));
+  });
+
+  it('12. Empty or Whitespace IssuedAt Fails Closed (EMPTY_ISSUED_AT_TEST)', async () => {
+    const runtime = new GovernedLearningRuntime();
+    const adapter = new DefaultGovernedLearningIntegrationAdapter({ runtime });
+
+    const emptyInput = {
+      ...sampleFindingInput,
+      issuedAt: '   ',
+    };
+
+    const res = await adapter.draftObservation(emptyInput);
+    assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'REFUSED');
+    assert.strictEqual(res.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
+    assert.ok(res.reason?.includes('issuedAt timestamp is required'));
+  });
+
+  it('13. Boundary Verification: Zero Direct Database or Transaction Leakage (NO_DIRECT_DB_OR_TRANSACTION_LEAKAGE)', () => {
     const serviceFilePath = fileURLToPath(
       new URL('../../governed-learning/governed-learning-adapter.service.ts', import.meta.url)
     );

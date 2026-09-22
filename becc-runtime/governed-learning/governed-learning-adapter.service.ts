@@ -66,7 +66,17 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
       };
     }
 
-    const issuedAt = input.issuedAt ?? new Date().toISOString();
+    if (!input.issuedAt || input.issuedAt.trim() === '') {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        commandId,
+        refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+        reason: 'issuedAt timestamp is required for Governed Learning command identity (failed closed)',
+      };
+    }
+
+    const issuedAt = input.issuedAt;
     const payload = {
       category: input.category,
       statement: input.statement,
@@ -148,6 +158,16 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
       };
     }
 
+    if (!input.issuedAt || input.issuedAt.trim() === '') {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        commandId,
+        refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+        reason: 'issuedAt timestamp is required for Governed Learning command identity (failed closed)',
+      };
+    }
+
     const location = input.evidenceLocation ?? input.sourceArtifactRef;
     if (!location || location.trim() === '') {
       return {
@@ -159,7 +179,7 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
       };
     }
 
-    const issuedAt = input.issuedAt ?? new Date().toISOString();
+    const issuedAt = input.issuedAt;
     const payload = {
       observationRef: { observationId },
       evidenceType: input.evidenceType ?? 'ARTIFACT_DIFF',
@@ -242,7 +262,17 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
       };
     }
 
-    const issuedAt = input.issuedAt ?? new Date().toISOString();
+    if (!input.issuedAt || input.issuedAt.trim() === '') {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        commandId,
+        refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+        reason: 'issuedAt timestamp is required for Governed Learning command identity (failed closed)',
+      };
+    }
+
+    const issuedAt = input.issuedAt;
     const payload = {
       observationRef: { observationId },
     };

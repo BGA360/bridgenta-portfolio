@@ -1,9 +1,9 @@
 # BECC v2 — Work Package Specification & Implementation Certificate
-## IMPL-012: Governed Learning Contract Verification & Integration Adapter (Remediated)
+## IMPL-012: Governed Learning Contract Verification & Integration Adapter (Final Remediation)
 
 * **Work Package ID:** `BECC-V2-IMPL-012`
 * **Work Package Name:** Governed Learning Contract Verification & Integration Adapter
-* **Workstream ID:** `BRIDGENTA-BECC-V2-PR312-STABLE-IDENTITY-DURABLE-RUNTIME-EVIDENCE-REMEDIATION-01`
+* **Workstream ID:** `BRIDGENTA-BECC-V2-PR312-FINAL-ISSUEDAT-CONTRACT-REMEDIATION-01`
 * **Implementation Branch:** `feature/becc-v2-impl-012`
 * **Date:** 2026-09-22
 * **Status:** REMEDIATED & CERTIFIED (Pending PR Review)
@@ -14,16 +14,17 @@
 
 This work package implements `becc-runtime/governed-learning/` (`DefaultGovernedLearningIntegrationAdapter`), providing a narrow, type-safe integration gateway between the BECC v2 platform runtime and Governed Learning Level-2B (`@cep/governed-learning`).
 
-PR #312 independent review remediation incorporates the following verified guarantees:
-1. **Stable Immutable Command Identity & `issuedAt` Invariant:** Governed Learning command identity requires identical `issuedAt` timestamps across retries of the same logical command. Re-generating `issuedAt` on retry causes identity mismatch (`REFUSAL_INVARIANT_VIOLATION`). Input DTO `BECCFindingEscalationInput` accepts or carries stable `issuedAt`, enabling deterministic idempotency replay.
-2. **Explicit Runtime Injection:** The adapter constructor requires an explicitly injected `GovernedLearningRuntime` instance (`DefaultGovernedLearningAdapterOptions`). Silent fallback to Level-1 in-memory runtime is forbidden and fails construction.
-3. **Durability Level Composition:** The adapter itself does not determine durability. Production runtime composition injects the certified Level-2B PostgreSQL runtime (`createPostgresGovernedLearningRuntime`). Unit tests inject the desired runtime explicitly.
-4. **Fail-Closed Evidence Provenance:** `AttachEvidence` requires a valid `evidenceLocation` or `sourceArtifactRef`. Fabrication of fallback locations (such as `file:///unknown_evidence`) is forbidden; missing evidence location fails closed (`REFUSAL_INSUFFICIENT_EVIDENCE`) prior to dispatch.
-5. **Replay Detection:** Successful command outcomes propagate the runtime `replayed` boolean flag (`result.replayedResult`), confirming whether an operation was newly executed or replayed from Stage 8 idempotency storage.
-6. **Unidirectional Dependency:** BECC imports `@cep/governed-learning` public exports (`packages/governed-learning`). Governed Learning does NOT import BECC.
-7. **Application Service Gateway:** All interactions flow through `GovernedLearningRuntime.processAndExecuteCommandAsync()`.
-8. **Zero Database / Transaction Context Leakage:** No direct SQL reads/writes against Governed Learning database tables. No exposure of raw `TransactionContext` or `PoolClient`.
-9. **Preserved Governed Learning Capabilities & Gaps:** Supports canonical observation escalation commands (`DraftObservation`, `AttachEvidence`, `SubmitObservation`). Non-existent commands (`BuildGuidanceSetQuery`, `BindRulePolicyCommand`) remain documented capability gaps (`GL_CAPABILITY_GAP_001`, `GL_CAPABILITY_GAP_002`).
+PR #312 final independent review remediation incorporates the following verified guarantees:
+1. **Mandatory Caller-Supplied `issuedAt` & Immutable Command Identity:** Governed Learning command identity requires identical `issuedAt` timestamps across retries of the same logical command. Input DTO `BECCFindingEscalationInput` makes `issuedAt` a mandatory string (`readonly issuedAt: string`). The adapter NEVER generates, synthesizes, or regenerates `issuedAt` timestamps using fallback logic like `new Date().toISOString()`.
+2. **Fail-Closed Missing `issuedAt` Validation:** Callers attempting to pass an empty, whitespace, or missing `issuedAt` timestamp are rejected immediately (`REFUSAL_INVARIANT_VIOLATION`) prior to dispatching to Governed Learning.
+3. **Explicit Runtime Injection:** The adapter constructor requires an explicitly injected `GovernedLearningRuntime` instance (`DefaultGovernedLearningAdapterOptions`). Silent fallback to Level-1 in-memory runtime is forbidden and fails construction.
+4. **Durability Level Composition:** The adapter itself does not determine durability. Production runtime composition injects the certified Level-2B PostgreSQL runtime (`createPostgresGovernedLearningRuntime`). Unit tests inject the desired runtime explicitly.
+5. **Fail-Closed Evidence Provenance:** `AttachEvidence` requires a valid `evidenceLocation` or `sourceArtifactRef`. Fabrication of fallback locations (such as `file:///unknown_evidence`) is forbidden; missing evidence location fails closed (`REFUSAL_INSUFFICIENT_EVIDENCE`) prior to dispatch.
+6. **Replay Detection:** Successful command outcomes propagate the runtime `replayed` boolean flag (`result.replayedResult`), confirming whether an operation was newly executed or replayed from Stage 8 idempotency storage.
+7. **Unidirectional Dependency:** BECC imports `@cep/governed-learning` public exports (`packages/governed-learning`). Governed Learning does NOT import BECC.
+8. **Application Service Gateway:** All interactions flow through `GovernedLearningRuntime.processAndExecuteCommandAsync()`.
+9. **Zero Database / Transaction Context Leakage:** No direct SQL reads/writes against Governed Learning database tables. No exposure of raw `TransactionContext` or `PoolClient`.
+10. **Preserved Governed Learning Capabilities & Gaps:** Supports canonical observation escalation commands (`DraftObservation`, `AttachEvidence`, `SubmitObservation`). Non-existent commands (`BuildGuidanceSetQuery`, `BindRulePolicyCommand`) remain documented capability gaps (`GL_CAPABILITY_GAP_001`, `GL_CAPABILITY_GAP_002`).
 
 ---
 
@@ -31,16 +32,20 @@ PR #312 independent review remediation incorporates the following verified guara
 
 | File Path | Description |
 | :--- | :--- |
-| `becc-runtime/governed-learning/governed-learning-adapter.types.ts` | Bounded DTO input & outcome interfaces (`BECCFindingEscalationInput`, `BECCEscalationResult`, `GovernedLearningIntegrationAdapter`). Includes stable `issuedAt` and `replayed` flags. |
+| `becc-runtime/governed-learning/governed-learning-adapter.types.ts` | Bounded DTO input & outcome interfaces (`BECCFindingEscalationInput`, `BECCEscalationResult`, `GovernedLearningIntegrationAdapter`). Enforces mandatory `issuedAt` and `replayed` flags. |
 | `becc-runtime/governed-learning/governed-learning-command-id.ts` | Deterministic SHA256 command ID derivation function (`deriveGovernedLearningCommandId`). |
-| `becc-runtime/governed-learning/governed-learning-adapter.service.ts` | Core service implementation (`DefaultGovernedLearningIntegrationAdapter`) enforcing explicit runtime injection, fail-closed evidence validation, and stable identity dispatch. |
+| `becc-runtime/governed-learning/governed-learning-adapter.service.ts` | Core service implementation (`DefaultGovernedLearningIntegrationAdapter`) enforcing explicit runtime injection, fail-closed evidence & timestamp validation, and zero adapter-side timestamp generation. |
 | `becc-runtime/governed-learning/index.ts` | Module export index. |
-| `becc-runtime/tests/governed-learning-adapter.test.ts` | Remediation test suite verifying explicit runtime injection, stable retry identity, true GL replay, fail-closed evidence attachment, and zero internal leakage. |
+| `becc-runtime/tests/governed-learning-adapter.test.ts` | Final remediation test suite verifying mandatory `issuedAt`, explicit runtime injection, stable retry identity, true GL replay, fail-closed evidence attachment, and zero internal leakage. |
 
 ---
 
 ## 3. Verified Architecture Parameters
 
+* **`ISSUED_AT_REQUIRED_BY_BECC_ESCALATION_CONTRACT`:** `YES`
+* **`ADAPTER_GENERATES_ISSUED_AT`:** `NO`
+* **`FALLBACK_TO_CURRENT_TIME_PRESENT`:** `NO`
+* **`MISSING_ISSUED_AT_FAILS_CLOSED`:** `PASS`
 * **`STABLE_COMMAND_ID`:** `PASS`
 * **`STABLE_ISSUED_AT_ACROSS_RETRY`:** `PASS`
 * **`RUNTIME_INJECTION_REQUIRED`:** `YES`
@@ -66,7 +71,7 @@ PR #312 independent review remediation incorporates the following verified guara
 
 ## 4. Verification & Validation Summary
 
-* **BECC Adapter Test Suite:** `PASS` (`becc-runtime/tests/governed-learning-adapter.test.ts` 11/11 tests PASS)
+* **BECC Adapter Test Suite:** `PASS` (`becc-runtime/tests/governed-learning-adapter.test.ts` 13/13 tests PASS)
 * **BECC Runtime Build:** `PASS` (`npm run --prefix becc-runtime build`)
 * **BECC Runtime Package Test:** `PASS` (`npm run --prefix becc-runtime test`)
 * **Governed Learning Package Build:** `PASS` (`npm run --prefix packages/governed-learning build`)

@@ -22,7 +22,7 @@ export interface BECCFindingEscalationInput {
   readonly evidenceType?: EvidenceTypeEnum;
   readonly evidenceLocation?: string;
   readonly escalationVersion?: string;
-  readonly issuedAt?: string;
+  readonly issuedAt: string;
 }
 
 /**
