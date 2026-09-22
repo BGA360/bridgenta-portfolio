@@ -22,6 +22,7 @@ export interface BECCFindingEscalationInput {
   readonly evidenceType?: EvidenceTypeEnum;
   readonly evidenceLocation?: string;
   readonly escalationVersion?: string;
+  readonly issuedAt?: string;
 }
 
 /**
@@ -37,6 +38,7 @@ export interface BECCEscalationResult<T = unknown> {
   readonly refusalCode?: RefusalCodeEnum;
   readonly reason?: string;
   readonly errorDetails?: string;
+  readonly replayed?: boolean;
 }
 
 /**

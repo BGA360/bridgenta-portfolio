@@ -12,7 +12,7 @@ import type {
 import { deriveGovernedLearningCommandId } from './governed-learning-command-id.js';
 
 export interface DefaultGovernedLearningAdapterOptions {
-  readonly runtime?: GovernedLearningRuntime;
+  readonly runtime: GovernedLearningRuntime;
 }
 
 /**
@@ -26,14 +26,21 @@ export interface DefaultGovernedLearningAdapterOptions {
  * 4. NO TransactionContext exposure or leakage.
  * 5. NO duplication of Stage 8 idempotency or Stage 9 scope concurrency.
  * 6. Fails closed when required authority context or actor references are missing.
- * 7. Transparently preserves Governed Learning runtime categories (SUCCESS, REFUSED, ERROR).
+ * 7. Fails closed when evidence location/source artifact reference is missing.
+ * 8. Requires explicit GovernedLearningRuntime injection (no silent Level-1 runtime fallback).
+ * 9. Transparently preserves Governed Learning runtime categories (SUCCESS, REFUSED, ERROR).
  */
 export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearningIntegrationAdapter {
   private readonly runtime: GovernedLearningRuntime;
 
-  constructor(options: DefaultGovernedLearningAdapterOptions = {}) {
+  constructor(options: DefaultGovernedLearningAdapterOptions) {
+    if (!options || !options.runtime) {
+      throw new Error(
+        'GovernedLearningRuntime instance is required for DefaultGovernedLearningIntegrationAdapter construction. Silent fallback to Level-1 in-memory runtime is forbidden.'
+      );
+    }
     registerDefaultRuntimeSchemas();
-    this.runtime = options.runtime ?? new GovernedLearningRuntime();
+    this.runtime = options.runtime;
   }
 
   /**
@@ -59,7 +66,7 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
       };
     }
 
-    const issuedAt = new Date().toISOString();
+    const issuedAt = input.issuedAt ?? new Date().toISOString();
     const payload = {
       category: input.category,
       statement: input.statement,
@@ -85,6 +92,7 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
           category: 'SUCCESS',
           commandId,
           data,
+          replayed: result.replayedResult === true,
         };
       }
 
@@ -140,11 +148,22 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
       };
     }
 
-    const issuedAt = new Date().toISOString();
+    const location = input.evidenceLocation ?? input.sourceArtifactRef;
+    if (!location || location.trim() === '') {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        commandId,
+        refusalCode: 'REFUSAL_INSUFFICIENT_EVIDENCE',
+        reason: 'Evidence location or sourceArtifactRef is required for Governed Learning evidence attachment (failed closed)',
+      };
+    }
+
+    const issuedAt = input.issuedAt ?? new Date().toISOString();
     const payload = {
       observationRef: { observationId },
       evidenceType: input.evidenceType ?? 'ARTIFACT_DIFF',
-      location: input.evidenceLocation ?? input.sourceArtifactRef ?? 'file:///unknown_evidence',
+      location,
     };
 
     const envelope: GovernanceCommandEnvelope = {
@@ -167,6 +186,7 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
           category: 'SUCCESS',
           commandId,
           data,
+          replayed: result.replayedResult === true,
         };
       }
 
@@ -222,7 +242,7 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
       };
     }
 
-    const issuedAt = new Date().toISOString();
+    const issuedAt = input.issuedAt ?? new Date().toISOString();
     const payload = {
       observationRef: { observationId },
     };
@@ -247,6 +267,7 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
           category: 'SUCCESS',
           commandId,
           data,
+          replayed: result.replayedResult === true,
         };
       }
 
