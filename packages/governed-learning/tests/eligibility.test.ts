@@ -162,6 +162,7 @@ describe('DeterministicEligibilityFilter & filterEligibleGuidance (GL-IMPL-UNIT-
       getLessonByRef: repository.getLessonByRef.bind(repository),
       saveRuleCandidate: repository.saveRuleCandidate.bind(repository),
       getRuleCandidateById: repository.getRuleCandidateById.bind(repository),
+      getLessons: repository.getLessons.bind(repository),
     };
 
     const spyFilter = new DeterministicEligibilityFilter(testSpyRepository);

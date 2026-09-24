@@ -263,17 +263,19 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     }
   });
 
-  it('handleBuildGuidanceSetQueryCommand returns runtime error for deferred query command', () => {
+  it('handleBuildGuidanceSetQueryCommand processes query command and returns SUCCESS guidance result', () => {
     const env = { ...baseEnvelope, commandType: 'BuildGuidanceSetQuery' as const };
     const payload = {
       queryId: 'gq_5001',
       targetRef: { targetCategory: 'WORKSTREAM' as const, workstreamRef: { workstreamId: 'ws_alpha' } },
       matchStrategy: 'STRICT' as const,
     };
-    const res = handleBuildGuidanceSetQueryCommand({ envelope: env, payload });
-    assert.equal(res.ok, false);
-    if (!res.ok && res.category === 'ERROR') {
-      assert.match(res.error.message, /BuildGuidanceSetQuery is a query payload deferred/);
+    const res = handleBuildGuidanceSetQueryCommand({ envelope: env, payload, candidatesOverride: [] }) as any;
+    assert.equal(res.ok, true);
+    if (res.ok && res.category === 'SUCCESS') {
+      assert.equal(res.data.status, 'SUCCESS');
+      assert.equal(res.data.queryId, 'gq_5001');
+      assert.equal(res.data.guidanceSet.matchedGuidance.length, 0);
     }
   });
 
@@ -293,7 +295,7 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     }
 
     const envUnknown = { ...baseEnvelope, commandType: 'NonExistentCommand' as any };
-    const resUnknown = executeGovernedCommandHandler(envUnknown, payload);
+    const resUnknown = executeGovernedCommandHandler(envUnknown, payload) as any;
     assert.equal(resUnknown.ok, false);
     if (!resUnknown.ok && resUnknown.category === 'ERROR') {
       assert.match(resUnknown.error.message, /No handler registered/);

@@ -284,43 +284,91 @@ export class GovernedLearningRuntime {
 
       case 'ApproveLesson': {
         const lessonId = handlerData?.lessonId ?? `lsn_${payload.candidateRef.candidateId.replace(/^(can_|CAN_?)/, '')}`;
-        const saveRes = this.persistencePort.saveLesson(
-          {
-            lessonRef: lessonId,
-            status: 'PUBLISHED',
-            candidateRef: payload.candidateRef,
-            decisionRef: payload.decisionRef,
-            publishedAt: envelope.issuedAt,
-          },
-          txContext
-        );
+        const getCandRes = this.persistencePort.getLessonByRef(payload.candidateRef.candidateId, txContext);
 
-        return maybeAsync(saveRes, (sRes) => {
-          if (!sRes.ok) {
-            return sRes.category === 'REFUSED'
-              ? { ok: false, category: 'REFUSED', refusalCode: sRes.refusalCode, reason: sRes.reason }
-              : { ok: false, category: 'ERROR', error: sRes.error ?? new RuntimeInvariantError(`saveLesson approved failed`) };
+        return maybeAsync(getCandRes, (cRes) => {
+          if (!cRes.ok) {
+            return cRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: cRes.refusalCode, reason: cRes.reason }
+              : { ok: false, category: 'ERROR', error: cRes.error ?? new RuntimeInvariantError(`getLessonByRef candidate ${payload.candidateRef.candidateId} failed`) };
+          }
+          if (!cRes.data || typeof cRes.data !== 'object') {
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError(`Candidate lesson record ${payload.candidateRef.candidateId} not found for approval`),
+            };
+          }
+          const candData = cRes.data as Record<string, unknown>;
+          const statement = typeof candData.statement === 'string' ? candData.statement : (typeof handlerData?.statement === 'string' ? handlerData.statement : undefined);
+          const rationale = typeof candData.rationale === 'string' ? candData.rationale : (typeof handlerData?.rationale === 'string' ? handlerData.rationale : undefined);
+          const scope = (candData.scope && typeof candData.scope === 'object' ? candData.scope : (handlerData?.scope && typeof handlerData?.scope === 'object' ? handlerData.scope : undefined)) as Record<string, unknown> | undefined;
+
+          if (!statement) {
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError(`Candidate lesson record ${payload.candidateRef.candidateId} is missing statement`),
+            };
+          }
+          if (!rationale) {
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError(`Candidate lesson record ${payload.candidateRef.candidateId} is missing rationale`),
+            };
+          }
+          if (!scope || !('scopeType' in scope)) {
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError(`Candidate lesson record ${payload.candidateRef.candidateId} is missing valid scope`),
+            };
           }
 
-          const eventRes = this.persistencePort!.appendEvent(
+          const saveRes = this.persistencePort!.saveLesson(
             {
-              eventType: 'LESSON_APPROVED',
-              eventRef: `evt_${envelope.commandId}`,
-              payload: {
-                lessonRef: { lessonId, version: '1.0.0' },
-                candidateRef: payload.candidateRef,
-              },
+              lessonId,
+              lessonRef: { lessonId, version: '1.0.0' },
+              version: '1.0.0',
+              statement,
+              rationale,
+              scope,
+              status: 'PUBLISHED',
+              candidateRef: payload.candidateRef,
+              decisionRef: payload.decisionRef,
+              publishedAt: envelope.issuedAt,
             },
             txContext
           );
 
-          return maybeAsync(eventRes, (eRes) => {
-            if (!eRes.ok) {
-              return eRes.category === 'REFUSED'
-                ? { ok: false, category: 'REFUSED', refusalCode: eRes.refusalCode, reason: eRes.reason }
-                : { ok: false, category: 'ERROR', error: eRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_APPROVED failed`) };
+          return maybeAsync(saveRes, (sRes) => {
+            if (!sRes.ok) {
+              return sRes.category === 'REFUSED'
+                ? { ok: false, category: 'REFUSED', refusalCode: sRes.refusalCode, reason: sRes.reason }
+                : { ok: false, category: 'ERROR', error: sRes.error ?? new RuntimeInvariantError(`saveLesson approved failed`) };
             }
-            return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+
+            const eventRes = this.persistencePort!.appendEvent(
+              {
+                eventType: 'LESSON_APPROVED',
+                eventRef: `evt_${envelope.commandId}`,
+                payload: {
+                  lessonRef: { lessonId, version: '1.0.0' },
+                  candidateRef: payload.candidateRef,
+                },
+              },
+              txContext
+            );
+
+            return maybeAsync(eventRes, (eRes) => {
+              if (!eRes.ok) {
+                return eRes.category === 'REFUSED'
+                  ? { ok: false, category: 'REFUSED', refusalCode: eRes.refusalCode, reason: eRes.reason }
+                  : { ok: false, category: 'ERROR', error: eRes.error ?? new RuntimeInvariantError(`appendEvent LESSON_APPROVED failed`) };
+              }
+              return { ok: true, category: 'SUCCESS', data: { persisted: true } };
+            });
           });
         });
       }
@@ -676,9 +724,10 @@ export class GovernedLearningRuntime {
         }
       }
 
-      const handlerOutcome = executeGovernedCommandHandler(envelope, payload);
+      const rawHandlerOutcome = executeGovernedCommandHandler(envelope, payload, this.persistencePort);
 
-      if (handlerOutcome.category === 'SUCCESS') {
+      return maybeAsync(rawHandlerOutcome, (handlerOutcome) => {
+        if (handlerOutcome.category === 'SUCCESS') {
         const persistRes = this.persistDomainEntityAndEvent(envelope, payload, handlerOutcome.data, txContext);
 
         return maybeAsync(persistRes, (pRes) => {
@@ -807,6 +856,7 @@ export class GovernedLearningRuntime {
         // ERROR outcome -> throw error to trigger physical transaction ROLLBACK
         throw handlerOutcome.error ?? new RuntimeInvariantError(`Handler produced ERROR for command '${envelope.commandId}'`);
       }
+      });
     });
   }
 

@@ -217,6 +217,9 @@ describe('GL-HARDENING-006 PostgreSQL Level-2 Production Adapter & Multi-Instanc
       async getEvents(filter?: any, tx?: TransactionContext) {
         return await rawRepo.getEvents(filter, tx);
       },
+      async getLessons(filter?: any, tx?: TransactionContext) {
+        return await rawRepo.getLessons(filter, tx);
+      },
     };
 
     const runtime = createPostgresGovernedLearningRuntime({ pool, pgMemDb }).runtime;
@@ -303,6 +306,7 @@ describe('GL-HARDENING-006 PostgreSQL Level-2 Production Adapter & Multi-Instanc
       getLessonByRef: (ref, tx) => rawRepo.getLessonByRef(ref, tx),
       getRuleCandidateById: (id, tx) => rawRepo.getRuleCandidateById(id, tx),
       getEvents: (filter, tx) => rawRepo.getEvents(filter, tx),
+      getLessons: (filter, tx) => rawRepo.getLessons(filter, tx),
       async appendEvent() {
         return {
           ok: false,

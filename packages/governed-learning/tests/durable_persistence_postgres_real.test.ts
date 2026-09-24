@@ -286,6 +286,7 @@ describe('Real PostgreSQL Level-2B Production Integration & Concurrency Test Sui
       getLessonByRef: (ref, tx, f) => rawRepo.getLessonByRef(ref, tx, f),
       getRuleCandidateById: (id, tx, f) => rawRepo.getRuleCandidateById(id, tx, f),
       getEvents: (filter, tx) => rawRepo.getEvents(filter, tx),
+      getLessons: (filter, tx) => rawRepo.getLessons(filter, tx),
       async appendEvent() {
         return {
           ok: false,
@@ -458,14 +459,14 @@ describe('Real PostgreSQL Level-2B Production Integration & Concurrency Test Sui
       const client = dbManager.getClient(txA);
       await client.query("SET deadlock_timeout = '50ms';");
       await repo.getObservationByRef('obs_dl_1', txA, true);
-      await new Promise((r) => setTimeout(r, 150));
+      await new Promise((r) => setTimeout(r, 250));
       return await repo.getObservationByRef('obs_dl_2', txA, true);
     });
 
     const pB = uow.execute(async (txB) => {
       const client = dbManager.getClient(txB);
       await client.query("SET deadlock_timeout = '50ms';");
-      await new Promise((r) => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 80));
       await repo.getObservationByRef('obs_dl_2', txB, true);
       return await repo.getObservationByRef('obs_dl_1', txB, true);
     });
@@ -534,5 +535,202 @@ describe('Real PostgreSQL Level-2B Production Integration & Concurrency Test Sui
 
     await dbManagerB.close();
     await dbManager.close();
+  });
+
+  it('16. Real PostgreSQL BuildGuidanceSetQuery on empty store returns SUCCESS with [] (REAL_POSTGRES_EMPTY_GUIDANCE_QUERY)', async () => {
+    const { pool } = createRealPgPool();
+    const dbManager = new PostgresDatabaseManager({ pool });
+    await dbManager.initializeSchema();
+    await pool.query('TRUNCATE observations, lessons, rule_candidates, governance_events, command_records;');
+    const { runtime } = createPostgresGovernedLearningRuntime({ pool });
+
+    const inputQ: GovernanceCommandEnvelope = {
+      commandId: 'cmd_real_pg_q_empty',
+      commandType: 'BuildGuidanceSetQuery' as const,
+      payloadVersion: '1.0.0',
+      issuedAt: '2026-09-24T10:00:00.000Z',
+      actorRef: { actorId: 'usr_certifier', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'auth_board' },
+      payload: {
+        queryId: 'gq_real_pg_empty',
+        targetRef: { targetCategory: 'PROJECT' as const, projectRef: { projectId: 'PRJ-REAL-PG' } },
+        matchStrategy: 'STRICT' as const,
+      },
+    };
+
+    const res = await runtime.processAndExecuteCommandAsync(inputQ);
+    assert.strictEqual(res.ok, true);
+    assert.strictEqual(res.category, 'SUCCESS');
+    if (res.handlerOutcome?.ok) {
+      const qRes = res.handlerOutcome.data as any;
+      assert.strictEqual(qRes.status, 'SUCCESS');
+      assert.strictEqual(qRes.guidanceSet.matchedGuidance.length, 0);
+    }
+
+    await dbManager.close();
+  });
+
+  it('17. Real PostgreSQL BuildGuidanceSetQuery execution with approved lesson and non-mutation (REAL_POSTGRES_BUILD_GUIDANCE_QUERY)', async () => {
+    const { pool } = createRealPgPool();
+    const dbManager = new PostgresDatabaseManager({ pool });
+    await dbManager.initializeSchema();
+    await pool.query('TRUNCATE observations, lessons, rule_candidates, governance_events, command_records;');
+    const { runtime, persistencePort } = createPostgresGovernedLearningRuntime({ pool });
+
+    // 1. Create lesson candidate
+    const inputCan: GovernanceCommandEnvelope = {
+      commandId: 'cmd_real_pg_can_001',
+      commandType: 'CreateLessonCandidate' as const,
+      payloadVersion: '1.0.0',
+      issuedAt: '2026-09-24T10:01:00.000Z',
+      actorRef: { actorId: 'usr_certifier', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'auth_board' },
+      payload: {
+        statement: 'Certified real PostgreSQL durable query statement',
+        rationale: 'Verified against real Postgres server instance',
+        scope: { scopeType: 'SYSTEM_WIDE' as const },
+        originatingObservationRefs: [],
+      },
+    };
+    const resCan = await runtime.processAndExecuteCommandAsync(inputCan);
+    assert.strictEqual(resCan.ok, true);
+
+    // 2. Approve lesson
+    const inputApp: GovernanceCommandEnvelope = {
+      commandId: 'cmd_real_pg_app_001',
+      commandType: 'ApproveLesson' as const,
+      payloadVersion: '1.0.0',
+      issuedAt: '2026-09-24T10:02:00.000Z',
+      actorRef: { actorId: 'usr_certifier', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'auth_board' },
+      payload: {
+        candidateRef: { candidateId: 'can_cmd_real_pg_can_001' },
+        decisionRef: { decisionId: 'dec_real_pg_001' },
+      },
+    };
+    const resApp = await runtime.processAndExecuteCommandAsync(inputApp);
+    assert.strictEqual(resApp.ok, true);
+
+    // Snapshot counts before query
+    const eventsResBefore = await persistencePort.getEvents();
+    const eventsBeforeCount = (eventsResBefore as any).data.length;
+
+    // 3. Query guidance
+    const inputQ: GovernanceCommandEnvelope = {
+      commandId: 'cmd_real_pg_q_001',
+      commandType: 'BuildGuidanceSetQuery' as const,
+      payloadVersion: '1.0.0',
+      issuedAt: '2026-09-24T10:03:00.000Z',
+      actorRef: { actorId: 'usr_certifier', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'auth_board' },
+      payload: {
+        queryId: 'gq_real_pg_001',
+        targetRef: { targetCategory: 'PROJECT' as const, projectRef: { projectId: 'PRJ-REAL-PG' } },
+        matchStrategy: 'STRICT' as const,
+      },
+    };
+
+    const resQ = await runtime.processAndExecuteCommandAsync(inputQ);
+    assert.strictEqual(resQ.ok, true);
+    if (resQ.handlerOutcome?.ok) {
+      const qRes = resQ.handlerOutcome.data as any;
+      assert.strictEqual(qRes.status, 'SUCCESS');
+      assert.strictEqual(qRes.guidanceSet.matchedGuidance.length, 1);
+      const item = qRes.guidanceSet.matchedGuidance[0];
+      assert.strictEqual(item.lessonRef.lessonId, 'lsn_cmd_real_pg_can_001');
+      assert.strictEqual(item.statement, 'Certified real PostgreSQL durable query statement');
+    }
+
+    // Verify query did not append events or mutate domain state
+    const eventsResAfter = await persistencePort.getEvents();
+    const eventsAfterCount = (eventsResAfter as any).data.length;
+    assert.strictEqual(eventsAfterCount, eventsBeforeCount);
+
+    await dbManager.close();
+  });
+
+  it('18. Real PostgreSQL BuildGuidanceSetQuery reconnect durability test (REAL_POSTGRES_RECONNECT_QUERY)', async () => {
+    const { pool } = createRealPgPool();
+    const dbManager1 = new PostgresDatabaseManager({ pool });
+    await dbManager1.initializeSchema();
+    await pool.query('TRUNCATE observations, lessons, rule_candidates, governance_events, command_records;');
+    const { runtime: runtime1 } = createPostgresGovernedLearningRuntime({ pool });
+
+    // 1. Create and approve lesson in runtime1 context
+    const inputCan: GovernanceCommandEnvelope = {
+      commandId: 'cmd_recon_can_001',
+      commandType: 'CreateLessonCandidate' as const,
+      payloadVersion: '1.0.0',
+      issuedAt: '2026-09-24T10:05:00.000Z',
+      actorRef: { actorId: 'usr_certifier', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'auth_board' },
+      payload: {
+        statement: 'Reconnect durable guidance item in PostgreSQL',
+        rationale: 'Reconnect durability test',
+        scope: { scopeType: 'SYSTEM_WIDE' as const },
+        originatingObservationRefs: [],
+      },
+    };
+    await runtime1.processAndExecuteCommandAsync(inputCan);
+
+    const inputApp: GovernanceCommandEnvelope = {
+      commandId: 'cmd_recon_app_001',
+      commandType: 'ApproveLesson' as const,
+      payloadVersion: '1.0.0',
+      issuedAt: '2026-09-24T10:06:00.000Z',
+      actorRef: { actorId: 'usr_certifier', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'auth_board' },
+      payload: {
+        candidateRef: { candidateId: 'can_cmd_recon_can_001' },
+        decisionRef: { decisionId: 'dec_recon_001' },
+      },
+    };
+    await runtime1.processAndExecuteCommandAsync(inputApp);
+
+    // 2. Instantiate a second completely independent runtime pointing to the same PostgreSQL pool/database
+    const { runtime: runtime2 } = createPostgresGovernedLearningRuntime({ pool });
+
+    // 3. Query guidance using second runtime
+    const inputQ: GovernanceCommandEnvelope = {
+      commandId: 'cmd_recon_q_001',
+      commandType: 'BuildGuidanceSetQuery' as const,
+      payloadVersion: '1.0.0',
+      issuedAt: '2026-09-24T10:07:00.000Z',
+      actorRef: { actorId: 'usr_certifier', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'auth_board' },
+      payload: {
+        queryId: 'gq_recon_001',
+        targetRef: { targetCategory: 'PROJECT' as const, projectRef: { projectId: 'PRJ-RECON' } },
+        matchStrategy: 'STRICT' as const,
+      },
+    };
+
+    const resQ2 = await runtime2.processAndExecuteCommandAsync(inputQ);
+    assert.strictEqual(resQ2.ok, true);
+    if (resQ2.handlerOutcome?.ok) {
+      const qRes = resQ2.handlerOutcome.data as any;
+      assert.strictEqual(qRes.status, 'SUCCESS');
+      assert.strictEqual(qRes.guidanceSet.matchedGuidance.length, 1);
+      assert.strictEqual(qRes.guidanceSet.matchedGuidance[0].statement, 'Reconnect durable guidance item in PostgreSQL');
+    }
+
+    await dbManager1.close();
+  });
+
+  it('19. Real PostgreSQL database read failure fails closed (REAL_POSTGRES_READ_FAILURE_TEST)', async () => {
+    const { pool } = createRealPgPool();
+    const dbManager = new PostgresDatabaseManager({ pool });
+    await dbManager.initializeSchema();
+    const repo = new PostgresGovernanceRepository(dbManager);
+
+    // End pool to induce database query failure
+    await pool.end();
+
+    const getRes = await repo.getLessons();
+    assert.strictEqual(getRes.ok, false);
+    assert.strictEqual(getRes.category, 'ERROR');
+    assert.ok(getRes.error);
+
+    await dbManager.close().catch(() => {});
   });
 });
