@@ -485,7 +485,14 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
     const refObj =
       (lesson as Record<string, unknown>)?.lessonRef ??
       (lesson as Record<string, unknown>)?.lessonCandidateRef;
-    const ref = typeof refObj === 'object' && refObj !== null ? (refObj as Record<string, unknown>).value : refObj;
+    const ref =
+      typeof refObj === 'object' && refObj !== null
+        ? (refObj as Record<string, unknown>).value ??
+          (refObj as Record<string, unknown>).lessonId ??
+          (refObj as Record<string, unknown>).candidateId
+        : typeof refObj === 'string'
+        ? refObj
+        : ((lesson as Record<string, unknown>)?.lessonId as string | undefined);
 
     if (!ref || typeof ref !== 'string') {
       return {
@@ -572,6 +579,51 @@ export class SqliteGovernanceRepository implements GovernancePersistencePort {
         ok: false,
         category: 'ERROR',
         error: new RuntimeInvariantError(`SQLite getLessonByRef failed: ${String(err)}`),
+      };
+    }
+  }
+
+  public getLessons(
+    filter?: { readonly status?: string; readonly lessonRef?: string },
+    transactionContext?: TransactionContext
+  ): RuntimeOperationResult<ReadonlyArray<unknown>> {
+    if (transactionContext && !this.dbManager.verifyTransactionContext(transactionContext)) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError('Invalid, foreign, or stale physical transaction context'),
+      };
+    }
+
+    try {
+      const db = this.dbManager.getRawDatabase();
+      const stmt = db.prepare<{ data: string }>(
+        'SELECT data FROM lessons ORDER BY created_at ASC'
+      );
+      const rows = stmt.all();
+      let lessons = rows.map((r) => JSON.parse(r.data));
+
+      if (filter?.status) {
+        lessons = lessons.filter((l: any) => l.status === filter.status || l.state === filter.status);
+      }
+      if (filter?.lessonRef) {
+        lessons = lessons.filter((l: any) => {
+          const refObj = l.lessonRef ?? l.lessonCandidateRef;
+          const ref = typeof refObj === 'object' && refObj !== null ? refObj.value ?? refObj.lessonId : refObj;
+          return ref === filter.lessonRef || l.lessonId === filter.lessonRef;
+        });
+      }
+
+      return {
+        ok: true,
+        category: 'SUCCESS',
+        data: lessons,
+      };
+    } catch (err) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: new RuntimeInvariantError(`SQLite getLessons failed: ${String(err)}`),
       };
     }
   }

@@ -81,6 +81,14 @@ export interface GovernancePersistencePort {
   ): Promise<RuntimeOperationResult<unknown>> | RuntimeOperationResult<unknown>;
 
   /**
+   * Retrieves stored lessons/guidance records.
+   */
+  getLessons?(
+    filter?: { readonly status?: string; readonly lessonRef?: string },
+    transactionContext?: TransactionContext
+  ): Promise<RuntimeOperationResult<ReadonlyArray<unknown>>> | RuntimeOperationResult<ReadonlyArray<unknown>>;
+
+  /**
    * Stores a rule candidate proposal.
    */
   saveRuleCandidate(
@@ -274,7 +282,14 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
     const refObj =
       (lesson as Record<string, unknown>)?.lessonRef ??
       (lesson as Record<string, unknown>)?.lessonCandidateRef;
-    const ref = typeof refObj === 'object' && refObj !== null ? (refObj as Record<string, unknown>).value : refObj;
+    const ref =
+      typeof refObj === 'object' && refObj !== null
+        ? (refObj as Record<string, unknown>).value ??
+          (refObj as Record<string, unknown>).lessonId ??
+          (refObj as Record<string, unknown>).candidateId
+        : typeof refObj === 'string'
+        ? refObj
+        : ((lesson as Record<string, unknown>)?.lessonId as string | undefined);
 
     if (!ref || typeof ref !== 'string') {
       return {
@@ -328,6 +343,41 @@ export class InMemoryGovernanceRepository implements GovernancePersistencePort {
       ok: true,
       category: 'SUCCESS',
       data: deepClone(item),
+    };
+  }
+
+  /**
+   * Retrieves stored lessons/guidance records.
+   */
+  public getLessons(
+    filter?: { readonly status?: string; readonly lessonRef?: string },
+    _transactionContext?: TransactionContext
+  ): RuntimeOperationResult<ReadonlyArray<unknown>> {
+    let result = Array.from(this.lessons.values());
+
+    if (filter?.status) {
+      result = result.filter((item) => {
+        const itemObj = item as Record<string, unknown>;
+        return itemObj.status === filter.status || itemObj.state === filter.status;
+      });
+    }
+
+    if (filter?.lessonRef) {
+      result = result.filter((item) => {
+        const itemObj = item as Record<string, unknown>;
+        const refObj = itemObj.lessonRef ?? itemObj.lessonCandidateRef;
+        const ref =
+          typeof refObj === 'object' && refObj !== null
+            ? (refObj as Record<string, unknown>).value ?? (refObj as Record<string, unknown>).lessonId
+            : refObj;
+        return ref === filter.lessonRef || itemObj.lessonId === filter.lessonRef;
+      });
+    }
+
+    return {
+      ok: true,
+      category: 'SUCCESS',
+      data: result.map((item) => deepClone(item)),
     };
   }
 

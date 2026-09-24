@@ -22,13 +22,36 @@ import type {
   ProposeRuleCandidateCommandPayloadSchema,
 } from '../helpers/commands.js';
 import type { z } from 'zod';
+import type { GovernancePersistencePort } from './persistence.js';
+import { filterEligibleGuidance } from './eligibility.js';
+import type { ApplicableGuidance, ApplicableGuidanceSet, GuidanceQueryResult } from '../contracts/lesson.js';
 
 export interface CommandHandlerInput<T = unknown> {
   readonly envelope: GovernanceCommandEnvelope;
   readonly payload: T;
+  readonly persistencePort?: GovernancePersistencePort;
+  readonly candidatesOverride?: ReadonlyArray<unknown>;
 }
 
 export type CommandHandlerOutcome<T = unknown> = RuntimeOperationResult<T>;
+
+function maybeAsync<T, R>(
+  val: Promise<T>,
+  fn: (v: T) => R | Promise<R>
+): Promise<R>;
+function maybeAsync<T, R>(
+  val: T,
+  fn: (v: T) => R | Promise<R>
+): R | Promise<R>;
+function maybeAsync<T, R>(
+  val: T | Promise<T>,
+  fn: (v: T) => R | Promise<R>
+): R | Promise<R> {
+  if (val && typeof (val as any).then === 'function') {
+    return (val as Promise<T>).then(fn);
+  }
+  return fn(val as T);
+}
 
 /**
  * GL-IMPL-UNIT-004: Governed Learning Runtime Command Handlers
@@ -281,13 +304,106 @@ export function handleProposeRuleCandidateCommand(
 }
 
 export function handleBuildGuidanceSetQueryCommand(
-  _input: CommandHandlerInput<z.infer<typeof BuildGuidanceSetQueryCommandPayloadSchema>>
-): CommandHandlerOutcome {
-  return {
-    ok: false,
-    category: 'ERROR',
-    error: new RuntimeInvariantError('BuildGuidanceSetQuery is a query payload deferred to query/replay wave'),
+  input: CommandHandlerInput<z.infer<typeof BuildGuidanceSetQueryCommandPayloadSchema>>
+): CommandHandlerOutcome | Promise<CommandHandlerOutcome> {
+  const payload = input.payload;
+  const envelope = input.envelope;
+
+  const fetchCandidatesRes = input.candidatesOverride
+    ? { ok: true as const, category: 'SUCCESS' as const, data: input.candidatesOverride }
+    : input.persistencePort && input.persistencePort.getLessons
+    ? input.persistencePort.getLessons()
+    : { ok: true as const, category: 'SUCCESS' as const, data: [] };
+
+  const processCandidates = (candRes: RuntimeOperationResult<ReadonlyArray<unknown>>): CommandHandlerOutcome => {
+    if (!candRes.ok) {
+      if (candRes.category === 'REFUSED') {
+        return {
+          ok: false,
+          category: 'REFUSED',
+          refusalCode: candRes.refusalCode,
+          reason: candRes.reason,
+        };
+      }
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: candRes.error ?? new RuntimeInvariantError('Failed to read candidates from persistence port'),
+      };
+    }
+
+    const candidates = candRes.data ?? [];
+    const filterRes = filterEligibleGuidance(candidates, {
+      targetRef: payload.targetRef,
+    });
+
+    if (!filterRes.ok) {
+      if (filterRes.category === 'REFUSED') {
+        return {
+          ok: false,
+          category: 'REFUSED',
+          refusalCode: filterRes.refusalCode,
+          reason: filterRes.reason,
+        };
+      }
+      return {
+        ok: false,
+        category: 'ERROR',
+        error: filterRes.error ?? new RuntimeInvariantError('Eligibility filtering error'),
+      };
+    }
+
+    const rawEligible = filterRes.data.eligibleItems;
+
+    // Deduplicate by lessonId
+    const seen = new Set<string>();
+    const matchedGuidance: ApplicableGuidance[] = [];
+
+    for (const item of rawEligible) {
+      const lessonRefObj = (item.lessonRef as Record<string, unknown> | undefined) ?? {};
+      const lessonId = String(item.lessonId ?? lessonRefObj.lessonId ?? 'lsn_unknown');
+      if (seen.has(lessonId)) {
+        continue;
+      }
+      seen.add(lessonId);
+
+      const version = String(item.version ?? lessonRefObj.version ?? '1.0.0');
+      const statement = String(item.statement ?? '');
+      const rationale = String(item.rationale ?? '');
+      const scope = (item.scope as any) ?? { scopeType: 'SYSTEM_WIDE' };
+
+      matchedGuidance.push({
+        lessonRef: { lessonId, version },
+        statement,
+        rationale,
+        scope,
+      });
+    }
+
+    const guidanceSet: ApplicableGuidanceSet = {
+      queryId: payload.queryId,
+      matchedGuidance,
+      evaluatedAt: envelope.issuedAt ?? new Date().toISOString(),
+      matchStrategy: payload.matchStrategy,
+    };
+
+    const queryResult: GuidanceQueryResult = {
+      queryId: payload.queryId,
+      status: 'SUCCESS',
+      guidanceSet,
+    };
+
+    return {
+      ok: true,
+      category: 'SUCCESS',
+      data: queryResult,
+    };
   };
+
+  if (fetchCandidatesRes && typeof (fetchCandidatesRes as any).then === 'function') {
+    return (fetchCandidatesRes as Promise<RuntimeOperationResult<ReadonlyArray<unknown>>>).then(processCandidates);
+  }
+  return processCandidates(fetchCandidatesRes as RuntimeOperationResult<ReadonlyArray<unknown>>);
 }
 
 /**
@@ -295,9 +411,23 @@ export function handleBuildGuidanceSetQueryCommand(
  * Routes validated command envelope & payload from pipeline to specific handler.
  */
 export function executeGovernedCommandHandler(
+  envelope: GovernanceCommandEnvelope & { commandType: 'BuildGuidanceSetQuery' },
+  payload: unknown,
+  persistencePort?: GovernancePersistencePort,
+  candidatesOverride?: ReadonlyArray<unknown>
+): CommandHandlerOutcome | Promise<CommandHandlerOutcome>;
+export function executeGovernedCommandHandler(
   envelope: GovernanceCommandEnvelope,
-  payload: unknown
-): CommandHandlerOutcome {
+  payload: unknown,
+  persistencePort?: GovernancePersistencePort,
+  candidatesOverride?: ReadonlyArray<unknown>
+): CommandHandlerOutcome;
+export function executeGovernedCommandHandler(
+  envelope: GovernanceCommandEnvelope,
+  payload: unknown,
+  persistencePort?: GovernancePersistencePort,
+  candidatesOverride?: ReadonlyArray<unknown>
+): CommandHandlerOutcome | Promise<CommandHandlerOutcome> {
   switch (envelope.commandType) {
     case 'DraftObservation':
       return handleDraftObservationCommand({ envelope, payload: payload as any });
@@ -330,7 +460,7 @@ export function executeGovernedCommandHandler(
     case 'ProposeRuleCandidate':
       return handleProposeRuleCandidateCommand({ envelope, payload: payload as any });
     case 'BuildGuidanceSetQuery':
-      return handleBuildGuidanceSetQueryCommand({ envelope, payload: payload as any });
+      return handleBuildGuidanceSetQueryCommand({ envelope, payload: payload as any, persistencePort, candidatesOverride });
     default:
       return {
         ok: false,
@@ -339,3 +469,4 @@ export function executeGovernedCommandHandler(
       };
   }
 }
+

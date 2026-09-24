@@ -437,7 +437,13 @@ export class PostgresGovernanceRepository implements GovernancePersistencePort {
     }
 
     const lsn = lesson as any;
-    const ref = lsn.lessonRef ?? lsn.lessonCandidateRef ?? lsn.id;
+    const refObj = lsn.lessonRef ?? lsn.lessonCandidateRef;
+    const ref =
+      typeof refObj === 'object' && refObj !== null
+        ? refObj.value ?? refObj.lessonId ?? refObj.candidateId
+        : typeof refObj === 'string'
+        ? refObj
+        : lsn.lessonId ?? lsn.id;
     if (!ref) {
       return {
         ok: false,
@@ -493,6 +499,44 @@ export class PostgresGovernanceRepository implements GovernancePersistencePort {
       }
       const data = typeof rows[0].data === 'string' ? JSON.parse(rows[0].data) : rows[0].data;
       return { ok: true, category: 'SUCCESS', data };
+    } catch (err: any) {
+      return { ok: false, category: 'ERROR', error: toRuntimeError(err) };
+    }
+  }
+
+  public async getLessons(
+    filter?: { readonly status?: string; readonly lessonRef?: string },
+    transactionContext?: TransactionContext
+  ): Promise<RuntimeOperationResult<ReadonlyArray<unknown>>> {
+    try {
+      let clientOrPool: any;
+      if (transactionContext) {
+        const verification = this.dbManager.verifyTransactionContext(transactionContext);
+        if (!verification.ok) {
+          return { ok: false, category: 'ERROR', error: toRuntimeError(verification.error) };
+        }
+        clientOrPool = this.dbManager.getClient(transactionContext);
+      } else {
+        clientOrPool = this.dbManager.getPool();
+      }
+
+      const sql = 'SELECT data FROM lessons ORDER BY created_at ASC';
+      const res = await clientOrPool.query(sql);
+      const rows = res?.rows ?? [];
+      let lessons = rows.map((r: any) => (typeof r.data === 'string' ? JSON.parse(r.data) : r.data));
+
+      if (filter?.status) {
+        lessons = lessons.filter((l: any) => l.status === filter.status || l.state === filter.status);
+      }
+      if (filter?.lessonRef) {
+        lessons = lessons.filter((l: any) => {
+          const refObj = l.lessonRef ?? l.lessonCandidateRef;
+          const ref = typeof refObj === 'object' && refObj !== null ? refObj.value ?? refObj.lessonId : refObj;
+          return ref === filter.lessonRef || l.lessonId === filter.lessonRef;
+        });
+      }
+
+      return { ok: true, category: 'SUCCESS', data: lessons };
     } catch (err: any) {
       return { ok: false, category: 'ERROR', error: toRuntimeError(err) };
     }
