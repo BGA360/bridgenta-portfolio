@@ -429,7 +429,7 @@ describe('Governed Learning Guidance Query Runtime (GL_CAPABILITY_GAP_001)', () 
     sqliteManager.close();
   });
 
-  it('14. PostgreSQL L2B Durable Query Test (pg-mem)', async () => {
+  it('14. PostgreSQL-compatible adapter semantic test (pg-mem)', async () => {
     const mem = newDb();
     const pgMemAdapter = mem.adapters.createPg();
     const pgMemPool = new pgMemAdapter.Pool();
@@ -473,6 +473,115 @@ describe('Governed Learning Guidance Query Runtime (GL_CAPABILITY_GAP_001)', () 
       assert.equal(qRes.status, 'SUCCESS');
       assert.equal(qRes.guidanceSet.matchedGuidance.length, 1);
       assert.equal(qRes.guidanceSet.matchedGuidance[0].statement, 'Postgres durable guidance item');
+    }
+  });
+
+  it('15. Missing persistence port fails closed with ERROR (NO_PERSISTENCE_PORT_QUERY_TEST)', async () => {
+    const noRepoRuntime = createGovernedLearningRuntime({});
+    const inputQ = createCommandInput('cmd_q_norepo', 'BuildGuidanceSetQuery', {
+      queryId: 'gq_norepo',
+      targetRef: validTargetRef,
+      matchStrategy: 'STRICT' as const,
+    });
+
+    const res = await noRepoRuntime.processAndExecuteCommandAsync(inputQ);
+
+    assert.equal(res.ok, false);
+    assert.equal(res.category, 'ERROR');
+    assert.match(res.error?.message ?? '', /BuildGuidanceSetQuery requires GovernancePersistencePort.getLessons capability/);
+  });
+
+  it('16. Persistence port lacking getLessons fails closed with ERROR (MISSING_GET_LESSONS_QUERY_TEST)', async () => {
+    const incompleteRepo = {
+      saveObservation: () => ({ ok: true as const, category: 'SUCCESS' as const, data: { observationRef: 'obs_1', saved: true } }),
+      getObservationByRef: () => ({ ok: true as const, category: 'SUCCESS' as const, data: {} }),
+      saveLesson: () => ({ ok: true as const, category: 'SUCCESS' as const, data: { lessonRef: 'les_1', saved: true } }),
+      getLessonByRef: () => ({ ok: true as const, category: 'SUCCESS' as const, data: {} }),
+      saveRuleCandidate: () => ({ ok: true as const, category: 'SUCCESS' as const, data: { ruleCandidateId: 'rc_1', saved: true } }),
+      appendEvent: () => ({ ok: true as const, category: 'SUCCESS' as const, data: { appended: true } }),
+      getEvents: () => ({ ok: true as const, category: 'SUCCESS' as const, data: [] }),
+    };
+
+    const incompleteRuntime = createGovernedLearningRuntime({ persistencePort: incompleteRepo as any });
+    const inputQ = createCommandInput('cmd_q_nogetlessons', 'BuildGuidanceSetQuery', {
+      queryId: 'gq_nogetlessons',
+      targetRef: validTargetRef,
+      matchStrategy: 'STRICT' as const,
+    });
+
+    const res = await incompleteRuntime.processAndExecuteCommandAsync(inputQ);
+
+    assert.equal(res.ok, false);
+    assert.equal(res.category, 'ERROR');
+    assert.match(res.error?.message ?? '', /BuildGuidanceSetQuery requires GovernancePersistencePort.getLessons capability/);
+  });
+
+  it('17. Freshness Model: Same commandId replays prior result, new commandId reads new state (QUERY_FRESHNESS_MODEL_TEST)', async () => {
+    // 1. Initial State S1: Approve Lesson A
+    const inputCanA = createCommandInput('cmd_can_fresh_a', 'CreateLessonCandidate', {
+      statement: 'Lesson A initial guidance',
+      rationale: 'Freshness test A',
+      scope: { scopeType: 'SYSTEM_WIDE' as const },
+      originatingObservationRefs: [],
+    });
+    await runtime.processAndExecuteCommandAsync(inputCanA);
+
+    const inputAppA = createCommandInput('cmd_app_fresh_a', 'ApproveLesson', {
+      candidateRef: { candidateId: 'can_cmd_can_fresh_a' },
+      decisionRef: { decisionId: 'dec_app_fresh_a' },
+    });
+    await runtime.processAndExecuteCommandAsync(inputAppA);
+
+    // Query Q1 with commandId = C1
+    const inputQ1 = createCommandInput('cmd_q_fresh_c1', 'BuildGuidanceSetQuery', {
+      queryId: 'gq_fresh_1',
+      targetRef: validTargetRef,
+      matchStrategy: 'STRICT' as const,
+    });
+    const resQ1 = await runtime.processAndExecuteCommandAsync(inputQ1);
+    assert.equal(resQ1.ok, true);
+    assert.equal(resQ1.replayedResult, undefined);
+    assert.equal(resQ1.handlerOutcome?.ok, true);
+    if (resQ1.handlerOutcome?.ok) {
+      assert.equal((resQ1.handlerOutcome.data as any).guidanceSet.matchedGuidance.length, 1);
+    }
+
+    // 2. Transition to State S2: Approve Lesson B
+    const inputCanB = createCommandInput('cmd_can_fresh_b', 'CreateLessonCandidate', {
+      statement: 'Lesson B new guidance',
+      rationale: 'Freshness test B',
+      scope: { scopeType: 'SYSTEM_WIDE' as const },
+      originatingObservationRefs: [],
+    });
+    await runtime.processAndExecuteCommandAsync(inputCanB);
+
+    const inputAppB = createCommandInput('cmd_app_fresh_b', 'ApproveLesson', {
+      candidateRef: { candidateId: 'can_cmd_can_fresh_b' },
+      decisionRef: { decisionId: 'dec_app_fresh_b' },
+    });
+    await runtime.processAndExecuteCommandAsync(inputAppB);
+
+    // Retry query Q1 with exact same commandId = C1 -> MUST replay original 1-item result
+    const resQ1Retry = await runtime.processAndExecuteCommandAsync(inputQ1);
+    assert.equal(resQ1Retry.ok, true);
+    assert.equal(resQ1Retry.replayedResult, true);
+    assert.equal(resQ1Retry.handlerOutcome?.ok, true);
+    if (resQ1Retry.handlerOutcome?.ok) {
+      assert.equal((resQ1Retry.handlerOutcome.data as any).guidanceSet.matchedGuidance.length, 1);
+    }
+
+    // Execute new query Q2 with new commandId = C2 -> MUST evaluate new state and return 2 items
+    const inputQ2 = createCommandInput('cmd_q_fresh_c2', 'BuildGuidanceSetQuery', {
+      queryId: 'gq_fresh_2',
+      targetRef: validTargetRef,
+      matchStrategy: 'STRICT' as const,
+    });
+    const resQ2 = await runtime.processAndExecuteCommandAsync(inputQ2);
+    assert.equal(resQ2.ok, true);
+    assert.equal(resQ2.replayedResult, undefined);
+    assert.equal(resQ2.handlerOutcome?.ok, true);
+    if (resQ2.handlerOutcome?.ok) {
+      assert.equal((resQ2.handlerOutcome.data as any).guidanceSet.matchedGuidance.length, 2);
     }
   });
 });

@@ -313,7 +313,11 @@ export function handleBuildGuidanceSetQueryCommand(
     ? { ok: true as const, category: 'SUCCESS' as const, data: input.candidatesOverride }
     : input.persistencePort && input.persistencePort.getLessons
     ? input.persistencePort.getLessons()
-    : { ok: true as const, category: 'SUCCESS' as const, data: [] };
+    : {
+        ok: false as const,
+        category: 'ERROR' as const,
+        error: new RuntimeInvariantError('BuildGuidanceSetQuery requires GovernancePersistencePort.getLessons capability'),
+      };
 
   const processCandidates = (candRes: RuntimeOperationResult<ReadonlyArray<unknown>>): CommandHandlerOutcome => {
     if (!candRes.ok) {
@@ -360,30 +364,62 @@ export function handleBuildGuidanceSetQueryCommand(
     const matchedGuidance: ApplicableGuidance[] = [];
 
     for (const item of rawEligible) {
-      const lessonRefObj = (item.lessonRef as Record<string, unknown> | undefined) ?? {};
-      const lessonId = String(item.lessonId ?? lessonRefObj.lessonId ?? 'lsn_unknown');
+      if (!item || typeof item !== 'object') {
+        return {
+          ok: false,
+          category: 'ERROR',
+          error: new RuntimeInvariantError('Guidance candidate record is invalid object'),
+        };
+      }
+      const itemObj = item as Record<string, unknown>;
+      const lessonRefObj = (itemObj.lessonRef as Record<string, unknown> | undefined) ?? {};
+      const lessonIdRaw = itemObj.lessonId ?? lessonRefObj.lessonId;
+      if (!lessonIdRaw || typeof lessonIdRaw !== 'string' || lessonIdRaw === 'lsn_unknown') {
+        return {
+          ok: false,
+          category: 'ERROR',
+          error: new RuntimeInvariantError('Guidance item record is missing valid lessonId'),
+        };
+      }
+      const lessonId = lessonIdRaw;
       if (seen.has(lessonId)) {
         continue;
       }
-      seen.add(lessonId);
 
-      const version = String(item.version ?? lessonRefObj.version ?? '1.0.0');
-      const statement = String(item.statement ?? '');
-      const rationale = String(item.rationale ?? '');
-      const scope = (item.scope as any) ?? { scopeType: 'SYSTEM_WIDE' };
+      const statementRaw = itemObj.statement;
+      if (!statementRaw || typeof statementRaw !== 'string') {
+        return {
+          ok: false,
+          category: 'ERROR',
+          error: new RuntimeInvariantError(`Guidance item record ${lessonId} is missing valid statement`),
+        };
+      }
+
+      const scopeRaw = itemObj.scope;
+      if (!scopeRaw || typeof scopeRaw !== 'object' || !('scopeType' in (scopeRaw as object))) {
+        return {
+          ok: false,
+          category: 'ERROR',
+          error: new RuntimeInvariantError(`Guidance item record ${lessonId} is missing valid scope`),
+        };
+      }
+
+      seen.add(lessonId);
+      const version = String(itemObj.version ?? lessonRefObj.version ?? '1.0.0');
+      const rationale = typeof itemObj.rationale === 'string' ? itemObj.rationale : '';
 
       matchedGuidance.push({
         lessonRef: { lessonId, version },
-        statement,
+        statement: statementRaw,
         rationale,
-        scope,
+        scope: scopeRaw as any,
       });
     }
 
     const guidanceSet: ApplicableGuidanceSet = {
       queryId: payload.queryId,
       matchedGuidance,
-      evaluatedAt: envelope.issuedAt ?? new Date().toISOString(),
+      evaluatedAt: envelope.issuedAt,
       matchStrategy: payload.matchStrategy,
     };
 

@@ -83,7 +83,7 @@ export interface GovernancePersistencePort {
   /**
    * Retrieves stored lessons/guidance records.
    */
-  getLessons?(
+  getLessons(
     filter?: { readonly status?: string; readonly lessonRef?: string },
     transactionContext?: TransactionContext
   ): Promise<RuntimeOperationResult<ReadonlyArray<unknown>>> | RuntimeOperationResult<ReadonlyArray<unknown>>;

@@ -850,6 +850,9 @@ describe('GL-HARDENING-005 Level-2 Durable Persistence & Physical Transaction Bo
         getEvents() {
           return rawRepo.getEvents();
         },
+        getLessons(filter, tx) {
+          return rawRepo.getLessons(filter, tx);
+        },
       };
 
       const runtime = new GovernedLearningRuntime({

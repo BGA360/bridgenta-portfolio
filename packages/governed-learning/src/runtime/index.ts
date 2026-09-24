@@ -287,10 +287,44 @@ export class GovernedLearningRuntime {
         const getCandRes = this.persistencePort.getLessonByRef(payload.candidateRef.candidateId, txContext);
 
         return maybeAsync(getCandRes, (cRes) => {
-          const candData = cRes.ok && cRes.data && typeof cRes.data === 'object' ? (cRes.data as Record<string, unknown>) : {};
-          const statement = (candData.statement as string) ?? handlerData?.statement ?? 'Approved Governed Lesson';
-          const rationale = (candData.rationale as string) ?? handlerData?.rationale ?? 'Approved via governance decision';
-          const scope = (candData.scope as Record<string, unknown>) ?? handlerData?.scope ?? { scopeType: 'SYSTEM_WIDE' };
+          if (!cRes.ok) {
+            return cRes.category === 'REFUSED'
+              ? { ok: false, category: 'REFUSED', refusalCode: cRes.refusalCode, reason: cRes.reason }
+              : { ok: false, category: 'ERROR', error: cRes.error ?? new RuntimeInvariantError(`getLessonByRef candidate ${payload.candidateRef.candidateId} failed`) };
+          }
+          if (!cRes.data || typeof cRes.data !== 'object') {
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError(`Candidate lesson record ${payload.candidateRef.candidateId} not found for approval`),
+            };
+          }
+          const candData = cRes.data as Record<string, unknown>;
+          const statement = typeof candData.statement === 'string' ? candData.statement : (typeof handlerData?.statement === 'string' ? handlerData.statement : undefined);
+          const rationale = typeof candData.rationale === 'string' ? candData.rationale : (typeof handlerData?.rationale === 'string' ? handlerData.rationale : undefined);
+          const scope = (candData.scope && typeof candData.scope === 'object' ? candData.scope : (handlerData?.scope && typeof handlerData?.scope === 'object' ? handlerData.scope : undefined)) as Record<string, unknown> | undefined;
+
+          if (!statement) {
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError(`Candidate lesson record ${payload.candidateRef.candidateId} is missing statement`),
+            };
+          }
+          if (!rationale) {
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError(`Candidate lesson record ${payload.candidateRef.candidateId} is missing rationale`),
+            };
+          }
+          if (!scope || !('scopeType' in scope)) {
+            return {
+              ok: false,
+              category: 'ERROR',
+              error: new RuntimeInvariantError(`Candidate lesson record ${payload.candidateRef.candidateId} is missing valid scope`),
+            };
+          }
 
           const saveRes = this.persistencePort!.saveLesson(
             {

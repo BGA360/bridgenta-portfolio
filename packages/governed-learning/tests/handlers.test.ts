@@ -270,7 +270,7 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
       targetRef: { targetCategory: 'WORKSTREAM' as const, workstreamRef: { workstreamId: 'ws_alpha' } },
       matchStrategy: 'STRICT' as const,
     };
-    const res = handleBuildGuidanceSetQueryCommand({ envelope: env, payload }) as any;
+    const res = handleBuildGuidanceSetQueryCommand({ envelope: env, payload, candidatesOverride: [] }) as any;
     assert.equal(res.ok, true);
     if (res.ok && res.category === 'SUCCESS') {
       assert.equal(res.data.status, 'SUCCESS');
