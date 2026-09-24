@@ -7,6 +7,8 @@ import {
 import type {
   BECCFindingEscalationInput,
   BECCEscalationResult,
+  BECCGuidanceQueryInput,
+  BECCGuidanceQueryResult,
   GovernedLearningIntegrationAdapter,
 } from './governed-learning-adapter.types.js';
 import { deriveGovernedLearningCommandId } from './governed-learning-command-id.js';
@@ -23,7 +25,7 @@ export interface DefaultGovernedLearningAdapterOptions {
  * 1. Uses ONLY public exported surface of @cep/governed-learning.
  * 2. Communicates strictly via GovernedLearningRuntime.processAndExecuteCommandAsync gateway.
  * 3. NO direct database table reads or writes (PostgreSQL/SQLite).
- * 4. NO TransactionContext exposure or leakage.
+ * 4. NO transaction context exposure or leakage.
  * 5. NO duplication of Stage 8 idempotency or Stage 9 scope concurrency.
  * 6. Fails closed when required authority context or actor references are missing.
  * 7. Fails closed when evidence location/source artifact reference is missing.
@@ -299,6 +301,120 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
           data,
           replayed: result.replayedResult === true,
         };
+      }
+
+      if (result.category === 'REFUSED') {
+        return {
+          ok: false,
+          category: 'REFUSED',
+          commandId,
+          refusalCode: result.refusalCode,
+          reason: result.reason,
+        };
+      }
+
+      return {
+        ok: false,
+        category: 'ERROR',
+        commandId,
+        errorDetails: result.error ? String(result.error.message ?? result.error) : 'Runtime execution error',
+      };
+    } catch (err) {
+      return {
+        ok: false,
+        category: 'ERROR',
+        commandId,
+        errorDetails: err instanceof Error ? err.message : String(err),
+      };
+    }
+  }
+
+  /**
+   * Queries Governed Learning guidance set through the public runtime.
+   */
+  public async queryGuidance(input: BECCGuidanceQueryInput): Promise<BECCGuidanceQueryResult> {
+    const commandType: CommandTypeEnum = 'BuildGuidanceSetQuery';
+    const targetCategory = input.targetRef?.targetCategory ?? 'UNKNOWN';
+    let targetId = 'unknown';
+    if (input.targetRef) {
+      if (input.targetRef.targetCategory === 'PROJECT') {
+        targetId = input.targetRef.projectRef.projectId;
+      } else if (input.targetRef.targetCategory === 'WORKSTREAM') {
+        targetId = input.targetRef.workstreamRef.workstreamId;
+      } else if (input.targetRef.targetCategory === 'LESSON') {
+        targetId = input.targetRef.lessonRef.lessonId;
+      }
+    }
+
+    const commandId = deriveGovernedLearningCommandId(
+      input.queryId,
+      commandType,
+      `${targetCategory}_${targetId}_${input.matchStrategy ?? 'STRICT'}`,
+      input.queryVersion
+    );
+
+    if (!input.targetRef) {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        commandId,
+        refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+        reason: 'TargetRef is required for Governed Learning guidance query (failed closed)',
+      };
+    }
+
+    if (!input.authorityContextRef) {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        commandId,
+        refusalCode: 'REFUSAL_AUTHORITY_LEVEL_UNAUTHORIZED',
+        reason: 'AuthorityContextRef is required for Governed Learning guidance query (failed closed)',
+      };
+    }
+
+    if (!input.issuedAt || input.issuedAt.trim() === '') {
+      return {
+        ok: false,
+        category: 'REFUSED',
+        commandId,
+        refusalCode: 'REFUSAL_INVARIANT_VIOLATION',
+        reason: 'issuedAt timestamp is required for Governed Learning command identity (failed closed)',
+      };
+    }
+
+    const issuedAt = input.issuedAt;
+    const payload = {
+      queryId: input.queryId,
+      targetRef: input.targetRef,
+      matchStrategy: input.matchStrategy ?? 'STRICT',
+    };
+
+    const envelope: GovernanceCommandEnvelope = {
+      commandId,
+      commandType,
+      payloadVersion: '1.0.0',
+      issuedAt,
+      actorRef: input.actorRef,
+      authorityContextRef: input.authorityContextRef,
+      payload,
+    };
+
+    try {
+      const result = await this.runtime.processAndExecuteCommandAsync(envelope);
+
+      if (result.ok && result.category === 'SUCCESS') {
+        const handlerOutcome = result.handlerOutcome;
+        if (handlerOutcome && handlerOutcome.ok && handlerOutcome.category === 'SUCCESS') {
+          const queryResult = handlerOutcome.data as any;
+          return {
+            ok: true,
+            category: 'SUCCESS',
+            commandId,
+            guidanceSet: queryResult?.guidanceSet,
+            replayed: result.replayedResult === true,
+          };
+        }
       }
 
       if (result.category === 'REFUSED') {
