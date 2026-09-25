@@ -139,13 +139,26 @@ export class FindingEscalationService {
       replayedSteps.push('DRAFT');
     }
 
-    // Capture canonical observation ID returned by GL or derived from commandId (obs_${commandId})
+    // Extract canonical observation ID strictly from public Governed Learning draft response
     const observationId =
-      (draftRes.data as any)?.observationId ??
-      (draftRes.data as any)?.observationRef?.observationId ??
-      `obs_${draftRes.commandId}`;
+      draftRes.observationId ??
+      draftRes.observationRef?.observationId ??
+      (draftRes.data as any)?.observationId;
 
-    const observationRef = { observationId };
+    if (!observationId || typeof observationId !== 'string' || observationId.trim() === '') {
+      return {
+        ok: false,
+        category: 'ERROR',
+        findingId,
+        draftCommandId: draftRes.commandId,
+        attachedEvidenceCount: 0,
+        failedStage: 'DRAFT',
+        reason: 'Governed Learning DraftObservation succeeded but returned no canonical observationId (failed closed)',
+        errorDetails: 'Governed Learning DraftObservation succeeded but did not return a canonical observationId (failed closed)',
+      };
+    }
+
+    const observationRef = { observationId: observationId.trim() };
 
     // STEP 2: Collect & Attach Evidence
     const evidenceList = this.collectEvidenceItems(input, findingObj);

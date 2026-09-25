@@ -62,10 +62,13 @@ function maybeAsync<T, R>(
 export function handleDraftObservationCommand(
   input: CommandHandlerInput<z.infer<typeof DraftObservationCommandPayloadSchema>>
 ): CommandHandlerOutcome {
+  const observationId = `obs_${input.envelope.commandId}`;
   return {
     ok: true,
     category: 'SUCCESS',
     data: {
+      observationId,
+      observationRef: { observationId },
       observationCategory: input.payload.category,
       statement: input.payload.statement,
       state: 'DRAFT',

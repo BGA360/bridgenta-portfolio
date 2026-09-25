@@ -55,6 +55,23 @@ describe('BECC v2 IMPL-014: Finding -> Observation Escalation Pipeline Test Suit
     const repo = new InMemoryGovernanceRepository();
     const runtime = createGovernedLearningRuntime({ persistencePort: repo });
     const adapter = new DefaultGovernedLearningIntegrationAdapter({ runtime });
+
+    // Spy on adapter methods to verify observationId propagation across stages
+    const attachCalls: string[] = [];
+    const submitCalls: string[] = [];
+
+    const originalAttach = adapter.attachEvidence.bind(adapter);
+    adapter.attachEvidence = async (input, obsId) => {
+      attachCalls.push(obsId);
+      return originalAttach(input, obsId);
+    };
+
+    const originalSubmit = adapter.submitObservation.bind(adapter);
+    adapter.submitObservation = async (input, obsId) => {
+      submitCalls.push(obsId);
+      return originalSubmit(input, obsId);
+    };
+
     const service = new FindingEscalationService({ adapter });
 
     const input: EscalationRequestInput = {
@@ -75,9 +92,12 @@ describe('BECC v2 IMPL-014: Finding -> Observation Escalation Pipeline Test Suit
     assert.strictEqual(res.attachedEvidenceCount, 1);
     assert.strictEqual(res.completedStage, 'SUBMIT');
 
-    // Verify traceability findingId <-> observationId
+    // Verify draft returned observationRef.observationId == AttachEvidence observation target == SubmitObservation observation target
+    assert.strictEqual(attachCalls.length, 1);
+    assert.strictEqual(submitCalls.length, 1);
+    assert.strictEqual(attachCalls[0], res.observationId);
+    assert.strictEqual(submitCalls[0], res.observationId);
     assert.strictEqual(res.findingId, sampleFinding.id);
-    assert.ok(res.observationId.startsWith('obs_cmd_becc_'));
   });
 
   it('3. Multiple Evidence Attachment Success (MULTI_EVIDENCE_ESCALATION)', async () => {
@@ -208,45 +228,133 @@ describe('BECC v2 IMPL-014: Finding -> Observation Escalation Pipeline Test Suit
     assert.ok(res2.replayedSteps && res2.replayedSteps.length > 0, 'Replayed steps should be populated');
   });
 
-  it('8. Cross-Project Escalation Isolation (CROSS_PROJECT_ESCALATION_ISOLATION)', async () => {
+  it('8. Missing Draft Observation ID Fails Closed Before Attach (MISSING_DRAFT_OBSERVATION_ID_TEST)', async () => {
+    const mockAdapter = {
+      draftObservation: async () => ({
+        ok: true as const,
+        category: 'SUCCESS' as const,
+        commandId: 'cmd_becc_test_missing_obs_id',
+        replayed: false,
+        data: {}, // SUCCESS but NO observationId or observationRef!
+      }),
+      attachEvidence: async () => {
+        assert.fail('attachEvidence must NOT be called when observationId is missing');
+      },
+      submitObservation: async () => {
+        assert.fail('submitObservation must NOT be called when observationId is missing');
+      },
+    };
+
+    const service = new FindingEscalationService({ adapter: mockAdapter as any });
+
+    const res = await service.escalateFinding({
+      finding: sampleFinding,
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-24T20:08:00.000Z',
+    });
+
+    assert.strictEqual(res.ok, false);
+    assert.strictEqual(res.category, 'ERROR');
+    assert.strictEqual(res.failedStage, 'DRAFT');
+    assert.strictEqual(res.attachedEvidenceCount, 0);
+    assert.ok(res.reason?.includes('DraftObservation succeeded but returned no canonical observationId'));
+  });
+
+  it('9. Changed Finding Identity Refused on Replay (CHANGED_FINDING_SAME_IDENTITY_REFUSED)', async () => {
     const repo = new InMemoryGovernanceRepository();
     const runtime = createGovernedLearningRuntime({ persistencePort: repo });
     const adapter = new DefaultGovernedLearningIntegrationAdapter({ runtime });
     const service = new FindingEscalationService({ adapter });
 
-    const findingProjA: ValidationFinding = {
-      ...sampleFinding,
-      id: 'fnd_prj_a_001',
-    };
-
-    const findingProjB: ValidationFinding = {
-      ...sampleFinding,
-      id: 'fnd_prj_b_001',
-    };
-
-    const resA = await service.escalateFinding({
-      finding: findingProjA,
+    const input1: EscalationRequestInput = {
+      finding: sampleFinding,
       actorRef: validActorRef,
       authorityContextRef: validAuthorityContextRef,
-      issuedAt: '2026-09-24T20:06:00.000Z',
-      projectRef: { projectId: 'PRJ-ALPHA' },
-    });
+      issuedAt: '2026-09-24T20:09:00.000Z',
+    };
 
-    const resB = await service.escalateFinding({
-      finding: findingProjB,
-      actorRef: validActorRef,
-      authorityContextRef: validAuthorityContextRef,
-      issuedAt: '2026-09-24T20:07:00.000Z',
-      projectRef: { projectId: 'PRJ-BETA' },
-    });
+    const res1 = await service.escalateFinding(input1);
+    assert.strictEqual(res1.ok, true);
 
-    assert.strictEqual(resA.ok, true);
-    assert.strictEqual(resB.ok, true);
-    assert.notStrictEqual(resA.findingId, resB.findingId);
-    assert.notStrictEqual(resA.observationId, resB.observationId);
+    // Replay with altered statement but same finding ID, step, and issuedAt
+    const input2: EscalationRequestInput = {
+      ...input1,
+      finding: {
+        ...sampleFinding,
+        message: 'Altered statement causing payload mismatch',
+      },
+    };
+
+    const res2 = await service.escalateFinding(input2);
+    assert.strictEqual(res2.ok, false);
+    assert.strictEqual(res2.category, 'REFUSED');
+    assert.strictEqual(res2.refusalCode, 'REFUSAL_INVARIANT_VIOLATION');
   });
 
-  it('9. Static Boundary Check: No Direct Database Imports in Escalation Code (IMPL014_GL_DATABASE_BOUNDARY_TEST)', () => {
+  it('10. Truthful Scope Isolation Claims - Project and Workstream Scope Unsupported in GL Observation Contract (CROSS_PROJECT_ESCALATION_ISOLATION_TEST & CROSS_WORKSTREAM_ESCALATION_ISOLATION_TEST)', async () => {
+    // Truthful verification: Governed Learning DraftObservation/AttachEvidence/SubmitObservation commands
+    // do NOT carry projectRef or workstreamRef in their payloads.
+    // BECC escalation mapping accurately reflects this contract limit:
+    // PROJECT_SCOPE_SUPPORTED_FOR_ESCALATION: NO
+    // WORKSTREAM_SCOPE_SUPPORTED_FOR_ESCALATION: NO
+    // CROSS_PROJECT_ESCALATION_ISOLATION: NOT_APPLICABLE
+    // CROSS_WORKSTREAM_ESCALATION_ISOLATION: NOT_APPLICABLE
+
+    const repo = new InMemoryGovernanceRepository();
+    const runtime = createGovernedLearningRuntime({ persistencePort: repo });
+    const adapter = new DefaultGovernedLearningIntegrationAdapter({ runtime });
+
+    const draftCall = await adapter.draftObservation({
+      findingId: sampleFinding.id,
+      category: 'MECHANICAL',
+      statement: sampleFinding.message,
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-24T20:10:00.000Z',
+    });
+
+    assert.strictEqual(draftCall.ok, true);
+    // Payload delivered to GL has no projectRef or workstreamRef fields
+    const data = draftCall.data as any;
+    assert.strictEqual(data.projectRef, undefined);
+    assert.strictEqual(data.workstreamRef, undefined);
+  });
+
+  it('11. Static Boundary Check: No BECC Local Observation ID Reconstruction (NO_BECC_OBSERVATION_ID_RECONSTRUCTION_TEST)', () => {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const beccRoot = __dirname.includes(path.sep + 'dist')
+      ? path.resolve(__dirname, '../../')
+      : path.resolve(__dirname, '../');
+
+    const targetFiles = [
+      path.resolve(beccRoot, 'escalation/finding-escalation.service.ts'),
+      path.resolve(beccRoot, 'governed-learning/governed-learning-adapter.service.ts'),
+    ];
+
+    const forbiddenReconstructionPatterns = [
+      /obs_\$\{/,
+      /`obs_\$\{/,
+      /'obs_'/,
+      /"obs_"/,
+    ];
+
+    for (const filePath of targetFiles) {
+      const content = readFileSync(filePath, 'utf-8');
+      // Strip doc comments before checking code
+      const codeOnly = content.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*/g, '');
+      for (const pattern of forbiddenReconstructionPatterns) {
+        assert.strictEqual(
+          pattern.test(codeOnly),
+          false,
+          `File ${path.basename(filePath)} violates observation identity rules by matching reconstruction pattern ${pattern}`
+        );
+      }
+    }
+  });
+
+  it('12. Static Boundary Check: No Direct Database Imports in Escalation Code (IMPL014_GL_DATABASE_BOUNDARY_TEST)', () => {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const beccRoot = __dirname.includes(path.sep + 'dist')
@@ -282,7 +390,7 @@ describe('BECC v2 IMPL-014: Finding -> Observation Escalation Pipeline Test Suit
     }
   });
 
-  it('10. Static Boundary Check: BECC Imports Only GL Public Surface (IMPL014_GL_PUBLIC_API_BOUNDARY_TEST)', () => {
+  it('13. Static Boundary Check: BECC Imports Only GL Public Surface (IMPL014_GL_PUBLIC_API_BOUNDARY_TEST)', () => {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const beccRoot = __dirname.includes(path.sep + 'dist')
@@ -307,7 +415,7 @@ describe('BECC v2 IMPL-014: Finding -> Observation Escalation Pipeline Test Suit
     }
   });
 
-  it('11. Static Boundary Check: Pipeline Stops at SubmitObservation (IMPL014_STOPS_AT_SUBMIT_OBSERVATION)', () => {
+  it('14. Static Boundary Check: Pipeline Stops at SubmitObservation (IMPL014_STOPS_AT_SUBMIT_OBSERVATION)', () => {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const beccRoot = __dirname.includes(path.sep + 'dist')

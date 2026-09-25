@@ -32,8 +32,6 @@ export interface EscalationRequestInput {
   readonly evidenceItems?: readonly BECCFindingEvidenceInput[];
   readonly issuedAt: string;
   readonly escalationVersion?: string;
-  readonly projectRef?: { readonly projectId: string };
-  readonly workstreamRef?: { readonly workstreamId: string };
 }
 
 /**

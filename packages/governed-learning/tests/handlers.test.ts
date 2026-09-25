@@ -31,7 +31,7 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     authorityContextRef: { authorityId: 'ctx_steward_01' },
   };
 
-  it('handleDraftObservationCommand creates draft observation intent', () => {
+  it('handleDraftObservationCommand creates draft observation intent and returns canonical observationId', () => {
     const payload = { category: 'MECHANICAL' as const, statement: 'System latency exceeded threshold' };
     const res = handleDraftObservationCommand({ envelope: baseEnvelope, payload });
     assert.equal(res.ok, true);
@@ -41,7 +41,29 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
       assert.equal(data.observationCategory, 'MECHANICAL');
       assert.equal(data.statement, 'System latency exceeded threshold');
       assert.equal(data.actorId, 'usr_steward_01');
+      assert.equal(data.observationId, `obs_${baseEnvelope.commandId}`);
+      assert.equal(data.observationRef?.observationId, `obs_${baseEnvelope.commandId}`);
     }
+  });
+
+  it('handleDraftObservationCommand preserves observation identity on Stage 8 replay and varies by commandId', () => {
+    const payload = { category: 'MECHANICAL' as const, statement: 'System latency exceeded threshold' };
+    const res1 = handleDraftObservationCommand({ envelope: baseEnvelope, payload });
+    assert.equal(res1.ok, true);
+    const id1 = (res1 as any).data?.observationId;
+    assert.equal(id1, `obs_${baseEnvelope.commandId}`);
+
+    // Same envelope replay
+    const resReplay = handleDraftObservationCommand({ envelope: baseEnvelope, payload });
+    assert.equal(resReplay.ok, true);
+    assert.equal((resReplay as any).data?.observationId, id1);
+
+    // Different commandId
+    const env2 = { ...baseEnvelope, commandId: 'cmd_wave4_test_002' };
+    const res2 = handleDraftObservationCommand({ envelope: env2, payload });
+    assert.equal(res2.ok, true);
+    assert.equal((res2 as any).data?.observationId, `obs_${env2.commandId}`);
+    assert.notEqual((res2 as any).data?.observationId, id1);
   });
 
   it('handleAttachEvidenceCommand attaches evidence reference', () => {

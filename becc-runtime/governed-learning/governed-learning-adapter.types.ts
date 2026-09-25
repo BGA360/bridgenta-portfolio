@@ -36,6 +36,8 @@ export interface BECCEscalationResult<T = unknown> {
   readonly ok: boolean;
   readonly category: RuntimeResultCategory;
   readonly commandId: string;
+  readonly observationId?: string;
+  readonly observationRef?: { readonly observationId: string };
   readonly data?: T;
   readonly refusalCode?: RefusalCodeEnum;
   readonly reason?: string;
