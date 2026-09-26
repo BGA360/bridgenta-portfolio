@@ -99,10 +99,15 @@ export class DefaultGovernedLearningIntegrationAdapter implements GovernedLearni
 
       if (result.ok && result.category === 'SUCCESS') {
         const data = result.handlerOutcome && result.handlerOutcome.ok ? result.handlerOutcome.data : undefined;
+        const observationId = (data as any)?.observationId ?? (data as any)?.observationRef?.observationId;
+        const observationRef = observationId ? { observationId } : undefined;
+
         return {
           ok: true,
           category: 'SUCCESS',
           commandId,
+          observationId,
+          observationRef,
           data,
           replayed: result.replayedResult === true,
         };
