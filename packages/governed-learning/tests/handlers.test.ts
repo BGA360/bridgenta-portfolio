@@ -21,6 +21,11 @@ import {
   handleBuildGuidanceSetQueryCommand,
 } from '../src/runtime/handlers.js';
 
+import {
+  createGovernedLearningRuntime,
+  InMemoryGovernanceRepository,
+} from '../src/runtime/index.js';
+
 describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
   const baseEnvelope: GovernanceCommandEnvelope = {
     commandId: 'cmd_wave4_test_001',
@@ -46,14 +51,14 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     }
   });
 
-  it('handleDraftObservationCommand preserves observation identity on Stage 8 replay and varies by commandId', () => {
+  it('handleDraftObservationCommand derives deterministic observation identity from commandId (HANDLER_DETERMINISTIC_IDENTITY_TEST)', () => {
     const payload = { category: 'MECHANICAL' as const, statement: 'System latency exceeded threshold' };
     const res1 = handleDraftObservationCommand({ envelope: baseEnvelope, payload });
     assert.equal(res1.ok, true);
     const id1 = (res1 as any).data?.observationId;
     assert.equal(id1, `obs_${baseEnvelope.commandId}`);
 
-    // Same envelope replay
+    // Same envelope call
     const resReplay = handleDraftObservationCommand({ envelope: baseEnvelope, payload });
     assert.equal(resReplay.ok, true);
     assert.equal((resReplay as any).data?.observationId, id1);
@@ -64,6 +69,82 @@ describe('Governed Learning Runtime Wave 4 Command Handlers', () => {
     assert.equal(res2.ok, true);
     assert.equal((res2 as any).data?.observationId, `obs_${env2.commandId}`);
     assert.notEqual((res2 as any).data?.observationId, id1);
+  });
+
+  it('GovernedLearningRuntime Stage 8 replay preserves canonical DraftObservation identity (FIRST_RUNTIME_DRAFT_RETURNS_CANONICAL_ID, REAL_STAGE8_DRAFT_REPLAY, STAGE8_REPLAY_PRESERVES_OBSERVATION_ID)', async () => {
+    const repo = new InMemoryGovernanceRepository();
+    const runtime = createGovernedLearningRuntime({ persistencePort: repo });
+
+    const env: GovernanceCommandEnvelope = {
+      commandId: 'cmd_draft_stage8_test_001',
+      commandType: 'DraftObservation',
+      issuedAt: '2026-09-26T04:00:00.000Z',
+      payloadVersion: '1.0.0',
+      actorRef: { actorId: 'usr_steward_01', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'ctx_steward_01' },
+      payload: { category: 'MECHANICAL', statement: 'System latency exceeded threshold' },
+    };
+
+    // First execution through runtime
+    const res1 = await runtime.processAndExecuteCommandAsync(env);
+    assert.equal(res1.ok, true);
+    assert.equal(res1.category, 'SUCCESS');
+    assert.equal(res1.replayedResult, undefined);
+
+    const outcome1 = res1.handlerOutcome as any;
+    const obsId1 = outcome1?.data?.observationId;
+    const obsRefId1 = outcome1?.data?.observationRef?.observationId;
+    assert.equal(obsId1, 'obs_cmd_draft_stage8_test_001');
+    assert.equal(obsRefId1, obsId1);
+
+    // Exact retry through real runtime Stage 8 path
+    const res2 = await runtime.processAndExecuteCommandAsync(env);
+    assert.equal(res2.ok, true);
+    assert.equal(res2.category, 'SUCCESS');
+    assert.equal(res2.replayedResult, true);
+
+    const outcome2 = res2.handlerOutcome as any;
+    const obsId2 = outcome2?.data?.observationId;
+    const obsRefId2 = outcome2?.data?.observationRef?.observationId;
+    assert.equal(obsId2, obsId1);
+    assert.equal(obsRefId2, obsRefId1);
+  });
+
+  it('GovernedLearningRuntime DraftObservation public observationId equals persisted observation identity (PUBLIC_OBSERVATION_ID_EQUALS_PERSISTED_ID, REPLAY_PERSISTED_IDENTITY_STABLE)', async () => {
+    const repo = new InMemoryGovernanceRepository();
+    const runtime = createGovernedLearningRuntime({ persistencePort: repo });
+
+    const env: GovernanceCommandEnvelope = {
+      commandId: 'cmd_draft_persisted_align_001',
+      commandType: 'DraftObservation',
+      issuedAt: '2026-09-26T04:01:00.000Z',
+      payloadVersion: '1.0.0',
+      actorRef: { actorId: 'usr_steward_01', actorType: 'HUMAN' },
+      authorityContextRef: { authorityId: 'ctx_steward_01' },
+      payload: { category: 'MECHANICAL', statement: 'Storage capacity warning' },
+    };
+
+    const res1 = await runtime.processAndExecuteCommandAsync(env);
+    assert.equal(res1.ok, true);
+
+    const outcome1 = res1.handlerOutcome as any;
+    const publicObservationId = outcome1?.data?.observationId;
+    assert.equal(publicObservationId, 'obs_cmd_draft_persisted_align_001');
+
+    // Read persisted observation from GovernancePersistencePort
+    const persistedRes = await repo.getObservationByRef(publicObservationId!);
+    assert.equal(persistedRes.ok, true);
+    const persistedData = persistedRes.data as any;
+    assert.equal(persistedData.observationRef, publicObservationId);
+
+    // Replay command and verify persistence record remains identical and stable
+    const res2 = await runtime.processAndExecuteCommandAsync(env);
+    assert.equal(res2.ok, true);
+    assert.equal(res2.replayedResult, true);
+
+    const persistedRes2 = await repo.getObservationByRef(publicObservationId!);
+    assert.equal(persistedRes2.ok, true);
+    assert.equal((persistedRes2.data as any).observationRef, publicObservationId);
   });
 
   it('handleAttachEvidenceCommand attaches evidence reference', () => {

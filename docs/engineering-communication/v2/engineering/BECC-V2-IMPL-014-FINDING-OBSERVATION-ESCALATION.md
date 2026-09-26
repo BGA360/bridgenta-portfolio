@@ -63,6 +63,16 @@ Key Architectural Guarantees & Epistemic Invariants:
 * **`CANONICAL_OBSERVATION_ID_PROPAGATION_TEST`:** `PASS`
 * **`MISSING_DRAFT_OBSERVATION_ID_TEST`:** `PASS`
 * **`NO_BECC_OBSERVATION_ID_RECONSTRUCTION_TEST`:** `PASS`
+* **`DIRECT_HANDLER_TEST_CLAIMS_STAGE8_REPLAY`:** `NO`
+* **`HANDLER_DETERMINISTIC_IDENTITY_TEST`:** `PASS`
+* **`FIRST_RUNTIME_DRAFT_RETURNS_CANONICAL_ID`:** `PASS`
+* **`REAL_STAGE8_DRAFT_REPLAY`:** `PASS`
+* **`STAGE8_REPLAY_PRESERVES_OBSERVATION_ID`:** `PASS`
+* **`PUBLIC_OBSERVATION_ID_EQUALS_PERSISTED_ID`:** `PASS`
+* **`REPLAY_PERSISTED_IDENTITY_STABLE`:** `PASS`
+* **`BECC_EXACT_ESCALATION_RETRY`:** `PASS`
+* **`TEST_NAMES_MATCH_ACTUAL_LAYER`:** `YES`
+* **`PRODUCTION_CODE_CHANGED`:** `NO`
 * **`GL_DRAFT_OBSERVATION_SUPPORTS_PROJECT_SCOPE`:** `NO`
 * **`GL_DRAFT_OBSERVATION_SUPPORTS_WORKSTREAM_SCOPE`:** `NO`
 * **`PROJECT_SCOPE_SUPPORTED_FOR_ESCALATION`:** `NO`
@@ -127,7 +137,8 @@ Key Architectural Guarantees & Epistemic Invariants:
 * **BECC Integration Adapter Tests:** `PASS` (`becc-runtime/tests/governed-learning-adapter.test.ts` 13/13 PASS)
 * **BECC Runtime Build:** `PASS` (`npm run --prefix becc-runtime build`)
 * **Governed Learning Core Package Build:** `PASS` (`npm run --prefix packages/governed-learning build`)
-* **Governed Learning Unit/Concurrency Tests:** `PASS` (`npm run --prefix packages/governed-learning test` 308/308 PASS)
+* **Governed Learning Unit/Concurrency Tests:** `PASS` (`npm run --prefix packages/governed-learning test` 310/310 PASS)
 * **Governed Learning PostgreSQL Real Certification:** `PASS` (`npm run --prefix packages/governed-learning test:postgres` 19/19 PASS)
 * **Root Build:** `PASS` (`npm run build`)
 * **Root Lint:** `PASS` (`npm run lint`)
+
