@@ -120,7 +120,6 @@ export interface PortfolioReadinessEvaluationResult {
 export interface PortfolioReadinessRuleProvider {
   getRuleVersion(): string;
   getRequirements(): ReadinessRequirementDefinition[];
-  getActiveProjectWhitelist(): string[];
 }
 
 /**

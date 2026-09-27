@@ -24,12 +24,13 @@ import {
 } from './publication-readiness.types.js';
 
 /**
- * Default canonical rule provider based on docs/portfolio-readiness-rule.md
+ * Default canonical rule provider based strictly on Section 1 of docs/portfolio-readiness-rule.md
+ * (5 canonical readiness thresholds).
  */
 export class CanonicalPortfolioReadinessRuleProvider
   implements PortfolioReadinessRuleProvider
 {
-  private static readonly RULE_VERSION = 'v1.0';
+  private static readonly RULE_SOURCE_REF = 'docs/portfolio-readiness-rule.md';
 
   private static readonly REQUIREMENTS: ReadinessRequirementDefinition[] = [
     {
@@ -71,51 +72,32 @@ export class CanonicalPortfolioReadinessRuleProvider
       sourceRuleRef: 'docs/portfolio-readiness-rule.md#1.5',
       blocking: true,
       evidenceRequired: true
-    },
-    {
-      requirementId: 'REQ-ACTIVE-WHITELIST-06',
-      dimensionName: 'active_portfolio_eligibility',
-      description: 'Active Portfolio Whitelist Inclusion',
-      sourceRuleRef: 'docs/portfolio-readiness-rule.md#2',
-      blocking: true,
-      evidenceRequired: true
     }
   ];
 
-  private static readonly ACTIVE_WHITELIST: string[] = [
-    'BridGenta Reconstruction Platform',
-    'AEOcortex',
-    'Lumina Praxis',
-    'Rooted Reality Gardens',
-    'StarCleaners'
-  ];
-
   getRuleVersion(): string {
-    return CanonicalPortfolioReadinessRuleProvider.RULE_VERSION;
+    return CanonicalPortfolioReadinessRuleProvider.RULE_SOURCE_REF;
   }
 
   getRequirements(): ReadinessRequirementDefinition[] {
     return [...CanonicalPortfolioReadinessRuleProvider.REQUIREMENTS];
   }
-
-  getActiveProjectWhitelist(): string[] {
-    return [...CanonicalPortfolioReadinessRuleProvider.ACTIVE_WHITELIST];
-  }
 }
 
 /**
  * Service for evaluating project and candidate publication & portfolio readiness.
+ * Requires explicit dependency injection of a PortfolioReadinessRuleProvider.
  */
 export class PublicationReadinessEvaluationService {
   private readonly ruleProvider: PortfolioReadinessRuleProvider;
   private readonly evidenceRepository?: ReadinessEvidenceRepository;
 
   constructor(
-    ruleProvider: PortfolioReadinessRuleProvider = new CanonicalPortfolioReadinessRuleProvider(),
+    ruleProvider: PortfolioReadinessRuleProvider,
     evidenceRepository?: ReadinessEvidenceRepository
   ) {
     if (!ruleProvider) {
-      throw new Error('Explicit ruleProvider is required');
+      throw new Error('Explicit PortfolioReadinessRuleProvider is required');
     }
     this.ruleProvider = ruleProvider;
     this.evidenceRepository = evidenceRepository;
@@ -185,8 +167,6 @@ export class PublicationReadinessEvaluationService {
       }
 
       const definedRequirements = this.ruleProvider.getRequirements();
-      const whitelist = this.ruleProvider.getActiveProjectWhitelist();
-
       const reqIdSet = new Set(definedRequirements.map((r) => r.requirementId));
 
       // Check for unknown requirement references in evidence
@@ -232,37 +212,6 @@ export class PublicationReadinessEvaluationService {
             allEvidenceRefs.push(item.evidenceId);
           }
         });
-
-        // Handle Active Whitelist requirement explicitly if projectRef matches
-        if (req.requirementId === 'REQ-ACTIVE-WHITELIST-06') {
-          const isWhitelisted = whitelist.includes(input.projectRef);
-          if (matchingEvidence.length === 0) {
-            const status = isWhitelisted ? 'SATISFIED' : 'NOT_SATISFIED';
-            const reason = isWhitelisted
-              ? `Project '${input.projectRef}' is explicitly on active portfolio whitelist.`
-              : `Project '${input.projectRef}' is not on active portfolio whitelist.`;
-            evaluatedRequirements.push({
-              requirementId: req.requirementId,
-              dimensionName: req.dimensionName,
-              description: req.description,
-              sourceRuleRef: req.sourceRuleRef,
-              blocking: req.blocking,
-              status,
-              evidenceRefs: [],
-              reason
-            });
-
-            if (status === 'SATISFIED') {
-              satisfiedRequirementIds.push(req.requirementId);
-            } else {
-              if (req.blocking) {
-                blockingRequirementIds.push(req.requirementId);
-                hasUnsatisfiedBlockingRequirement = true;
-              }
-            }
-            continue;
-          }
-        }
 
         if (matchingEvidence.length === 0) {
           missingEvidenceRequirementIds.push(req.requirementId);
@@ -384,4 +333,16 @@ export class PublicationReadinessEvaluationService {
       };
     }
   }
+}
+
+/**
+ * Composition factory to create a service explicitly wired with CanonicalPortfolioReadinessRuleProvider.
+ */
+export function createCanonicalPublicationReadinessService(
+  evidenceRepository?: ReadinessEvidenceRepository
+): PublicationReadinessEvaluationService {
+  return new PublicationReadinessEvaluationService(
+    new CanonicalPortfolioReadinessRuleProvider(),
+    evidenceRepository
+  );
 }

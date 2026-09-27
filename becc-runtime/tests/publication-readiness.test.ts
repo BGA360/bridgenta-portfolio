@@ -1,15 +1,21 @@
 /**
- * BECC v2 — Publication & Portfolio Readiness Evaluation Service Tests
+ * BECC v2 — Publication & Portfolio Readiness Evaluation Service Remediated Tests
  *
- * IMPL-015 test suite certifying readiness evaluation semantics, evidence handling,
- * error fail-closed behavior, determinism, and M5 / PRAG authority boundary preservation.
+ * IMPL-015 remediated test suite certifying:
+ * 1. 5 canonical readiness thresholds (docs/portfolio-readiness-rule.md Section 1).
+ * 2. Active whitelist is NOT a readiness requirement (new projects can evaluate READY_BY_EVIDENCE).
+ * 3. Static test confirming REQ-ACTIVE-WHITELIST-06 is absent.
+ * 4. Explicit dependency injection (no silent default provider in business service).
+ * 5. M5 / PRAG governance authority boundary preservation (no PRAG sole authority, no unproven Human Publication Board claims).
+ * 6. Evidence-backed rule version traceability (docs/portfolio-readiness-rule.md).
  */
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   PublicationReadinessEvaluationService,
-  CanonicalPortfolioReadinessRuleProvider
+  CanonicalPortfolioReadinessRuleProvider,
+  createCanonicalPublicationReadinessService
 } from '../readiness/publication-readiness.service.js';
 import {
   PortfolioReadinessEvaluationInput,
@@ -19,9 +25,9 @@ import {
   ReadinessEvidenceRepository
 } from '../readiness/publication-readiness.types.js';
 
-describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service', () => {
-  it('Phase 28: FULLY_SATISFIED_READINESS_CASE — returns READY_BY_EVIDENCE while preserving M5 / PRAG authority boundary', async () => {
-    const service = new PublicationReadinessEvaluationService();
+describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service (Remediated)', () => {
+  it('Phase 28: FULLY_SATISFIED_READINESS_CASE — returns READY_BY_EVIDENCE for all 5 canonical criteria while preserving M5 / PRAG authority boundary', async () => {
+    const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
       evaluationId: 'eval-satisfied-001',
@@ -47,7 +53,7 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
           requirementId: 'REQ-VISUAL-EVIDENCE-03',
           source: 'BECC Assessment Engine',
           state: 'SATISFIED',
-          details: 'UI screenshots and system diagrams present in docs/becc/aeocortex/'
+          details: 'UI screenshots and system diagrams present'
         },
         {
           evidenceId: 'ev-defens-04',
@@ -69,7 +75,7 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
     const result = await service.evaluateReadiness(input);
 
     assert.equal(result.status, 'READY_BY_EVIDENCE');
-    assert.equal(result.satisfiedRequirementIds.length, 6);
+    assert.equal(result.satisfiedRequirementIds.length, 5);
     assert.equal(result.blockingRequirementIds.length, 0);
 
     // Authority boundary assertions
@@ -79,11 +85,78 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
     assert.equal(result.authorityBoundary.evaluationOnly, true);
   });
 
-  it('Phase 29: BLOCKING_REQUIREMENT_CASE — failing blocking requirement returns NOT_READY', async () => {
-    const service = new PublicationReadinessEvaluationService();
+  it('Part B2: NEW_PROJECT_NOT_ON_WHITELIST_CAN_BE_READY_BY_EVIDENCE — new project not on whitelist evaluates to READY_BY_EVIDENCE when criteria are met', async () => {
+    const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-blocking-002',
+      evaluationId: 'eval-newproject-002',
+      projectRef: 'BrandNewUnlistedProjectCandidate',
+      issuedAt: '2026-09-26T00:00:00Z',
+      evidenceItems: [
+        {
+          evidenceId: 'ev-dev-mat-01',
+          requirementId: 'REQ-DEV-MATURITY-01',
+          source: 'BECC Assessment Engine',
+          state: 'SATISFIED'
+        },
+        {
+          evidenceId: 'ev-prof-purp-02',
+          requirementId: 'REQ-PROF-PURPOSE-02',
+          source: 'BECC Assessment Engine',
+          state: 'SATISFIED'
+        },
+        {
+          evidenceId: 'ev-visual-03',
+          requirementId: 'REQ-VISUAL-EVIDENCE-03',
+          source: 'BECC Assessment Engine',
+          state: 'SATISFIED'
+        },
+        {
+          evidenceId: 'ev-defens-04',
+          requirementId: 'REQ-INTERVIEW-DEF-04',
+          source: 'BECC Assessment Engine',
+          state: 'SATISFIED'
+        },
+        {
+          evidenceId: 'ev-pub-std-05',
+          requirementId: 'REQ-PUB-STANDARD-05',
+          source: 'BECC Assessment Engine',
+          state: 'SATISFIED'
+        }
+      ]
+    };
+
+    const result = await service.evaluateReadiness(input);
+
+    assert.equal(result.status, 'READY_BY_EVIDENCE');
+    assert.equal(result.satisfiedRequirementIds.length, 5);
+    assert.equal(result.blockingRequirementIds.length, 0);
+  });
+
+  it('Part I: NO_WHITELIST_REQUIREMENT_STATIC_TEST — confirms REQ-ACTIVE-WHITELIST-06 is not present in requirement definitions', () => {
+    const provider = new CanonicalPortfolioReadinessRuleProvider();
+    const requirements = provider.getRequirements();
+
+    assert.equal(requirements.length, 5);
+    const reqIds = requirements.map((r) => r.requirementId);
+    assert.equal(reqIds.includes('REQ-ACTIVE-WHITELIST-06'), false);
+  });
+
+  it('Part C1 & C2: EXPLICIT_PROVIDER_REQUIRED_TEST — business service rejects missing provider, composition factory creates service explicitly', () => {
+    assert.throws(
+      () => new PublicationReadinessEvaluationService(undefined as any),
+      /Explicit PortfolioReadinessRuleProvider is required/
+    );
+
+    const factoryService = createCanonicalPublicationReadinessService();
+    assert.ok(factoryService instanceof PublicationReadinessEvaluationService);
+  });
+
+  it('Phase 29: BLOCKING_REQUIREMENT_CASE — failing blocking requirement returns NOT_READY', async () => {
+    const service = createCanonicalPublicationReadinessService();
+
+    const input: PortfolioReadinessEvaluationInput = {
+      evaluationId: 'eval-blocking-003',
       projectRef: 'AEOcortex',
       evidenceItems: [
         {
@@ -127,10 +200,10 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
   });
 
   it('Phase 30: MISSING_EVIDENCE_CASE — missing required evidence returns NOT_READY and distinct status', async () => {
-    const service = new PublicationReadinessEvaluationService();
+    const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-missing-003',
+      evaluationId: 'eval-missing-004',
       projectRef: 'StarCleaners',
       evidenceItems: [
         {
@@ -139,7 +212,6 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
           source: 'BECC Assessment Engine',
           state: 'SATISFIED'
         }
-        // Requirements REQ-PROF-PURPOSE-02 etc. missing evidence
       ]
     };
 
@@ -156,10 +228,10 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
   });
 
   it('Phase 31: CONFLICTING_EVIDENCE_CASE — conflicting evidence for requirement returns INDETERMINATE and fails closed', async () => {
-    const service = new PublicationReadinessEvaluationService();
+    const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-conflict-004',
+      evaluationId: 'eval-conflict-005',
       projectRef: 'Lumina Praxis',
       evidenceItems: [
         {
@@ -187,7 +259,7 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
   it('Phase 32: NON_BLOCKING_REQUIREMENT_CASE — unmet non-blocking requirement does not prevent READY_BY_EVIDENCE', async () => {
     class CustomRuleProvider implements PortfolioReadinessRuleProvider {
       getRuleVersion(): string {
-        return 'v1.0-custom';
+        return 'custom#rule.md';
       }
       getRequirements(): ReadinessRequirementDefinition[] {
         return [
@@ -209,15 +281,12 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
           }
         ];
       }
-      getActiveProjectWhitelist(): string[] {
-        return ['TestProject'];
-      }
     }
 
     const service = new PublicationReadinessEvaluationService(new CustomRuleProvider());
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-nonblocking-005',
+      evaluationId: 'eval-nonblocking-006',
       projectRef: 'TestProject',
       evidenceItems: [
         {
@@ -244,10 +313,10 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
   });
 
   it('Phase 33: SAME_INPUT_SAME_READINESS_RESULT — evaluation is strictly deterministic on replay', async () => {
-    const service = new PublicationReadinessEvaluationService();
+    const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-replay-006',
+      evaluationId: 'eval-replay-007',
       projectRef: 'Rooted Reality Gardens',
       issuedAt: '2026-09-26T12:00:00Z',
       evidenceItems: [
@@ -266,25 +335,25 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
     assert.deepEqual(result1, result2);
   });
 
-  it('Phase 34: RULE_VERSION_TRACEABILITY — output retains canonical rule version', async () => {
-    const ruleProvider = new CanonicalPortfolioReadinessRuleProvider();
-    const service = new PublicationReadinessEvaluationService(ruleProvider);
+  it('Part E & Phase 34: RULE_VERSION_TRACEABILITY — output retains evidence-backed rule version reference', async () => {
+    const provider = new CanonicalPortfolioReadinessRuleProvider();
+    const service = new PublicationReadinessEvaluationService(provider);
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-trace-007',
+      evaluationId: 'eval-trace-008',
       projectRef: 'BridGenta Reconstruction Platform',
       evidenceItems: []
     };
 
     const result = await service.evaluateReadiness(input);
-    assert.equal(result.ruleVersion, 'v1.0');
+    assert.equal(result.ruleVersion, 'docs/portfolio-readiness-rule.md');
   });
 
   it('Phase 35 & 36: BECC_PUBLICATION_AUTHORITY_BOUNDARY_TEST — readiness result does not imply or grant publication approval', async () => {
-    const service = new PublicationReadinessEvaluationService();
+    const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-boundary-008',
+      evaluationId: 'eval-boundary-009',
       projectRef: 'AEOcortex',
       evidenceItems: [
         {
@@ -322,22 +391,20 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
 
     const result = await service.evaluateReadiness(input);
 
-    // Verify properties indicating authority assignment do NOT exist
     assert.equal((result as any).approvedForPublication, undefined);
     assert.equal((result as any).publishAuthorized, undefined);
     assert.equal((result as any).publishNow, undefined);
 
-    // Verify authority boundary declaration
     assert.equal(result.authorityBoundary.finalPublicationAuthority, 'M5 / PRAG Governance');
     assert.equal(result.authorityBoundary.beccOwnsFinalAuthority, false);
     assert.equal(result.authorityBoundary.sideEffectsExecuted, false);
   });
 
   it('Phase 38: READINESS_PROVENANCE_TEST — evaluation result retains evidence IDs and references', async () => {
-    const service = new PublicationReadinessEvaluationService();
+    const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-provenance-009',
+      evaluationId: 'eval-provenance-010',
       projectRef: 'AEOcortex',
       evidenceItems: [
         {
@@ -373,7 +440,7 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
     );
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-failrepo-010',
+      evaluationId: 'eval-failrepo-011',
       projectRef: 'StarCleaners',
       evidenceItems: []
     };
@@ -384,10 +451,10 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
   });
 
   it('Phase 40: UNKNOWN_REQUIREMENT_FAILS_CLOSED — evidence referencing unknown requirement produces ERROR', async () => {
-    const service = new PublicationReadinessEvaluationService();
+    const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
-      evaluationId: 'eval-unknownreq-011',
+      evaluationId: 'eval-unknownreq-012',
       projectRef: 'StarCleaners',
       evidenceItems: [
         {
