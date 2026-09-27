@@ -170,7 +170,22 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
     assert.equal((result as any).ruleVersion, undefined);
   });
 
-  it('Part B & K: MISSING_EVALUATION_TIMESTAMP_FAILS_CLOSED — missing issuedAt fails closed to ERROR without synthetic timestamp fallback', async () => {
+  it('Part H: VALID_EVALUATION_TIMESTAMP_TEST — preserves valid caller-supplied issuedAt timestamp exactly as evaluatedAt', async () => {
+    const service = createCanonicalPublicationReadinessService();
+
+    const input: PortfolioReadinessEvaluationInput = {
+      evaluationId: 'eval-validtime-003b',
+      projectRef: 'AEOcortex',
+      issuedAt: '2026-09-27T12:00:00Z',
+      evidenceItems: []
+    };
+
+    const result = await service.evaluateReadiness(input);
+    assert.equal(result.evaluatedAt, '2026-09-27T12:00:00Z');
+    assert.equal(result.evaluatedAt, input.issuedAt);
+  });
+
+  it('Part I: MISSING_EVALUATION_TIMESTAMP_FAILS_CLOSED & MISSING_TIMESTAMP_EVALUATED_AT_ABSENT_TEST — missing issuedAt fails closed to ERROR with undefined evaluatedAt', async () => {
     const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
@@ -189,16 +204,18 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
 
     const result = await service.evaluateReadiness(input);
     assert.equal(result.status, 'ERROR');
+    assert.equal(result.evaluatedAt, undefined);
     assert.notEqual(result.evaluatedAt, '2026-01-01T00:00:00Z');
+    assert.notEqual(result.evaluatedAt, 'MISSING_TIMESTAMP');
   });
 
-  it('Part B & L: INVALID_EVALUATION_TIMESTAMP_FAILS_CLOSED — malformed issuedAt fails closed to ERROR', async () => {
+  it('Part J: INVALID_EVALUATION_TIMESTAMP_FAILS_CLOSED & INVALID_TIMESTAMP_EVALUATED_AT_ABSENT_TEST — malformed issuedAt fails closed to ERROR with undefined evaluatedAt', async () => {
     const service = createCanonicalPublicationReadinessService();
 
     const input: PortfolioReadinessEvaluationInput = {
       evaluationId: 'eval-badtime-005',
       projectRef: 'StarCleaners',
-      issuedAt: 'not-a-valid-iso-timestamp',
+      issuedAt: 'not-a-valid-timestamp',
       evidenceItems: [
         {
           evidenceId: 'ev-dev-mat-01',
@@ -211,6 +228,32 @@ describe('BECC-V2-IMPL-015: Publication & Portfolio Readiness Evaluation Service
 
     const result = await service.evaluateReadiness(input);
     assert.equal(result.status, 'ERROR');
+    assert.equal(result.evaluatedAt, undefined);
+    assert.notEqual(result.evaluatedAt, 'not-a-valid-timestamp');
+  });
+
+  it('Part K: NO_TIMESTAMP_SENTINEL_LEAKAGE_TEST — verifies no MISSING_TIMESTAMP or ERROR_TIMESTAMP sentinels populate evaluatedAt', async () => {
+    const service = createCanonicalPublicationReadinessService();
+
+    const resultMissing = await service.evaluateReadiness({
+      evaluationId: 'eval-missing-ts',
+      projectRef: 'StarCleaners',
+      issuedAt: '',
+      evidenceItems: []
+    });
+    assert.notEqual(resultMissing.evaluatedAt, 'MISSING_TIMESTAMP');
+    assert.notEqual(resultMissing.evaluatedAt, 'ERROR_TIMESTAMP');
+    assert.equal(resultMissing.evaluatedAt, undefined);
+
+    const resultInvalid = await service.evaluateReadiness({
+      evaluationId: 'eval-invalid-ts',
+      projectRef: 'StarCleaners',
+      issuedAt: 'bad-ts',
+      evidenceItems: []
+    });
+    assert.notEqual(resultInvalid.evaluatedAt, 'MISSING_TIMESTAMP');
+    assert.notEqual(resultInvalid.evaluatedAt, 'ERROR_TIMESTAMP');
+    assert.equal(resultInvalid.evaluatedAt, undefined);
   });
 
   it('Phase 29: BLOCKING_REQUIREMENT_CASE — failing blocking requirement returns NOT_READY', async () => {

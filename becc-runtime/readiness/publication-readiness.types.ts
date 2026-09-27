@@ -112,7 +112,7 @@ export interface PortfolioReadinessEvaluationResult {
   missingEvidenceRequirementIds: string[];
   conflictingEvidenceRequirementIds: string[];
   evidenceRefs: string[];
-  evaluatedAt: string;
+  evaluatedAt?: string;
   authorityBoundary: ReadinessAuthorityBoundary;
 }
 

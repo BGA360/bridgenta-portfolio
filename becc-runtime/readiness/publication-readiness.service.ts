@@ -137,12 +137,12 @@ export class PublicationReadinessEvaluationService {
           missingEvidenceRequirementIds: [],
           conflictingEvidenceRequirementIds: [],
           evidenceRefs: [],
-          evaluatedAt: input?.issuedAt || 'MISSING_TIMESTAMP',
+          evaluatedAt: undefined,
           authorityBoundary
         };
       }
 
-      // Validate ISO timestamp format (fail closed if invalid)
+      // Validate parseable timestamp format (fail closed if invalid)
       if (isNaN(Date.parse(input.issuedAt))) {
         return {
           evaluationId: input.evaluationId,
@@ -157,7 +157,7 @@ export class PublicationReadinessEvaluationService {
           missingEvidenceRequirementIds: [],
           conflictingEvidenceRequirementIds: [],
           evidenceRefs: [],
-          evaluatedAt: input.issuedAt,
+          evaluatedAt: undefined,
           authorityBoundary
         };
       }
@@ -358,7 +358,7 @@ export class PublicationReadinessEvaluationService {
         missingEvidenceRequirementIds: [],
         conflictingEvidenceRequirementIds: [],
         evidenceRefs: [],
-        evaluatedAt: input?.issuedAt || 'ERROR_TIMESTAMP',
+        evaluatedAt: undefined,
         authorityBoundary
       };
     }
