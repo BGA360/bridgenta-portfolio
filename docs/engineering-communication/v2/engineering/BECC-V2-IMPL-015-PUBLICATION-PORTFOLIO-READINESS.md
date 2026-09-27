@@ -1,12 +1,12 @@
 # BECC v2 — Work Package Specification & Implementation Certificate
-## IMPL-015: Publication & Portfolio Readiness Evaluation Service (Remediated)
+## IMPL-015: Publication & Portfolio Readiness Evaluation Service (Final Traceability Remediated)
 
 * **Work Package ID:** `BECC-V2-IMPL-015`
 * **Work Package Name:** Publication & Portfolio Readiness Evaluation Service
-* **Workstream ID:** `BRIDGENTA-BECC-V2-PR316-READINESS-CONTRACT-TRUTHFULNESS-REMEDIATION-01`
+* **Workstream ID:** `BRIDGENTA-BECC-V2-PR316-FINAL-TRACEABILITY-REMEDIATION-01`
 * **Implementation Branch:** `feature/becc-v2-impl-015`
 * **PR Target:** PR #316 (Unmerged for Independent Re-review)
-* **Date:** 2026-09-26
+* **Date:** 2026-09-27
 * **Status:** REMEDIATED & CERTIFIED (Ready for Independent Re-review)
 
 ---
@@ -20,13 +20,14 @@ Key Architectural Guarantees & Epistemic Invariants:
 2. **Five Canonical Readiness Thresholds:** Evaluates exactly the five readiness thresholds defined in Section 1 of `docs/portfolio-readiness-rule.md` (`development_maturity`, `professional_purpose`, `visual_evidence`, `interview_defensibility`, `publication_standard_compliance`). The active project whitelist in Section 2 represents current governed portfolio state, NOT a readiness requirement (`ACTIVE_WHITELIST_AS_READINESS_REQUIREMENT: NO`).
 3. **New Project Eligibility:** Any project satisfying all five canonical readiness criteria evaluates to `READY_BY_EVIDENCE`, regardless of whether it is currently on the historical active whitelist (`NEW_PROJECT_NOT_ON_WHITELIST_CAN_BE_READY_BY_EVIDENCE: PASS`).
 4. **Explicit Dependency Injection:** `PublicationReadinessEvaluationService` requires an explicit `PortfolioReadinessRuleProvider` dependency in its constructor. There is no silent default fallback inside the domain service (`RULE_PROVIDER_EXPLICITLY_REQUIRED: YES`, `SILENT_DEFAULT_RULE_PROVIDER: NO`). An explicit composition factory (`createCanonicalPublicationReadinessService`) is provided for standard wiring.
-5. **Truthful Authority Declarations:** Authority boundary output explicitly names `M5 / PRAG Governance` (`finalPublicationAuthority: 'M5 / PRAG Governance'`). It does not claim PRAG as sole final authority (`PRAG_SOLE_FINAL_AUTHORITY_CLAIM: NO`), nor does it assert unproven entities like "Human Publication Board" (`HUMAN_PUBLICATION_BOARD_CLAIM_PRESENT: NO`).
-6. **Traceable Rule Versioning:** Rule version is reported using the evidence-backed rule source reference (`docs/portfolio-readiness-rule.md`), avoiding ungrounded version string claims (`INVENTED_RULE_VERSION: NO`).
-7. **Side-Effect-Free Evaluation:** Readiness evaluation is completely read-only and side-effect free. It does not publish content, mutate project lifecycle states, generate static HTML routes, modify sitemaps (`sitemap.xml`), request search indexing, or approve M5/PRAG release.
-8. **No Opaque Scoring:** Evaluates per-requirement readiness dimensions explicitly. Does not introduce arbitrary 0–100% composite scoring or ungrounded weights (`OPAQUE_READINESS_SCORE_INTRODUCED: NO`).
-9. **Fail-Closed Conflict & Error Model:** Conflicting evidence fails closed to `INDETERMINATE`. Missing required blocking evidence returns `NOT_READY` with `MISSING_EVIDENCE` status. Evidence referencing unknown requirements or repository errors returns `ERROR`.
-10. **Deterministic Replay:** The same evidence inputs and canonical rule version produce identical requirement evaluation results across replays. `issuedAt` metadata is metadata only and does not influence evaluation decisions.
-11. **Provenance Retention:** Evaluated requirements retain explicit evidence IDs and hashes (`READINESS_RESULT_PRESERVES_PROVENANCE: YES`).
+5. **Truthful Rule Metadata Semantics:** Public evaluation result represents rule source metadata as `ruleSourceRef` (`docs/portfolio-readiness-rule.md`) and uninvented `ruleSourceRevision` (`undefined`), strictly avoiding masquerading a document path as a semantic `ruleVersion` string (`RULE_VERSION_FIELD_PRESENT_WITH_SOURCE_PATH_VALUE: NO`, `INVENTED_RULE_REVISION: NO`).
+6. **Caller-Supplied Timestamp Integrity:** Evaluation timestamp `evaluatedAt` requires a valid caller-supplied `issuedAt` timestamp. Missing or invalid timestamps fail closed immediately to status `ERROR` (`EVALUATION_TIMESTAMP_CALLER_SUPPLIED: YES`, `SYNTHETIC_EVALUATION_TIMESTAMP_FALLBACK: NO`).
+7. **Truthful Authority Declarations:** Authority boundary output explicitly names `M5 / PRAG Governance` (`finalPublicationAuthority: 'M5 / PRAG Governance'`). It does not claim PRAG as sole final authority (`PRAG_SOLE_FINAL_AUTHORITY_CLAIM: NO`), nor does it assert unproven entities like "Human Publication Board" (`HUMAN_PUBLICATION_BOARD_CLAIM_PRESENT: NO`).
+8. **Side-Effect-Free Evaluation:** Readiness evaluation is completely read-only and side-effect free. It does not publish content, mutate project lifecycle states, generate static HTML routes, modify sitemaps (`sitemap.xml`), request search indexing, or approve M5/PRAG release.
+9. **No Opaque Scoring:** Evaluates per-requirement readiness dimensions explicitly. Does not introduce arbitrary 0–100% composite scoring or ungrounded weights (`OPAQUE_READINESS_SCORE_INTRODUCED: NO`).
+10. **Fail-Closed Conflict & Error Model:** Conflicting evidence fails closed to `INDETERMINATE`. Missing required blocking evidence returns `NOT_READY` with `MISSING_EVIDENCE` status. Evidence referencing unknown requirements or repository errors returns `ERROR`.
+11. **Deterministic Replay:** The same evidence inputs, rule source, and caller-supplied timestamp produce identical requirement evaluation results across replays.
+12. **Provenance Retention:** Evaluated requirements retain explicit evidence IDs and hashes (`READINESS_RESULT_PRESERVES_PROVENANCE: YES`).
 
 ---
 
@@ -34,12 +35,12 @@ Key Architectural Guarantees & Epistemic Invariants:
 
 | File Path | Description |
 | :--- | :--- |
-| `becc-runtime/readiness/publication-readiness.types.ts` | DTO definitions for readiness dimensions, requirement evaluations, evidence states, input contract, evaluation output, and authority boundary (`ReadinessAuthorityBoundary`). |
-| `becc-runtime/readiness/publication-readiness.service.ts` | `PublicationReadinessEvaluationService` implementation requiring explicit `PortfolioReadinessRuleProvider`, `CanonicalPortfolioReadinessRuleProvider` grounded in 5 thresholds of `docs/portfolio-readiness-rule.md`, and composition factory `createCanonicalPublicationReadinessService`. |
+| `becc-runtime/readiness/publication-readiness.types.ts` | DTO definitions for readiness dimensions, requirement evaluations, evidence states, input contract (required `issuedAt`), evaluation output (`ruleSourceRef`, `ruleSourceRevision`), and authority boundary (`ReadinessAuthorityBoundary`). |
+| `becc-runtime/readiness/publication-readiness.service.ts` | `PublicationReadinessEvaluationService` implementation requiring explicit `PortfolioReadinessRuleProvider`, `CanonicalPortfolioReadinessRuleProvider` returning `getRuleSource()`, timestamp validation, and composition factory `createCanonicalPublicationReadinessService`. |
 | `becc-runtime/readiness/index.ts` | Readiness module export index. |
-| `becc-runtime/tests/publication-readiness.test.ts` | Remediated test suite covering 5 canonical criteria, whitelist non-blocker regression test for new projects, static test for absence of `REQ-ACTIVE-WHITELIST-06`, explicit provider injection test, determinism replay, provider error fail-closed, unknown requirement fail-closed, and authority boundary assertions (14/14 PASS). |
+| `becc-runtime/tests/publication-readiness.test.ts` | Remediated test suite covering 5 canonical criteria, whitelist non-blocker regression test, static test for absence of `REQ-ACTIVE-WHITELIST-06`, explicit provider injection test, ruleSourceRef traceability test, missing/invalid timestamp fail-closed tests, determinism replay, provider error fail-closed, unknown requirement fail-closed, and authority boundary assertions (16/16 PASS). |
 | `becc-runtime/tsconfig.json` | Updated typescript configuration including `readiness/**/*.ts` and `escalation/**/*.ts`. |
-| `docs/engineering-communication/v2/engineering/BECC-V2-IMPL-015-PUBLICATION-PORTFOLIO-READINESS.md` | Remediated work package specification & architecture certificate for IMPL-015. |
+| `docs/engineering-communication/v2/engineering/BECC-V2-IMPL-015-PUBLICATION-PORTFOLIO-READINESS.md` | Final traceability remediated work package specification & architecture certificate for IMPL-015. |
 
 ---
 
@@ -58,70 +59,40 @@ Key Architectural Guarantees & Epistemic Invariants:
 * **`SILENT_DEFAULT_RULE_PROVIDER`:** `NO`
 * **`BUSINESS_SERVICE_SELECTS_CANONICAL_RULE_PROVIDER`:** `NO`
 * **`READINESS_RULE_PROVIDER_CONTAINS_ONLY_READINESS_RULES`:** `YES`
-* **`M5_ROLE`:** `CI Shadow & Blocking Validation Gate`
-* **`PRAG_ROLE`:** `Portfolio Release & Automation Governance CI Gate`
-* **`FINAL_PUBLICATION_AUTHORITY`:** `M5 / PRAG Governance`
+* **`RULE_VERSION_FIELD_PRESENT_WITH_SOURCE_PATH_VALUE`:** `NO`
+* **`RULE_SOURCE_REF`:** `docs/portfolio-readiness-rule.md`
+* **`RULE_SOURCE_REVISION`:** `undefined (not captured)`
+* **`RULE_SOURCE_REVISION_CAPTURED`:** `NO`
+* **`INVENTED_RULE_REVISION`:** `NO`
+* **`PUBLIC_RESULT_RULE_METADATA_SEMANTICALLY_TRUTHFUL`:** `YES`
+* **`UNUSED_RULE_VERSION_INPUT`:** `NO`
+* **`EVALUATION_TIMESTAMP_CALLER_SUPPLIED`:** `YES`
+* **`SYNTHETIC_EVALUATION_TIMESTAMP_FALLBACK`:** `NO`
+* **`MISSING_EVALUATION_TIMESTAMP_FAILS_CLOSED`:** `PASS`
+* **`INVALID_EVALUATION_TIMESTAMP_FAILS_CLOSED`:** `PASS`
+* **`RULE_SOURCE_REFERENCE_TEST`:** `PASS`
+* **`RULE_SOURCE_REVISION_TEST`:** `PASS`
+* **`SAME_INPUT_SAME_READINESS_RESULT`:** `PASS`
+* **`DETERMINISTIC_READINESS_RESULT`:** `PASS`
+* **`FULLY_SATISFIED_READINESS_CASE`:** `PASS`
+* **`BLOCKING_REQUIREMENT_CASE`:** `PASS`
+* **`MISSING_EVIDENCE_CASE`:** `PASS`
+* **`CONFLICTING_EVIDENCE_CASE`:** `PASS`
 * **`PRAG_SOLE_FINAL_AUTHORITY_CLAIM`:** `NO`
-* **`HUMAN_PUBLICATION_BOARD_CANONICALLY_DEFINED`:** `NO`
 * **`HUMAN_PUBLICATION_BOARD_CLAIM_PRESENT`:** `NO`
-* **`LEARNING_STANDARD_AUTHORITY_GENERALIZED_TO_PORTFOLIO`:** `NO`
 * **`BECC_IS_FINAL_PUBLICATION_AUTHORITY`:** `NO`
-* **`CANONICAL_READINESS_RULE_VERSION`:** `docs/portfolio-readiness-rule.md`
-* **`RULE_VERSION_TRACEABILITY`:** `PASS`
-* **`INVENTED_RULE_VERSION`:** `NO`
-* **`READY_BY_EVIDENCE_DEPENDS_ON_CURRENT_WHITELIST`:** `NO`
-* **`PUBLICATION_GENERATION_GATE`:** `astro build / getStaticPaths() exclusion of inactive projects`
-* **`SITEMAP_INDEXING_GATE`:** `sitemap.xml exclusion of inactive projects`
-* **`SEARCH_DISCOVERY_GATE`:** `JSON-LD schema graph & meta tag exclusion of inactive projects`
-* **`OPAQUE_READINESS_SCORE_INTRODUCED`:** `NO`
-* **`READINESS_EVIDENCE_STATES`:** `SATISFIED, NOT_SATISFIED, MISSING_EVIDENCE, INSUFFICIENT_EVIDENCE, NOT_APPLICABLE, NOT_MEASURABLE, CONFLICTING_EVIDENCE`
-* **`CANONICAL_INPUT_TYPES_REUSED`:** `YES`
-* **`NEW_INPUT_TYPES_REQUIRED`:** `YES (PortfolioReadinessEvaluationInput & ReadinessEvidenceItem)`
-* **`RESULT_IMPLIES_FINAL_PUBLICATION_AUTHORITY`:** `NO`
-* **`EVIDENCE_BEFORE_CONCLUSION`:** `YES`
-* **`LIFECYCLE_STATUS_INTERPRETATION_GROUNDED`:** `YES`
-* **`READINESS_RULE_MACHINE_READABLE`:** `YES`
-* **`RULE_EVALUATION_SOURCE`:** `CanonicalPortfolioReadinessRuleProvider`
-* **`M5_IS`:** `CI Shadow & Blocking Gate`
-* **`BECC_CAN_OVERRIDE_M5`:** `NO`
-* **`PRAG_IS`:** `Automated CI Release Gate`
-* **`BECC_CAN_OVERRIDE_PRAG`:** `NO`
 * **`READINESS_EVALUATION_MUTATES_PROJECT`:** `NO`
 * **`READINESS_EVALUATION_CHANGES_LIFECYCLE`:** `NO`
 * **`READINESS_EVALUATION_PUBLISHES_CONTENT`:** `NO`
 * **`READINESS_EVALUATION_MODIFIES_SITEMAP`:** `NO`
 * **`READINESS_EVALUATION_REQUESTS_INDEXING`:** `NO`
-* **`DETERMINISTIC_READINESS_RESULT`:** `YES`
-* **`READINESS_EVIDENCE_FRESHNESS_REQUIRED`:** `NO`
-* **`CONFLICTING_EVIDENCE_FAILS_CLOSED`:** `YES`
-* **`MISSING_EVIDENCE_DISTINCT_FROM_NOT_SATISFIED`:** `YES`
-* **`READINESS_RESULT_PRESERVES_PROVENANCE`:** `YES`
-* **`CLAIM_STRENGTH_BOUNDED_BY_EVIDENCE`:** `YES`
-* **`GUIDANCE_AUTOMATICALLY_BECOMES_PUBLICATION_REQUIREMENT`:** `NO`
-* **`SUBMITTED_OBSERVATION_IMPLIES_READY`:** `NO`
-* **`READINESS_SERVICE_LOCATION`:** `becc-runtime/readiness/`
-* **`EXPLICIT_READINESS_DEPENDENCIES`:** `YES`
-* **`SILENT_DEFAULT_PROVIDER`:** `NO`
-* **`FULLY_SATISFIED_READINESS_CASE`:** `PASS`
-* **`BLOCKING_REQUIREMENT_CASE`:** `PASS`
-* **`MISSING_EVIDENCE_CASE`:** `PASS`
-* **`CONFLICTING_EVIDENCE_CASE`:** `PASS`
-* **`NON_BLOCKING_REQUIREMENT_CASE`:** `PASS`
-* **`SAME_INPUT_SAME_READINESS_RESULT`:** `PASS`
-* **`READINESS_EVALUATION_SIDE_EFFECT_FREE`:** `PASS`
-* **`BECC_PUBLICATION_AUTHORITY_BOUNDARY_TEST`:** `PASS`
-* **`M5_AUTHORITY_BOUNDARY_TEST`:** `PASS`
-* **`PRAG_AUTHORITY_BOUNDARY_TEST`:** `PASS`
-* **`READINESS_PROVENANCE_TEST`:** `PASS`
-* **`READINESS_PROVIDER_FAILURE_FAILS_CLOSED`:** `PASS`
-* **`UNKNOWN_REQUIREMENT_FAILS_CLOSED`:** `PASS`
-* **`READINESS_RESULT_DOES_NOT_IMPLY_APPROVAL`:** `PASS`
+* **`PUBLICATION_SIDE_EFFECT_FREE_TEST`:** `PASS`
 
 ---
 
 ## 4. Test Certification Results
 
-* **BECC Readiness Unit Tests:** 14/14 PASS (`node --test becc-runtime/dist/tests/publication-readiness.test.js`)
+* **BECC Readiness Unit Tests:** 16/16 PASS (`node --test becc-runtime/dist/tests/publication-readiness.test.js`)
 * **BECC Escalation Unit Tests:** 14/14 PASS (`node --test becc-runtime/dist/tests/finding-escalation.test.js`)
 * **Governed Learning Unit Tests:** 310/310 PASS (`npm run --prefix packages/governed-learning test`)
 * **Governed Learning Real PostgreSQL Tests:** 19/19 PASS (`npm run --prefix packages/governed-learning test:postgres`)

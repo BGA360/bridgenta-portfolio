@@ -80,8 +80,9 @@ export interface PortfolioReadinessEvaluationInput {
   };
   evidenceItems: ReadinessEvidenceItem[];
   assessmentContextRef?: string;
-  ruleVersion?: string;
-  issuedAt?: string;
+  ruleSourceRef?: string;
+  ruleSourceRevision?: string;
+  issuedAt: string;
   actorRef?: string;
 }
 
@@ -103,7 +104,8 @@ export interface PortfolioReadinessEvaluationResult {
   projectRef: string;
   candidateRef?: string;
   status: PortfolioReadinessStatus;
-  ruleVersion: string;
+  ruleSourceRef: string;
+  ruleSourceRevision?: string;
   evaluatedRequirements: SingleRequirementEvaluation[];
   satisfiedRequirementIds: string[];
   blockingRequirementIds: string[];
@@ -118,7 +120,10 @@ export interface PortfolioReadinessEvaluationResult {
  * Interface for supplying canonical readiness rules to the evaluator.
  */
 export interface PortfolioReadinessRuleProvider {
-  getRuleVersion(): string;
+  getRuleSource(): {
+    sourceRef: string;
+    sourceRevision?: string;
+  };
   getRequirements(): ReadinessRequirementDefinition[];
 }
 

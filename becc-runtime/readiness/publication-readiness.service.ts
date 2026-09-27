@@ -75,8 +75,10 @@ export class CanonicalPortfolioReadinessRuleProvider
     }
   ];
 
-  getRuleVersion(): string {
-    return CanonicalPortfolioReadinessRuleProvider.RULE_SOURCE_REF;
+  getRuleSource(): { sourceRef: string; sourceRevision?: string } {
+    return {
+      sourceRef: CanonicalPortfolioReadinessRuleProvider.RULE_SOURCE_REF
+    };
   }
 
   getRequirements(): ReadinessRequirementDefinition[] {
@@ -110,8 +112,6 @@ export class PublicationReadinessEvaluationService {
   async evaluateReadiness(
     input: PortfolioReadinessEvaluationInput
   ): Promise<PortfolioReadinessEvaluationResult> {
-    const evaluatedAt = input.issuedAt || new Date('2026-01-01T00:00:00Z').toISOString();
-
     const authorityBoundary: ReadinessAuthorityBoundary = {
       finalPublicationAuthority: 'M5 / PRAG Governance',
       beccOwnsFinalAuthority: false,
@@ -119,24 +119,50 @@ export class PublicationReadinessEvaluationService {
       evaluationOnly: true
     };
 
+    const ruleSource = this.ruleProvider.getRuleSource();
+
     try {
-      if (!input || !input.projectRef || !input.evaluationId) {
+      // Validate input presence and required caller-supplied issuedAt timestamp
+      if (!input || !input.projectRef || !input.evaluationId || !input.issuedAt) {
         return {
           evaluationId: input?.evaluationId || 'unknown-eval-id',
           projectRef: input?.projectRef || 'unknown-project',
           candidateRef: input?.candidateRef,
           status: 'ERROR',
-          ruleVersion: this.ruleProvider.getRuleVersion(),
+          ruleSourceRef: ruleSource.sourceRef,
+          ruleSourceRevision: ruleSource.sourceRevision,
           evaluatedRequirements: [],
           satisfiedRequirementIds: [],
           blockingRequirementIds: [],
           missingEvidenceRequirementIds: [],
           conflictingEvidenceRequirementIds: [],
           evidenceRefs: [],
-          evaluatedAt,
+          evaluatedAt: input?.issuedAt || 'MISSING_TIMESTAMP',
           authorityBoundary
         };
       }
+
+      // Validate ISO timestamp format (fail closed if invalid)
+      if (isNaN(Date.parse(input.issuedAt))) {
+        return {
+          evaluationId: input.evaluationId,
+          projectRef: input.projectRef,
+          candidateRef: input.candidateRef,
+          status: 'ERROR',
+          ruleSourceRef: ruleSource.sourceRef,
+          ruleSourceRevision: ruleSource.sourceRevision,
+          evaluatedRequirements: [],
+          satisfiedRequirementIds: [],
+          blockingRequirementIds: [],
+          missingEvidenceRequirementIds: [],
+          conflictingEvidenceRequirementIds: [],
+          evidenceRefs: [],
+          evaluatedAt: input.issuedAt,
+          authorityBoundary
+        };
+      }
+
+      const evaluatedAt = input.issuedAt;
 
       // Merge input evidence with repository evidence if repository is injected
       let combinedEvidence: ReadinessEvidenceItem[] = [...(input.evidenceItems || [])];
@@ -153,7 +179,8 @@ export class PublicationReadinessEvaluationService {
             projectRef: input.projectRef,
             candidateRef: input.candidateRef,
             status: 'ERROR',
-            ruleVersion: this.ruleProvider.getRuleVersion(),
+            ruleSourceRef: ruleSource.sourceRef,
+            ruleSourceRevision: ruleSource.sourceRevision,
             evaluatedRequirements: [],
             satisfiedRequirementIds: [],
             blockingRequirementIds: [],
@@ -178,7 +205,8 @@ export class PublicationReadinessEvaluationService {
             projectRef: input.projectRef,
             candidateRef: input.candidateRef,
             status: 'ERROR',
-            ruleVersion: this.ruleProvider.getRuleVersion(),
+            ruleSourceRef: ruleSource.sourceRef,
+            ruleSourceRevision: ruleSource.sourceRevision,
             evaluatedRequirements: [],
             satisfiedRequirementIds: [],
             blockingRequirementIds: [],
@@ -305,7 +333,8 @@ export class PublicationReadinessEvaluationService {
         projectRef: input.projectRef,
         candidateRef: input.candidateRef,
         status: overallStatus,
-        ruleVersion: this.ruleProvider.getRuleVersion(),
+        ruleSourceRef: ruleSource.sourceRef,
+        ruleSourceRevision: ruleSource.sourceRevision,
         evaluatedRequirements,
         satisfiedRequirementIds,
         blockingRequirementIds,
@@ -321,14 +350,15 @@ export class PublicationReadinessEvaluationService {
         projectRef: input?.projectRef || 'unknown-project',
         candidateRef: input?.candidateRef,
         status: 'ERROR',
-        ruleVersion: this.ruleProvider.getRuleVersion(),
+        ruleSourceRef: ruleSource.sourceRef,
+        ruleSourceRevision: ruleSource.sourceRevision,
         evaluatedRequirements: [],
         satisfiedRequirementIds: [],
         blockingRequirementIds: [],
         missingEvidenceRequirementIds: [],
         conflictingEvidenceRequirementIds: [],
         evidenceRefs: [],
-        evaluatedAt,
+        evaluatedAt: input?.issuedAt || 'ERROR_TIMESTAMP',
         authorityBoundary
       };
     }
