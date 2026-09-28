@@ -125,9 +125,10 @@ export class BeccAuditIntegrationService {
       evidenceRefs: [...(input.evidenceRefs || [])],
       provenanceRefs: [...(input.provenanceRefs || [])],
       resultStatus: input.resultStatus,
+      domainResultStatus: input.domainResultStatus,
       resultRef: input.resultRef,
       occurredAt: input.occurredAt,
-      externalAuthorityBoundary: input.externalAuthorityBoundary || 'M5 / PRAG Governance',
+      externalAuthorityBoundary: input.externalAuthorityBoundary,
       metadata: input.metadata ? { ...input.metadata } : undefined
     };
 
@@ -144,9 +145,9 @@ export class BeccAuditIntegrationService {
   ): Promise<BeccAuditRecord> {
     const { queryInput, queryResult, occurredAt, correlationRef, causationRef } = context;
 
-    let resultStatus: BeccAuditRecordStatus = 'ERROR';
-    if (queryResult.status === 'SUCCESS') {
-      resultStatus = 'SUCCESS';
+    let resultStatus: BeccAuditRecordStatus = 'SUCCESS';
+    if (queryResult.status === 'ERROR') {
+      resultStatus = 'ERROR';
     } else if (queryResult.status === 'REFUSED') {
       resultStatus = 'REFUSED';
     }
@@ -174,6 +175,7 @@ export class BeccAuditIntegrationService {
       evidenceRefs: [],
       provenanceRefs,
       resultStatus,
+      domainResultStatus: queryResult.status,
       resultRef: queryInput.commandId,
       occurredAt
     });
@@ -188,13 +190,11 @@ export class BeccAuditIntegrationService {
   ): Promise<BeccAuditRecord> {
     const { escalationInput, escalationResult, occurredAt, correlationRef, causationRef } = context;
 
-    let resultStatus: BeccAuditRecordStatus = 'ERROR';
-    if (escalationResult.status === 'SUCCESS') {
-      resultStatus = 'SUCCESS';
+    let resultStatus: BeccAuditRecordStatus = 'SUCCESS';
+    if (escalationResult.status === 'ERROR') {
+      resultStatus = 'ERROR';
     } else if (escalationResult.status === 'REFUSED') {
       resultStatus = 'REFUSED';
-    } else if (escalationResult.status === 'INDETERMINATE') {
-      resultStatus = 'INDETERMINATE';
     }
 
     const provenanceRefs: ProvenanceRef[] = [
@@ -217,11 +217,12 @@ export class BeccAuditIntegrationService {
       projectRef: escalationInput.projectRef,
       actorRef: escalationInput.actorRef,
       correlationRef,
-      causationRef: causationRef || escalationInput.findingId,
+      causationRef,
       inputRefs: [escalationInput.findingId],
       evidenceRefs: escalationInput.evidenceItems.map((e) => e.evidenceId),
       provenanceRefs,
       resultStatus,
+      domainResultStatus: escalationResult.status,
       resultRef: escalationResult.observationId,
       occurredAt
     });
@@ -236,13 +237,11 @@ export class BeccAuditIntegrationService {
   ): Promise<BeccAuditRecord> {
     const { evaluationInput, evaluationResult, occurredAt, correlationRef, causationRef } = context;
 
-    let resultStatus: BeccAuditRecordStatus = 'ERROR';
-    if (evaluationResult.status === 'READY_BY_EVIDENCE') {
-      resultStatus = 'SUCCESS';
-    } else if (evaluationResult.status === 'NOT_READY') {
+    let resultStatus: BeccAuditRecordStatus = 'SUCCESS';
+    if (evaluationResult.status === 'ERROR') {
+      resultStatus = 'ERROR';
+    } else if (evaluationResult.status === 'REFUSED') {
       resultStatus = 'REFUSED';
-    } else if (evaluationResult.status === 'INDETERMINATE') {
-      resultStatus = 'INDETERMINATE';
     }
 
     const provenanceRefs: ProvenanceRef[] = [
@@ -265,6 +264,7 @@ export class BeccAuditIntegrationService {
       evidenceRefs: evaluationResult.evidenceRefs || [],
       provenanceRefs,
       resultStatus,
+      domainResultStatus: evaluationResult.status,
       resultRef: evaluationResult.status,
       occurredAt,
       externalAuthorityBoundary: 'M5 / PRAG Governance'

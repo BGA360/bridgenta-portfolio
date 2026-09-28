@@ -9,9 +9,11 @@ import type {
   BECCFindingEvidenceInput,
 } from './finding-escalation.types.js';
 import type { ValidationFinding } from '../shared/types.js';
+import type { BeccAuditIntegrationService } from '../audit/audit-integration.service.js';
 
 export interface FindingEscalationServiceOptions {
   readonly adapter: GovernedLearningIntegrationAdapter;
+  readonly auditService?: BeccAuditIntegrationService;
 }
 
 /**
@@ -38,6 +40,7 @@ export interface FindingEscalationServiceOptions {
  */
 export class FindingEscalationService {
   private readonly adapter: GovernedLearningIntegrationAdapter;
+  private readonly auditService?: BeccAuditIntegrationService;
 
   constructor(options: FindingEscalationServiceOptions) {
     if (!options || !options.adapter) {
@@ -46,6 +49,7 @@ export class FindingEscalationService {
       );
     }
     this.adapter = options.adapter;
+    this.auditService = options.auditService;
   }
 
   /**
@@ -237,7 +241,7 @@ export class FindingEscalationService {
       replayedSteps.push('SUBMIT');
     }
 
-    return {
+    const result: FindingEscalationResult = {
       ok: true,
       category: 'SUCCESS',
       findingId,
@@ -249,6 +253,29 @@ export class FindingEscalationService {
       completedStage: 'SUBMIT',
       replayedSteps: Object.freeze(replayedSteps),
     };
+
+    if (this.auditService) {
+      try {
+        await this.auditService.recordFindingEscalationAudit({
+          escalationInput: {
+            escalationId: `esc_${findingId}_${input.issuedAt}`,
+            findingId,
+            actorRef: typeof input.actorRef === 'string' ? input.actorRef : (input.actorRef as any)?.actorId,
+            evidenceItems: evidenceList.map((e: any, idx: number) => ({ evidenceId: `ev_${idx}_${e.location}` }))
+          },
+          escalationResult: {
+            status: result.ok ? 'SUCCESS' : (result.category === 'REFUSED' ? 'REFUSED' : 'ERROR'),
+            observationId: result.observationId,
+            details: result.reason
+          },
+          occurredAt: input.issuedAt
+        });
+      } catch (_err) {
+        // Audit recording is BEST_EFFORT, domain result is unaffected
+      }
+    }
+
+    return result;
   }
 
   /**

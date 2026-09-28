@@ -53,6 +53,7 @@ export interface BeccAuditRecordInput {
   evidenceRefs?: string[];
   provenanceRefs?: ProvenanceRef[];
   resultStatus: BeccAuditRecordStatus;
+  domainResultStatus?: string;
   resultRef?: string;
   occurredAt: string;
   externalAuthorityBoundary?: string;
@@ -78,9 +79,10 @@ export interface BeccAuditRecord {
   evidenceRefs: string[];
   provenanceRefs: ProvenanceRef[];
   resultStatus: BeccAuditRecordStatus;
+  domainResultStatus?: string;
   resultRef?: string;
   occurredAt: string;
-  externalAuthorityBoundary: string;
+  externalAuthorityBoundary?: string;
   metadata?: Record<string, unknown>;
 }
 

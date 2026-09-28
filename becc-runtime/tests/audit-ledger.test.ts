@@ -22,6 +22,11 @@ import {
   BeccAuditRecordInput,
   BeccAuditRecord
 } from '../audit/index.js';
+import {
+  PublicationReadinessEvaluationService,
+  CanonicalPortfolioReadinessRuleProvider
+} from '../readiness/publication-readiness.service.js';
+import { PortfolioReadinessEvaluationInput } from '../readiness/publication-readiness.types.js';
 
 describe('BECC-V2-IMPL-016: Audit Ledger & Provenance Integration', () => {
   it('Phase 37.1-6: LEDGER_BASIC_TESTS — supports append, getById, query filtering, deterministic ordering, and defensive copying', async () => {
@@ -308,5 +313,94 @@ describe('BECC-V2-IMPL-016: Audit Ledger & Provenance Integration', () => {
     assert.equal(auditRecord.actorRef, 'user-actor-101');
     assert.equal(auditRecord.authorityContextRef, 'M5_RELEASE_BOARD');
     assert.equal((auditRecord.metadata as any).secretKey, undefined);
+
+    // Generic audit record missing externalAuthorityBoundary stays undefined (NO default M5/PRAG boundary)
+    assert.equal(auditRecord.externalAuthorityBoundary, undefined);
+  });
+
+  it('Part D & G: UNFABRICATED_CAUSATION_AND_DOMAIN_RESULT_SEPARATION_TEST — causationRef remains undefined when omitted, NOT_READY maps audit resultStatus SUCCESS and domainResultStatus NOT_READY', async () => {
+    const ledger = new InMemoryBeccAuditLedger();
+    const service = new BeccAuditIntegrationService(ledger);
+
+    const auditRecord = await service.recordReadinessEvaluationAudit({
+      evaluationInput: {
+        evaluationId: 'eval-notready-001',
+        projectRef: 'ProjectUnready',
+        issuedAt: '2026-09-28T12:00:00Z',
+        evidenceItems: []
+      },
+      evaluationResult: {
+        status: 'NOT_READY',
+        ruleSourceRef: 'docs/portfolio-readiness-rule.md',
+        ruleSourceRevision: undefined,
+        evidenceRefs: []
+      },
+      occurredAt: '2026-09-28T12:00:00Z'
+      // causationRef deliberately omitted
+    });
+
+    assert.equal(auditRecord.causationRef, undefined); // Unfabricated causation
+    assert.equal(auditRecord.resultStatus, 'SUCCESS'); // Audit execution succeeded
+    assert.equal(auditRecord.domainResultStatus, 'NOT_READY'); // Domain status preserved
+    assert.equal(auditRecord.externalAuthorityBoundary, 'M5 / PRAG Governance'); // Explicit for readiness only
+  });
+
+  it('Part C & M: REAL_RUNTIME_READINESS_AUDIT_EMISSION_TEST — invoking PublicationReadinessEvaluationService automatically emits audit record', async () => {
+    const ledger = new InMemoryBeccAuditLedger();
+    const auditService = new BeccAuditIntegrationService(ledger);
+    const readinessService = new PublicationReadinessEvaluationService(
+      new CanonicalPortfolioReadinessRuleProvider(),
+      undefined,
+      auditService
+    );
+
+    const input: PortfolioReadinessEvaluationInput = {
+      evaluationId: 'eval-runtime-001',
+      projectRef: 'AEOcortex',
+      issuedAt: '2026-09-28T12:00:00Z',
+      evidenceItems: [
+        {
+          evidenceId: 'ev-dev-mat-01',
+          requirementId: 'REQ-DEV-MATURITY-01',
+          source: 'Engine',
+          state: 'SATISFIED'
+        },
+        {
+          evidenceId: 'ev-prof-purp-02',
+          requirementId: 'REQ-PROF-PURPOSE-02',
+          source: 'Engine',
+          state: 'SATISFIED'
+        },
+        {
+          evidenceId: 'ev-visual-03',
+          requirementId: 'REQ-VISUAL-EVIDENCE-03',
+          source: 'Engine',
+          state: 'SATISFIED'
+        },
+        {
+          evidenceId: 'ev-defens-04',
+          requirementId: 'REQ-INTERVIEW-DEF-04',
+          source: 'Engine',
+          state: 'SATISFIED'
+        },
+        {
+          evidenceId: 'ev-pub-std-05',
+          requirementId: 'REQ-PUB-STANDARD-05',
+          source: 'Engine',
+          state: 'SATISFIED'
+        }
+      ]
+    };
+
+    const evalResult = await readinessService.evaluateReadiness(input);
+    assert.equal(evalResult.status, 'READY_BY_EVIDENCE');
+
+    // Verify audit record emitted in ledger by runtime entrypoint
+    const auditRecords = await ledger.listByOperationRef('eval-runtime-001');
+    assert.equal(auditRecords.length, 1);
+    assert.equal(auditRecords[0].operationType, 'READINESS_EVALUATION');
+    assert.equal(auditRecords[0].resultStatus, 'SUCCESS');
+    assert.equal(auditRecords[0].domainResultStatus, 'READY_BY_EVIDENCE');
+    assert.equal(auditRecords[0].externalAuthorityBoundary, 'M5 / PRAG Governance');
   });
 });

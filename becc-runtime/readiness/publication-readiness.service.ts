@@ -86,6 +86,8 @@ export class CanonicalPortfolioReadinessRuleProvider
   }
 }
 
+import { BeccAuditIntegrationService } from '../audit/audit-integration.service.js';
+
 /**
  * Service for evaluating project and candidate publication & portfolio readiness.
  * Requires explicit dependency injection of a PortfolioReadinessRuleProvider.
@@ -93,16 +95,19 @@ export class CanonicalPortfolioReadinessRuleProvider
 export class PublicationReadinessEvaluationService {
   private readonly ruleProvider: PortfolioReadinessRuleProvider;
   private readonly evidenceRepository?: ReadinessEvidenceRepository;
+  private readonly auditService?: BeccAuditIntegrationService;
 
   constructor(
     ruleProvider: PortfolioReadinessRuleProvider,
-    evidenceRepository?: ReadinessEvidenceRepository
+    evidenceRepository?: ReadinessEvidenceRepository,
+    auditService?: BeccAuditIntegrationService
   ) {
     if (!ruleProvider) {
       throw new Error('Explicit PortfolioReadinessRuleProvider is required');
     }
     this.ruleProvider = ruleProvider;
     this.evidenceRepository = evidenceRepository;
+    this.auditService = auditService;
   }
 
   /**
@@ -328,7 +333,7 @@ export class PublicationReadinessEvaluationService {
         overallStatus = 'READY_BY_EVIDENCE';
       }
 
-      return {
+      const result: PortfolioReadinessEvaluationResult = {
         evaluationId: input.evaluationId,
         projectRef: input.projectRef,
         candidateRef: input.candidateRef,
@@ -344,6 +349,20 @@ export class PublicationReadinessEvaluationService {
         evaluatedAt,
         authorityBoundary
       };
+
+      if (this.auditService) {
+        try {
+          await this.auditService.recordReadinessEvaluationAudit({
+            evaluationInput: input,
+            evaluationResult: result,
+            occurredAt: evaluatedAt
+          });
+        } catch (_err) {
+          // Audit recording is BEST_EFFORT, domain result is unaffected
+        }
+      }
+
+      return result;
     } catch (error) {
       return {
         evaluationId: input?.evaluationId || 'error-eval-id',
