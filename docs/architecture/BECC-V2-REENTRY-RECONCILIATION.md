@@ -114,9 +114,10 @@ To complete BECC v2 implementation safely, the work is structured into contract-
    * Implement finding escalation pipeline executing multi-step GL observation workflow.
 4. **`BECC-V2-IMPL-015`: Publication & Portfolio Readiness Evaluation Service**
    * Build readiness evaluator connecting BECC evidence to `docs/portfolio-readiness-rule.md` and M5 / PRAG reporting.
-   * Status: `IMPLEMENTED (PR Pending Review)`.
+   * Status: `MERGED_COMPLETE (PR #316 Merged)`.
 5. **`BECC-V2-IMPL-016`: Audit Ledger & Provenance Integration**
-   * Connect BECC validation reports and diff approval tokens to GL provenance records.
+   * Connect BECC validation reports, guidance queries, finding escalations, and readiness evaluations to append-only BECC audit ledger with truthful provenance references.
+   * Status: `IMPLEMENTED (PR Pending Review)`.
 6. **`BECC-V2-IMPL-017`: End-to-End System Integration & Certification Suite**
    * Build complete integration test suite validating BECC v2 ↔ Governed Learning Level-2B Postgres flow.
 
