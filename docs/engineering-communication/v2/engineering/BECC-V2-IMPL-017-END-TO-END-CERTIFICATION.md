@@ -20,12 +20,13 @@ Key Architectural Guarantees & System Invariants Certified:
 2. **Epistemic Invariants:** Formally verifies that $\text{Observed} \neq \text{Learned} \neq \text{Approved} \neq \text{Binding Policy}$ and $\text{BECC Readiness Evaluation} \neq \text{M5 / PRAG Final Publication Authorization}$ (`BECC_OWNS_FINAL_PUBLICATION_AUTHORITY: NO`).
 3. **Governed Learning Boundary Integrity:** Communicates strictly through public GL exported interfaces (`GL_PUBLIC_API_ONLY: YES`). No deep internal imports, direct database writes, or transaction context leakage (`BECC_WRITES_DIRECTLY_TO_GL_TABLES: NO`).
 4. **Audit Ledger Invariants:** Verifies L0 in-process memory audit ledger append-only semantics, exact-retry idempotency, duplicate identity conflict failure, defensive copying, and deterministic query sorting by timestamp (`AUDIT_STORAGE_MODEL: IN_MEMORY_ADAPTER`).
-5. **Readiness & Guidance Audit Coverage & Timestamp Boundary:** Readiness evaluations and guidance resolution with valid caller-supplied timestamps audit all terminal outcomes (normal `SUCCESS`, `REFUSED`, `NOT_READY`, `INDETERMINATE`, and terminal `ERROR` paths). Queries and evaluations with missing or malformed `issuedAt` return domain results without emitting audit records (`MISSING_TIMESTAMP_AUDIT_RECORD: ABSENT`, `INVALID_TIMESTAMP_AUDIT_RECORD: ABSENT`), generating zero synthetic audit timestamps.
+5. **Readiness & Guidance Audit Coverage & Timestamp Boundary:** Readiness evaluations and guidance resolution with valid caller-supplied timestamps audit all terminal outcomes (normal `SUCCESS`, `REFUSED`, `NOT_READY`, `INDETERMINATE`, and terminal `ERROR` paths). Queries and evaluations with missing or malformed `issuedAt` return domain results without emitting audit records (`MISSING_TIMESTAMP_AUDIT_RECORD: ABSENT`, `INVALID_TIMESTAMP_AUDIT_RECORD: ABSENT`), generating zero synthetic audit timestamps. Invalid timestamp audit absence is verified against the actual returned `commandId` (`INVALID_GUIDANCE_TIMESTAMP_ACTUAL_COMMAND_ID_USED: YES`).
 6. **Unfabricated Escalation Evidence Identity & Guidance Provenance:** Evidence items use caller-supplied `evidenceId` when present. No synthetic IDs (`ev_${idx}_${e.location}`) are derived, location is not promoted to fake ID, missing evidence identity remains absent (`FABRICATED_ESCALATION_EVIDENCE_IDS: NO`), and guidance ERROR paths produce no fabricated lesson provenance (`provenanceRefs: []`).
 7. **Best-Effort Audit Failure Model:** Audit emission failure (simulated via throwing audit ledger port) across Guidance Query (success & refusal), Finding Escalation, and Publication Readiness services does NOT mutate or alter domain execution results (`AUDIT_FAILURE_MUTATES_DOMAIN_RESULT: NO`).
 8. **Guidance Exact Replay & Collision:** Verified exact replay returns `replayed: true` with stable `commandId` and no duplicate audit record (`GUIDANCE_DUPLICATE_AUDIT_RECORD: NO`). Identity collision (same `queryId`/`commandId` with changed timestamp) fails closed (`GUIDANCE_IDENTITY_COLLISION: FAIL_CLOSED`).
-9. **Deterministic Replay:** Verified repeated executions yield stable operation IDs, results, and provenance across repeat calls (`DETERMINISTIC_REPLAY: PASS`).
-10. **Discovered Production Runtime Gap:** Early guidance refusal paths previously bypassed audit integration; remediated to route valid-timestamp terminal refusal results through `finalizeResultWithAudit()`.
+9. **Deterministic Replay:** Verified repeated executions yield stable operation IDs, results, audit record IDs, and provenance refs across repeat calls (`DETERMINISTIC_REPLAY: PASS`, `DETERMINISTIC_REPLAY_CLAIM_SCOPE: EXACTLY_MATCHES_TESTED_FIELDS`, `PROVENANCE_REFS_DETERMINISTIC_COMPARISON: PASS`, `AUDIT_RECORD_ID_DETERMINISTIC_COMPARISON: PASS`).
+10. **Secret Storage Hygiene vs. Enforcement:** Verified certification test fixtures do not store secrets (`AUDIT_SECRET_STORAGE_IN_CERTIFICATION_FIXTURES: NO`). Runtime secret rejection or redaction enforcement is not implemented (`AUDIT_SECRET_REJECTION_OR_REDACTION_ENFORCEMENT: NOT_IMPLEMENTED`), and active prevention is not claimed (`AUDIT_SECRET_STORAGE_PREVENTION: NOT_PROVEN`). Hygiene and enforcement are explicitly distinguished (`SECRET_STORAGE_HYGIENE_AND_ENFORCEMENT_DISTINGUISHED: YES`).
+11. **Discovered Production Runtime Gap:** Early guidance refusal paths previously bypassed audit integration; remediated to route valid-timestamp terminal refusal results through `finalizeResultWithAudit()`.
 
 ---
 
@@ -76,6 +77,9 @@ Key Architectural Guarantees & System Invariants Certified:
 * **`READINESS_AUDIT_COVERAGE`:** `ALL_TERMINAL_PATHS_WITH_VALID_AUDIT_TIMESTAMP`
 * **`MISSING_TIMESTAMP_AUDIT_RECORD`:** `ABSENT`
 * **`INVALID_TIMESTAMP_AUDIT_RECORD`:** `ABSENT`
+* **`INVALID_GUIDANCE_TIMESTAMP_ACTUAL_COMMAND_ID_USED`:** `YES`
+* **`GUIDANCE_INVALID_TIMESTAMP_AUDIT_RECORD`:** `ABSENT`
+* **`GUIDANCE_INVALID_TIMESTAMP_DOMAIN_BEHAVIOR`:** `PRESERVED`
 * **`SYNTHETIC_AUDIT_TIMESTAMP`:** `NO`
 * **`AUDIT_RECORD_COUNT_MATCHES_EXPECTED_OPERATIONS`:** `YES`
 * **`AUDIT_APPEND_ONLY`:** `PASS`
@@ -104,9 +108,16 @@ Key Architectural Guarantees & System Invariants Certified:
 * **`FABRICATED_ESCALATION_EVIDENCE_IDS`:** `NO`
 * **`LOCATION_USED_AS_FAKE_EVIDENCE_ID`:** `NO`
 * **`FABRICATED_CAUSATION`:** `NO`
-* **`AUDIT_SECRET_STORAGE`:** `NO`
+* **`AUDIT_SECRET_STORAGE_IN_CERTIFICATION_FIXTURES`:** `NO`
+* **`AUDIT_SECRET_REJECTION_OR_REDACTION_ENFORCEMENT`:** `NOT_IMPLEMENTED`
+* **`AUDIT_SECRET_STORAGE_PREVENTION`:** `NOT_PROVEN`
+* **`SECRET_STORAGE_HYGIENE_AND_ENFORCEMENT_DISTINGUISHED`:** `YES`
 * **`AUDIT_RAW_SENSITIVE_PAYLOAD_STORAGE_BY_DEFAULT`:** `NO`
 * **`DETERMINISTIC_REPLAY`:** `PASS`
+* **`DETERMINISTIC_REPLAY_CLAIM_SCOPE`:** `EXACTLY_MATCHES_TESTED_FIELDS`
+* **`DETERMINISTIC_REPLAY_FIELDS_VERIFIED`:** `category, commandId, observationId, draftCommandId, submitCommandId, completedStage, occurredAt, resultRef, provenanceRefs, auditRecordId`
+* **`PROVENANCE_REFS_DETERMINISTIC_COMPARISON`:** `PASS`
+* **`AUDIT_RECORD_ID_DETERMINISTIC_COMPARISON`:** `PASS`
 * **`UNAUTHORIZED_RUNTIME_TIMESTAMP_GENERATION`:** `NO`
 * **`IDENTITY_CONFLATION`:** `NO`
 * **`FAILURE_WINDOW_MATRIX`:** `PASS`

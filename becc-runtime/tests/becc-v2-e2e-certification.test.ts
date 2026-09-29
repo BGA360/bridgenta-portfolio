@@ -508,8 +508,8 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
     assert.equal(refetched?.operationId, 'op-inv-001');
   });
 
-  // SCENARIO 12: Authority & Security Boundaries
-  it('Scenario 12: Authority & Security Boundaries — generic audit records default no authority, secrets disallowed', async () => {
+  // SCENARIO 12: Authority & Security Hygiene — generic audit records default no authority; certification fixtures do not store secrets
+  it('Scenario 12: Authority & Security Hygiene — generic audit records default no authority; certification fixtures do not store secrets', async () => {
     const ledger = new InMemoryBeccAuditLedger();
     const service = new BeccAuditIntegrationService(ledger);
 
@@ -520,7 +520,7 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
       occurredAt: '2026-09-29T10:00:00Z',
       resultStatus: 'SUCCESS',
       metadata: {
-        secretToken: undefined // No secret stored
+        secretToken: undefined // Certification fixtures do not store secrets
       }
     });
 
@@ -677,10 +677,10 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
     });
     assert.equal(resNoTs.ok, false);
     assert.equal(resNoTs.category, 'REFUSED');
-    const recs1 = await auditLedger.listByOperationRef('cmd_becc_missing_issued_at_query-no-ts-001');
+    const recs1 = await auditLedger.listByOperationRef(resNoTs.commandId);
     assert.equal(recs1.length, 0); // ABSENT
 
-    // Invalid issuedAt
+    // Invalid issuedAt - must use actual commandId returned by guidance resolver
     const resBadTs = await guidanceService.resolveGuidance({
       queryId: 'query-bad-ts-001',
       projectRef: { projectId: 'ProjBadTs' },
@@ -689,7 +689,7 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
     });
     assert.equal(resBadTs.ok, false);
     assert.equal(resBadTs.category, 'REFUSED');
-    const recs2 = await auditLedger.listByOperationRef('cmd_becc_missing_issued_at_query-bad-ts-001');
+    const recs2 = await auditLedger.listByOperationRef(resBadTs.commandId);
     assert.equal(recs2.length, 0); // ABSENT
   });
 
@@ -733,10 +733,20 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
       issuedAt: '2026-09-29T10:00:00Z'
     };
     const g1 = await guidanceService.resolveGuidance(gInput);
+    const gAudits1 = await auditLedger.listByOperationRef(g1.commandId);
+
     const g2 = await guidanceService.resolveGuidance(gInput);
+    const gAudits2 = await auditLedger.listByOperationRef(g2.commandId);
 
     assert.equal(g1.commandId, g2.commandId);
     assert.equal(g1.category, g2.category);
+
+    // Guidance audit record stability & provenance comparison across replay
+    assert.equal(gAudits1.length, 1);
+    assert.equal(gAudits2.length, 1);
+    assert.equal(gAudits1[0].auditRecordId, gAudits2[0].auditRecordId);
+    assert.deepEqual(gAudits1[0].provenanceRefs, gAudits2[0].provenanceRefs);
+    assert.equal(gAudits2[0].occurredAt, '2026-09-29T10:00:00Z');
 
     // 2. Escalation Deterministic Replay
     const eFinding: ValidationFinding = {
@@ -752,21 +762,22 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
       issuedAt: '2026-09-29T10:00:00Z'
     };
     const e1 = await escalationService.escalateFinding(eInput);
+    const eAudits1 = await auditLedger.listByOperationRef(`esc_${eFinding.id}_2026-09-29T10:00:00Z`);
+
     const e2 = await escalationService.escalateFinding(eInput);
+    const eAudits2 = await auditLedger.listByOperationRef(`esc_${eFinding.id}_2026-09-29T10:00:00Z`);
 
     assert.equal(e1.observationId, e2.observationId);
     assert.equal(e1.completedStage, e2.completedStage);
     assert.equal(e1.draftCommandId, e2.draftCommandId);
     assert.equal(e1.submitCommandId, e2.submitCommandId);
 
-    // 3. Audit Exact Retry
-    const gAudits = await auditLedger.listByOperationRef(g1.commandId);
-    assert.equal(gAudits.length, 1);
-    assert.equal(gAudits[0].occurredAt, '2026-09-29T10:00:00Z');
-
-    const eAudits = await auditLedger.listByOperationRef(`esc_${eFinding.id}_2026-09-29T10:00:00Z`);
-    assert.equal(eAudits.length, 1);
-    assert.equal(eAudits[0].resultRef, e1.observationId);
+    // Escalation audit record stability & provenance comparison across retry
+    assert.equal(eAudits1.length, 1);
+    assert.equal(eAudits2.length, 1);
+    assert.equal(eAudits1[0].auditRecordId, eAudits2[0].auditRecordId);
+    assert.deepEqual(eAudits1[0].provenanceRefs, eAudits2[0].provenanceRefs);
+    assert.equal(eAudits2[0].resultRef, e1.observationId);
   });
 
   // SCENARIO 20: Composed Operation Audit Record Count Assertion
