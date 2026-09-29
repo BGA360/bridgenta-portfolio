@@ -9,8 +9,11 @@ import type {
   BECCGovernedGuidanceItem,
 } from './governed-guidance-resolver.types.js';
 
+import type { BeccAuditIntegrationService } from '../audit/audit-integration.service.js';
+
 export interface GovernedGuidanceResolverOptions {
   readonly adapter: GovernedLearningIntegrationAdapter;
+  readonly auditService?: BeccAuditIntegrationService;
 }
 
 /**
@@ -29,6 +32,7 @@ export interface GovernedGuidanceResolverOptions {
  */
 export class GovernedGuidanceResolverService {
   private readonly adapter: GovernedLearningIntegrationAdapter;
+  private readonly auditService?: BeccAuditIntegrationService;
 
   constructor(options: GovernedGuidanceResolverOptions) {
     if (!options || !options.adapter) {
@@ -37,6 +41,7 @@ export class GovernedGuidanceResolverService {
       );
     }
     this.adapter = options.adapter;
+    this.auditService = options.auditService;
   }
 
   /**
@@ -123,6 +128,7 @@ export class GovernedGuidanceResolverService {
 
     const res = await this.adapter.queryGuidance(queryInput);
 
+    let result: ResolvedGovernedGuidanceResult;
     if (res.ok && res.category === 'SUCCESS' && res.guidanceSet) {
       const matched = res.guidanceSet.matchedGuidance ?? [];
       const guidanceItems: BECCGovernedGuidanceItem[] = matched.map((g) => ({
@@ -135,7 +141,7 @@ export class GovernedGuidanceResolverService {
         scope: g.scope,
       }));
 
-      return {
+      result = {
         ok: true,
         category: 'SUCCESS',
         source: 'GOVERNED_LEARNING',
@@ -145,10 +151,8 @@ export class GovernedGuidanceResolverService {
         evaluatedAt: res.guidanceSet.evaluatedAt,
         replayed: res.replayed === true,
       };
-    }
-
-    if (res.category === 'REFUSED') {
-      return {
+    } else if (res.category === 'REFUSED') {
+      result = {
         ok: false,
         category: 'REFUSED',
         source: 'GOVERNED_LEARNING',
@@ -159,17 +163,42 @@ export class GovernedGuidanceResolverService {
         refusalCode: res.refusalCode,
         reason: res.reason,
       };
+    } else {
+      result = {
+        ok: false,
+        category: 'ERROR',
+        source: 'GOVERNED_LEARNING',
+        commandId: res.commandId,
+        queryId: input.queryId,
+        guidanceItems: [],
+        replayed: false,
+        errorDetails: res.errorDetails ?? 'Governed Learning query error',
+      };
     }
 
-    return {
-      ok: false,
-      category: 'ERROR',
-      source: 'GOVERNED_LEARNING',
-      commandId: res.commandId,
-      queryId: input.queryId,
-      guidanceItems: [],
-      replayed: false,
-      errorDetails: res.errorDetails ?? 'Governed Learning query error',
-    };
+    if (this.auditService) {
+      try {
+        await this.auditService.recordGuidanceQueryAudit({
+          queryInput: {
+            commandId: result.commandId,
+            actorRef: typeof input.actorRef === 'string' ? input.actorRef : (input.actorRef as any)?.actorId
+          },
+          queryResult: {
+            status: result.ok ? 'SUCCESS' : (result.category === 'REFUSED' ? 'REFUSED' : 'ERROR'),
+            guidanceSet: {
+              lessons: (result.guidanceItems || []).map((g) => ({
+                lessonRef: g.lessonRef.lessonId,
+                version: g.lessonRef.version
+              }))
+            }
+          },
+          occurredAt: input.issuedAt
+        });
+      } catch (_err) {
+        // Audit recording is BEST_EFFORT, domain result is unaffected
+      }
+    }
+
+    return result;
   }
 }

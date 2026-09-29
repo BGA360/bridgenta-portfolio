@@ -86,6 +86,8 @@ export class CanonicalPortfolioReadinessRuleProvider
   }
 }
 
+import { BeccAuditIntegrationService } from '../audit/audit-integration.service.js';
+
 /**
  * Service for evaluating project and candidate publication & portfolio readiness.
  * Requires explicit dependency injection of a PortfolioReadinessRuleProvider.
@@ -93,16 +95,19 @@ export class CanonicalPortfolioReadinessRuleProvider
 export class PublicationReadinessEvaluationService {
   private readonly ruleProvider: PortfolioReadinessRuleProvider;
   private readonly evidenceRepository?: ReadinessEvidenceRepository;
+  private readonly auditService?: BeccAuditIntegrationService;
 
   constructor(
     ruleProvider: PortfolioReadinessRuleProvider,
-    evidenceRepository?: ReadinessEvidenceRepository
+    evidenceRepository?: ReadinessEvidenceRepository,
+    auditService?: BeccAuditIntegrationService
   ) {
     if (!ruleProvider) {
       throw new Error('Explicit PortfolioReadinessRuleProvider is required');
     }
     this.ruleProvider = ruleProvider;
     this.evidenceRepository = evidenceRepository;
+    this.auditService = auditService;
   }
 
   /**
@@ -124,7 +129,7 @@ export class PublicationReadinessEvaluationService {
     try {
       // Validate input presence and required caller-supplied issuedAt timestamp
       if (!input || !input.projectRef || !input.evaluationId || !input.issuedAt) {
-        return {
+        return this.finalizeResultWithAudit(input, {
           evaluationId: input?.evaluationId || 'unknown-eval-id',
           projectRef: input?.projectRef || 'unknown-project',
           candidateRef: input?.candidateRef,
@@ -139,12 +144,12 @@ export class PublicationReadinessEvaluationService {
           evidenceRefs: [],
           evaluatedAt: undefined,
           authorityBoundary
-        };
+        });
       }
 
       // Validate parseable timestamp format (fail closed if invalid)
       if (isNaN(Date.parse(input.issuedAt))) {
-        return {
+        return this.finalizeResultWithAudit(input, {
           evaluationId: input.evaluationId,
           projectRef: input.projectRef,
           candidateRef: input.candidateRef,
@@ -159,7 +164,7 @@ export class PublicationReadinessEvaluationService {
           evidenceRefs: [],
           evaluatedAt: undefined,
           authorityBoundary
-        };
+        });
       }
 
       const evaluatedAt = input.issuedAt;
@@ -174,7 +179,7 @@ export class PublicationReadinessEvaluationService {
           combinedEvidence = [...combinedEvidence, ...repoEvidence];
         } catch (err) {
           // Repository failure must fail closed
-          return {
+          return this.finalizeResultWithAudit(input, {
             evaluationId: input.evaluationId,
             projectRef: input.projectRef,
             candidateRef: input.candidateRef,
@@ -189,7 +194,7 @@ export class PublicationReadinessEvaluationService {
             evidenceRefs: [],
             evaluatedAt,
             authorityBoundary
-          };
+          });
         }
       }
 
@@ -200,7 +205,7 @@ export class PublicationReadinessEvaluationService {
       for (const item of combinedEvidence) {
         if (!reqIdSet.has(item.requirementId)) {
           // Unknown requirement evidence triggers fail-closed ERROR
-          return {
+          return this.finalizeResultWithAudit(input, {
             evaluationId: input.evaluationId,
             projectRef: input.projectRef,
             candidateRef: input.candidateRef,
@@ -215,7 +220,7 @@ export class PublicationReadinessEvaluationService {
             evidenceRefs: combinedEvidence.map((e) => e.evidenceId),
             evaluatedAt,
             authorityBoundary
-          };
+          });
         }
       }
 
@@ -328,7 +333,7 @@ export class PublicationReadinessEvaluationService {
         overallStatus = 'READY_BY_EVIDENCE';
       }
 
-      return {
+      const result: PortfolioReadinessEvaluationResult = {
         evaluationId: input.evaluationId,
         projectRef: input.projectRef,
         candidateRef: input.candidateRef,
@@ -344,8 +349,12 @@ export class PublicationReadinessEvaluationService {
         evaluatedAt,
         authorityBoundary
       };
+
+      return this.finalizeResultWithAudit(input, result);
     } catch (error) {
-      return {
+      const catchEvaluatedAt =
+        input && input.issuedAt && !isNaN(Date.parse(input.issuedAt)) ? input.issuedAt : undefined;
+      return this.finalizeResultWithAudit(input, {
         evaluationId: input?.evaluationId || 'error-eval-id',
         projectRef: input?.projectRef || 'unknown-project',
         candidateRef: input?.candidateRef,
@@ -358,10 +367,50 @@ export class PublicationReadinessEvaluationService {
         missingEvidenceRequirementIds: [],
         conflictingEvidenceRequirementIds: [],
         evidenceRefs: [],
-        evaluatedAt: undefined,
+        evaluatedAt: catchEvaluatedAt,
         authorityBoundary
-      };
+      });
     }
+  }
+
+  private async finalizeResultWithAudit(
+    input: PortfolioReadinessEvaluationInput | undefined,
+    result: PortfolioReadinessEvaluationResult
+  ): Promise<PortfolioReadinessEvaluationResult> {
+    if (!this.auditService || !input || !result) {
+      return result;
+    }
+
+    const auditTimestamp =
+      result.evaluatedAt ||
+      (input.issuedAt && !isNaN(Date.parse(input.issuedAt)) ? input.issuedAt : undefined);
+    if (!auditTimestamp) {
+      return result;
+    }
+
+    try {
+      await this.auditService.recordReadinessEvaluationAudit({
+        evaluationInput: {
+          evaluationId: result.evaluationId,
+          projectRef: result.projectRef,
+          candidateRef: result.candidateRef,
+          issuedAt: auditTimestamp,
+          evidenceItems: (result.evidenceRefs || []).map((ref) => ({ evidenceId: ref })),
+          actorRef: input.actorRef
+        },
+        evaluationResult: {
+          status: result.status,
+          ruleSourceRef: result.ruleSourceRef,
+          ruleSourceRevision: result.ruleSourceRevision,
+          evidenceRefs: result.evidenceRefs || []
+        },
+        occurredAt: auditTimestamp
+      });
+    } catch (_err) {
+      // BEST_EFFORT audit failure: domain result remains completely unchanged
+    }
+
+    return result;
   }
 }
 
