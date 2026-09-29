@@ -51,7 +51,7 @@ export class GovernedGuidanceResolverService {
     input: ResolvedGovernedGuidanceQueryInput
   ): Promise<ResolvedGovernedGuidanceResult> {
     if (!input || !input.queryId || !input.queryId.trim()) {
-      return {
+      return this.finalizeResultWithAudit(input, {
         ok: false,
         category: 'REFUSED',
         source: 'GOVERNED_LEARNING',
@@ -61,11 +61,11 @@ export class GovernedGuidanceResolverService {
         replayed: false,
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'queryId is required for Governed Learning guidance resolution (failed closed)',
-      };
+      });
     }
 
     if (!input.issuedAt || !input.issuedAt.trim()) {
-      return {
+      return this.finalizeResultWithAudit(input, {
         ok: false,
         category: 'REFUSED',
         source: 'GOVERNED_LEARNING',
@@ -75,7 +75,7 @@ export class GovernedGuidanceResolverService {
         replayed: false,
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'issuedAt timestamp is required for stable command identity (failed closed)',
-      };
+      });
     }
 
     // Map BECC context to canonical TargetRef
@@ -103,7 +103,7 @@ export class GovernedGuidanceResolverService {
 
     // Fail closed if context cannot be mapped to TargetRef (never broaden to SYSTEM_WIDE)
     if (!targetRef) {
-      return {
+      return this.finalizeResultWithAudit(input, {
         ok: false,
         category: 'REFUSED',
         source: 'GOVERNED_LEARNING',
@@ -113,7 +113,7 @@ export class GovernedGuidanceResolverService {
         replayed: false,
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'BECC context could not be mapped to an unambiguous TargetRef for Governed Learning query (failed closed)',
-      };
+      });
     }
 
     const queryInput: BECCGuidanceQueryInput = {
@@ -176,27 +176,36 @@ export class GovernedGuidanceResolverService {
       };
     }
 
-    if (this.auditService) {
-      try {
-        await this.auditService.recordGuidanceQueryAudit({
-          queryInput: {
-            commandId: result.commandId,
-            actorRef: typeof input.actorRef === 'string' ? input.actorRef : (input.actorRef as any)?.actorId
-          },
-          queryResult: {
-            status: result.ok ? 'SUCCESS' : (result.category === 'REFUSED' ? 'REFUSED' : 'ERROR'),
-            guidanceSet: {
-              lessons: (result.guidanceItems || []).map((g) => ({
-                lessonRef: g.lessonRef.lessonId,
-                version: g.lessonRef.version
-              }))
-            }
-          },
-          occurredAt: input.issuedAt
-        });
-      } catch (_err) {
-        // Audit recording is BEST_EFFORT, domain result is unaffected
-      }
+    return this.finalizeResultWithAudit(input, result);
+  }
+
+  private async finalizeResultWithAudit(
+    input: ResolvedGovernedGuidanceQueryInput | undefined,
+    result: ResolvedGovernedGuidanceResult
+  ): Promise<ResolvedGovernedGuidanceResult> {
+    if (!this.auditService || !input || !input.issuedAt || isNaN(Date.parse(input.issuedAt))) {
+      return result;
+    }
+
+    try {
+      await this.auditService.recordGuidanceQueryAudit({
+        queryInput: {
+          commandId: result.commandId,
+          actorRef: typeof input.actorRef === 'string' ? input.actorRef : (input.actorRef as any)?.actorId
+        },
+        queryResult: {
+          status: result.ok ? 'SUCCESS' : (result.category === 'REFUSED' ? 'REFUSED' : 'ERROR'),
+          guidanceSet: {
+            lessons: (result.guidanceItems || []).map((g) => ({
+              lessonRef: g.lessonRef.lessonId,
+              version: g.lessonRef.version
+            }))
+          }
+        },
+        occurredAt: input.issuedAt
+      });
+    } catch (_err) {
+      // Audit recording is BEST_EFFORT, domain result is unaffected
     }
 
     return result;
