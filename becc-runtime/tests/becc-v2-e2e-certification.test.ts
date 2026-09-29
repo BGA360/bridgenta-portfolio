@@ -197,9 +197,9 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
     assert.equal(obsProv.ref, result.observationId);
   });
 
-  // SCENARIO 4: FLOW B — Escalation Exact Retry (Idempotency)
-  it('Scenario 4: Flow B — Escalation exact retry returns replayed result with same observationId and no audit conflict', async () => {
-    const { escalationService } = createComposedRuntime();
+  // SCENARIO 4: FLOW B — Escalation Exact Retry (Idempotency) & Audit Retry
+  it('Scenario 4: Flow B — Escalation exact retry returns replayed result with same observationId and no audit conflict or duplicate audit record', async () => {
+    const { escalationService, auditLedger } = createComposedRuntime();
 
     const finding: ValidationFinding = {
       id: 'fnd_e2e_retry_001',
@@ -227,6 +227,11 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
     const res2 = await escalationService.escalateFinding(input);
     assert.equal(res2.ok, true);
     assert.equal(res2.observationId, res1.observationId);
+    assert.deepEqual(res2.replayedSteps, ['DRAFT', 'ATTACH_EVIDENCE', 'SUBMIT']);
+
+    // Verify audit record count is exactly 1 (no duplicate audit record created)
+    const auditRecords = await auditLedger.listByOperationRef(`esc_${finding.id}_2026-09-29T10:00:00Z`);
+    assert.equal(auditRecords.length, 1);
   });
 
   // SCENARIO 5: FLOW C — Publication Readiness READY_BY_EVIDENCE
@@ -528,4 +533,323 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
     assert.equal(boundary.beccOwnsFinalAuthority, false);
     assert.equal(boundary.finalPublicationAuthority, 'M5 / PRAG Governance');
   });
+
+  // SCENARIO 13: Flow A — Guidance ERROR propagation
+  it('Scenario 13: Flow A — Guidance ERROR propagates through resolver to audit ledger with no fabricated provenance', async () => {
+    const errorAdapter = {
+      draftObservation: async () => ({ ok: false, category: 'ERROR' as const, commandId: 'err' }),
+      attachEvidence: async () => ({ ok: false, category: 'ERROR' as const, commandId: 'err' }),
+      submitObservation: async () => ({ ok: false, category: 'ERROR' as const, commandId: 'err' }),
+      queryGuidance: async () => ({
+        ok: false,
+        category: 'ERROR' as const,
+        commandId: 'cmd_guidance_err_001',
+        errorDetails: 'Simulated Governed Learning runtime exception'
+      })
+    };
+
+    const auditLedger = new InMemoryBeccAuditLedger();
+    const auditService = new BeccAuditIntegrationService(auditLedger);
+    const guidanceService = new GovernedGuidanceResolverService({
+      adapter: errorAdapter as any,
+      auditService
+    });
+
+    const result = await guidanceService.resolveGuidance({
+      queryId: 'query-err-001',
+      projectRef: { projectId: 'ProjectErr' },
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-29T10:00:00Z'
+    });
+
+    assert.equal(result.ok, false);
+    assert.equal(result.category, 'ERROR');
+    assert.equal(result.errorDetails, 'Simulated Governed Learning runtime exception');
+
+    const auditRecords = await auditLedger.listByOperationRef('cmd_guidance_err_001');
+    assert.equal(auditRecords.length, 1);
+    assert.equal(auditRecords[0].resultStatus, 'ERROR');
+    assert.equal(auditRecords[0].domainResultStatus, 'ERROR');
+    assert.equal(auditRecords[0].occurredAt, '2026-09-29T10:00:00Z');
+    assert.deepEqual(auditRecords[0].provenanceRefs, []); // NO fabricated provenance
+  });
+
+  // SCENARIO 14: Flow A — Guidance Exact Replay & Audit Count
+  it('Scenario 14: Flow A — Guidance exact replay returns replayed signal with stable commandId and no duplicate audit record', async () => {
+    const { guidanceService, auditLedger } = createComposedRuntime();
+
+    const queryInput: ResolvedGovernedGuidanceQueryInput = {
+      queryId: 'query-e2e-replay-001',
+      projectRef: { projectId: 'ProjectReplay' },
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-29T10:00:00Z'
+    };
+
+    const res1 = await guidanceService.resolveGuidance(queryInput);
+    assert.equal(res1.ok, true);
+    assert.equal(res1.category, 'SUCCESS');
+    assert.equal(res1.replayed, false);
+
+    const res2 = await guidanceService.resolveGuidance(queryInput);
+    assert.equal(res2.ok, true);
+    assert.equal(res2.category, 'SUCCESS');
+    assert.equal(res2.commandId, res1.commandId);
+    assert.equal(res2.replayed, true); // Replay signal verified
+
+    // Verify audit record count is exactly 1 (no duplicate audit record created)
+    const auditRecords = await auditLedger.listByOperationRef(res1.commandId);
+    assert.equal(auditRecords.length, 1);
+  });
+
+  // SCENARIO 15: Flow A — Guidance Identity Collision Fail-Closed
+  it('Scenario 15: Flow A — Guidance identity collision fails closed without mutating state or inventing new command identity', async () => {
+    const { guidanceService } = createComposedRuntime();
+
+    const input1: ResolvedGovernedGuidanceQueryInput = {
+      queryId: 'query-collision-001',
+      projectRef: { projectId: 'ProjectColl' },
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-29T10:00:00Z'
+    };
+
+    const res1 = await guidanceService.resolveGuidance(input1);
+    assert.equal(res1.ok, true);
+
+    // Identity collision: Same queryId & commandId, but different issuedAt timestamp
+    const input2: ResolvedGovernedGuidanceQueryInput = {
+      ...input1,
+      issuedAt: '2026-09-29T11:00:00Z' // Changed timestamp triggers Stage 8 collision
+    };
+
+    const res2 = await guidanceService.resolveGuidance(input2);
+    assert.equal(res2.ok, false);
+    assert.equal(res2.category, 'REFUSED'); // Fail closed
+  });
+
+  // SCENARIO 16: Flow A — Early Guidance Refusal Audit Wiring
+  it('Scenario 16: Flow A — Early guidance refusal paths emit audit records when valid caller timestamp is present', async () => {
+    const { guidanceService, auditLedger } = createComposedRuntime();
+
+    // Missing queryId with valid issuedAt
+    const resMissingQueryId = await guidanceService.resolveGuidance({
+      queryId: '',
+      projectRef: { projectId: 'ProjEarly' },
+      actorRef: validActorRef,
+      issuedAt: '2026-09-29T10:00:00Z'
+    });
+    assert.equal(resMissingQueryId.ok, false);
+    assert.equal(resMissingQueryId.category, 'REFUSED');
+
+    const recs1 = await auditLedger.listByOperationRef('cmd_becc_invalid_query_id');
+    assert.equal(recs1.length, 1);
+    assert.equal(recs1[0].resultStatus, 'REFUSED');
+    assert.equal(recs1[0].domainResultStatus, 'REFUSED');
+    assert.equal(recs1[0].occurredAt, '2026-09-29T10:00:00Z');
+
+    // Unmapped context with valid issuedAt
+    const resUnmapped = await guidanceService.resolveGuidance({
+      queryId: 'query-early-unmapped-001',
+      actorRef: validActorRef,
+      issuedAt: '2026-09-29T10:00:00Z'
+    });
+    assert.equal(resUnmapped.ok, false);
+    assert.equal(resUnmapped.category, 'REFUSED');
+
+    const recs2 = await auditLedger.listByOperationRef('cmd_becc_unmapped_query-early-unmapped-001');
+    assert.equal(recs2.length, 1);
+    assert.equal(recs2[0].resultStatus, 'REFUSED');
+    assert.equal(recs2[0].domainResultStatus, 'REFUSED');
+  });
+
+  // SCENARIO 17: Flow A — Missing/Invalid Guidance Timestamp Audit Absence
+  it('Scenario 17: Flow A — Guidance missing or invalid timestamp produces REFUSED result without emitting audit record', async () => {
+    const { guidanceService, auditLedger } = createComposedRuntime();
+
+    // Missing issuedAt
+    const resNoTs = await guidanceService.resolveGuidance({
+      queryId: 'query-no-ts-001',
+      projectRef: { projectId: 'ProjNoTs' },
+      actorRef: validActorRef,
+      issuedAt: ''
+    });
+    assert.equal(resNoTs.ok, false);
+    assert.equal(resNoTs.category, 'REFUSED');
+    const recs1 = await auditLedger.listByOperationRef('cmd_becc_missing_issued_at_query-no-ts-001');
+    assert.equal(recs1.length, 0); // ABSENT
+
+    // Invalid issuedAt
+    const resBadTs = await guidanceService.resolveGuidance({
+      queryId: 'query-bad-ts-001',
+      projectRef: { projectId: 'ProjBadTs' },
+      actorRef: validActorRef,
+      issuedAt: 'not-a-valid-date'
+    });
+    assert.equal(resBadTs.ok, false);
+    assert.equal(resBadTs.category, 'REFUSED');
+    const recs2 = await auditLedger.listByOperationRef('cmd_becc_missing_issued_at_query-bad-ts-001');
+    assert.equal(recs2.length, 0); // ABSENT
+  });
+
+  // SCENARIO 18: Flow A — Guidance Refusal Best-Effort Audit Failure Injection
+  it('Scenario 18: Flow A — Guidance refusal path executes normally when audit ledger storage fails', async () => {
+    const failingLedger = {
+      append: async () => {
+        throw new Error('Simulated audit ledger error');
+      },
+      getById: async () => null,
+      listByOperationRef: async () => [],
+      listByProjectRef: async () => [],
+      listByCorrelationRef: async () => []
+    };
+    const auditService = new BeccAuditIntegrationService(failingLedger as any);
+    const glRepo = new InMemoryGovernanceRepository();
+    const glRuntime = createGovernedLearningRuntime({ persistencePort: glRepo });
+    const glAdapter = new DefaultGovernedLearningIntegrationAdapter({ runtime: glRuntime });
+    const guidanceService = new GovernedGuidanceResolverService({ adapter: glAdapter, auditService });
+
+    const result = await guidanceService.resolveGuidance({
+      queryId: 'query-failing-audit-refusal-001',
+      actorRef: validActorRef,
+      issuedAt: '2026-09-29T10:00:00Z' // Valid issuedAt triggers audit attempt
+    });
+
+    assert.equal(result.ok, false);
+    assert.equal(result.category, 'REFUSED'); // Execution unaffected by audit failure
+  });
+
+  // SCENARIO 19: Deterministic Replay Verification across Guidance, Escalation, and Audit
+  it('Scenario 19: Deterministic Replay — repeated executions yield stable operation IDs, results, and provenance across repeat calls', async () => {
+    const { guidanceService, escalationService, auditLedger } = createComposedRuntime();
+
+    // 1. Guidance Deterministic Replay
+    const gInput: ResolvedGovernedGuidanceQueryInput = {
+      queryId: 'det-g-001',
+      projectRef: { projectId: 'ProjDet' },
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-29T10:00:00Z'
+    };
+    const g1 = await guidanceService.resolveGuidance(gInput);
+    const g2 = await guidanceService.resolveGuidance(gInput);
+
+    assert.equal(g1.commandId, g2.commandId);
+    assert.equal(g1.category, g2.category);
+
+    // 2. Escalation Deterministic Replay
+    const eFinding: ValidationFinding = {
+      id: 'fnd_det_001',
+      category: 'Structure',
+      severity: 'error',
+      message: 'Deterministic test defect'
+    };
+    const eInput: EscalationRequestInput = {
+      finding: eFinding,
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-29T10:00:00Z'
+    };
+    const e1 = await escalationService.escalateFinding(eInput);
+    const e2 = await escalationService.escalateFinding(eInput);
+
+    assert.equal(e1.observationId, e2.observationId);
+    assert.equal(e1.completedStage, e2.completedStage);
+    assert.equal(e1.draftCommandId, e2.draftCommandId);
+    assert.equal(e1.submitCommandId, e2.submitCommandId);
+
+    // 3. Audit Exact Retry
+    const gAudits = await auditLedger.listByOperationRef(g1.commandId);
+    assert.equal(gAudits.length, 1);
+    assert.equal(gAudits[0].occurredAt, '2026-09-29T10:00:00Z');
+
+    const eAudits = await auditLedger.listByOperationRef(`esc_${eFinding.id}_2026-09-29T10:00:00Z`);
+    assert.equal(eAudits.length, 1);
+    assert.equal(eAudits[0].resultRef, e1.observationId);
+  });
+
+  // SCENARIO 20: Composed Operation Audit Record Count Assertion
+  it('Scenario 20: Audit Record Count Certification — audit record count matches expected runtime operations exactly across all composed flows', async () => {
+    const { guidanceService, escalationService, readinessService, auditLedger } = createComposedRuntime();
+
+    // Perform 5 audited operations with valid caller timestamp:
+    // 1. Guidance success
+    const resQ1 = await guidanceService.resolveGuidance({
+      queryId: 'q-cnt-01',
+      projectRef: { projectId: 'ProjCnt' },
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-29T10:00:00Z'
+    });
+
+    // 2. Guidance refusal (valid timestamp)
+    const resQ2 = await guidanceService.resolveGuidance({
+      queryId: 'q-cnt-02',
+      actorRef: validActorRef,
+      issuedAt: '2026-09-29T10:01:00Z'
+    });
+
+    // 3. Escalation success
+    await escalationService.escalateFinding({
+      finding: { id: 'fnd_cnt_01', category: 'Structure', severity: 'error', message: 'Defect' },
+      actorRef: validActorRef,
+      authorityContextRef: validAuthorityContextRef,
+      issuedAt: '2026-09-29T10:02:00Z'
+    });
+
+    // 4. Readiness READY_BY_EVIDENCE
+    await readinessService.evaluateReadiness({
+      evaluationId: 'eval-cnt-01',
+      projectRef: 'ProjCnt',
+      issuedAt: '2026-09-29T10:03:00Z',
+      evidenceItems: [
+        { evidenceId: 'ev-1', requirementId: 'REQ-DEV-MATURITY-01', source: 'Engine', state: 'SATISFIED' },
+        { evidenceId: 'ev-2', requirementId: 'REQ-PROF-PURPOSE-02', source: 'Engine', state: 'SATISFIED' },
+        { evidenceId: 'ev-3', requirementId: 'REQ-VISUAL-EVIDENCE-03', source: 'Engine', state: 'SATISFIED' },
+        { evidenceId: 'ev-4', requirementId: 'REQ-INTERVIEW-DEF-04', source: 'Engine', state: 'SATISFIED' },
+        { evidenceId: 'ev-5', requirementId: 'REQ-PUB-STANDARD-05', source: 'Engine', state: 'SATISFIED' }
+      ]
+    });
+
+    // 5. Readiness ERROR (valid timestamp)
+    await readinessService.evaluateReadiness({
+      evaluationId: 'eval-cnt-02',
+      projectRef: 'ProjCnt',
+      issuedAt: '2026-09-29T10:04:00Z',
+      evidenceItems: [
+        { evidenceId: 'ev-unk', requirementId: 'REQ-UNKNOWN-99', source: 'Engine', state: 'SATISFIED' }
+      ]
+    });
+
+    // Perform 2 operations without valid timestamp (0 audit records expected):
+    await guidanceService.resolveGuidance({
+      queryId: 'q-cnt-no-ts',
+      projectRef: { projectId: 'ProjCnt' },
+      actorRef: validActorRef,
+      issuedAt: ''
+    });
+
+    await readinessService.evaluateReadiness({
+      evaluationId: 'eval-cnt-no-ts',
+      projectRef: 'ProjCnt',
+      issuedAt: '',
+      evidenceItems: []
+    });
+
+    // Verify each operation recorded exactly 1 audit record
+    const recordsQ1 = await auditLedger.listByOperationRef(resQ1.commandId);
+    const recordsQ2 = await auditLedger.listByOperationRef(resQ2.commandId);
+    const recordsE1 = await auditLedger.listByOperationRef('esc_fnd_cnt_01_2026-09-29T10:02:00Z');
+    const recordsR1 = await auditLedger.listByOperationRef('eval-cnt-01');
+    const recordsR2 = await auditLedger.listByOperationRef('eval-cnt-02');
+
+    assert.equal(recordsQ1.length, 1);
+    assert.equal(recordsQ2.length, 1);
+    assert.equal(recordsE1.length, 1);
+    assert.equal(recordsR1.length, 1);
+    assert.equal(recordsR2.length, 1);
+  });
 });
+
+
