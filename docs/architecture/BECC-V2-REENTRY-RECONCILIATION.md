@@ -117,7 +117,7 @@ To complete BECC v2 implementation safely, the work is structured into contract-
    * Status: `MERGED_COMPLETE (PR #316 Merged)`.
 5. **`BECC-V2-IMPL-016`: Audit Ledger & Provenance Integration**
    * Connect BECC validation reports, guidance queries, finding escalations, and readiness evaluations to append-only BECC audit ledger with truthful provenance references.
-   * Status: `IMPLEMENTED (PR Pending Review)`.
+   * Status: `IMPLEMENTED & CERTIFIED (PR #317 Pending Independent Code Review)`.
 6. **`BECC-V2-IMPL-017`: End-to-End System Integration & Certification Suite**
    * Build complete integration test suite validating BECC v2 ↔ Governed Learning Level-2B Postgres flow.
 

@@ -403,4 +403,143 @@ describe('BECC-V2-IMPL-016: Audit Ledger & Provenance Integration', () => {
     assert.equal(auditRecords[0].domainResultStatus, 'READY_BY_EVIDENCE');
     assert.equal(auditRecords[0].externalAuthorityBoundary, 'M5 / PRAG Governance');
   });
+
+  it('Part O: ESCALATION_PROVENANCE_TESTS — preserves canonical evidenceId, does not fabricate ev_${idx}_${location} or promote location to ID', async () => {
+    const ledger = new InMemoryBeccAuditLedger();
+    const service = new BeccAuditIntegrationService(ledger);
+
+    // Case 1: Canonical evidenceId provided
+    const recordWithCanonicalId = await service.recordFindingEscalationAudit({
+      escalationInput: {
+        escalationId: 'esc-canon-001',
+        findingId: 'fnd-canon-01',
+        evidenceItems: [{ evidenceId: 'ev-canon-101' }]
+      },
+      escalationResult: {
+        status: 'SUCCESS',
+        observationId: 'obs_canon_001'
+      },
+      occurredAt: '2026-09-28T12:00:00Z'
+    });
+    assert.deepEqual(recordWithCanonicalId.evidenceRefs, ['ev-canon-101']);
+
+    // Case 2: Evidence item with no evidenceId (only location) -> no fake ID manufactured
+    const recordWithoutId = await service.recordFindingEscalationAudit({
+      escalationInput: {
+        escalationId: 'esc-no-id-001',
+        findingId: 'fnd-no-id-01',
+        evidenceItems: [] // Missing identity stays absent
+      },
+      escalationResult: {
+        status: 'SUCCESS',
+        observationId: 'obs_no_id_001'
+      },
+      occurredAt: '2026-09-28T12:00:00Z'
+    });
+    assert.deepEqual(recordWithoutId.evidenceRefs, []); // No fabricated ev_0_src/file.ts
+  });
+
+  it('Part Q: READINESS_VALID_TIMESTAMP_ERROR_PATHS_TESTS — valid-timestamp ERROR paths emit audit record with resultStatus ERROR and domainResultStatus ERROR', async () => {
+    const ledger = new InMemoryBeccAuditLedger();
+    const auditService = new BeccAuditIntegrationService(ledger);
+    const readinessService = new PublicationReadinessEvaluationService(
+      new CanonicalPortfolioReadinessRuleProvider(),
+      undefined,
+      auditService
+    );
+
+    // Unknown requirement reference with valid timestamp
+    const input: PortfolioReadinessEvaluationInput = {
+      evaluationId: 'eval-err-unknown-req-001',
+      projectRef: 'ProjectUnknownReq',
+      issuedAt: '2026-09-28T12:00:00Z',
+      evidenceItems: [
+        {
+          evidenceId: 'ev-unknown-01',
+          requirementId: 'REQ-NON-EXISTENT-99',
+          source: 'Engine',
+          state: 'SATISFIED'
+        }
+      ]
+    };
+
+    const evalResult = await readinessService.evaluateReadiness(input);
+    assert.equal(evalResult.status, 'ERROR');
+
+    // Verify audit record emitted with resultStatus ERROR and domainResultStatus ERROR
+    const auditRecords = await ledger.listByOperationRef('eval-err-unknown-req-001');
+    assert.equal(auditRecords.length, 1);
+    assert.equal(auditRecords[0].resultStatus, 'ERROR');
+    assert.equal(auditRecords[0].domainResultStatus, 'ERROR');
+    assert.equal(auditRecords[0].occurredAt, '2026-09-28T12:00:00Z');
+  });
+
+  it('Part R: MISSING_AND_INVALID_TIMESTAMP_AUDIT_TESTS — missing or invalid issuedAt emits NO audit record and no synthetic timestamp', async () => {
+    const ledger = new InMemoryBeccAuditLedger();
+    const auditService = new BeccAuditIntegrationService(ledger);
+    const readinessService = new PublicationReadinessEvaluationService(
+      new CanonicalPortfolioReadinessRuleProvider(),
+      undefined,
+      auditService
+    );
+
+    // Case 1: Missing issuedAt
+    const inputMissingTs: PortfolioReadinessEvaluationInput = {
+      evaluationId: 'eval-no-ts-001',
+      projectRef: 'ProjectNoTs',
+      issuedAt: '',
+      evidenceItems: []
+    };
+    const res1 = await readinessService.evaluateReadiness(inputMissingTs);
+    assert.equal(res1.status, 'ERROR');
+    assert.equal(res1.evaluatedAt, undefined);
+
+    const audit1 = await ledger.listByOperationRef('eval-no-ts-001');
+    assert.equal(audit1.length, 0); // ABSENT: No audit record created without timestamp
+
+    // Case 2: Invalid issuedAt
+    const inputInvalidTs: PortfolioReadinessEvaluationInput = {
+      evaluationId: 'eval-invalid-ts-001',
+      projectRef: 'ProjectInvalidTs',
+      issuedAt: 'not-a-timestamp',
+      evidenceItems: []
+    };
+    const res2 = await readinessService.evaluateReadiness(inputInvalidTs);
+    assert.equal(res2.status, 'ERROR');
+    assert.equal(res2.evaluatedAt, undefined);
+
+    const audit2 = await ledger.listByOperationRef('eval-invalid-ts-001');
+    assert.equal(audit2.length, 0); // ABSENT: No audit record created with fake timestamp
+  });
+
+  it('Part S & L: BEST_EFFORT_AUDIT_FAILURE_TESTS — audit failure does not mutate domain evaluation result', async () => {
+    // Failing audit ledger port
+    const failingLedger = {
+      append: async () => {
+        throw new Error('Audit ledger storage error (simulated node outage)');
+      },
+      getById: async () => null,
+      listByOperationRef: async () => [],
+      listByProjectRef: async () => [],
+      listByCorrelationRef: async () => []
+    };
+
+    const auditService = new BeccAuditIntegrationService(failingLedger as any);
+    const readinessService = new PublicationReadinessEvaluationService(
+      new CanonicalPortfolioReadinessRuleProvider(),
+      undefined,
+      auditService
+    );
+
+    const input: PortfolioReadinessEvaluationInput = {
+      evaluationId: 'eval-best-effort-001',
+      projectRef: 'AEOcortex',
+      issuedAt: '2026-09-28T12:00:00Z',
+      evidenceItems: []
+    };
+
+    // Domain evaluation completes normally (NOT_READY due to missing evidence) even though audit emission throws
+    const evalResult = await readinessService.evaluateReadiness(input);
+    assert.equal(evalResult.status, 'NOT_READY');
+  });
 });

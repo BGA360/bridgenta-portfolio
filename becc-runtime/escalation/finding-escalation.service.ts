@@ -254,25 +254,40 @@ export class FindingEscalationService {
       replayedSteps: Object.freeze(replayedSteps),
     };
 
-    if (this.auditService) {
-      try {
-        await this.auditService.recordFindingEscalationAudit({
-          escalationInput: {
-            escalationId: `esc_${findingId}_${input.issuedAt}`,
-            findingId,
-            actorRef: typeof input.actorRef === 'string' ? input.actorRef : (input.actorRef as any)?.actorId,
-            evidenceItems: evidenceList.map((e: any, idx: number) => ({ evidenceId: `ev_${idx}_${e.location}` }))
-          },
-          escalationResult: {
-            status: result.ok ? 'SUCCESS' : (result.category === 'REFUSED' ? 'REFUSED' : 'ERROR'),
-            observationId: result.observationId,
-            details: result.reason
-          },
-          occurredAt: input.issuedAt
-        });
-      } catch (_err) {
-        // Audit recording is BEST_EFFORT, domain result is unaffected
-      }
+    return this.finalizeResultWithAudit(input, result);
+  }
+
+  private async finalizeResultWithAudit(
+    input: EscalationRequestInput | undefined,
+    result: FindingEscalationResult
+  ): Promise<FindingEscalationResult> {
+    if (!this.auditService || !input || !input.issuedAt || isNaN(Date.parse(input.issuedAt))) {
+      return result;
+    }
+
+    try {
+      const findingObj = input.finding;
+      const evidenceList = this.collectEvidenceItems(input, findingObj);
+      const validEvidenceItems = evidenceList
+        .filter((e): e is BECCFindingEvidenceInput & { evidenceId: string } => typeof e.evidenceId === 'string' && e.evidenceId.trim().length > 0)
+        .map((e) => ({ evidenceId: e.evidenceId }));
+
+      await this.auditService.recordFindingEscalationAudit({
+        escalationInput: {
+          escalationId: `esc_${result.findingId || 'unknown'}_${input.issuedAt}`,
+          findingId: result.findingId || 'unknown',
+          actorRef: typeof input.actorRef === 'string' ? input.actorRef : (input.actorRef as any)?.actorId,
+          evidenceItems: validEvidenceItems
+        },
+        escalationResult: {
+          status: result.ok ? 'SUCCESS' : (result.category === 'REFUSED' ? 'REFUSED' : 'ERROR'),
+          observationId: result.observationId,
+          details: result.reason || result.errorDetails
+        },
+        occurredAt: input.issuedAt
+      });
+    } catch (_err) {
+      // Audit recording is BEST_EFFORT, domain result is unaffected
     }
 
     return result;

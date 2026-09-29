@@ -16,6 +16,7 @@ export type EscalationPipelineStage = 'DRAFT' | 'ATTACH_EVIDENCE' | 'SUBMIT';
  * Individual evidence location/type input for escalation.
  */
 export interface BECCFindingEvidenceInput {
+  readonly evidenceId?: string;
   readonly evidenceType?: EvidenceTypeEnum;
   readonly location: string;
 }
