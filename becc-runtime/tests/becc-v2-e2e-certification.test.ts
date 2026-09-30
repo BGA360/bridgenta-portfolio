@@ -526,7 +526,7 @@ describe('BECC-V2-IMPL-017: End-to-End System Integration & Certification Suite'
 
     // Generic audit records do NOT default externalAuthorityBoundary to M5/PRAG
     assert.equal(record.externalAuthorityBoundary, undefined);
-    assert.equal((record.metadata as any).secretToken, undefined);
+    assert.equal((record.metadata as any)?.secretToken, undefined);
 
     // Authority boundary declaration check
     const boundary = service.getAuthorityBoundary();

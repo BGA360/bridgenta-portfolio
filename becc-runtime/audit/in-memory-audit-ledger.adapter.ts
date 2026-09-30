@@ -12,6 +12,8 @@ import {
   BeccAuditQueryFilter
 } from './audit-ledger.types.js';
 
+import { AuditMetadataSecurityPolicy } from './audit-metadata-security.policy.js';
+
 function deepFreeze<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') {
     return obj;
@@ -45,12 +47,14 @@ export class InMemoryBeccAuditLedger implements BeccAuditLedgerPort {
       throw new Error('Audit record must have a valid caller-supplied occurredAt timestamp');
     }
 
+    const canonicalIncoming = AuditMetadataSecurityPolicy.canonicalizeRecord(record);
+
     const existing = this.records.get(record.auditRecordId);
     if (existing) {
-      // Check for exact retry equivalence
-      const existingClone = deepClone(existing);
-      const incomingClone = deepClone(record);
-      if (JSON.stringify(existingClone) === JSON.stringify(incomingClone)) {
+      // Check for exact retry equivalence using single canonical equivalence model
+      const existingCanonicalStr = JSON.stringify(AuditMetadataSecurityPolicy.canonicalizeRecord(existing));
+      const incomingCanonicalStr = JSON.stringify(canonicalIncoming);
+      if (existingCanonicalStr === incomingCanonicalStr) {
         // Idempotent exact retry — pass without duplicating
         return;
       }
@@ -60,7 +64,7 @@ export class InMemoryBeccAuditLedger implements BeccAuditLedgerPort {
     }
 
     // Defensive copy & deep freeze
-    const storedRecord = deepFreeze(deepClone(record));
+    const storedRecord = deepFreeze(deepClone(canonicalIncoming));
     this.records.set(record.auditRecordId, storedRecord);
   }
 

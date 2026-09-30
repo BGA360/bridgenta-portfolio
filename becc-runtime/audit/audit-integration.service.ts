@@ -18,6 +18,7 @@ import {
   ProvenanceRef,
   BeccAuditAuthorityBoundary
 } from './audit-ledger.types.js';
+import { AuditMetadataSecurityPolicy } from './audit-metadata-security.policy.js';
 
 export interface AuditGuidanceQueryContext {
   queryInput: {
@@ -109,28 +110,30 @@ export class BeccAuditIntegrationService {
     const auditRecordId =
       input.auditRecordId || `audit_${input.operationType.toLowerCase()}_${input.operationId}`;
 
-    const record: BeccAuditRecord = {
+    const sanitizedInput = AuditMetadataSecurityPolicy.sanitizeInput(input);
+
+    const record: BeccAuditRecord = AuditMetadataSecurityPolicy.canonicalizeRecord({
       auditRecordId,
-      operationType: input.operationType,
-      operationId: input.operationId,
-      projectRef: input.projectRef,
-      candidateRef: input.candidateRef,
-      workstreamRef: input.workstreamRef,
-      actorRef: input.actorRef,
-      authorityContextRef: input.authorityContextRef,
-      assessmentContextRef: input.assessmentContextRef,
-      correlationRef: input.correlationRef,
-      causationRef: input.causationRef,
-      inputRefs: [...(input.inputRefs || [])],
-      evidenceRefs: [...(input.evidenceRefs || [])],
-      provenanceRefs: [...(input.provenanceRefs || [])],
-      resultStatus: input.resultStatus,
-      domainResultStatus: input.domainResultStatus,
-      resultRef: input.resultRef,
-      occurredAt: input.occurredAt,
-      externalAuthorityBoundary: input.externalAuthorityBoundary,
-      metadata: input.metadata ? { ...input.metadata } : undefined
-    };
+      operationType: sanitizedInput.operationType,
+      operationId: sanitizedInput.operationId,
+      projectRef: sanitizedInput.projectRef,
+      candidateRef: sanitizedInput.candidateRef,
+      workstreamRef: sanitizedInput.workstreamRef,
+      actorRef: sanitizedInput.actorRef,
+      authorityContextRef: sanitizedInput.authorityContextRef,
+      assessmentContextRef: sanitizedInput.assessmentContextRef,
+      correlationRef: sanitizedInput.correlationRef,
+      causationRef: sanitizedInput.causationRef,
+      inputRefs: [...(sanitizedInput.inputRefs || [])],
+      evidenceRefs: [...(sanitizedInput.evidenceRefs || [])],
+      provenanceRefs: [...(sanitizedInput.provenanceRefs || [])],
+      resultStatus: sanitizedInput.resultStatus,
+      domainResultStatus: sanitizedInput.domainResultStatus,
+      resultRef: sanitizedInput.resultRef,
+      occurredAt: sanitizedInput.occurredAt,
+      externalAuthorityBoundary: sanitizedInput.externalAuthorityBoundary,
+      metadata: sanitizedInput.metadata
+    });
 
     await this.ledger.append(record);
     return record;
