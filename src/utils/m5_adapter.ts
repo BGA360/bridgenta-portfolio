@@ -90,7 +90,12 @@ export function getM5Projection(articles: any[], options: { workspaceDir?: strin
     } else {
       try {
         const b5Result = evaluateReadiness(workspaceRoot, registry, manifest, clearances);
-        for (const b5Art of b5Result.articles) {
+        const expectedSubjectSet = new Set(expectedSubjects);
+        const targetB5Articles = expectedSubjects.length > 0
+          ? b5Result.articles.filter((b5Art: any) => expectedSubjectSet.has(b5Art.subjectId))
+          : b5Result.articles;
+
+        for (const b5Art of targetB5Articles) {
           const dec = evaluateM5Decision(b5Art, {
             implementationIdentity,
             implementationIdentityScheme,

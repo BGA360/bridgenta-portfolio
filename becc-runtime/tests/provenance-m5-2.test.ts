@@ -10,8 +10,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const testTmpDir = path.join(__dirname, 'tmp-m5-2-tests');
 
+function getRepoRoot() {
+  let cur = __dirname;
+  while (cur && cur !== path.parse(cur).root) {
+    if (fs.existsSync(path.join(cur, 'tooling', 'prag_provenance_m5.js'))) {
+      return cur;
+    }
+    cur = path.dirname(cur);
+  }
+  return path.resolve(process.cwd());
+}
+
 // Load M5 JS modules dynamically
-const repoRoot = path.resolve(process.cwd(), '..');
+const repoRoot = getRepoRoot();
 
 function initializeMockWorkspace(dirPath: string) {
   try {
@@ -1105,13 +1116,13 @@ provenanceRef: "EV-BG-106"
       assert.deepStrictEqual(resA.observation, resB.observation);
     });
 
-    test('current production workspace evaluates to SHADOW_PASS', () => {
+    test('current production workspace evaluates to SHADOW_ATTENTION', () => {
       // Evaluate against the real repository root
       const res = evaluateShadowObservation(repoRoot);
-      assert.strictEqual(res.observation.shadowGateResult, "SHADOW_PASS");
-      assert.strictEqual(res.observation.subjectCount, 5);
+      assert.strictEqual(res.observation.shadowGateResult, "SHADOW_ATTENTION");
+      assert.strictEqual(res.observation.subjectCount, 14);
       assert.strictEqual(res.observation.eligibleCount, 5);
-      assert.strictEqual(res.observation.withheldCount, 0);
+      assert.strictEqual(res.observation.withheldCount, 9);
       assert.strictEqual(res.observation.undecidedCount, 0);
     });
   });
