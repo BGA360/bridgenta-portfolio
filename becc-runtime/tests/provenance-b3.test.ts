@@ -2,23 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL, fileURLToPath } from 'node:url';
+import { pathToFileURL } from 'node:url';
 import nodeCrypto from 'node:crypto';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-function getRepoRoot() {
-  let cur = __dirname;
-  while (cur && cur !== path.parse(cur).root) {
-    if (fs.existsSync(path.join(cur, 'tooling', 'prag_provenance_resolver.js'))) {
-      return cur;
-    }
-    cur = path.dirname(cur);
-  }
-  return path.resolve(process.cwd());
-}
-const repoRoot = getRepoRoot();
+const repoRoot = path.resolve(process.cwd(), '..');
 const resolverPath = pathToFileURL(path.join(repoRoot, 'tooling', 'prag_provenance_resolver.js')).href;
 
 // @ts-ignore

@@ -50,7 +50,13 @@ const SENSITIVE_KEY_TERMS = [
   'password',
   'jwt',
   'cookie',
-  'credential'
+  'credential',
+  'token',
+  'key',
+  'session',
+  'privkey',
+  'cert',
+  'auth'
 ];
 
 /**
@@ -83,52 +89,87 @@ const SECRET_VALUE_PATTERNS = [
 ];
 
 /**
- * Checks if a metadata key matches prohibited raw payload names.
+ * Recursively canonicalizes a value:
+ * - Sorts object keys recursively.
+ * - Preserves array order.
+ * - Omits undefined properties deterministically.
+ * - Preserves primitive scalar values and null.
  */
-function isProhibitedRawPayloadKey(key: string): boolean {
-  const normalized = key.toLowerCase().replace(/[^a-z]/g, '');
-  return PROHIBITED_RAW_PAYLOAD_KEYS.has(normalized);
-}
-
-/**
- * Checks if a metadata key matches sensitive key rules using token boundary matching.
- * Preserves false positive non-sensitive words (e.g., monkey, keyboard, keynote).
- */
-function isSensitiveKey(key: string): boolean {
-  const lowerKey = key.toLowerCase();
-
-  // Check exact token terms
-  for (const term of SENSITIVE_KEY_TERMS) {
-    if (lowerKey === term) return true;
+function canonicalizeValue(val: unknown): unknown {
+  if (val === null || val === undefined) {
+    return val;
   }
-
-  // Check structured token patterns
-  for (const pattern of SENSITIVE_KEY_PATTERNS) {
-    if (pattern.test(key)) return true;
+  if (typeof val !== 'object') {
+    return val;
   }
-
-  // Check term as camelCase/snake_case word segment (e.g., authToken, user_secret)
-  const segments = key.split(/(?=[A-Z])|[_.\-\s]+/).map((s) => s.toLowerCase());
-  for (const segment of segments) {
-    if (SENSITIVE_KEY_TERMS.includes(segment)) {
-      return true;
+  if (val instanceof Date) {
+    return val.toISOString();
+  }
+  if (Array.isArray(val)) {
+    return val.map((item) => canonicalizeValue(item));
+  }
+  const obj = val as Record<string, unknown>;
+  const keys = Object.keys(obj).sort();
+  const res: Record<string, unknown> = {};
+  for (const k of keys) {
+    const v = obj[k];
+    if (v !== undefined) {
+      const cv = canonicalizeValue(v);
+      if (cv !== undefined) {
+        res[k] = cv;
+      }
     }
   }
-
-  return false;
-}
-
-/**
- * Checks if a string value contains high-confidence raw secret tokens.
- */
-function containsSecretValuePattern(val: string): boolean {
-  for (const pattern of SECRET_VALUE_PATTERNS) {
-    if (pattern.test(val)) return true;
-  }
-  return false;
+  return res;
 }
 
 export class AuditMetadataSecurityPolicy {
+  /**
+   * Checks if a metadata key matches prohibited raw payload names.
+   */
+  public static isProhibitedRawPayloadKey(key: string): boolean {
+    const normalized = key.toLowerCase().replace(/[^a-z]/g, '');
+    return PROHIBITED_RAW_PAYLOAD_KEYS.has(normalized);
+  }
+
+  /**
+   * Checks if a metadata key matches sensitive key rules using token boundary matching.
+   * Preserves false positive non-sensitive words (e.g., monkey, keyboard, keynote, turkey, hockey).
+   */
+  public static isSensitiveKey(key: string): boolean {
+    const lowerKey = key.toLowerCase();
+
+    // Check exact token terms
+    for (const term of SENSITIVE_KEY_TERMS) {
+      if (lowerKey === term) return true;
+    }
+
+    // Check structured token patterns
+    for (const pattern of SENSITIVE_KEY_PATTERNS) {
+      if (pattern.test(key)) return true;
+    }
+
+    // Check term as camelCase/snake_case word segment (e.g., authToken, user_secret)
+    const segments = key.split(/(?=[A-Z])|[_.\-\s]+/).map((s) => s.toLowerCase());
+    for (const segment of segments) {
+      if (SENSITIVE_KEY_TERMS.includes(segment)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks if a string value contains high-confidence raw secret tokens.
+   */
+  public static containsSecretValuePattern(val: string): boolean {
+    for (const pattern of SECRET_VALUE_PATTERNS) {
+      if (pattern.test(val)) return true;
+    }
+    return false;
+  }
+
   /**
    * Processes and sanitizes metadata dictionary according to approved security rules:
    * 1. Prohibits raw payload keys (fails closed if present).
@@ -147,7 +188,7 @@ export class AuditMetadataSecurityPolicy {
 
     // Check for prohibited raw payload keys -> reject record immediately
     for (const key of Object.keys(rawMetadata)) {
-      if (rawMetadata[key] !== undefined && isProhibitedRawPayloadKey(key)) {
+      if (rawMetadata[key] !== undefined && this.isProhibitedRawPayloadKey(key)) {
         throw new Error(
           `Audit record metadata contains prohibited raw payload key '${key}'`
         );
@@ -161,7 +202,7 @@ export class AuditMetadataSecurityPolicy {
 
     for (const key of keys) {
       // 1. Drop if key matches sensitive key rule
-      if (isSensitiveKey(key)) {
+      if (this.isSensitiveKey(key)) {
         continue;
       }
 
@@ -181,7 +222,7 @@ export class AuditMetadataSecurityPolicy {
       if (valType === 'string') {
         const strVal = val as string;
         // Defense-in-depth secret pattern scanning
-        if (containsSecretValuePattern(strVal)) {
+        if (this.containsSecretValuePattern(strVal)) {
           continue; // DROP value containing secret pattern
         }
         sanitized[key] = strVal;
@@ -230,26 +271,13 @@ export class AuditMetadataSecurityPolicy {
   }
 
   /**
-   * Deterministically canonicalizes a BeccAuditRecord ensuring key order invariance
-   * for exact retry comparisons.
+   * Deterministically canonicalizes a BeccAuditRecord or record input recursively
+   * ensuring key order invariance for exact retry comparisons across the entire semantic record.
    */
-  public static canonicalizeRecord(record: BeccAuditRecord): BeccAuditRecord {
+  public static canonicalizeRecord<T>(record: T): T {
     if (!record) {
       return record;
     }
-
-    let canonicalMetadata: Record<string, unknown> | undefined = undefined;
-    if (record.metadata) {
-      const keys = Object.keys(record.metadata).sort();
-      canonicalMetadata = {};
-      for (const k of keys) {
-        canonicalMetadata[k] = record.metadata[k];
-      }
-    }
-
-    return {
-      ...record,
-      metadata: canonicalMetadata
-    };
+    return canonicalizeValue(record) as T;
   }
 }
