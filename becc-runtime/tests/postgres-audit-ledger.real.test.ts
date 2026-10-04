@@ -24,6 +24,14 @@ import {
   BeccMigrationRunner,
   migration001
 } from '../audit/index.js';
+import { GovernedGuidanceResolverService } from '../knowledge/index.js';
+import { FindingEscalationService } from '../escalation/index.js';
+import {
+  PublicationReadinessEvaluationService,
+  CanonicalPortfolioReadinessRuleProvider
+} from '../readiness/index.js';
+import type { GovernedLearningIntegrationAdapter } from '../governed-learning/index.js';
+
 
 describe('Real PostgreSQL BECC Audit Persistence & Security Certification Suite', () => {
   let pgServer: EmbeddedPostgres;
@@ -432,9 +440,13 @@ describe('Real PostgreSQL BECC Audit Persistence & Security Certification Suite'
     await poolB.end();
 
     // B. Database Process Restart Durability
+    if (adminPool) {
+      await adminPool.end().catch(() => {});
+    }
     await pgServer.stop();
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     await pgServer.start();
+    adminPool = createPool();
 
     const poolC = createPool();
     const ledgerC = new PostgresBeccAuditLedger({ pool: poolC });
@@ -698,61 +710,230 @@ describe('Real PostgreSQL BECC Audit Persistence & Security Certification Suite'
     await setupPool.end();
   });
 
-  it('14. Real BECC domain-service database outage failure isolation', async () => {
+  it('14. Adapter-level PostgreSQL DB outage handling', async () => {
     const pool = createPool();
     const ledger = new PostgresBeccAuditLedger({ pool });
     await ledger.initialize();
 
-    const service = new BeccAuditIntegrationService(ledger);
-
-    // Close database pool to simulate DB outage
     await pool.end();
 
-    // Execute real BECC domain guidance query audit path
-    let guidanceDomainResultPreserved = false;
-    const guidanceDomainOutput = {
-      status: 'SUCCESS',
-      guidanceSet: { lessons: [{ lessonRef: 'les_001', version: '1.0.0' }] }
+    const record: BeccAuditRecord = {
+      auditRecordId: 'audit_adapter_outage_001',
+      operationType: 'GUIDANCE_QUERY',
+      operationId: 'op_adapter_outage_001',
+      occurredAt: new Date().toISOString(),
+      inputRefs: [],
+      evidenceRefs: [],
+      provenanceRefs: [],
+      resultStatus: 'SUCCESS'
     };
 
-    try {
-      await service.recordGuidanceQueryAudit({
-        queryInput: { commandId: 'cmd_domain_outage_001', projectRef: 'proj_alpha' },
-        queryResult: guidanceDomainOutput,
-        occurredAt: new Date().toISOString()
-      });
-    } catch (auditErr) {
-      // Best-effort audit logging failure caught by caller resilience wrapper
-      guidanceDomainResultPreserved = true;
-    }
+    await assert.rejects(
+      async () => {
+        await ledger.append(record);
+      }
+    );
+  });
 
-    assert.strictEqual(guidanceDomainResultPreserved, true);
-    assert.strictEqual(guidanceDomainOutput.status, 'SUCCESS');
+  it('15. GovernedGuidanceResolverService real domain outage failure isolation', async () => {
+    const mockAdapter: GovernedLearningIntegrationAdapter = {
+      queryGuidance: async (input: any) => ({
+        ok: true,
+        category: 'SUCCESS',
+        commandId: `cmd_${input.queryId}`,
+        replayed: false,
+        guidanceSet: {
+          evaluatedAt: input.issuedAt,
+          matchedGuidance: [
+            {
+              lessonRef: { lessonId: 'les_guidance_001', version: '1.0.0' },
+              statement: 'Enforce failure isolation at domain boundary',
+              rationale: 'Audit failure must not alter domain output',
+              scope: 'PROJECT'
+            }
+          ]
+        }
+      })
+    } as any;
 
-    // Execute real BECC domain readiness evaluation audit path
-    let readinessDomainResultPreserved = false;
-    const readinessDomainOutput = {
-      status: 'READY_BY_EVIDENCE',
-      ruleSourceRef: 'RULE_SRC_001',
-      evidenceRefs: ['ev_001']
+    const queryInput = {
+      queryId: 'query_domain_outage_001',
+      actorRef: 'actor_becc_001',
+      issuedAt: '2026-10-04T12:00:00.000Z',
+      projectRef: { projectId: 'proj_alpha' }
     };
 
-    try {
-      await service.recordReadinessEvaluationAudit({
-        evaluationInput: {
-          evaluationId: 'eval_domain_outage_001',
-          projectRef: 'proj_alpha',
-          issuedAt: new Date().toISOString(),
-          evidenceItems: [{ evidenceId: 'ev_001' }]
-        },
-        evaluationResult: readinessDomainOutput,
-        occurredAt: new Date().toISOString()
-      });
-    } catch (auditErr) {
-      readinessDomainResultPreserved = true;
-    }
+    // Step A: Baseline run with healthy PostgreSQL audit ledger
+    const healthyPool = createPool();
+    const healthyLedger = new PostgresBeccAuditLedger({ pool: healthyPool });
+    await healthyLedger.initialize();
+    const healthyAuditService = new BeccAuditIntegrationService(healthyLedger);
+    const healthyResolver = new GovernedGuidanceResolverService({
+      adapter: mockAdapter,
+      auditService: healthyAuditService
+    });
 
-    assert.strictEqual(readinessDomainResultPreserved, true);
-    assert.strictEqual(readinessDomainOutput.status, 'READY_BY_EVIDENCE');
+    const baselineResult = await healthyResolver.resolveGuidance(queryInput as any);
+    assert.strictEqual(baselineResult.ok, true);
+    assert.strictEqual(baselineResult.category, 'SUCCESS');
+    assert.strictEqual(baselineResult.guidanceItems.length, 1);
+    await healthyPool.end();
+
+    // Step B: Outage run with unavailable PostgreSQL audit ledger
+    const outagePool = createPool();
+    const outageLedger = new PostgresBeccAuditLedger({ pool: outagePool });
+    await outageLedger.initialize();
+    const outageAuditService = new BeccAuditIntegrationService(outageLedger);
+    const outageResolver = new GovernedGuidanceResolverService({
+      adapter: mockAdapter,
+      auditService: outageAuditService
+    });
+
+    // Make PostgreSQL unavailable specifically for audit persistence
+    await outagePool.end();
+
+    // Execute real service entry point directly without local try-catch wrapper
+    const outageResult = await outageResolver.resolveGuidance(queryInput as any);
+
+    // Verify domain status & payload semantic equivalence
+    assert.strictEqual(outageResult.ok, baselineResult.ok);
+    assert.strictEqual(outageResult.category, baselineResult.category);
+    assert.deepStrictEqual(outageResult.guidanceItems, baselineResult.guidanceItems);
+    assert.strictEqual(outageResult.commandId, baselineResult.commandId);
+    assert.strictEqual(outageResult.evaluatedAt, baselineResult.evaluatedAt);
+    assert.deepStrictEqual(outageResult, baselineResult);
+  });
+
+  it('16. FindingEscalationService real domain outage failure isolation', async () => {
+    const mockAdapter: GovernedLearningIntegrationAdapter = {
+      draftObservation: async (input: any) => ({
+        ok: true,
+        category: 'SUCCESS',
+        commandId: `cmd_draft_${input.findingId}`,
+        observationId: `obs_${input.findingId}`,
+        replayed: false
+      }),
+      attachEvidence: async (input: any, obsId: any) => ({
+        ok: true,
+        category: 'SUCCESS',
+        commandId: `cmd_attach_${obsId}`,
+        replayed: false
+      }),
+      submitObservation: async (input: any, obsId: any) => ({
+        ok: true,
+        category: 'SUCCESS',
+        commandId: `cmd_submit_${obsId}`,
+        replayed: false
+      })
+    } as any;
+
+    const escalationInput = {
+      finding: {
+        id: 'finding_outage_001',
+        message: 'Discovered isolation issue',
+        category: 'MECHANICAL' as const,
+        severity: 'ERROR' as const
+      },
+      actorRef: 'actor_becc_001',
+      issuedAt: '2026-10-04T12:00:00.000Z',
+      authorityContextRef: { authorityId: 'auth_becc_001' } as any,
+      evidenceItems: [{ evidenceId: 'ev_001', location: 'src/file.ts', evidenceType: 'ARTIFACT_DIFF' as const }]
+    };
+
+    // Step A: Baseline run with healthy PostgreSQL audit ledger
+    const healthyPool = createPool();
+    const healthyLedger = new PostgresBeccAuditLedger({ pool: healthyPool });
+    await healthyLedger.initialize();
+    const healthyAuditService = new BeccAuditIntegrationService(healthyLedger);
+    const healthyEscalation = new FindingEscalationService({
+      adapter: mockAdapter,
+      auditService: healthyAuditService
+    });
+
+    const baselineResult = await healthyEscalation.escalateFinding(escalationInput as any);
+    assert.strictEqual(baselineResult.ok, true);
+    assert.strictEqual(baselineResult.category, 'SUCCESS');
+    assert.strictEqual(baselineResult.observationId, 'obs_finding_outage_001');
+    await healthyPool.end();
+
+    // Step B: Outage run with unavailable PostgreSQL audit ledger
+    const outagePool = createPool();
+    const outageLedger = new PostgresBeccAuditLedger({ pool: outagePool });
+    await outageLedger.initialize();
+    const outageAuditService = new BeccAuditIntegrationService(outageLedger);
+    const outageEscalation = new FindingEscalationService({
+      adapter: mockAdapter,
+      auditService: outageAuditService
+    });
+
+    // Make PostgreSQL unavailable
+    await outagePool.end();
+
+    // Execute real service entry point directly without local try-catch wrapper
+    const outageResult = await outageEscalation.escalateFinding(escalationInput as any);
+
+    // Verify domain status & payload semantic equivalence
+    assert.strictEqual(outageResult.ok, baselineResult.ok);
+    assert.strictEqual(outageResult.category, baselineResult.category);
+    assert.strictEqual(outageResult.observationId, baselineResult.observationId);
+    assert.strictEqual(outageResult.completedStage, baselineResult.completedStage);
+    assert.deepStrictEqual(outageResult, baselineResult);
+  });
+
+  it('17. PublicationReadinessEvaluationService real domain outage failure isolation', async () => {
+    const ruleProvider = new CanonicalPortfolioReadinessRuleProvider();
+
+    const evaluationInput = {
+      evaluationId: 'eval_readiness_outage_001',
+      projectRef: 'proj_alpha',
+      issuedAt: '2026-10-04T12:00:00.000Z',
+      evidenceItems: [
+        { requirementId: 'REQ-DEV-MATURITY-01', evidenceId: 'ev_dev_01', source: 'MANUAL_AUDIT', state: 'SATISFIED' as const, details: 'Maturity 80%' },
+        { requirementId: 'REQ-PROF-PURPOSE-02', evidenceId: 'ev_purp_01', source: 'MANUAL_AUDIT', state: 'SATISFIED' as const, details: 'Clear purpose' },
+        { requirementId: 'REQ-VISUAL-EVIDENCE-03', evidenceId: 'ev_vis_01', source: 'MANUAL_AUDIT', state: 'SATISFIED' as const, details: 'Screenshots attached' },
+        { requirementId: 'REQ-INTERVIEW-DEF-04', evidenceId: 'ev_int_01', source: 'MANUAL_AUDIT', state: 'SATISFIED' as const, details: 'Defensible' },
+        { requirementId: 'REQ-PUB-STANDARD-05', evidenceId: 'ev_pub_01', source: 'MANUAL_AUDIT', state: 'SATISFIED' as const, details: 'Standard compliant' }
+      ]
+    };
+
+    // Step A: Baseline run with healthy PostgreSQL audit ledger
+    const healthyPool = createPool();
+    const healthyLedger = new PostgresBeccAuditLedger({ pool: healthyPool });
+    await healthyLedger.initialize();
+    const healthyAuditService = new BeccAuditIntegrationService(healthyLedger);
+    const healthyReadiness = new PublicationReadinessEvaluationService(
+      ruleProvider,
+      undefined,
+      healthyAuditService
+    );
+
+    const baselineResult = await healthyReadiness.evaluateReadiness(evaluationInput);
+    assert.strictEqual(baselineResult.status, 'READY_BY_EVIDENCE');
+    assert.strictEqual(baselineResult.satisfiedRequirementIds.length, 5);
+    await healthyPool.end();
+
+    // Step B: Outage run with unavailable PostgreSQL audit ledger
+    const outagePool = createPool();
+    const outageLedger = new PostgresBeccAuditLedger({ pool: outagePool });
+    await outageLedger.initialize();
+    const outageAuditService = new BeccAuditIntegrationService(outageLedger);
+    const outageReadiness = new PublicationReadinessEvaluationService(
+      ruleProvider,
+      undefined,
+      outageAuditService
+    );
+
+    // Make PostgreSQL unavailable
+    await outagePool.end();
+
+    // Execute real service entry point directly without local try-catch wrapper
+    const outageResult = await outageReadiness.evaluateReadiness(evaluationInput);
+
+    // Verify domain status & payload semantic equivalence
+    assert.strictEqual(outageResult.status, baselineResult.status);
+    assert.deepStrictEqual(outageResult.satisfiedRequirementIds, baselineResult.satisfiedRequirementIds);
+    assert.deepStrictEqual(outageResult.evidenceRefs, baselineResult.evidenceRefs);
+    assert.deepStrictEqual(outageResult.authorityBoundary, baselineResult.authorityBoundary);
+    assert.deepStrictEqual(outageResult, baselineResult);
   });
 });
