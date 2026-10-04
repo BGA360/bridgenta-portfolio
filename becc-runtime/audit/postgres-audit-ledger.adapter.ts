@@ -18,6 +18,7 @@ import {
 } from './audit-ledger.types.js';
 import { AuditMetadataSecurityPolicy } from './audit-metadata-security.policy.js';
 import { BeccMigrationRunner } from './migrations/becc-migration-runner.js';
+import { migration001 } from './migrations/001_create_becc_audit_records.js';
 
 export interface PostgresBeccAuditLedgerOptions {
   pool?: Pool;
@@ -36,9 +37,12 @@ export interface PostgresBeccAuditLedgerOptions {
 export class PostgresBeccAuditLedger implements BeccAuditLedgerPort {
   private readonly pool: Pool;
   private readonly isPoolOwned: boolean;
+  private readonly autoMigrate: boolean;
   private isInitialized = false;
 
   constructor(options: PostgresBeccAuditLedgerOptions = {}) {
+    this.autoMigrate = options.autoMigrate ?? true;
+
     if (options.pool) {
       this.pool = options.pool;
       this.isPoolOwned = false;
@@ -56,18 +60,61 @@ export class PostgresBeccAuditLedger implements BeccAuditLedgerPort {
       });
       this.isPoolOwned = true;
     }
-
-    if (options.autoMigrate !== false) {
-      // Auto migration will be awaited on first query or initialize() call
-    }
   }
 
   public async initialize(): Promise<void> {
     if (this.isInitialized) {
       return;
     }
-    const runner = new BeccMigrationRunner();
-    await runner.run(this.pool);
+
+    if (this.autoMigrate) {
+      const runner = new BeccMigrationRunner();
+      await runner.run(this.pool);
+    } else {
+      // autoMigrate: false -> Perform read-only schema & migration verification without DDL
+      const schemaRes = await this.pool.query(
+        "SELECT 1 FROM information_schema.schemata WHERE schema_name = 'becc';"
+      );
+      if (schemaRes.rows.length === 0) {
+        throw new Error(
+          "Schema 'becc' does not exist in PostgreSQL database (autoMigrate is false)"
+        );
+      }
+
+      const migrationsTableRes = await this.pool.query(
+        "SELECT 1 FROM information_schema.tables WHERE table_schema = 'becc' AND table_name = 'schema_migrations';"
+      );
+      if (migrationsTableRes.rows.length === 0) {
+        throw new Error(
+          "Table 'becc.schema_migrations' does not exist in PostgreSQL database (autoMigrate is false)"
+        );
+      }
+
+      const recordsTableRes = await this.pool.query(
+        "SELECT 1 FROM information_schema.tables WHERE table_schema = 'becc' AND table_name = 'becc_audit_records';"
+      );
+      if (recordsTableRes.rows.length === 0) {
+        throw new Error(
+          "Table 'becc.becc_audit_records' does not exist in PostgreSQL database (autoMigrate is false)"
+        );
+      }
+
+      const migrationRes = await this.pool.query<{ checksum: string }>(
+        "SELECT checksum FROM becc.schema_migrations WHERE migration_id = $1;",
+        [migration001.migrationId]
+      );
+      if (migrationRes.rows.length === 0) {
+        throw new Error(
+          `Required migration '${migration001.migrationId}' is not applied (autoMigrate is false)`
+        );
+      }
+      if (migrationRes.rows[0].checksum !== migration001.checksum) {
+        throw new Error(
+          `Applied migration '${migration001.migrationId}' checksum mismatch (autoMigrate is false)`
+        );
+      }
+    }
+
     this.isInitialized = true;
   }
 
@@ -87,6 +134,9 @@ export class PostgresBeccAuditLedger implements BeccAuditLedgerPort {
     }
 
     await this.ensureInitialized();
+
+    // Enforce trust-boundary security assertion on input record without mutating record
+    AuditMetadataSecurityPolicy.assertSanitizedRecord(record);
 
     const canonicalIncoming = AuditMetadataSecurityPolicy.canonicalizeRecord(record);
     const parsedInstant = new Date(canonicalIncoming.occurredAt).toISOString();
