@@ -87,6 +87,9 @@ export class CanonicalPortfolioReadinessRuleProvider
 }
 
 import { BeccAuditIntegrationService } from '../audit/audit-integration.service.js';
+import { BeccOperationalObserverPort } from '../observability/observability.port.js';
+import { ObservabilitySecurityPolicy } from '../observability/observability-security.policy.js';
+import { BeccOperationalContext, BeccOperationalResultStatus } from '../observability/observability.types.js';
 
 /**
  * Service for evaluating project and candidate publication & portfolio readiness.
@@ -96,11 +99,13 @@ export class PublicationReadinessEvaluationService {
   private readonly ruleProvider: PortfolioReadinessRuleProvider;
   private readonly evidenceRepository?: ReadinessEvidenceRepository;
   private readonly auditService?: BeccAuditIntegrationService;
+  private readonly observer?: BeccOperationalObserverPort;
 
   constructor(
     ruleProvider: PortfolioReadinessRuleProvider,
     evidenceRepository?: ReadinessEvidenceRepository,
-    auditService?: BeccAuditIntegrationService
+    auditService?: BeccAuditIntegrationService,
+    observer?: BeccOperationalObserverPort
   ) {
     if (!ruleProvider) {
       throw new Error('Explicit PortfolioReadinessRuleProvider is required');
@@ -108,6 +113,7 @@ export class PublicationReadinessEvaluationService {
     this.ruleProvider = ruleProvider;
     this.evidenceRepository = evidenceRepository;
     this.auditService = auditService;
+    this.observer = observer;
   }
 
   /**
@@ -117,6 +123,49 @@ export class PublicationReadinessEvaluationService {
   async evaluateReadiness(
     input: PortfolioReadinessEvaluationInput
   ): Promise<PortfolioReadinessEvaluationResult> {
+    const startTime = Date.now();
+    const context: BeccOperationalContext = ObservabilitySecurityPolicy.sanitizeContext({
+      operationType: 'READINESS_EVALUATION',
+      operationId: input?.evaluationId || 'unknown-eval',
+      correlationRef: input?.evaluationId || 'unknown-eval',
+      projectRef: input?.projectRef,
+      occurredAt: new Date().toISOString()
+    });
+
+    if (this.observer) {
+      try {
+        this.observer.operationStarted(context);
+      } catch {
+        // Failure isolation
+      }
+    }
+
+    const emitOutcome = (res: PortfolioReadinessEvaluationResult) => {
+      const durationMs = Math.max(0, Date.now() - startTime);
+      if (this.observer) {
+        try {
+          const opStatus: BeccOperationalResultStatus = res.status === 'ERROR' ? 'ERROR' : 'SUCCESS';
+
+          if (opStatus !== 'ERROR') {
+            this.observer.operationCompleted(context, {
+              operationalResultStatus: opStatus,
+              domainResultStatus: res.status,
+              durationMs
+            });
+          } else {
+            const safeErr = ObservabilitySecurityPolicy.classifyError('Readiness evaluation error');
+            this.observer.operationFailed(context, safeErr, {
+              operationalResultStatus: 'ERROR',
+              domainResultStatus: res.status,
+              durationMs
+            });
+          }
+        } catch {
+          // Failure isolation
+        }
+      }
+    };
+
     const authorityBoundary: ReadinessAuthorityBoundary = {
       finalPublicationAuthority: 'M5 / PRAG Governance',
       beccOwnsFinalAuthority: false,
@@ -129,7 +178,7 @@ export class PublicationReadinessEvaluationService {
     try {
       // Validate input presence and required caller-supplied issuedAt timestamp
       if (!input || !input.projectRef || !input.evaluationId || !input.issuedAt) {
-        return this.finalizeResultWithAudit(input, {
+        const result: PortfolioReadinessEvaluationResult = {
           evaluationId: input?.evaluationId || 'unknown-eval-id',
           projectRef: input?.projectRef || 'unknown-project',
           candidateRef: input?.candidateRef,
@@ -144,12 +193,14 @@ export class PublicationReadinessEvaluationService {
           evidenceRefs: [],
           evaluatedAt: undefined,
           authorityBoundary
-        });
+        };
+        emitOutcome(result);
+        return this.finalizeResultWithAudit(input, result);
       }
 
       // Validate parseable timestamp format (fail closed if invalid)
       if (isNaN(Date.parse(input.issuedAt))) {
-        return this.finalizeResultWithAudit(input, {
+        const result: PortfolioReadinessEvaluationResult = {
           evaluationId: input.evaluationId,
           projectRef: input.projectRef,
           candidateRef: input.candidateRef,
@@ -164,7 +215,9 @@ export class PublicationReadinessEvaluationService {
           evidenceRefs: [],
           evaluatedAt: undefined,
           authorityBoundary
-        });
+        };
+        emitOutcome(result);
+        return this.finalizeResultWithAudit(input, result);
       }
 
       const evaluatedAt = input.issuedAt;
@@ -350,11 +403,12 @@ export class PublicationReadinessEvaluationService {
         authorityBoundary
       };
 
+      emitOutcome(result);
       return this.finalizeResultWithAudit(input, result);
     } catch (error) {
       const catchEvaluatedAt =
         input && input.issuedAt && !isNaN(Date.parse(input.issuedAt)) ? input.issuedAt : undefined;
-      return this.finalizeResultWithAudit(input, {
+      const errorResult: PortfolioReadinessEvaluationResult = {
         evaluationId: input?.evaluationId || 'error-eval-id',
         projectRef: input?.projectRef || 'unknown-project',
         candidateRef: input?.candidateRef,
@@ -369,7 +423,9 @@ export class PublicationReadinessEvaluationService {
         evidenceRefs: [],
         evaluatedAt: catchEvaluatedAt,
         authorityBoundary
-      });
+      };
+      emitOutcome(errorResult);
+      return this.finalizeResultWithAudit(input, errorResult);
     }
   }
 

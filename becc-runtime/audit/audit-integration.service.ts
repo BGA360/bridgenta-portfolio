@@ -20,6 +20,9 @@ import {
 } from './audit-ledger.types.js';
 import { AuditMetadataSecurityPolicy } from './audit-metadata-security.policy.js';
 
+import { BeccOperationalObserverPort } from '../observability/observability.port.js';
+import { ObservabilitySecurityPolicy } from '../observability/observability-security.policy.js';
+
 export interface AuditGuidanceQueryContext {
   queryInput: {
     commandId: string;
@@ -78,12 +81,14 @@ export interface AuditReadinessEvaluationContext {
 
 export class BeccAuditIntegrationService {
   private readonly ledger: BeccAuditLedgerPort;
+  private readonly observer?: BeccOperationalObserverPort;
 
-  constructor(ledger: BeccAuditLedgerPort) {
+  constructor(ledger: BeccAuditLedgerPort, observer?: BeccOperationalObserverPort) {
     if (!ledger) {
       throw new Error('Explicit BeccAuditLedgerPort dependency is required');
     }
     this.ledger = ledger;
+    this.observer = observer;
   }
 
   getAuthorityBoundary(): BeccAuditAuthorityBoundary {
@@ -135,8 +140,48 @@ export class BeccAuditIntegrationService {
       metadata: sanitizedInput.metadata
     });
 
-    await this.ledger.append(record);
-    return record;
+    const startTime = Date.now();
+    try {
+      await this.ledger.append(record);
+      const durationMs = Math.max(0, Date.now() - startTime);
+
+      if (this.observer) {
+        try {
+          this.observer.dependencyCallObserved({
+            dependencyName: 'POSTGRES_AUDIT_LEDGER',
+            operation: 'append',
+            status: 'SUCCESS',
+            durationMs,
+            occurredAt: new Date().toISOString()
+          });
+        } catch {
+          // Failure isolation: observer error must never block audit operation
+        }
+      }
+
+      return record;
+    } catch (err) {
+      const durationMs = Math.max(0, Date.now() - startTime);
+
+      if (this.observer) {
+        try {
+          const safeErr = ObservabilitySecurityPolicy.classifyError(err, 'PERSISTENCE');
+          this.observer.dependencyCallObserved({
+            dependencyName: 'POSTGRES_AUDIT_LEDGER',
+            operation: 'append',
+            status: 'FAILURE',
+            durationMs,
+            errorClass: safeErr.errorClass,
+            safeErrorCode: safeErr.safeErrorCode,
+            occurredAt: new Date().toISOString()
+          });
+        } catch {
+          // Failure isolation
+        }
+      }
+
+      throw err;
+    }
   }
 
   /**
