@@ -271,6 +271,82 @@ export class AuditMetadataSecurityPolicy {
   }
 
   /**
+   * Asserts that an audit record's metadata strictly conforms to the security policy.
+   * Throws an Error if the record metadata contains raw payload keys, sensitive keys,
+   * unallowed keys, non-primitive values, secret value patterns, or exceeds aggregate size limits.
+   * Non-mutating validator used at adapter trust boundaries.
+   */
+  public static assertSanitizedRecord(record: BeccAuditRecord): void {
+    if (!record || !record.metadata) {
+      return;
+    }
+
+    const metadata = record.metadata;
+    const keys = Object.keys(metadata);
+
+    for (const key of keys) {
+      // 1. Prohibit raw payload keys
+      if (this.isProhibitedRawPayloadKey(key)) {
+        throw new Error(
+          `Audit record metadata contains prohibited raw payload key '${key}'`
+        );
+      }
+
+      // 2. Prohibit sensitive keys
+      if (this.isSensitiveKey(key)) {
+        throw new Error(
+          `Audit record metadata contains sensitive key '${key}'`
+        );
+      }
+
+      // 3. Prohibit keys not on approved allowlist
+      if (!APPROVED_METADATA_ALLOWLIST.has(key)) {
+        throw new Error(
+          `Audit record metadata contains unallowed key '${key}'`
+        );
+      }
+
+      const val = metadata[key];
+
+      // 4. Prohibit non-primitive values (must be string, finite number, or boolean)
+      if (val === null || val === undefined) {
+        throw new Error(
+          `Audit record metadata key '${key}' contains null or undefined value`
+        );
+      }
+
+      const valType = typeof val;
+      if (valType === 'string') {
+        const strVal = val as string;
+        if (this.containsSecretValuePattern(strVal)) {
+          throw new Error(
+            `Audit record metadata key '${key}' contains secret value pattern`
+          );
+        }
+      } else if (valType === 'number') {
+        if (isNaN(val as number) || !isFinite(val as number)) {
+          throw new Error(
+            `Audit record metadata key '${key}' contains non-finite number`
+          );
+        }
+      } else if (valType !== 'boolean') {
+        throw new Error(
+          `Audit record metadata key '${key}' contains non-primitive value of type '${valType}'`
+        );
+      }
+    }
+
+    // 5. Enforce UTF-8 byte size limit
+    const serialized = JSON.stringify(metadata);
+    const byteSize = Buffer.byteLength(serialized, 'utf-8');
+    if (byteSize > MAX_METADATA_SIZE_BYTES) {
+      throw new Error(
+        `Audit record metadata size (${byteSize} bytes) exceeds maximum limit of ${MAX_METADATA_SIZE_BYTES} UTF-8 bytes`
+      );
+    }
+  }
+
+  /**
    * Deterministically canonicalizes a BeccAuditRecord or record input recursively
    * ensuring key order invariance for exact retry comparisons across the entire semantic record.
    */
