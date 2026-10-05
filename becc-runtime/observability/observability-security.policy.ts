@@ -163,27 +163,77 @@ export class ObservabilitySecurityPolicy {
     return copy;
   }
 
+  public static readonly BOUNDED_OPERATION_TYPES = new Set<string>([
+    'GUIDANCE_RESOLUTION',
+    'FINDING_ESCALATION',
+    'READINESS_EVALUATION',
+    'AUDIT_APPEND'
+  ]);
+
+  public static readonly BOUNDED_RESULT_STATUSES = new Set<string>([
+    'SUCCESS',
+    'REFUSED',
+    'INDETERMINATE',
+    'ERROR'
+  ]);
+
+  public static readonly BOUNDED_DEPENDENCY_NAMES = new Set<string>([
+    'GOVERNED_LEARNING',
+    'POSTGRES_AUDIT_LEDGER'
+  ]);
+
+  public static readonly BOUNDED_ERROR_CLASSES = new Set<string>([
+    'VALIDATION',
+    'AUTHORIZATION',
+    'DEPENDENCY_UNAVAILABLE',
+    'DEPENDENCY_TIMEOUT',
+    'PERSISTENCE',
+    'SCHEMA_MISMATCH',
+    'CONFLICT',
+    'INTERNAL'
+  ]);
+
+  public static boundOperationType(val?: string): string {
+    if (!val || typeof val !== 'string') return 'OTHER';
+    const normalized = val.toUpperCase().trim();
+    return this.BOUNDED_OPERATION_TYPES.has(normalized) ? normalized : 'OTHER';
+  }
+
+  public static boundResultStatus(val?: string): string {
+    if (!val || typeof val !== 'string') return 'UNKNOWN';
+    const normalized = val.toUpperCase().trim();
+    return this.BOUNDED_RESULT_STATUSES.has(normalized) ? normalized : 'UNKNOWN';
+  }
+
+  public static boundDependencyName(val?: string): string {
+    if (!val || typeof val !== 'string') return 'NONE';
+    const normalized = val.toUpperCase().trim();
+    return this.BOUNDED_DEPENDENCY_NAMES.has(normalized) ? normalized : 'OTHER';
+  }
+
+  public static boundErrorClass(val?: string): string {
+    if (!val || typeof val !== 'string') return 'NONE';
+    const normalized = val.toUpperCase().trim();
+    return this.BOUNDED_ERROR_CLASSES.has(normalized) ? normalized : 'OTHER';
+  }
+
   /**
    * Restricts metric label keys and values to bounded, low-cardinality values only.
-   * Rejects unbounded IDs (operationId, auditRecordId, candidateRef, projectRef, raw URLs).
+   * Collapses unknown values into finite fallback buckets (OTHER / UNKNOWN / NONE).
+   * Strictly prohibits high-cardinality IDs (operationId, auditRecordId, candidateRef, projectRef, raw URLs).
    */
   public static buildBoundedMetricLabel(
     operationType?: string,
     resultStatus?: string,
     dependencyName?: string,
-    safeErrorCode?: string,
+    _safeErrorCode?: string,
     errorClass?: string
   ): string {
-    const boundedOpType = operationType ? this.sanitizeMetricDimension(operationType) : 'ALL';
-    const boundedStatus = resultStatus ? this.sanitizeMetricDimension(resultStatus) : 'ALL';
-    const boundedDep = dependencyName ? this.sanitizeMetricDimension(dependencyName) : 'NONE';
-    const boundedErr = errorClass ? this.sanitizeMetricDimension(errorClass) : safeErrorCode ? this.sanitizeMetricDimension(safeErrorCode) : 'NONE';
+    const boundedOpType = this.boundOperationType(operationType);
+    const boundedStatus = this.boundResultStatus(resultStatus);
+    const boundedDep = this.boundDependencyName(dependencyName);
+    const boundedErr = this.boundErrorClass(errorClass);
 
     return `op:${boundedOpType}|status:${boundedStatus}|dep:${boundedDep}|err:${boundedErr}`;
-  }
-
-  private static sanitizeMetricDimension(val: string): string {
-    // Standardize to uppercase alphanumeric + underscore to ensure low cardinality
-    return val.toUpperCase().replace(/[^A-Z0-9_]/g, '_');
   }
 }

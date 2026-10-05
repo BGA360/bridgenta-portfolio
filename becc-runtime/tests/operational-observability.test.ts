@@ -2,8 +2,8 @@
  * BECC v2 — Operational Observability Test Suite
  *
  * Verifies structured operational logging, correlation, metric snapshots, health signals,
- * dependency telemetry, safe error classification, security redaction, and failure isolation
- * as specified in BECC-NEXT-004.
+ * dependency telemetry, safe error classification, security redaction, finite metric label cardinality,
+ * and failure isolation as specified in BECC-NEXT-004 PR #321 Remediation.
  */
 
 import { describe, it, beforeEach } from 'node:test';
@@ -93,7 +93,7 @@ class TestRuleProvider implements PortfolioReadinessRuleProvider {
   }
 }
 
-describe('BECC-NEXT-004 — Operational Observability', () => {
+describe('BECC-NEXT-004 — Operational Observability PR #321 Remediation', () => {
   let observer: InMemoryBeccOperationalObserver;
 
   beforeEach(() => {
@@ -187,26 +187,72 @@ describe('BECC-NEXT-004 — Operational Observability', () => {
     assert.equal(completedEvent.resultStatus, 'SUCCESS');
   });
 
-  it('4. PublicationReadinessEvaluationService emits INDETERMINATE and ERROR statuses accurately', async () => {
+  it('4. PublicationReadinessEvaluationService truthful status mapping: READY_BY_EVIDENCE, NOT_READY, INDETERMINATE, ERROR', async () => {
     const service = new PublicationReadinessEvaluationService(new TestRuleProvider(), undefined, undefined, observer);
 
-    // Missing issuedAt -> ERROR
+    // Path A: READY_BY_EVIDENCE -> operational SUCCESS
+    const readyResult = await service.evaluateReadiness({
+      evaluationId: 'eval_ready',
+      projectRef: 'proj_ready',
+      issuedAt: new Date().toISOString(),
+      evidenceItems: [
+        { requirementId: 'REQ_01', evidenceId: 'ev_01', source: 'MANUAL_AUDIT', state: 'SATISFIED', details: 'Satisfied' }
+      ]
+    });
+    assert.equal(readyResult.status, 'READY_BY_EVIDENCE');
+    const readyEvent = observer.getEvents().find((e) => e.operationId === 'eval_ready' && e.eventType === 'COMPLETED')!;
+    assert.ok(readyEvent);
+    assert.equal(readyEvent.resultStatus, 'SUCCESS');
+    assert.equal(readyEvent.domainResultStatus, 'READY_BY_EVIDENCE');
+
+    // Path B: NOT_READY -> operational REFUSED
+    const notReadyResult = await service.evaluateReadiness({
+      evaluationId: 'eval_not_ready',
+      projectRef: 'proj_not_ready',
+      issuedAt: new Date().toISOString(),
+      evidenceItems: [] // Missing blocking evidence -> NOT_READY
+    });
+    assert.equal(notReadyResult.status, 'NOT_READY');
+    const notReadyEvent = observer.getEvents().find((e) => e.operationId === 'eval_not_ready' && e.eventType === 'COMPLETED')!;
+    assert.ok(notReadyEvent);
+    assert.equal(notReadyEvent.resultStatus, 'REFUSED');
+    assert.equal(notReadyEvent.domainResultStatus, 'NOT_READY');
+
+    // Path C: INDETERMINATE -> operational INDETERMINATE
+    const indetResult = await service.evaluateReadiness({
+      evaluationId: 'eval_indet',
+      projectRef: 'proj_indet',
+      issuedAt: new Date().toISOString(),
+      evidenceItems: [
+        { requirementId: 'REQ_01', evidenceId: 'ev_01a', source: 'MANUAL_AUDIT', state: 'SATISFIED', details: 'Satisfied' },
+        { requirementId: 'REQ_01', evidenceId: 'ev_01b', source: 'MANUAL_AUDIT', state: 'NOT_SATISFIED', details: 'Conflicting' }
+      ]
+    });
+    assert.equal(indetResult.status, 'INDETERMINATE');
+    const indetEvent = observer.getEvents().find((e) => e.operationId === 'eval_indet' && e.eventType === 'COMPLETED')!;
+    assert.ok(indetEvent);
+    assert.equal(indetEvent.resultStatus, 'INDETERMINATE');
+    assert.equal(indetEvent.domainResultStatus, 'INDETERMINATE');
+
+    // Path D: ERROR -> operational ERROR
     const errResult = await service.evaluateReadiness({
       evaluationId: 'eval_err',
-      projectRef: 'proj_test',
+      projectRef: 'proj_err',
       evidenceItems: [],
-      issuedAt: ''
+      issuedAt: '' // missing issuedAt -> ERROR
     });
-
     assert.equal(errResult.status, 'ERROR');
-
-    const snapshot = observer.getMetricsSnapshot();
-    assert.equal(snapshot.totalOperationsFailed, 1);
-
-    const failEvent = observer.getEvents().find((e) => e.eventType === 'FAILED')!;
+    const failEvent = observer.getEvents().find((e) => e.operationId === 'eval_err' && e.eventType === 'FAILED')!;
     assert.ok(failEvent);
-    assert.equal(failEvent.operationType, 'READINESS_EVALUATION');
     assert.equal(failEvent.resultStatus, 'ERROR');
+    assert.equal(failEvent.domainResultStatus, 'ERROR');
+
+    // Verify distinctions in metric snapshot
+    const snapshot = observer.getMetricsSnapshot();
+    assert.equal(snapshot.operationsByStatus.SUCCESS, 1);
+    assert.equal(snapshot.operationsByStatus.REFUSED, 1);
+    assert.equal(snapshot.operationsByStatus.INDETERMINATE, 1);
+    assert.equal(snapshot.operationsByStatus.ERROR, 1);
   });
 
   it('5. PostgreSQL Audit persistence dependency call is observed without duplicating audit payloads', async () => {
@@ -270,20 +316,56 @@ describe('BECC-NEXT-004 — Operational Observability', () => {
     assert.equal(ObservabilitySecurityPolicy.sanitizeString(credString).includes('SecretPass123!'), false);
   });
 
-  it('8. Metric label cardinality remains bounded', () => {
-    const boundedLabel = ObservabilitySecurityPolicy.buildBoundedMetricLabel(
-      'GUIDANCE_RESOLUTION',
-      'SUCCESS',
-      'GOVERNED_LEARNING',
-      'ERR_NONE',
-      'NONE'
-    );
+  it('8. Metric label cardinality attack prevention: arbitrary strings collapse to bounded fallback values', () => {
+    // Arbitrary operation types collapse to OTHER
+    assert.equal(ObservabilitySecurityPolicy.boundOperationType('custom-op-001'), 'OTHER');
+    assert.equal(ObservabilitySecurityPolicy.boundOperationType('custom-op-002'), 'OTHER');
+    assert.equal(ObservabilitySecurityPolicy.boundOperationType('GUIDANCE_RESOLUTION'), 'GUIDANCE_RESOLUTION');
 
-    assert.equal(boundedLabel, 'op:GUIDANCE_RESOLUTION|status:SUCCESS|dep:GOVERNED_LEARNING|err:NONE');
-    assert.equal(boundedLabel.includes('q_100'), false, 'Unbounded operationId must NOT be included in metric label');
+    // Arbitrary statuses collapse to UNKNOWN
+    assert.equal(ObservabilitySecurityPolicy.boundResultStatus('custom-status-xyz'), 'UNKNOWN');
+    assert.equal(ObservabilitySecurityPolicy.boundResultStatus('SUCCESS'), 'SUCCESS');
+
+    // Arbitrary dependencies collapse to OTHER
+    assert.equal(ObservabilitySecurityPolicy.boundDependencyName('arbitrary-db-vendor'), 'OTHER');
+    assert.equal(ObservabilitySecurityPolicy.boundDependencyName('GOVERNED_LEARNING'), 'GOVERNED_LEARNING');
+
+    // Arbitrary error classes collapse to OTHER
+    assert.equal(ObservabilitySecurityPolicy.boundErrorClass('CUSTOM_ERROR_CLASS'), 'OTHER');
+    assert.equal(ObservabilitySecurityPolicy.boundErrorClass('PERSISTENCE'), 'PERSISTENCE');
+
+    // Verify buildBoundedMetricLabel output
+    const label1 = ObservabilitySecurityPolicy.buildBoundedMetricLabel(
+      'custom-op-001',
+      'custom-status-xyz',
+      'arbitrary-db-vendor',
+      'ERR_CUSTOM_123',
+      'CUSTOM_ERROR_CLASS'
+    );
+    assert.equal(label1, 'op:OTHER|status:UNKNOWN|dep:OTHER|err:OTHER');
+    assert.equal(label1.includes('custom-op-001'), false, 'Arbitrary operationId must NOT appear in metric label');
+
+    const label2 = ObservabilitySecurityPolicy.buildBoundedMetricLabel(
+      'custom-op-002',
+      'custom-status-abc',
+      'arbitrary-db-vendor-2',
+      'ERR_CUSTOM_456',
+      'CUSTOM_ERROR_CLASS_2'
+    );
+    assert.equal(label2, 'op:OTHER|status:UNKNOWN|dep:OTHER|err:OTHER');
+    assert.equal(label1, label2, 'Different arbitrary values must collapse to the EXACT SAME bounded metric label!');
   });
 
-  it('9. Operational timestamp is distinct from caller-supplied audit occurredAt', async () => {
+  it('9. Postgres health error sanitization redacts raw credentials and sensitive infrastructure messages', () => {
+    const rawErrorWithSecret = new Error('Connection failed to postgres://admin:SuperSecretPass123!@db.internal:5432/becc with Bearer abc.def.ghi');
+    const safeErr = ObservabilitySecurityPolicy.classifyError(rawErrorWithSecret, 'PERSISTENCE');
+
+    assert.equal(safeErr.safeMessage.includes('SuperSecretPass123!'), false, 'Raw password must be redacted from health error message');
+    assert.equal(safeErr.safeMessage.includes('abc.def.ghi'), false, 'Bearer token must be redacted from health error message');
+    assert.equal(safeErr.safeMessage.includes('[REDACTED'), true);
+  });
+
+  it('10. Operational timestamp is distinct from caller-supplied audit occurredAt', async () => {
     const ledger = new InMemoryBeccAuditLedger();
     const auditService = new BeccAuditIntegrationService(ledger, observer);
 
@@ -303,7 +385,7 @@ describe('BECC-NEXT-004 — Operational Observability', () => {
     assert.notEqual(depEvent.occurredAt, callerOccurredAt, 'Operational observation time must be system-generated timestamp');
   });
 
-  it('10. StructuredConsoleBeccOperationalObserver formats valid JSON output without throwing', () => {
+  it('11. StructuredConsoleBeccOperationalObserver formats valid JSON output without throwing', () => {
     const consoleObserver = new StructuredConsoleBeccOperationalObserver();
 
     assert.doesNotThrow(() => {

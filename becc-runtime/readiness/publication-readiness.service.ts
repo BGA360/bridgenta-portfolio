@@ -144,18 +144,27 @@ export class PublicationReadinessEvaluationService {
       const durationMs = Math.max(0, Date.now() - startTime);
       if (this.observer) {
         try {
-          const opStatus: BeccOperationalResultStatus = res.status === 'ERROR' ? 'ERROR' : 'SUCCESS';
+          let opStatus: BeccOperationalResultStatus;
+          if (res.status === 'READY_BY_EVIDENCE') {
+            opStatus = 'SUCCESS';
+          } else if (res.status === 'NOT_READY') {
+            opStatus = 'REFUSED';
+          } else if (res.status === 'INDETERMINATE') {
+            opStatus = 'INDETERMINATE';
+          } else {
+            opStatus = 'ERROR';
+          }
 
-          if (opStatus !== 'ERROR') {
-            this.observer.operationCompleted(context, {
-              operationalResultStatus: opStatus,
+          if (opStatus === 'ERROR') {
+            const safeErr = ObservabilitySecurityPolicy.classifyError('Readiness evaluation error');
+            this.observer.operationFailed(context, safeErr, {
+              operationalResultStatus: 'ERROR',
               domainResultStatus: res.status,
               durationMs
             });
           } else {
-            const safeErr = ObservabilitySecurityPolicy.classifyError('Readiness evaluation error');
-            this.observer.operationFailed(context, safeErr, {
-              operationalResultStatus: 'ERROR',
+            this.observer.operationCompleted(context, {
+              operationalResultStatus: opStatus,
               domainResultStatus: res.status,
               durationMs
             });

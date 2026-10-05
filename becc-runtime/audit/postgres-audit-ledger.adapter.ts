@@ -17,6 +17,7 @@ import {
   BeccAuditRecordStatus
 } from './audit-ledger.types.js';
 import { AuditMetadataSecurityPolicy } from './audit-metadata-security.policy.js';
+import { ObservabilitySecurityPolicy } from '../observability/observability-security.policy.js';
 import { BeccMigrationRunner } from './migrations/becc-migration-runner.js';
 import { migration001 } from './migrations/001_create_becc_audit_records.js';
 
@@ -352,12 +353,13 @@ export class PostgresBeccAuditLedger implements BeccAuditLedgerPort {
       };
     } catch (err: any) {
       const durationMs = Math.max(0, Date.now() - startTime);
+      const safeErr = ObservabilitySecurityPolicy.classifyError(err, 'PERSISTENCE');
       return {
         component: 'POSTGRES_AUDIT_LEDGER',
         healthState: 'UNAVAILABLE',
         liveness: true,
         readiness: false,
-        details: { safeMessage: err?.message ? String(err.message) : 'PostgreSQL connection failed', checkDurationMs: durationMs },
+        details: { safeMessage: safeErr.safeMessage || 'PostgreSQL connection failed', checkDurationMs: durationMs },
         occurredAt
       };
     }
