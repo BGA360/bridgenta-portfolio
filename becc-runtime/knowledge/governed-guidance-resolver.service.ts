@@ -10,10 +10,14 @@ import type {
 } from './governed-guidance-resolver.types.js';
 
 import type { BeccAuditIntegrationService } from '../audit/audit-integration.service.js';
+import type { BeccOperationalObserverPort } from '../observability/observability.port.js';
+import { ObservabilitySecurityPolicy } from '../observability/observability-security.policy.js';
+import type { BeccOperationalContext, BeccOperationalResultStatus } from '../observability/observability.types.js';
 
 export interface GovernedGuidanceResolverOptions {
   readonly adapter: GovernedLearningIntegrationAdapter;
   readonly auditService?: BeccAuditIntegrationService;
+  readonly observer?: BeccOperationalObserverPort;
 }
 
 /**
@@ -33,6 +37,7 @@ export interface GovernedGuidanceResolverOptions {
 export class GovernedGuidanceResolverService {
   private readonly adapter: GovernedLearningIntegrationAdapter;
   private readonly auditService?: BeccAuditIntegrationService;
+  private readonly observer?: BeccOperationalObserverPort;
 
   constructor(options: GovernedGuidanceResolverOptions) {
     if (!options || !options.adapter) {
@@ -42,6 +47,7 @@ export class GovernedGuidanceResolverService {
     }
     this.adapter = options.adapter;
     this.auditService = options.auditService;
+    this.observer = options.observer;
   }
 
   /**
@@ -50,8 +56,58 @@ export class GovernedGuidanceResolverService {
   public async resolveGuidance(
     input: ResolvedGovernedGuidanceQueryInput
   ): Promise<ResolvedGovernedGuidanceResult> {
+    const startTime = Date.now();
+    const opId = input?.queryId || 'query_unknown';
+    const projId = input?.projectRef?.projectId || input?.assessmentContext?.projectIdentity?.id || input?.assessmentContext?.project;
+    const workstreamId = input?.workstreamRef?.workstreamId;
+
+    const context: BeccOperationalContext = ObservabilitySecurityPolicy.sanitizeContext({
+      operationType: 'GUIDANCE_RESOLUTION',
+      operationId: opId,
+      correlationRef: opId,
+      projectRef: projId,
+      workstreamRef: workstreamId,
+      occurredAt: new Date().toISOString()
+    });
+
+    if (this.observer) {
+      try {
+        this.observer.operationStarted(context);
+      } catch {
+        // Failure isolation
+      }
+    }
+
+    const emitOutcome = (res: ResolvedGovernedGuidanceResult) => {
+      const durationMs = Math.max(0, Date.now() - startTime);
+      if (this.observer) {
+        try {
+          const opStatus: BeccOperationalResultStatus = res.ok
+            ? 'SUCCESS'
+            : (res.category === 'REFUSED' ? 'REFUSED' : 'ERROR');
+
+          if (res.ok || res.category === 'REFUSED') {
+            this.observer.operationCompleted(context, {
+              operationalResultStatus: opStatus,
+              domainResultStatus: res.category,
+              durationMs
+            });
+          } else {
+            const safeErr = ObservabilitySecurityPolicy.classifyError(res.errorDetails || res.reason || 'Guidance resolution error');
+            this.observer.operationFailed(context, safeErr, {
+              operationalResultStatus: 'ERROR',
+              domainResultStatus: 'ERROR',
+              durationMs
+            });
+          }
+        } catch {
+          // Failure isolation
+        }
+      }
+    };
+
     if (!input || !input.queryId || !input.queryId.trim()) {
-      return this.finalizeResultWithAudit(input, {
+      const result: ResolvedGovernedGuidanceResult = {
         ok: false,
         category: 'REFUSED',
         source: 'GOVERNED_LEARNING',
@@ -61,11 +117,13 @@ export class GovernedGuidanceResolverService {
         replayed: false,
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'queryId is required for Governed Learning guidance resolution (failed closed)',
-      });
+      };
+      emitOutcome(result);
+      return this.finalizeResultWithAudit(input, result);
     }
 
     if (!input.issuedAt || !input.issuedAt.trim()) {
-      return this.finalizeResultWithAudit(input, {
+      const result: ResolvedGovernedGuidanceResult = {
         ok: false,
         category: 'REFUSED',
         source: 'GOVERNED_LEARNING',
@@ -75,7 +133,9 @@ export class GovernedGuidanceResolverService {
         replayed: false,
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'issuedAt timestamp is required for stable command identity (failed closed)',
-      });
+      };
+      emitOutcome(result);
+      return this.finalizeResultWithAudit(input, result);
     }
 
     // Map BECC context to canonical TargetRef
@@ -92,18 +152,18 @@ export class GovernedGuidanceResolverService {
         workstreamRef: { workstreamId: input.workstreamRef.workstreamId.trim() },
       };
     } else if (input.assessmentContext) {
-      const projId = input.assessmentContext.projectIdentity?.id || input.assessmentContext.project;
-      if (projId && projId.trim()) {
+      const pId = input.assessmentContext.projectIdentity?.id || input.assessmentContext.project;
+      if (pId && pId.trim()) {
         targetRef = {
           targetCategory: 'PROJECT',
-          projectRef: { projectId: projId.trim() },
+          projectRef: { projectId: pId.trim() },
         };
       }
     }
 
     // Fail closed if context cannot be mapped to TargetRef (never broaden to SYSTEM_WIDE)
     if (!targetRef) {
-      return this.finalizeResultWithAudit(input, {
+      const result: ResolvedGovernedGuidanceResult = {
         ok: false,
         category: 'REFUSED',
         source: 'GOVERNED_LEARNING',
@@ -113,7 +173,9 @@ export class GovernedGuidanceResolverService {
         replayed: false,
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'BECC context could not be mapped to an unambiguous TargetRef for Governed Learning query (failed closed)',
-      });
+      };
+      emitOutcome(result);
+      return this.finalizeResultWithAudit(input, result);
     }
 
     const queryInput: BECCGuidanceQueryInput = {
@@ -126,7 +188,50 @@ export class GovernedGuidanceResolverService {
       queryVersion: input.queryVersion,
     };
 
-    const res = await this.adapter.queryGuidance(queryInput);
+    const depStartTime = Date.now();
+    let res;
+    try {
+      res = await this.adapter.queryGuidance(queryInput);
+      const depDurationMs = Math.max(0, Date.now() - depStartTime);
+
+      if (this.observer) {
+        try {
+          const depStatus = res.ok ? 'SUCCESS' : (res.category === 'REFUSED' ? 'SUCCESS' : 'FAILURE');
+          const safeErr = !res.ok ? ObservabilitySecurityPolicy.classifyError(res.errorDetails || res.reason || 'GL dependency call failed') : undefined;
+
+          this.observer.dependencyCallObserved({
+            dependencyName: 'GOVERNED_LEARNING',
+            operation: 'queryGuidance',
+            status: depStatus,
+            durationMs: depDurationMs,
+            errorClass: safeErr?.errorClass,
+            safeErrorCode: res.refusalCode || safeErr?.safeErrorCode,
+            occurredAt: new Date().toISOString()
+          });
+        } catch {
+          // Failure isolation
+        }
+      }
+    } catch (err) {
+      const depDurationMs = Math.max(0, Date.now() - depStartTime);
+      if (this.observer) {
+        try {
+          const safeErr = ObservabilitySecurityPolicy.classifyError(err, 'DEPENDENCY_UNAVAILABLE');
+          this.observer.dependencyCallObserved({
+            dependencyName: 'GOVERNED_LEARNING',
+            operation: 'queryGuidance',
+            status: 'FAILURE',
+            durationMs: depDurationMs,
+            errorClass: safeErr.errorClass,
+            safeErrorCode: safeErr.safeErrorCode,
+            occurredAt: new Date().toISOString()
+          });
+        } catch {
+          // Failure isolation
+        }
+      }
+      throw err;
+    }
 
     let result: ResolvedGovernedGuidanceResult;
     if (res.ok && res.category === 'SUCCESS' && res.guidanceSet) {
@@ -176,6 +281,7 @@ export class GovernedGuidanceResolverService {
       };
     }
 
+    emitOutcome(result);
     return this.finalizeResultWithAudit(input, result);
   }
 

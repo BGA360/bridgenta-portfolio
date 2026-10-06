@@ -10,10 +10,14 @@ import type {
 } from './finding-escalation.types.js';
 import type { ValidationFinding } from '../shared/types.js';
 import type { BeccAuditIntegrationService } from '../audit/audit-integration.service.js';
+import type { BeccOperationalObserverPort } from '../observability/observability.port.js';
+import { ObservabilitySecurityPolicy } from '../observability/observability-security.policy.js';
+import type { BeccOperationalContext, BeccOperationalResultStatus } from '../observability/observability.types.js';
 
 export interface FindingEscalationServiceOptions {
   readonly adapter: GovernedLearningIntegrationAdapter;
   readonly auditService?: BeccAuditIntegrationService;
+  readonly observer?: BeccOperationalObserverPort;
 }
 
 /**
@@ -41,6 +45,7 @@ export interface FindingEscalationServiceOptions {
 export class FindingEscalationService {
   private readonly adapter: GovernedLearningIntegrationAdapter;
   private readonly auditService?: BeccAuditIntegrationService;
+  private readonly observer?: BeccOperationalObserverPort;
 
   constructor(options: FindingEscalationServiceOptions) {
     if (!options || !options.adapter) {
@@ -50,14 +55,84 @@ export class FindingEscalationService {
     }
     this.adapter = options.adapter;
     this.auditService = options.auditService;
+    this.observer = options.observer;
   }
 
   /**
    * Escalates a BECC validation finding through DraftObservation -> AttachEvidence -> SubmitObservation.
    */
   public async escalateFinding(input: EscalationRequestInput): Promise<FindingEscalationResult> {
+    const startTime = Date.now();
+    const findingObj = input?.finding;
+    const findingId = findingObj ? ('id' in findingObj ? findingObj.id : (findingObj as BECCFindingEscalationInput).findingId) : 'unknown';
+
+    const context: BeccOperationalContext = ObservabilitySecurityPolicy.sanitizeContext({
+      operationType: 'FINDING_ESCALATION',
+      operationId: findingId || 'unknown-finding',
+      correlationRef: findingId || 'unknown-finding',
+      projectRef: (input as any)?.projectRef || (findingObj as any)?.projectRef,
+      occurredAt: new Date().toISOString()
+    });
+
+    if (this.observer) {
+      try {
+        this.observer.operationStarted(context);
+      } catch {
+        // Failure isolation
+      }
+    }
+
+    const emitOutcome = (res: FindingEscalationResult) => {
+      const durationMs = Math.max(0, Date.now() - startTime);
+      if (this.observer) {
+        try {
+          const opStatus: BeccOperationalResultStatus = res.ok
+            ? 'SUCCESS'
+            : (res.category === 'REFUSED' ? 'REFUSED' : 'ERROR');
+
+          if (res.ok || res.category === 'REFUSED') {
+            this.observer.operationCompleted(context, {
+              operationalResultStatus: opStatus,
+              domainResultStatus: res.category,
+              durationMs
+            });
+          } else {
+            const safeErr = ObservabilitySecurityPolicy.classifyError(res.errorDetails || res.reason || 'Escalation pipeline error');
+            this.observer.operationFailed(context, safeErr, {
+              operationalResultStatus: 'ERROR',
+              domainResultStatus: 'ERROR',
+              durationMs
+            });
+          }
+        } catch {
+          // Failure isolation
+        }
+      }
+    };
+
+    const observeGlCall = (op: string, res: { ok: boolean; category?: string; refusalCode?: string; reason?: string; errorDetails?: string }, durationMs: number) => {
+      if (this.observer) {
+        try {
+          const status = res.ok ? 'SUCCESS' : (res.category === 'REFUSED' ? 'SUCCESS' : 'FAILURE');
+          const safeErr = !res.ok ? ObservabilitySecurityPolicy.classifyError(res.errorDetails || res.reason || 'GL dependency call failed') : undefined;
+
+          this.observer.dependencyCallObserved({
+            dependencyName: 'GOVERNED_LEARNING',
+            operation: op,
+            status,
+            durationMs,
+            errorClass: safeErr?.errorClass,
+            safeErrorCode: res.refusalCode || safeErr?.safeErrorCode,
+            occurredAt: new Date().toISOString()
+          });
+        } catch {
+          // Failure isolation
+        }
+      }
+    };
+
     if (!input || !input.finding) {
-      return {
+      const result: FindingEscalationResult = {
         ok: false,
         category: 'REFUSED',
         findingId: 'unknown',
@@ -66,15 +141,15 @@ export class FindingEscalationService {
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'Finding object is required for escalation pipeline (failed closed)',
       };
+      emitOutcome(result);
+      return result;
     }
 
-    const findingObj = input.finding;
-    const findingId = 'id' in findingObj ? findingObj.id : (findingObj as BECCFindingEscalationInput).findingId;
     const statement = 'message' in findingObj ? findingObj.message : (findingObj as BECCFindingEscalationInput).statement;
     const category = input.category ?? this.mapFindingCategory(findingObj);
 
     if (!findingId || findingId.trim() === '') {
-      return {
+      const result: FindingEscalationResult = {
         ok: false,
         category: 'REFUSED',
         findingId: 'unknown',
@@ -83,10 +158,12 @@ export class FindingEscalationService {
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'findingId is required for escalation pipeline (failed closed)',
       };
+      emitOutcome(result);
+      return result;
     }
 
     if (!input.issuedAt || input.issuedAt.trim() === '') {
-      return {
+      const result: FindingEscalationResult = {
         ok: false,
         category: 'REFUSED',
         findingId,
@@ -95,10 +172,12 @@ export class FindingEscalationService {
         refusalCode: 'REFUSAL_INVARIANT_VIOLATION' as any,
         reason: 'issuedAt timestamp is required for stable escalation command identity (failed closed)',
       };
+      emitOutcome(result);
+      return result;
     }
 
     if (!input.authorityContextRef) {
-      return {
+      const result: FindingEscalationResult = {
         ok: false,
         category: 'REFUSED',
         findingId,
@@ -107,6 +186,8 @@ export class FindingEscalationService {
         refusalCode: 'REFUSAL_AUTHORITY_LEVEL_UNAUTHORIZED' as any,
         reason: 'AuthorityContextRef is required for Governed Learning escalation (failed closed)',
       };
+      emitOutcome(result);
+      return result;
     }
 
     const replayedSteps: EscalationPipelineStage[] = [];
@@ -123,10 +204,18 @@ export class FindingEscalationService {
     };
 
     // STEP 1: DraftObservation
-    const draftRes = await this.adapter.draftObservation(baseEscalationInput);
+    const draftStartTime = Date.now();
+    let draftRes;
+    try {
+      draftRes = await this.adapter.draftObservation(baseEscalationInput);
+      observeGlCall('draftObservation', draftRes, Math.max(0, Date.now() - draftStartTime));
+    } catch (err) {
+      observeGlCall('draftObservation', { ok: false, category: 'ERROR', errorDetails: String(err) }, Math.max(0, Date.now() - draftStartTime));
+      throw err;
+    }
 
     if (!draftRes.ok || draftRes.category !== 'SUCCESS') {
-      return {
+      const result: FindingEscalationResult = {
         ok: false,
         category: draftRes.category,
         findingId,
@@ -137,6 +226,8 @@ export class FindingEscalationService {
         reason: draftRes.reason,
         errorDetails: draftRes.errorDetails,
       };
+      emitOutcome(result);
+      return result;
     }
 
     if (draftRes.replayed) {
@@ -150,7 +241,7 @@ export class FindingEscalationService {
       (draftRes.data as any)?.observationId;
 
     if (!observationId || typeof observationId !== 'string' || observationId.trim() === '') {
-      return {
+      const result: FindingEscalationResult = {
         ok: false,
         category: 'ERROR',
         findingId,
@@ -160,6 +251,8 @@ export class FindingEscalationService {
         reason: 'Governed Learning DraftObservation succeeded but returned no canonical observationId (failed closed)',
         errorDetails: 'Governed Learning DraftObservation succeeded but did not return a canonical observationId (failed closed)',
       };
+      emitOutcome(result);
+      return result;
     }
 
     const observationRef = { observationId: observationId.trim() };
@@ -171,7 +264,7 @@ export class FindingEscalationService {
     for (let i = 0; i < evidenceList.length; i++) {
       const item = evidenceList[i];
       if (!item.location || item.location.trim() === '') {
-        return {
+        const result: FindingEscalationResult = {
           ok: false,
           category: 'REFUSED',
           findingId,
@@ -183,6 +276,8 @@ export class FindingEscalationService {
           refusalCode: 'REFUSAL_INSUFFICIENT_EVIDENCE' as any,
           reason: `Evidence item at index ${i} has empty or fabricated location (failed closed)`,
         };
+        emitOutcome(result);
+        return result;
       }
 
       const attachInput: BECCFindingEscalationInput = {
@@ -192,10 +287,18 @@ export class FindingEscalationService {
         escalationVersion: input.escalationVersion ? `${input.escalationVersion}_att_${i}` : `att_${i}`,
       };
 
-      const attachRes = await this.adapter.attachEvidence(attachInput, observationId);
+      const attachStartTime = Date.now();
+      let attachRes;
+      try {
+        attachRes = await this.adapter.attachEvidence(attachInput, observationId);
+        observeGlCall('attachEvidence', attachRes, Math.max(0, Date.now() - attachStartTime));
+      } catch (err) {
+        observeGlCall('attachEvidence', { ok: false, category: 'ERROR', errorDetails: String(err) }, Math.max(0, Date.now() - attachStartTime));
+        throw err;
+      }
 
       if (!attachRes.ok || attachRes.category !== 'SUCCESS') {
-        return {
+        const result: FindingEscalationResult = {
           ok: false,
           category: attachRes.category,
           findingId,
@@ -208,6 +311,8 @@ export class FindingEscalationService {
           reason: attachRes.reason,
           errorDetails: attachRes.errorDetails,
         };
+        emitOutcome(result);
+        return result;
       }
 
       if (attachRes.replayed) {
@@ -218,10 +323,18 @@ export class FindingEscalationService {
     }
 
     // STEP 3: SubmitObservation
-    const submitRes = await this.adapter.submitObservation(baseEscalationInput, observationId);
+    const submitStartTime = Date.now();
+    let submitRes;
+    try {
+      submitRes = await this.adapter.submitObservation(baseEscalationInput, observationId);
+      observeGlCall('submitObservation', submitRes, Math.max(0, Date.now() - submitStartTime));
+    } catch (err) {
+      observeGlCall('submitObservation', { ok: false, category: 'ERROR', errorDetails: String(err) }, Math.max(0, Date.now() - submitStartTime));
+      throw err;
+    }
 
     if (!submitRes.ok || submitRes.category !== 'SUCCESS') {
-      return {
+      const result: FindingEscalationResult = {
         ok: false,
         category: submitRes.category,
         findingId,
@@ -235,6 +348,8 @@ export class FindingEscalationService {
         reason: submitRes.reason,
         errorDetails: submitRes.errorDetails,
       };
+      emitOutcome(result);
+      return result;
     }
 
     if (submitRes.replayed) {
@@ -254,6 +369,7 @@ export class FindingEscalationService {
       replayedSteps: Object.freeze(replayedSteps),
     };
 
+    emitOutcome(result);
     return this.finalizeResultWithAudit(input, result);
   }
 

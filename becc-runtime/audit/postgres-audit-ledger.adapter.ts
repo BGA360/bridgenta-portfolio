@@ -17,6 +17,7 @@ import {
   BeccAuditRecordStatus
 } from './audit-ledger.types.js';
 import { AuditMetadataSecurityPolicy } from './audit-metadata-security.policy.js';
+import { ObservabilitySecurityPolicy } from '../observability/observability-security.policy.js';
 import { BeccMigrationRunner } from './migrations/becc-migration-runner.js';
 import { migration001 } from './migrations/001_create_becc_audit_records.js';
 
@@ -275,6 +276,92 @@ export class PostgresBeccAuditLedger implements BeccAuditLedgerPort {
   async close(): Promise<void> {
     if (this.isPoolOwned) {
       await this.pool.end();
+    }
+  }
+
+  /**
+   * Performs read-only health check for PostgreSQL audit persistence.
+   * Does NOT perform synthetic audit writes (HEALTH_CHECK_WRITES_SYNTHETIC_AUDIT_RECORD: NO).
+   */
+  async checkHealth(): Promise<{
+    component: string;
+    healthState: 'HEALTHY' | 'DEGRADED' | 'UNAVAILABLE' | 'MISCONFIGURED';
+    liveness: boolean;
+    readiness: boolean;
+    details?: { safeMessage?: string; checkDurationMs?: number };
+    occurredAt: string;
+  }> {
+    const startTime = Date.now();
+    const occurredAt = new Date().toISOString();
+
+    try {
+      // 1. Connection check
+      const connRes = await this.pool.query('SELECT 1;');
+      if (connRes.rows.length === 0) {
+        return {
+          component: 'POSTGRES_AUDIT_LEDGER',
+          healthState: 'UNAVAILABLE',
+          liveness: true,
+          readiness: false,
+          details: { safeMessage: 'PostgreSQL ping query returned empty result', checkDurationMs: Date.now() - startTime },
+          occurredAt
+        };
+      }
+
+      // 2. Schema existence check
+      const schemaRes = await this.pool.query("SELECT 1 FROM information_schema.schemata WHERE schema_name = 'becc';");
+      if (schemaRes.rows.length === 0) {
+        return {
+          component: 'POSTGRES_AUDIT_LEDGER',
+          healthState: 'MISCONFIGURED',
+          liveness: true,
+          readiness: false,
+          details: { safeMessage: "Schema 'becc' missing", checkDurationMs: Date.now() - startTime },
+          occurredAt
+        };
+      }
+
+      // 3. Migration checksum check
+      const migrationRes = await this.pool.query<{ checksum: string }>(
+        'SELECT checksum FROM becc.schema_migrations WHERE migration_id = $1;',
+        [migration001.migrationId]
+      );
+      if (migrationRes.rows.length === 0 || migrationRes.rows[0].checksum !== migration001.checksum) {
+        return {
+          component: 'POSTGRES_AUDIT_LEDGER',
+          healthState: 'MISCONFIGURED',
+          liveness: true,
+          readiness: false,
+          details: { safeMessage: 'Migration 001 missing or checksum mismatch', checkDurationMs: Date.now() - startTime },
+          occurredAt
+        };
+      }
+
+      // 4. Read capability check
+      await this.pool.query('SELECT COUNT(*) FROM becc.becc_audit_records;');
+
+      const durationMs = Math.max(0, Date.now() - startTime);
+      const healthState = durationMs > 5000 ? 'DEGRADED' : 'HEALTHY';
+
+      return {
+        component: 'POSTGRES_AUDIT_LEDGER',
+        healthState,
+        liveness: true,
+        readiness: true,
+        details: { safeMessage: 'PostgreSQL audit persistence operational', checkDurationMs: durationMs },
+        occurredAt
+      };
+    } catch (err: any) {
+      const durationMs = Math.max(0, Date.now() - startTime);
+      const safeErr = ObservabilitySecurityPolicy.classifyError(err, 'PERSISTENCE');
+      return {
+        component: 'POSTGRES_AUDIT_LEDGER',
+        healthState: 'UNAVAILABLE',
+        liveness: true,
+        readiness: false,
+        details: { safeMessage: safeErr.safeMessage || 'PostgreSQL connection failed', checkDurationMs: durationMs },
+        occurredAt
+      };
     }
   }
 
