@@ -12,11 +12,11 @@ const sortedProjects = projects
   .sort((a, b) => primarySlugs.indexOf(a.slug) - primarySlugs.indexOf(b.slug));
 
 // Generate 2-letter initials for each project card
-const getInitials = (title) => {
+const getInitials = (title: string) => {
   if (title === 'FD-ESS') return 'FD';
   const clean = title.replace(/[^a-zA-Z]/g, '');
   if (clean.length >= 2) {
-    const uppers = clean.split('').filter(c => c === c.toUpperCase() && c !== c.toLowerCase());
+    const uppers = clean.split('').filter((c: string) => c === c.toUpperCase() && c !== c.toLowerCase());
     if (uppers.length >= 2) return uppers.slice(0, 2).join('');
     return clean.slice(0, 2).toUpperCase();
   }
@@ -24,7 +24,7 @@ const getInitials = (title) => {
 };
 
 // Generate badge class matching status
-const getBadgeClass = (status) => {
+const getBadgeClass = (status: string) => {
   if (status === 'In Entwicklung') return 'badge--dev';
   if (status === 'Private Beta') return 'badge--beta';
   if (status === 'Konzept / Aufbau') return 'badge--concept';

@@ -31,6 +31,7 @@ import {
   CanonicalPortfolioReadinessRuleProvider
 } from '../readiness/index.js';
 import type { GovernedLearningIntegrationAdapter } from '../governed-learning/index.js';
+import { stopEmbeddedPostgresFixture } from './fixtures/embedded-postgres-teardown.js';
 
 
 describe('Real PostgreSQL BECC Audit Persistence & Security Certification Suite', () => {
@@ -81,18 +82,7 @@ describe('Real PostgreSQL BECC Audit Persistence & Security Certification Suite'
     if (adminPool) {
       await adminPool.end().catch(() => {});
     }
-    if (pgServer) {
-      try {
-        await pgServer.stop();
-      } catch {
-        // Ignore stop errors on cleanup
-      }
-    }
-    if (dbDataDir && fs.existsSync(dbDataDir)) {
-      try {
-        fs.rmSync(dbDataDir, { recursive: true, force: true });
-      } catch {}
-    }
+    await stopEmbeddedPostgresFixture(pgServer, dbDataDir);
   });
 
   function createPool(database = 'postgres'): pkg.Pool {
@@ -927,8 +917,13 @@ describe('Real PostgreSQL BECC Audit Persistence & Security Certification Suite'
       if (adminPool) {
         await adminPool.end().catch(() => {});
       }
-      await pgServer.stop();
+      await stopEmbeddedPostgresFixture(pgServer, dbDataDir, { cleanDataDir: false });
       await new Promise((resolve) => setTimeout(resolve, 3000));
+      pgServer = new EmbeddedPostgres({
+        port: pgPort,
+        databaseDir: dbDataDir,
+        persistent: true
+      });
       await pgServer.start();
       adminPool = createPool();
 

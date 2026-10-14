@@ -4,7 +4,7 @@
 
 This document certifies **BECC-NEXT-005 — Recovery & Multi-Instance Certification** for BridGenta BECC v2.
 
-The certification proves that BECC operates truthfully, deterministically, and resiliently across process restart, database connection loss and recovery, multi-instance concurrency sharing a PostgreSQL audit ledger, and real domain service executions.
+The certification proves that BECC operates truthfully, deterministically, and resiliently across adapter re-instantiation, new connection pool creation, client-side connectivity loss and recovery, multi-instance concurrency sharing a PostgreSQL audit ledger, and real domain service executions.
 
 ---
 
@@ -13,7 +13,7 @@ The certification proves that BECC operates truthfully, deterministically, and r
 ```text
                +----------------------------------+          +----------------------------------+
                |     BECC Runtime Instance A      |          |     BECC Runtime Instance B      |
-               | (Process A / Independent Memory) |          | (Process B / Independent Memory) |
+               | (Adapter A / New Pool A)         |          | (Adapter B / New Pool B)         |
                +----------------------------------+          +----------------------------------+
                                 |                                         |
                                 | (SQL over TCP)                          | (SQL over TCP)
@@ -26,11 +26,20 @@ The certification proves that BECC operates truthfully, deterministically, and r
                                        +-------------------------------+
 ```
 
-### Supported Operating Modes & Guarantees
-1. **Multi-Instance Shared Storage:** Multiple independent BECC runtime instances safely write to and query the same PostgreSQL database (`becc.becc_audit_records`).
-2. **PostgreSQL-Backed Correctness:** All durable retry equivalence, conflict detection, and query ordering rely strictly on PostgreSQL primary key constraints (`audit_record_id`) and TIMESTAMPTZ index ordering. No cross-process in-memory lock or hidden shared memory is required.
-3. **Domain Failure Isolation:** Audit persistence outage (e.g., PostgreSQL connection failure) is strictly isolated at service boundaries. Real domain services (`GovernedGuidanceResolverService`, `FindingEscalationService`, `PublicationReadinessEvaluationService`) return true domain outputs during audit storage outage and resume audit recording upon connection restoration.
+### Supported Operating Modes & Tested Guarantees
+1. **Multi-Instance Shared Storage:** Multiple independent BECC runtime instances safely write to and query the same shared PostgreSQL database (`becc.becc_audit_records`).
+2. **Durable Retry Equivalence & Conflict Prevention:** All retry equivalence and conflict detection rely on a combination of:
+   - PostgreSQL primary key uniqueness (`audit_record_id`);
+   - Canonical audit-record equivalence comparison (`AuditMetadataSecurityPolicy.canonicalizeRecord`);
+   - Adapter-level retry and conflict handling (`PostgresBeccAuditLedger.append`).
+   When incoming record fields match the canonical existing record exactly, the retry succeeds idempotently without duplicate row generation. When incoming record fields diverge, the operation fails closed with a conflict error without mutating or overwriting the original record.
+3. **Three-Service Failure Isolation & Post-Recovery Audit Resumption:** Audit persistence outage (e.g., PostgreSQL connection closure) is strictly isolated at domain service boundaries. All three real domain services:
+   - `GovernedGuidanceResolverService.resolveGuidance()`
+   - `FindingEscalationService.escalateFinding()`
+   - `PublicationReadinessEvaluationService.evaluateReadiness()`
+   maintain truthful domain execution during audit storage outage and resume durable audit recording upon connection restoration via fresh ledger and pool re-composition.
 4. **Health Readiness Signal Accuracy:** `checkHealth()` accurately reflects outage (`healthState: 'UNAVAILABLE'`, `readiness: false`) and recovery (`healthState: 'HEALTHY'`, `readiness: true`) without creating synthetic audit records.
+5. **Deterministic Test Teardown:** Test fixtures employ native `pg_ctl stop -m immediate` teardown to ensure child worker processes on Windows terminate synchronously without resource leaks or orphaned processes.
 
 ---
 
@@ -39,6 +48,9 @@ The certification proves that BECC operates truthfully, deterministically, and r
 > [!IMPORTANT]
 > The following non-claims are certified as true and unchanged across all operating conditions:
 
+- **No OS Process Restart Claim:** Only adapter re-instantiation, pool re-creation, and client-side connection teardown are certified. Operating system process lifecycle management is out of scope.
+- **No PostgreSQL Server Process Restart Claim:** Tests certify client-side connection drop, pool destruction, and new-pool reconnection against shared storage. Automatic database server recovery under production orchestration is not claimed.
+- **No Automatic Failover / Partition Tolerance Claim:** Automatic failover, multi-region clustering, and network partition split-brain resolution are explicitly out of scope.
 - **No Exactly-Once Claim:** BECC guarantees *at-least-once caller retry tolerance* via *durable idempotent retry*, not distributed exactly-once message delivery.
 - **No Distributed Transaction Claim:** BECC and Governed Learning do not share a 2-phase commit or distributed transaction.
 - **GL Boundary Preserved:** Governed Learning integration uses public adapter APIs only. BECC never writes GL tables, imports GL persistence internals, or duplicates GL concurrency control.

@@ -30,6 +30,7 @@ import {
 } from '../readiness/index.js';
 import { InMemoryBeccOperationalObserver } from '../observability/in-memory-operational-observer.adapter.js';
 import type { GovernedLearningIntegrationAdapter } from '../governed-learning/index.js';
+import { stopEmbeddedPostgresFixture } from './fixtures/embedded-postgres-teardown.js';
 
 const mockActorRef = { actorId: 'actor_rec_tester', actorType: 'AGENT' as const };
 
@@ -81,18 +82,7 @@ describe('BECC-NEXT-005 — Recovery & Multi-Instance Certification Suite (REAL 
     if (adminPool) {
       await adminPool.end().catch(() => {});
     }
-    if (pgServer) {
-      try {
-        await pgServer.stop();
-      } catch {
-        // Ignore cleanup errors
-      }
-    }
-    if (dbDataDir && fs.existsSync(dbDataDir)) {
-      try {
-        fs.rmSync(dbDataDir, { recursive: true, force: true });
-      } catch {}
-    }
+    await stopEmbeddedPostgresFixture(pgServer, dbDataDir);
   });
 
   function createPool(database = 'postgres'): pkg.Pool {
@@ -465,6 +455,42 @@ describe('BECC-NEXT-005 — Recovery & Multi-Instance Certification Suite (REAL 
       observer
     );
 
+    // 0. Healthy baseline for all three domain services
+    // 0A. Guidance healthy baseline
+    const gBase = await guidanceService.resolveGuidance({
+      queryId: 'q_base_001',
+      actorRef: mockActorRef,
+      issuedAt: new Date().toISOString(),
+      projectRef: { projectId: 'proj_rec' }
+    });
+    assert.strictEqual(gBase.ok, true);
+    assert.strictEqual(gBase.category, 'SUCCESS');
+    const gBaseInDb = await outageLedger.query({ operationType: 'GUIDANCE_QUERY' });
+    assert.strictEqual(gBaseInDb.length, 1);
+
+    // 0B. Escalation healthy baseline
+    const eBase = await escalationService.escalateFinding({
+      finding: { id: 'f_base_001', category: 'Engineering', severity: 'error', message: 'Escalation baseline' },
+      actorRef: mockActorRef,
+      issuedAt: new Date().toISOString(),
+      authorityContextRef: { authorityId: 'auth_rec' } as any
+    });
+    assert.strictEqual(eBase.ok, true);
+    assert.strictEqual(eBase.category, 'SUCCESS');
+    const eBaseInDb = await outageLedger.query({ operationType: 'FINDING_ESCALATION' });
+    assert.strictEqual(eBaseInDb.length, 1);
+
+    // 0C. Readiness healthy baseline
+    const rBase = await readinessService.evaluateReadiness({
+      evaluationId: 'eval_base_001',
+      projectRef: 'proj_rec',
+      issuedAt: new Date().toISOString(),
+      evidenceItems: []
+    });
+    assert.strictEqual(rBase.status, 'NOT_READY');
+    const rBaseInDb = await outageLedger.query({ operationType: 'READINESS_EVALUATION' });
+    assert.strictEqual(rBaseInDb.length, 1);
+
     // Induce outage
     await outagePool.end();
 
@@ -497,12 +523,13 @@ describe('BECC-NEXT-005 — Recovery & Multi-Instance Certification Suite (REAL 
     });
     assert.strictEqual(rResult.status, 'NOT_READY');
 
-    // D. Restore DB and verify post-recovery logging resumes
+    // D. Restore DB and verify post-recovery logging resumes for all three domain services
     const restoredPool = createPool();
     const restoredLedger = new PostgresBeccAuditLedger({ pool: restoredPool, autoMigrate: false });
     await restoredLedger.initialize();
     const restoredAuditService = new BeccAuditIntegrationService(restoredLedger, observer);
 
+    // D1. Guidance Service Post-Recovery Audit Resumption
     const restoredGuidance = new GovernedGuidanceResolverService({
       adapter: mockGlAdapter,
       auditService: restoredAuditService,
@@ -516,8 +543,43 @@ describe('BECC-NEXT-005 — Recovery & Multi-Instance Certification Suite (REAL 
       projectRef: { projectId: 'proj_rec' }
     });
 
-    const recInDb = await restoredLedger.query({ operationType: 'GUIDANCE_QUERY' });
-    assert.ok(recInDb.length > 0, 'Audit logging must resume post-recovery');
+    const gInDb = await restoredLedger.query({ operationType: 'GUIDANCE_QUERY' });
+    assert.ok(gInDb.length > 0, 'Guidance audit logging must resume post-recovery');
+
+    // D2. Escalation Service Post-Recovery Audit Resumption
+    const restoredEscalation = new FindingEscalationService({
+      adapter: mockGlAdapter,
+      auditService: restoredAuditService,
+      observer
+    });
+
+    await restoredEscalation.escalateFinding({
+      finding: { id: 'f_post_rec_001', category: 'Engineering', severity: 'error', message: 'Escalation post-recovery' },
+      actorRef: mockActorRef,
+      issuedAt: new Date().toISOString(),
+      authorityContextRef: { authorityId: 'auth_rec' } as any
+    });
+
+    const eInDb = await restoredLedger.query({ operationType: 'FINDING_ESCALATION' });
+    assert.ok(eInDb.length > 0, 'Escalation audit logging must resume post-recovery');
+
+    // D3. Readiness Service Post-Recovery Audit Resumption
+    const restoredReadiness = new PublicationReadinessEvaluationService(
+      new CanonicalPortfolioReadinessRuleProvider(),
+      undefined,
+      restoredAuditService,
+      observer
+    );
+
+    await restoredReadiness.evaluateReadiness({
+      evaluationId: 'eval_post_rec_001',
+      projectRef: 'proj_rec',
+      issuedAt: new Date().toISOString(),
+      evidenceItems: []
+    });
+
+    const rInDb = await restoredLedger.query({ operationType: 'READINESS_EVALUATION' });
+    assert.ok(rInDb.length > 0, 'Readiness audit logging must resume post-recovery');
 
     await restoredPool.end();
   });
