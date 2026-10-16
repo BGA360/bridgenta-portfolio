@@ -11,11 +11,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@cep/assessment-core": ["../assessment-core/dist/src/index.d.ts"],
-      "@cep/rule-engine": ["../rule-engine/dist/src/index.d.ts"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "src/**/*"

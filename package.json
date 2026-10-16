@@ -2,6 +2,9 @@
   "name": "bridgenta-portfolio",
   "type": "module",
   "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "tinacms dev -c \"astro dev\"",
     "start": "tinacms dev -c \"astro dev\"",

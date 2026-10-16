@@ -11,12 +11,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@cep/platform-orchestrator": ["../platform-orchestrator/dist/src/index.d.ts"],
-      "@cep/repository-gateway": ["../repository-gateway/dist/src/index.d.ts"],
-      "@cep/provider-gateway": ["../provider-gateway/dist/src/index.d.ts"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "src/**/*",

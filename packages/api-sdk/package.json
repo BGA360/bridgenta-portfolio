@@ -10,9 +10,9 @@
     "test": "node --test dist/tests/**/*.test.js"
   },
   "dependencies": {
-    "@cep/platform-orchestrator": "file:../platform-orchestrator",
-    "@cep/repository-gateway": "file:../repository-gateway",
-    "@cep/provider-gateway": "file:../provider-gateway"
+    "@cep/platform-orchestrator": "^0.1.0",
+    "@cep/repository-gateway": "^0.1.0",
+    "@cep/provider-gateway": "^0.1.0"
   },
   "keywords": [
     "cep",

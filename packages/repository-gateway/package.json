@@ -10,8 +10,8 @@
     "test": "node --test dist/tests/**/*.test.js"
   },
   "dependencies": {
-    "@cep/assessment-core": "file:../assessment-core",
-    "@cep/evidence-manager": "file:../evidence-manager"
+    "@cep/assessment-core": "^0.1.0",
+    "@cep/evidence-manager": "^0.1.0"
   },
   "keywords": [
     "cep",
