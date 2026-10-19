@@ -28,7 +28,7 @@ const prevProject = projects[(currentIndex - 1 + projects.length) % projects.len
 const nextProject = projects[(currentIndex + 1) % projects.length];
 
 // Get the corresponding badge class based on status
-const getBadgeClass = (status) => {
+const getBadgeClass = (status: string) => {
   if (status === 'In Entwicklung') return 'badge--dev';
   if (status === 'Private Beta') return 'badge--beta';
   if (status === 'Konzept / Aufbau') return 'badge--concept';

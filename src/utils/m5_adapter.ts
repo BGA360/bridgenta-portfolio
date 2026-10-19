@@ -3,7 +3,6 @@ import { evaluateM5Decision, mapSystemFailure } from '../../tooling/prag_provena
 import { buildPublicationProjection } from '../../tooling/prag_provenance_projection.js';
 import fs from 'node:fs';
 import path from 'node:path';
-import { execSync } from 'node:child_process';
 
 import {
   resolveRepositoryCommit,
@@ -151,7 +150,7 @@ export function observeArticleEligibility(articles: any[]) {
   return articles;
 }
 
-export function observeCategoryEligibility(categories: any[], articles: any[]) {
+export function observeCategoryEligibility(categories: any[], _articles: any[]) {
   // Shadow Mode Rule: return all input categories unmodified
   return categories;
 }

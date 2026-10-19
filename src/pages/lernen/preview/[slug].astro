@@ -20,9 +20,9 @@ export async function getStaticPaths() {
         `[PREVIEW ROUTE BUILD FAIL] Nested article found: "${article.id}". Learning articles must be flat under src/content/learning/.`
       );
     }
-    if (article.slug === 'themen') {
+    if ((article.slug as string) === 'themen') {
       throw new Error(
-        `[PREVIEW ROUTE BUILD FAIL] Article slug matches reserved word "themen": "${article.id}".`
+        `[PREVIEW ROUTE BUILD FAIL] Article slug matches reserved word "themen": "${(article as any).id}".`
       );
     }
   }
