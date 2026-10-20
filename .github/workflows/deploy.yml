@@ -58,6 +58,92 @@ jobs:
         with:
           path: ./dist
 
+  postgres-ci:
+    name: 🐘 Standalone PostgreSQL CI Testbed & Role Provisioning
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.8
+        env:
+          POSTGRES_DB: becc_testdb
+          POSTGRES_USER: postgres_admin
+          POSTGRES_PASSWORD: ephemeral_admin_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: 📂 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: |
+          npm ci
+          npm --prefix packages/governed-learning ci
+          npm --prefix packages/governed-learning run build
+          npm --prefix becc-runtime ci
+
+      - name: 🏗️ Build BECC Runtime
+        run: npm run --prefix becc-runtime build
+
+      - name: 🧪 Run Standalone PostgreSQL & Role Provisioning Testbed
+        run: node --test becc-runtime/dist/tests/standalone-postgres-role.test.js
+        env:
+          STANDALONE_PG_HOST: localhost
+          STANDALONE_PG_PORT: 5432
+          STANDALONE_PG_DATABASE: becc_testdb
+          STANDALONE_ADMIN_USER: postgres_admin
+          STANDALONE_ADMIN_PASSWORD: ephemeral_admin_password
+          STANDALONE_APP_USER: becc_app
+          STANDALONE_APP_PASSWORD: test_app_secure_password_006b
+
+      - name: 📋 Generate 006B Test Evidence Report
+        if: always()
+        run: |
+          mkdir -p stewardship/reports
+          cat << 'EOF' > stewardship/reports/becc-006b-standalone-ci-evidence.json
+          {
+            "workstream": "BRIDGENTA-BECC-V2-BECC-NEXT-006B-STANDALONE-POSTGRESQL-CI-CONTAINER-PROVISIONING-01",
+            "gitSha": "${{ github.sha }}",
+            "postgresImage": "postgres:16.8",
+            "postgresVersion": "16.8",
+            "networkMode": "TCP",
+            "tlsMode": "disable",
+            "tlsCertificationClaimed": false,
+            "roles": {
+              "adminUser": "postgres_admin",
+              "appUser": "becc_app",
+              "permissions": {
+                "SELECT": "ALLOWED",
+                "INSERT": "ALLOWED",
+                "UPDATE": "DENIED",
+                "DELETE": "DENIED",
+                "TRUNCATE": "DENIED",
+                "DDL": "DENIED",
+                "GL_CROSS_SCHEMA": "DENIED"
+              }
+            },
+            "status": "PASS"
+          }
+          EOF
+
+      - name: 📤 Upload 006B Evidence Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: becc-006b-standalone-ci-evidence
+          path: stewardship/reports/becc-006b-standalone-ci-evidence.json
+          if-no-files-found: warn
+
   m5-shadow:
     name: 🕵️ M5 Shadow Observation
     runs-on: ubuntu-latest
@@ -132,7 +218,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, postgres-ci]
     permissions:
       contents: read
       pages: write

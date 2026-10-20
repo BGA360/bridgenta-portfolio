@@ -10,5 +10,5 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["bin/**/*.ts", "config/**/*.ts", "shared/**/*.ts", "connector/**/*.ts", "context/**/*.ts", "orchestrator/**/*.ts", "resolver/**/*.ts", "bundle/**/*.ts", "broker/**/*.ts", "adapters/**/*.ts", "audit/**/*.ts", "observability/**/*.ts", "knowledge/**/*.ts", "human-review/**/*.ts", "evidence/**/*.ts", "transformer/**/*.ts", "validator/**/*.ts", "governed-learning/**/*.ts", "escalation/**/*.ts", "readiness/**/*.ts", "tests/**/*.ts"]
+  "include": ["bin/**/*.ts", "config/**/*.ts", "provisioning/**/*.ts", "shared/**/*.ts", "connector/**/*.ts", "context/**/*.ts", "orchestrator/**/*.ts", "resolver/**/*.ts", "bundle/**/*.ts", "broker/**/*.ts", "adapters/**/*.ts", "audit/**/*.ts", "observability/**/*.ts", "knowledge/**/*.ts", "human-review/**/*.ts", "evidence/**/*.ts", "transformer/**/*.ts", "validator/**/*.ts", "governed-learning/**/*.ts", "escalation/**/*.ts", "readiness/**/*.ts", "tests/**/*.ts"]
 }
