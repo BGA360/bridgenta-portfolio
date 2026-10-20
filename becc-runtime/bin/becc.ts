@@ -13,6 +13,9 @@ import { NodeCryptoAsymmetricSignatureAdapter } from '../evidence/adapters/node-
 import { ConfiguredTrustResolverAdapter } from '../evidence/adapters/configured-trust-resolver.adapter.js';
 import { LedgerVerificationService } from '../evidence/ledger-verification.service.js';
 import { LedgerStatus, TrustStatus } from '../evidence/types.js';
+import { loadDeployedConfig, DeployedRuntimeConfig, ConfigurationError } from '../config/index.js';
+import { PostgresBeccAuditLedger } from '../audit/postgres-audit-ledger.adapter.js';
+import { ObservabilitySecurityPolicy } from '../observability/observability-security.policy.js';
 
 // 1. Initial State
 let isShuttingDown = false;
@@ -133,6 +136,8 @@ Options:
 
 Commands:
   status     Perform bootstrap health check and report readiness
+  health     Probe runtime and audit persistence health status
+  ready      Probe runtime and dependency readiness to accept work
 `;
 
 const VERSION_TEXT = '2.0.0-GA';
@@ -161,6 +166,138 @@ class CliReviewerIdentityPort implements IReviewerIdentityPort {
 class CliClockPort implements IClockPort {
   public now(): string {
     return new Date().toISOString();
+  }
+}
+
+export interface ProbeExecutionResult {
+  command: 'health' | 'ready';
+  exitCode: number;
+  report: Record<string, unknown>;
+}
+
+export async function executeHealthProbe(env: NodeJS.ProcessEnv = process.env): Promise<ProbeExecutionResult> {
+  let runtimeConfig: DeployedRuntimeConfig;
+  try {
+    runtimeConfig = loadDeployedConfig(env);
+  } catch (err: any) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    return {
+      command: 'health',
+      exitCode: 2,
+      report: {
+        component: 'BECC_RUNTIME',
+        healthState: 'MISCONFIGURED',
+        liveness: false,
+        readiness: false,
+        details: { safeMessage: errorMsg },
+        occurredAt: new Date().toISOString()
+      }
+    };
+  }
+
+  if (runtimeConfig.storageType === 'in-memory') {
+    return {
+      command: 'health',
+      exitCode: 0,
+      report: {
+        component: 'IN_MEMORY_AUDIT_LEDGER',
+        healthState: 'HEALTHY',
+        liveness: true,
+        readiness: true,
+        details: { safeMessage: 'In-memory audit persistence active (L0 mode)' },
+        occurredAt: new Date().toISOString()
+      }
+    };
+  }
+
+  const ledger = new PostgresBeccAuditLedger(runtimeConfig.postgres);
+  try {
+    const healthReport = await ledger.checkHealth();
+    await ledger.close();
+    const exitCode = (healthReport.healthState === 'HEALTHY' || healthReport.healthState === 'DEGRADED') ? 0 : 1;
+    return {
+      command: 'health',
+      exitCode,
+      report: healthReport
+    };
+  } catch (err: any) {
+    await ledger.close().catch(() => {});
+    const safeErr = ObservabilitySecurityPolicy.classifyError(err, 'PERSISTENCE');
+    return {
+      command: 'health',
+      exitCode: 1,
+      report: {
+        component: 'POSTGRES_AUDIT_LEDGER',
+        healthState: 'UNAVAILABLE',
+        liveness: false,
+        readiness: false,
+        details: { safeMessage: safeErr.safeMessage },
+        occurredAt: new Date().toISOString()
+      }
+    };
+  }
+}
+
+export async function executeReadinessProbe(env: NodeJS.ProcessEnv = process.env): Promise<ProbeExecutionResult> {
+  let runtimeConfig: DeployedRuntimeConfig;
+  try {
+    runtimeConfig = loadDeployedConfig(env);
+  } catch (err: any) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    return {
+      command: 'ready',
+      exitCode: 2,
+      report: {
+        component: 'BECC_RUNTIME',
+        healthState: 'MISCONFIGURED',
+        liveness: false,
+        readiness: false,
+        details: { safeMessage: errorMsg },
+        occurredAt: new Date().toISOString()
+      }
+    };
+  }
+
+  if (runtimeConfig.storageType === 'in-memory') {
+    return {
+      command: 'ready',
+      exitCode: 0,
+      report: {
+        component: 'IN_MEMORY_AUDIT_LEDGER',
+        healthState: 'HEALTHY',
+        liveness: true,
+        readiness: true,
+        details: { safeMessage: 'In-memory audit persistence ready to serve work' },
+        occurredAt: new Date().toISOString()
+      }
+    };
+  }
+
+  const ledger = new PostgresBeccAuditLedger(runtimeConfig.postgres);
+  try {
+    const healthReport = await ledger.checkHealth();
+    await ledger.close();
+    const exitCode = healthReport.readiness === true ? 0 : 1;
+    return {
+      command: 'ready',
+      exitCode,
+      report: healthReport
+    };
+  } catch (err: any) {
+    await ledger.close().catch(() => {});
+    const safeErr = ObservabilitySecurityPolicy.classifyError(err, 'PERSISTENCE');
+    return {
+      command: 'ready',
+      exitCode: 1,
+      report: {
+        component: 'POSTGRES_AUDIT_LEDGER',
+        healthState: 'UNAVAILABLE',
+        liveness: false,
+        readiness: false,
+        details: { safeMessage: safeErr.safeMessage },
+        occurredAt: new Date().toISOString()
+      }
+    };
   }
 }
 
@@ -215,6 +352,36 @@ export async function run(args: string[]) {
 
     process.stdout.write(JSON.stringify(report) + '\n');
     return shutdown('StatusReported', 0);
+  }
+
+  if (primaryArg === 'health') {
+    if (args.length > 1) {
+      return shutdown('InvalidCommandParameters', 2, { error: 'Extra parameters not allowed with health command.' });
+    }
+    const result = await executeHealthProbe(process.env);
+    process.stdout.write(JSON.stringify(result.report) + '\n');
+    if (result.exitCode === 0) {
+      return shutdown('HealthProbed', 0);
+    }
+    if (result.exitCode === 2) {
+      return shutdown('ConfigurationError', 2, { error: (result.report.details as any)?.safeMessage });
+    }
+    return shutdown('HealthCheckFailed', 1, { error: (result.report.details as any)?.safeMessage });
+  }
+
+  if (primaryArg === 'ready') {
+    if (args.length > 1) {
+      return shutdown('InvalidCommandParameters', 2, { error: 'Extra parameters not allowed with ready command.' });
+    }
+    const result = await executeReadinessProbe(process.env);
+    process.stdout.write(JSON.stringify(result.report) + '\n');
+    if (result.exitCode === 0) {
+      return shutdown('ReadinessProbed', 0);
+    }
+    if (result.exitCode === 2) {
+      return shutdown('ConfigurationError', 2, { error: (result.report.details as any)?.safeMessage });
+    }
+    return shutdown('ReadinessCheckFailed', 1, { error: (result.report.details as any)?.safeMessage });
   }
 
   if (primaryArg === 'review') {
