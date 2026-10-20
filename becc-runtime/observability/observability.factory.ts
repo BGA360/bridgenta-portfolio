@@ -6,7 +6,7 @@
  */
 
 import { BeccOperationalObserverPort } from './observability.port.js';
-import { InMemoryBeccOperationalObserver } from './in-memory-operational-observer.adapter.ts';
+import { InMemoryBeccOperationalObserver } from './in-memory-operational-observer.adapter.js';
 import { StructuredConsoleBeccOperationalObserver } from './structured-console-operational-observer.adapter.js';
 import { NoOpBeccOperationalObserver } from './no-op-operational-observer.adapter.js';
 
