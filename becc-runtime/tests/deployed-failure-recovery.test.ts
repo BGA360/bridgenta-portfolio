@@ -90,15 +90,13 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
   const appPassword = process.env.STANDALONE_APP_PASSWORD || 'test_app_secure_password_006b';
 
   const deployedEnv: NodeJS.ProcessEnv = {
-    BECC_AUDIT_STORAGE_TYPE: 'postgres',
-    BECC_PG_HOST: host,
-    BECC_PG_PORT: String(port),
-    BECC_PG_DATABASE: database,
-    BECC_PG_USER: appUser,
-    BECC_PG_PASSWORD: appPassword,
-    BECC_PG_SSL: 'disable',
-    BECC_PG_AUTO_MIGRATE: 'false',
-    BECC_PG_CONNECTION_TIMEOUT_MS: '2000'
+    BECC_STORAGE_TYPE: 'postgres',
+    PGHOST: host,
+    PGPORT: String(port),
+    PGDATABASE: database,
+    PGUSER: appUser,
+    PGPASSWORD: appPassword,
+    PGSSL: 'disable'
   };
 
   const scenarioResults: Record<string, { name: string; status: 'PASS' | 'FAIL'; notes?: string }> = {};
