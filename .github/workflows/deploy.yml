@@ -86,7 +86,9 @@ jobs:
           cache: 'npm'
 
       - name: 📦 Install Dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm --prefix becc-runtime ci
 
       - name: 🏗️ Build BECC Runtime
         run: npm run --prefix becc-runtime build

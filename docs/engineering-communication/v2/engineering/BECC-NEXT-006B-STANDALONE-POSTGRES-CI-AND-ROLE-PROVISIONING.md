@@ -40,7 +40,7 @@ BECC-NEXT-006B closes two engineering gaps identified in the deployed-runtime re
 
 ## 3. Least-Privilege Role Provisioning Contract
 
-Role provisioning is automated via [`01_provision_becc_app_role.sql`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/provisioning/01_provision_becc_app_role.sql) and the programmatic [`provisionBeccAppRole`](file:///c:/antigravity/statichtmlpro/fdrefs/becc-runtime/provisioning/provision-role.ts) utility.
+Role provisioning is automated via `becc-runtime/provisioning/01_provision_becc_app_role.sql` and the programmatic `provisionBeccAppRole` utility (`becc-runtime/provisioning/provision-role.ts`).
 
 ### Role Permission Matrix
 
