@@ -210,7 +210,7 @@ export async function executeHealthProbe(env: NodeJS.ProcessEnv = process.env): 
     };
   }
 
-  const ledger = new PostgresBeccAuditLedger(runtimeConfig.postgres);
+  const ledger = new PostgresBeccAuditLedger({ ...runtimeConfig.postgres, autoMigrate: false });
   try {
     const healthReport = await ledger.checkHealth();
     await ledger.close();
@@ -273,7 +273,7 @@ export async function executeReadinessProbe(env: NodeJS.ProcessEnv = process.env
     };
   }
 
-  const ledger = new PostgresBeccAuditLedger(runtimeConfig.postgres);
+  const ledger = new PostgresBeccAuditLedger({ ...runtimeConfig.postgres, autoMigrate: false });
   try {
     const healthReport = await ledger.checkHealth();
     await ledger.close();

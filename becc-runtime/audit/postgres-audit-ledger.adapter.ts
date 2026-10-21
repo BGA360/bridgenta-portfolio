@@ -59,6 +59,9 @@ export class PostgresBeccAuditLedger implements BeccAuditLedgerPort {
         max: options.maxConnections ?? 10,
         idleTimeoutMillis: options.idleTimeoutMillis ?? 10000
       });
+      this.pool.on('error', (_err) => {
+        // Suppress unhandled crash from idle clients when database server terminates/restarts
+      });
       this.isPoolOwned = true;
     }
   }
