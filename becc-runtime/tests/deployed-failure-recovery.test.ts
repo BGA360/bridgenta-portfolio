@@ -234,7 +234,7 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
     assert.ok(config.postgres);
     assert.strictEqual(config.postgres.user, appUser);
 
-    const ledger = new PostgresBeccAuditLedger(config.postgres);
+    const ledger = new PostgresBeccAuditLedger({ ...config.postgres, autoMigrate: false });
     await ledger.initialize();
     const health = await ledger.checkHealth();
     assert.strictEqual(health.healthState, 'HEALTHY');
@@ -298,7 +298,7 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
   it('006C-S07: Audit append during outage fails safely and fail-closed', async () => {
     const config = loadDeployedConfig(deployedEnv);
     assert.ok(config.postgres);
-    const outageLedger = new PostgresBeccAuditLedger(config.postgres);
+    const outageLedger = new PostgresBeccAuditLedger({ ...config.postgres, autoMigrate: false });
 
     const outageRecord: BeccAuditRecord = {
       auditRecordId: 'audit_006c_during_outage_001',
@@ -322,7 +322,7 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
   it('006C-S08: No silent in-memory fallback during outage', async () => {
     const config = loadDeployedConfig(deployedEnv);
     assert.ok(config.postgres);
-    const outageLedger = new PostgresBeccAuditLedger(config.postgres);
+    const outageLedger = new PostgresBeccAuditLedger({ ...config.postgres, autoMigrate: false });
 
     assert.ok(outageLedger instanceof PostgresBeccAuditLedger);
     await outageLedger.close().catch(() => {});
@@ -374,7 +374,7 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
 
     const config = loadDeployedConfig(deployedEnv);
     assert.ok(config.postgres);
-    const deadLedger = new PostgresBeccAuditLedger(config.postgres);
+    const deadLedger = new PostgresBeccAuditLedger({ ...config.postgres, autoMigrate: false });
     const observer = new InMemoryBeccOperationalObserver();
     const auditService = new BeccAuditIntegrationService(deadLedger, observer);
 
@@ -447,7 +447,7 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
   it('006C-S12: Audit append operations resume deterministically after recovery', async () => {
     const config = loadDeployedConfig(deployedEnv);
     assert.ok(config.postgres);
-    const ledger = new PostgresBeccAuditLedger(config.postgres);
+    const ledger = new PostgresBeccAuditLedger({ ...config.postgres, autoMigrate: false });
     await ledger.initialize();
 
     const postRecoveryRecord: BeccAuditRecord = {
@@ -470,7 +470,7 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
   it('006C-S13: Audit query and read operations resume deterministically after recovery', async () => {
     const config = loadDeployedConfig(deployedEnv);
     assert.ok(config.postgres);
-    const ledger = new PostgresBeccAuditLedger(config.postgres);
+    const ledger = new PostgresBeccAuditLedger({ ...config.postgres, autoMigrate: false });
     await ledger.initialize();
 
     const fetchedPost = await ledger.getById('audit_006c_post_recovery_001');
