@@ -123,17 +123,50 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
   }
 
   before(async () => {
-    // 1. Provision least-privilege role as admin
-    await provisionBeccAppRole({
+    const adminPool = new Pool({
       host,
       port,
       database,
-      adminUser,
-      adminPassword,
-      appRoleName: appUser,
-      appRolePassword: appPassword,
-      ssl: false
+      user: adminUser,
+      password: adminPassword,
+      ssl: false,
+      connectionTimeoutMillis: 5000
     });
+    adminPool.on('error', () => {});
+
+    try {
+      // 1. Admin performs initial schema setup & migrations
+      const runner = new BeccMigrationRunner();
+      await runner.run(adminPool);
+
+      // 2. Admin creates isolated test schema for Governed Learning boundary check
+      await adminPool.query('CREATE SCHEMA IF NOT EXISTS governed_learning;');
+      await adminPool.query(`
+        CREATE TABLE IF NOT EXISTS governed_learning.gl_protected_records (
+          id VARCHAR(64) PRIMARY KEY,
+          payload TEXT NOT NULL
+        );
+      `);
+      await adminPool.query(`
+        INSERT INTO governed_learning.gl_protected_records (id, payload)
+        VALUES ('gl_001', 'confidential_gl_data')
+        ON CONFLICT (id) DO NOTHING;
+      `);
+
+      // 3. Admin provisions least-privilege role
+      await provisionBeccAppRole({
+        host,
+        port,
+        database,
+        adminUser,
+        adminPassword,
+        appRoleName: appUser,
+        appRolePassword: appPassword,
+        ssl: false
+      });
+    } finally {
+      await adminPool.end();
+    }
   });
 
   after(async () => {
