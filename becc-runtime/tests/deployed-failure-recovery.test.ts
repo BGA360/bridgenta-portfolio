@@ -478,7 +478,7 @@ describe('BECC-NEXT-006C — Deployed Failure Injection, Outage, Recovery & Mult
     assert.strictEqual(fetchedPost.auditRecordId, 'audit_006c_post_recovery_001');
 
     const fetchedOutage = await ledger.getById('audit_006c_during_outage_001');
-    assert.strictEqual(fetchedOutage, null, 'Outage record must NOT exist in database (no fabricated success)');
+    assert.strictEqual(fetchedOutage, undefined, 'Outage record must NOT exist in database (no fabricated success)');
 
     await ledger.close();
     scenarioResults['006C-S13'] = { name: 'Query/read resumes after recovery', status: 'PASS' };
