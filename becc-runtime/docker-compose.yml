@@ -1,0 +1,52 @@
+# ==============================================================================
+# BridGenta BECC v2 — Deployed Runtime Service Topology (BECC-NEXT-007)
+# Standalone PostgreSQL 16.8 + Least-Privilege becc-runtime Container
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.8
+    container_name: becc-postgres-007
+    environment:
+      POSTGRES_DB: becc_testdb
+      POSTGRES_USER: postgres_admin
+      POSTGRES_PASSWORD: ephemeral_admin_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./provisioning/01_provision_becc_app_role.sql:/docker-entrypoint-initdb.d/01_provision_becc_app_role.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -p 5432 -U postgres_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  becc-runtime:
+    build:
+      context: ..
+      dockerfile: becc-runtime/Dockerfile
+    container_name: becc-service-007
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      BECC_STORAGE_TYPE: postgres
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: becc_testdb
+      PGUSER: becc_app
+      PGPASSWORD: test_app_secure_password_006b
+      BECC_PORT: 8080
+      BECC_HOST: 0.0.0.0
+      BECC_RELEASE_SHA: "${GIT_SHA:-dev-preview}"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8080/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped

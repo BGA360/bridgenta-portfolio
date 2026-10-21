@@ -6,6 +6,8 @@
   "main": "./dist/bin/becc.js",
   "scripts": {
     "build": "tsc",
+    "start": "node dist/bin/server.js",
+    "start:server": "node dist/bin/server.js",
     "test": "tsc && node --test dist/tests/**/*.test.js"
   },
   "dependencies": {
