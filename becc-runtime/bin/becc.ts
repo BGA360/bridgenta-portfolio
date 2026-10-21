@@ -138,6 +138,7 @@ Commands:
   status     Perform bootstrap health check and report readiness
   health     Probe runtime and audit persistence health status
   ready      Probe runtime and dependency readiness to accept work
+  serve      Start the HTTP server exposing /health, /ready, and /version endpoints
 `;
 
 const VERSION_TEXT = '2.0.0-GA';
@@ -382,6 +383,31 @@ export async function run(args: string[]) {
       return shutdown('ConfigurationError', 2, { error: (result.report.details as any)?.safeMessage });
     }
     return shutdown('ReadinessCheckFailed', 1, { error: (result.report.details as any)?.safeMessage });
+  }
+
+  if (primaryArg === 'serve') {
+    const { BeccHttpServer } = await import('../server/becc-http-server.js');
+    let port: number | undefined;
+    let host: string | undefined;
+    for (let i = 1; i < args.length; i++) {
+      if (args[i] === '--port' && i + 1 < args.length) {
+        port = parseInt(args[++i], 10);
+      } else if (args[i].startsWith('--port=')) {
+        port = parseInt(args[i].slice(7), 10);
+      } else if (args[i] === '--host' && i + 1 < args.length) {
+        host = args[++i];
+      } else if (args[i].startsWith('--host=')) {
+        host = args[i].slice(7);
+      }
+    }
+    const server = new BeccHttpServer({ port, host });
+    try {
+      const started = await server.start();
+      process.stdout.write(JSON.stringify({ status: 'LISTENING', port: started.port, host: started.host }) + '\n');
+      return;
+    } catch (err: any) {
+      return shutdown('ServerStartFailed', 1, { error: err instanceof Error ? err.message : String(err) });
+    }
   }
 
   if (primaryArg === 'review') {
