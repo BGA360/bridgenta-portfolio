@@ -3,10 +3,13 @@
  *
  * Implements strict, declarative environment-driven configuration for BECC v2 deployed runtime.
  * Enforces fail-closed validation, explicit storage type selection, no silent fallback to in-memory,
+ * provider-neutral secret management abstraction (GAP-PROD-007), strict TLS / CA bundle support (Phase 18),
  * and zero secret leakage in diagnostics and error messages.
  */
 
+import fs from 'node:fs';
 import type { BeccAuditLedgerConfig } from '../audit/becc-audit-ledger.factory.js';
+import { ISecretProvider, EnvironmentSecretProvider } from '../secrets/index.js';
 
 export class ConfigurationError extends Error {
   public readonly code = 'CONFIGURATION_ERROR';
@@ -25,11 +28,17 @@ export interface DeployedPostgresConfig {
   user: string;
   password?: string;
   ssl?: boolean;
+  caBundlePath?: string;
+  caBundleContent?: string;
+  rejectUnauthorized?: boolean;
 }
 
 export interface DeployedRuntimeConfig {
   storageType: StorageType;
   postgres?: DeployedPostgresConfig;
+  releaseSha?: string;
+  environment?: string;
+  runtimeId?: string;
 }
 
 const VALID_STORAGE_TYPES: ReadonlySet<string> = new Set(['postgres', 'in-memory']);
@@ -52,7 +61,12 @@ export function parsePgSsl(val: string | undefined): boolean | undefined {
   );
 }
 
-export function loadDeployedConfig(env: NodeJS.ProcessEnv = process.env): DeployedRuntimeConfig {
+export function loadDeployedConfig(
+  env: NodeJS.ProcessEnv = process.env,
+  secretProvider?: ISecretProvider
+): DeployedRuntimeConfig {
+  const secrets = secretProvider ?? new EnvironmentSecretProvider(env);
+
   const rawStorageType = env.BECC_STORAGE_TYPE;
   if (!rawStorageType || rawStorageType.trim() === '') {
     throw new ConfigurationError(
@@ -67,8 +81,15 @@ export function loadDeployedConfig(env: NodeJS.ProcessEnv = process.env): Deploy
     );
   }
 
+  const releaseSha = env.BECC_RELEASE_SHA || env.GITHUB_SHA || undefined;
+  const environment = env.BECC_ENV || env.NODE_ENV || 'production';
+
   if (storageType === 'in-memory') {
-    return { storageType: 'in-memory' };
+    return {
+      storageType: 'in-memory',
+      releaseSha,
+      environment
+    };
   }
 
   // PostgreSQL mode: validate required connection parameters
@@ -98,18 +119,41 @@ export function loadDeployedConfig(env: NodeJS.ProcessEnv = process.env): Deploy
     throw new ConfigurationError('Missing or empty required environment variable PGUSER.');
   }
 
-  const password = env.PGPASSWORD !== undefined && env.PGPASSWORD !== '' ? env.PGPASSWORD : undefined;
+  // Password read via secret management abstraction
+  const password = secrets.getOptionalSecret('PGPASSWORD');
   const ssl = parsePgSsl(env.PGSSL);
+
+  // CA bundle support for strict TLS (Phase 18)
+  const caBundlePath = secrets.getOptionalSecret('PGSSL_CA_PATH') ?? env.PGSSL_CA_PATH;
+  let caBundleContent = secrets.getOptionalSecret('PGSSL_CA_CONTENT') ?? env.PGSSL_CA_CONTENT;
+
+  if (caBundlePath && !caBundleContent) {
+    try {
+      if (fs.existsSync(caBundlePath)) {
+        caBundleContent = fs.readFileSync(caBundlePath, 'utf8');
+      } else {
+        throw new ConfigurationError(`Configured PGSSL_CA_PATH '${caBundlePath}' not found on disk.`);
+      }
+    } catch (err: any) {
+      if (err instanceof ConfigurationError) throw err;
+      throw new ConfigurationError(`Failed to read PGSSL_CA_PATH '${caBundlePath}': ${err.message}`);
+    }
+  }
 
   return {
     storageType: 'postgres',
+    releaseSha,
+    environment,
     postgres: {
       host,
       port,
       database,
       user,
       password,
-      ssl
+      ssl,
+      caBundlePath,
+      caBundleContent,
+      rejectUnauthorized: true // Strict by default, never allow bypass
     }
   };
 }
@@ -118,15 +162,34 @@ export function toAuditLedgerConfig(config: DeployedRuntimeConfig): BeccAuditLed
   if (config.storageType === 'in-memory') {
     return { storageType: 'in-memory' };
   }
+
+  const pg = config.postgres!;
+  let sslOption: boolean | object | undefined = pg.ssl;
+
+  if (pg.ssl === true) {
+    if (pg.caBundleContent) {
+      sslOption = {
+        rejectUnauthorized: true,
+        ca: pg.caBundleContent
+      };
+    } else {
+      sslOption = {
+        rejectUnauthorized: true
+      };
+    }
+  } else if (pg.ssl === false) {
+    sslOption = false;
+  }
+
   return {
     storageType: 'postgres',
     postgres: {
-      host: config.postgres!.host,
-      port: config.postgres!.port,
-      database: config.postgres!.database,
-      user: config.postgres!.user,
-      password: config.postgres!.password,
-      ssl: config.postgres!.ssl
+      host: pg.host,
+      port: pg.port,
+      database: pg.database,
+      user: pg.user,
+      password: pg.password,
+      ssl: sslOption
     }
   };
 }

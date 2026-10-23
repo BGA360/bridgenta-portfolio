@@ -98,3 +98,31 @@ export interface BeccMetricsSnapshot {
   dependenciesByNameAndStatus: Record<string, number>;
   eventsCount: number;
 }
+
+export type BeccStructuredEventType =
+  | 'STARTUP'
+  | 'SHUTDOWN'
+  | 'HEALTH_CHECK'
+  | 'DEPENDENCY_CHECK'
+  | 'STORAGE_PROBE'
+  | 'SECRET_LOAD'
+  | 'CONFIG_VALIDATION'
+  | 'DEGRADATION_DETECTED'
+  | 'ERROR';
+
+export type BeccEventSeverity = 'INFO' | 'WARN' | 'ERROR' | 'FATAL';
+
+export interface BeccStructuredOperationalEvent {
+  timestamp: string;
+  eventType: BeccStructuredEventType;
+  severity: BeccEventSeverity;
+  component: string;
+  environment: string;
+  releaseSha: string;
+  runtimeId: string;
+  state: BeccHealthState;
+  dependency: string;
+  errorCode?: string;
+  safeMessage: string;
+  metadata?: Record<string, unknown>;
+}

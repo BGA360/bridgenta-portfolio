@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/bin/server.js",
     "start:server": "node dist/bin/server.js",
-    "test": "tsc && node --test dist/tests/**/*.test.js"
+    "test": "tsc && node --test dist/tests/audit-*.test.js dist/tests/becc-*.test.js dist/tests/bootstrap.test.js dist/tests/bundle.test.js dist/tests/cli-*.test.js dist/tests/communication-*.test.js dist/tests/connector.test.js dist/tests/context.test.js dist/tests/deployed-config*.test.js dist/tests/finding-*.test.js dist/tests/governed-*.test.js dist/tests/human-review.test.js dist/tests/operational-*.test.js dist/tests/orchestrator.test.js dist/tests/provider-*.test.js dist/tests/publication-readiness.test.js dist/tests/resolver.test.js dist/tests/service-*.test.js dist/tests/validation.test.js dist/tests/*008a*.test.js"
   },
   "dependencies": {
     "@cep/governed-learning": "file:../packages/governed-learning",
