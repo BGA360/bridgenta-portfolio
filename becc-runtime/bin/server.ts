@@ -83,6 +83,10 @@ async function main() {
         level: 'info',
         module: 'server',
         event: 'HttpServerStarted',
+        eventType: 'STARTUP',
+        runtimeId: server.getRuntimeId(),
+        releaseSha: config?.releaseSha || process.env.BECC_RELEASE_SHA || process.env.GITHUB_SHA || 'unknown',
+        environment: config?.environment || process.env.BECC_ENV || process.env.NODE_ENV || 'production',
         payload: {
           port,
           host,
@@ -92,13 +96,15 @@ async function main() {
       }) + '\n'
     );
   } catch (err: any) {
+    const safeError = err instanceof Error ? err.message : String(err);
     process.stderr.write(
       JSON.stringify({
         timestamp: new Date().toISOString(),
         level: 'error',
         module: 'server',
         event: 'HttpServerFailed',
-        payload: { error: err instanceof Error ? err.message : String(err) }
+        eventType: 'ERROR',
+        payload: { error: safeError }
       }) + '\n'
     );
     process.exit(1);

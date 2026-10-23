@@ -236,4 +236,38 @@ export class ObservabilitySecurityPolicy {
 
     return `op:${boundedOpType}|status:${boundedStatus}|dep:${boundedDep}|err:${boundedErr}`;
   }
+
+  /**
+   * Sanitizes structured operational events, ensuring safe message redaction
+   * and safe metadata attributes without secret leakage.
+   */
+  public static sanitizeStructuredEvent(
+    event: import('./observability.types.js').BeccStructuredOperationalEvent
+  ): import('./observability.types.js').BeccStructuredOperationalEvent {
+    const copy = { ...event };
+    copy.safeMessage = this.sanitizeString(copy.safeMessage);
+    if (copy.errorCode) {
+      copy.errorCode = this.sanitizeString(copy.errorCode);
+    }
+    if (copy.metadata) {
+      const sanitizedMeta: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(copy.metadata)) {
+        const lowerKey = k.toLowerCase();
+        if (
+          lowerKey.includes('password') ||
+          lowerKey.includes('secret') ||
+          lowerKey.includes('token') ||
+          lowerKey.includes('key')
+        ) {
+          sanitizedMeta[k] = '[REDACTED]';
+        } else if (typeof v === 'string') {
+          sanitizedMeta[k] = this.sanitizeString(v);
+        } else if (typeof v === 'number' || typeof v === 'boolean') {
+          sanitizedMeta[k] = v;
+        }
+      }
+      copy.metadata = sanitizedMeta;
+    }
+    return copy;
+  }
 }
