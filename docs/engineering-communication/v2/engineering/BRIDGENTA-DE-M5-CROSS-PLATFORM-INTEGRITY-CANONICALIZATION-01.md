@@ -121,3 +121,20 @@ WORKTREE_CANONICAL_HASH == GIT_REPOSITORY_CONTENT_HASH == MANIFEST_HASH
 | Learning Validate | PASS | 14/14 articles valid |
 | HTML Link Audit | PASS | 32 HTML files audited, 0 broken links |
 | Operational Enforcement | OFF | Kept in advisory shadow mode |
+
+---
+
+## 8. GitHub CI Verification & Stop Condition Assessment
+
+- **PR**: #342 (`fix/m5-cross-platform-integrity-canonicalization`)
+- **PR Head SHA**: `117e0732043d793abb7d252a1d1a5d4212a3ede8`
+- **CI Run ID**: `40137213871`
+- **CI Jobs**: All 5 jobs passed green (`build`, `PRAG Gate`, `PostgreSQL`, `BECC Certification`, `M5 Shadow`).
+- **Linux CI M5 Readiness Outcome**:
+  - Eligible: 13 (remediated 11/11 CRLF-affected articles from 2 up to 13)
+  - Withheld: 1 (`src/content/learning/grenzen-automatisierter-linter-checks.md`)
+  - Root Cause: `EV-BG-001` points to `bridgenta-workspace/validation/automation_controller.js`. That directory is in `.gitignore` (`/bridgenta-workspace/`) and exists only on the local Windows workstation, not in the Git repository clone on Linux CI.
+- **Mandatory Stop Condition Triggered**:
+  - Per Phase 12 instructions: *\"If Linux CI still differs from Windows, STOP. Do not merge.\"*
+  - PR #342 remains open and unmerged.
+  - Workstream Status: `BLOCKED_CROSS_PLATFORM_PARITY_FAILURE`.
