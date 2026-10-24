@@ -138,6 +138,30 @@ describe('BECC Deployed Runtime HTTP Service', () => {
       assert.strictEqual(data.version, '2.0.0-GA');
     });
 
+    it('GET / returns HTTP 200 with minimal service identity and operational endpoint links', async () => {
+      const res = await makeRequest(`${baseUrl}/`);
+      assert.strictEqual(res.statusCode, 200);
+      assert.ok(res.headers['content-type']?.includes('application/json'));
+      assert.strictEqual(res.headers['cache-control'], 'no-store, no-cache, must-revalidate, proxy-revalidate');
+
+      const data = JSON.parse(res.body);
+      assert.strictEqual(data.service, 'BECC Runtime');
+      assert.strictEqual(data.status, 'ok');
+      assert.strictEqual(data.health, '/health');
+      assert.strictEqual(data.ready, '/ready');
+      assert.strictEqual(data.version, '/version');
+      // Verify zero secret leakage
+      assert.strictEqual(data.password, undefined);
+      assert.strictEqual(data.host, undefined);
+      assert.strictEqual(data.connectionString, undefined);
+    });
+
+    it('HEAD / returns HTTP 200 with empty body', async () => {
+      const res = await makeRequest(`${baseUrl}/`, 'HEAD');
+      assert.strictEqual(res.statusCode, 200);
+      assert.strictEqual(res.body, '');
+    });
+
     it('GET /unknown-path returns HTTP 404 Not Found', async () => {
       const res = await makeRequest(`${baseUrl}/unknown-path`);
       assert.strictEqual(res.statusCode, 404);
