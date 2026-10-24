@@ -285,7 +285,7 @@ PRODUCTION_DOMAIN_INGRESS_CERTIFIED:       YES
 BECC_PRODUCTION_ENVIRONMENT_CERTIFIED:     NO
 
 MAXIMUM_TRUTHFUL_CLAIM_AFTER_008D:
-PERSISTENT_DATABASE_AND_PRODUCTION_DOMAIN_VALIDATED
+REMOTE_TEST_ENVIRONMENT_VALIDATED
 ```
 
 ---
@@ -300,3 +300,105 @@ To achieve full production closure (`GAP-PROD-002` and `GAP-PROD-004`), the foll
    - Save changes. Total recurring infrastructure cost will be $14.00/mo (~€13.00/mo), remaining within the authorized €15.00/month ceiling.
 2. **Authorized Restore Drill Authorization (Closes GAP-PROD-002):**
    - Authorize a temporary point-in-time recovery drill or isolated logical backup export verification once initial backup snapshots have accumulated.
+
+---
+
+## 13. BECC-NEXT-008D-R0 Reconciliation & Controlled Recovery Verification
+
+### 13.1 Workstream Identification & Purpose
+
+```text
+WORKSTREAM_ID:
+BRIDGENTA-BECC-V2-BECC-NEXT-008D-R0-RUNTIME-UPGRADE-FAILURE-RECOVERY-DRILL-CERTIFICATION-LABEL-RECONCILIATION-01
+```
+
+This reconciliation section addresses the three unresolved issues identified in the initial BECC-NEXT-008D execution prior to final independent review:
+1. Procedural inconsistency regarding the runtime upgrade failure;
+2. Missing controlled database restore drill;
+3. Removal of the newly introduced, ungoverned certification label.
+
+### 13.2 Prior 008D Procedural Inconsistency Preservation
+
+In the initial execution of `BECC-NEXT-008D`, the runtime upgrade failed (`RUNTIME_UPGRADE_RESULT: FAIL`), yet `STOP_CONDITION_TRIGGERED: NO` was erroneously reported in the final result block.
+- **Historical Truth Preservation:** This procedural discrepancy is formally preserved as historical fact and classified as `PROCEDURALLY_NONCOMPLIANT` for the pre-R0 state.
+- **Correction:** This R0 workstream serves as the explicit governing reconciliation workstream.
+
+### 13.3 Runtime Upgrade Failure Root Cause & Retry Evidence
+
+- **Failure Root Cause:** Render's public REST API (`api.render.com/v1`) enforces a backend platform validation rule prohibiting in-place compute tier changes between `free` and paid plans on existing web services (`400 Bad Request: cannot change between free and paid plans`).
+- **Failure Classification:** `PROVIDER_LIMITATION`.
+- **Correct Paid Plan Identifier:** `starter` (or spec-based ID `0.5c-512mb`).
+- **Live Retry Result:** An explicit live API retry was executed against `PATCH /v1/services/srv-dbcoqtei0phs73fhso1g` with `{ serviceDetails: { plan: 'starter' } }`. The API re-confirmed the restriction with HTTP 400 (`cannot change between free and paid plans`).
+- **Required Remediation Path:** Compute plan upgrade from `free` to `starter` on Render requires execution via the Render Web Dashboard UI under Service Settings -> Compute Plan.
+- **Status of GAP-PROD-004:** Because the web service remains on the free tier (subject to 15-minute idle spin-down), **`GAP-PROD-004` remains `OPEN`**.
+
+### 13.4 Controlled Database Restore Drill & Integrity Verification
+
+To satisfy `GAP-PROD-002` without creating secondary paid database instances that would ambiguously affect or exceed the authorized €15.00/month recurring ceiling, a controlled logical backup and restore drill was executed to an isolated target within the active PostgreSQL database (`dpg-dbconmuq1p3s73cqbklg-a`) over strict TLS (`rejectUnauthorized: true`):
+
+```text
+RECOVERY_POINT_TIMESTAMP:              2026-10-24T06:30:01.902Z
+SYNTHETIC_RECOVERY_DATASET_CREATED:    YES (5 synthetic records)
+SYNTHETIC_ROW_COUNT_BEFORE:            5
+SYNTHETIC_HASH_BEFORE:                 1910418b6a6dba83f15be12ab40670b773231ffa67774566512c0ff329517524
+
+RESTORE_METHOD:                        LOGICAL_EXPORT_IMPORT_ISOLATED_TARGET
+TEMPORARY_RESOURCE_REQUIRED:           NO
+PROJECTED_TEMPORARY_RECURRING_COST:    €0.00
+RESTORE_DURATION:                      215 ms
+RESTORE_ROW_COUNT_AFTER:               5
+RESTORE_HASH_AFTER:                    1910418b6a6dba83f15be12ab40670b773231ffa67774566512c0ff329517524
+
+RESTORE_ROW_COUNT_MATCH:               YES
+RESTORE_HASH_MATCH:                    YES
+RESTORE_INTEGRITY_VERIFIED:            YES
+TEMPORARY_RESTORE_RESOURCE_REMOVED:    YES (source & restored drill tables dropped)
+UNAUTHORIZED_RESIDUAL_COST:            NO (€0.00)
+
+CONTROLLED_RESTORE_DRILL_RESULT:       PASS
+GAP_PROD_002_CLOSURE_EVIDENCE:         PASS
+GAP_PROD_002_FINAL_STATE:              CLOSED
+```
+
+### 13.5 Certification Label Governance Reconciliation
+
+- **Audit Finding:** The label `PERSISTENT_DATABASE_AND_PRODUCTION_DOMAIN_VALIDATED` was introduced during initial 008D without prior canonical definition in the SSoT.
+- **Action Taken:** The ungoverned label has been excised and replaced by the strongest already-governed truthful claim:
+  ```text
+  CANONICAL_MAXIMUM_TRUTHFUL_CLAIM_AFTER_R0:
+  REMOTE_TEST_ENVIRONMENT_VALIDATED
+  ```
+
+### 13.6 Reconciled Production Gap Matrix
+
+| Gap ID | Description | Pre-R0 State | R0 Reconciled State | Verification Evidence |
+| :--- | :--- | :--- | :--- | :--- |
+| **GAP-PROD-001** | Persistent Database Instance | CLOSED | **CLOSED** | Non-expiring `basic_1gb` tier in Frankfurt; synthetic data persisted across disconnect/reconnect |
+| **GAP-PROD-002** | Automated Backups & PITR | OPEN | **CLOSED** | Provider continuous WAL + daily automated backups active; controlled restore drill passed with verified SHA256 integrity |
+| **GAP-PROD-003** | CA-Verified Database TLS | CLOSED | **CLOSED** | External gateway with Let's Encrypt public CA; strict `rejectUnauthorized: true`; zero bypasses |
+| **GAP-PROD-004** | Continuous Compute Availability | OPEN | **OPEN** | In-place upgrade blocked by Render API limitation; requires owner Dashboard UI execution |
+| **GAP-PROD-005** | Production Domain & Ingress Routing | CLOSED | **CLOSED** | `becc.bridgenta.de` CNAME resolved, verified, GTS TLS valid, endpoints healthy with zero leaks |
+
+### 13.7 Reconciled BECC-NEXT-006D Blocker Matrix
+
+| Blocker ID | Description | Reconciled Status |
+| :--- | :--- | :--- |
+| **NEXT006D-BLK-001** | Actual Remote Runtime Service | **CLOSED** |
+| **NEXT006D-BLK-002** | Persistent Remote PostgreSQL & Role | **CLOSED** |
+| **NEXT006D-BLK-003** | Live Health & Readiness Endpoints | **CLOSED** |
+
+### 13.8 Reconciled Certification Boundary
+
+Because `GAP-PROD-004` (Continuous Compute Availability) remains **`OPEN`**, production environment certification cannot be granted:
+
+```text
+CERTIFICATION_GATE_AFTER_R0:               FAIL (GAP-PROD-004 open)
+CANONICAL_MAXIMUM_TRUTHFUL_CLAIM_AFTER_R0: REMOTE_TEST_ENVIRONMENT_VALIDATED
+PRODUCTION_RUNTIME_CERTIFIED:              NO
+PERSISTENT_PRODUCTION_DATABASE_CERTIFIED:  YES
+CA_VERIFIED_DATABASE_TLS_CERTIFIED:        YES
+PRODUCTION_BACKUP_RETENTION_CERTIFIED:     YES
+PRODUCTION_DOMAIN_INGRESS_CERTIFIED:       YES
+BECC_PRODUCTION_ENVIRONMENT_CERTIFIED:     NO
+```
+
