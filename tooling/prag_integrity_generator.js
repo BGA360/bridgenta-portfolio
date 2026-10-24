@@ -44,6 +44,9 @@ export function generateIntegrityManifest(registry, existingManifest = []) {
       // Invariant: IF historicalLocatorState != AVAILABLE, then localVerificationState MUST NOT be AVAILABLE
       if (resolvedPath && historicalLocatorState === "AVAILABLE") {
         const content = fs.readFileSync(resolvedPath);
+        if (content.includes(13)) {
+          throw new Error(`CRLF byte (0x0D) detected in ${resolvedPath}. Manifest generation requires canonical LF bytes.`);
+        }
         const hash = crypto.createHash("sha256").update(content).digest("hex");
         localVerificationState = "AVAILABLE";
         integrityEvidenceType = "sha256";

@@ -18,8 +18,8 @@
     "historicalLocator": "d181dd3027779aef107ac5ee3ca94cc8b6a1ca79",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "6bfc30bf6f649848dd97cf66085a266952cd306706c6f0d007568719b455e75a",
-    "capturedAt": "2026-08-30T14:40:00.000Z"
+    "integrityEvidenceValue": "31d2333af372967fe85d5bef832ec3f3bbde96fe8fe1f2f49900544dd4c8170f",
+    "capturedAt": "2026-10-24T21:54:52.614Z"
   },
   {
     "eventId": "EV-BG-003",
@@ -40,8 +40,8 @@
     "historicalLocator": "d2363e776159090cff6613e020d41e3451587067",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "5c7f9fa54be66ef7c4722288753a22cdd97aeb8310e299840df4afe505c75f4d",
-    "capturedAt": "2026-08-30T14:40:00.000Z"
+    "integrityEvidenceValue": "11dcf30457a99a487e5745c7b81d8e989b79b49642d0608d7031c44503f0626e",
+    "capturedAt": "2026-10-24T21:54:52.877Z"
   },
   {
     "eventId": "EV-BG-005",
@@ -51,8 +51,8 @@
     "historicalLocator": "34989fdae04230f060f71b284726dee0c4a39dc8",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "51353836601db14ae3c1072e4b7657bf9c44c3e7784ce1c46fb086c8f80eeb8e",
-    "capturedAt": "2026-08-30T14:40:00.000Z"
+    "integrityEvidenceValue": "f7efaf8610c27e4029184ea31e5398861610bb0471c78dfc4bf38917b54f96ee",
+    "capturedAt": "2026-10-24T21:54:53.131Z"
   },
   {
     "eventId": "EV-BG-006",
@@ -62,8 +62,8 @@
     "historicalLocator": "319f96d29f5910691e07ba08796641f80d403cda",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "cb2cb3f30689520d3c12679b1d1444bfcac88e2e6d4540ed96542c9ab1aecf93",
-    "capturedAt": "2026-10-24T17:44:27.310Z"
+    "integrityEvidenceValue": "48a27a8ad4e1c6596732e309dccf870593b426351789d11f1bba00bc20da3ffa",
+    "capturedAt": "2026-10-24T21:54:53.359Z"
   },
   {
     "eventId": "EV-BG-007",
@@ -73,8 +73,8 @@
     "historicalLocator": "cb5b03b2b54a0640396e7c0ce0021727957677eb",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "8dfd9e17776ef5848c965c38d4ebf74094cf676f8f97b22fb64c3283ffa4e95c",
-    "capturedAt": "2026-10-24T17:44:27.311Z"
+    "integrityEvidenceValue": "91deacf3b2acd99e2ede7f6a17bd31b1a13a3f1b401420e602896d6c6aaf9567",
+    "capturedAt": "2026-10-24T21:54:53.600Z"
   },
   {
     "eventId": "EV-BG-008",
@@ -84,8 +84,8 @@
     "historicalLocator": "5948dd3027bf2d448a3fece43752a0c2cdfd352c",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "065ea084fa0c10b964dfdbf3fb60e8eb1454bc1c68666cd492a64dfe5a57a2bb",
-    "capturedAt": "2026-10-24T17:44:27.311Z"
+    "integrityEvidenceValue": "b9d64b12a5d9e4cea7870a802a0d3eef9b6ddc9c1b5f686dbd1a8b3bf090f77c",
+    "capturedAt": "2026-10-24T21:54:53.828Z"
   },
   {
     "eventId": "EV-BG-009",
@@ -95,8 +95,8 @@
     "historicalLocator": "d45de9d7290495da65596465b1b45cfded8dacab",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "3e47d8d629594996f5a2c534958b29648028157225ff89954d6ae6b4ba15eae7",
-    "capturedAt": "2026-10-24T17:44:27.311Z"
+    "integrityEvidenceValue": "7cd68c92f92722c61bf929daf1f851d20df8ab1e4486b07de6a4435c273906d0",
+    "capturedAt": "2026-10-24T21:54:54.055Z"
   },
   {
     "eventId": "EV-BG-010",
@@ -106,8 +106,8 @@
     "historicalLocator": "ea17fab39a8ebfeebc8a4eb4ea6283ffb5f082bb",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "7eaf616c6bb8519c6104562d119a84100db3470d42f36e9dcde29bac3eff4146",
-    "capturedAt": "2026-10-24T17:44:27.312Z"
+    "integrityEvidenceValue": "d6d0a1eb9d9db872431495a46ab1a77ec8fde9fa5f8e557f63c8ab7d1e0b76e5",
+    "capturedAt": "2026-10-24T21:54:54.275Z"
   },
   {
     "eventId": "EV-BG-011",
@@ -117,8 +117,8 @@
     "historicalLocator": "76b6ed570ee490321825933eece3af77d2852e6f",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "4ae37e42953f2148fd16937fba5f85511e51c2b1f28044d1dc4e00c7ca560d2c",
-    "capturedAt": "2026-10-24T17:44:27.313Z"
+    "integrityEvidenceValue": "1f0b5860d350616ab020da1f88ee66495c565f2bebcd1a3b15952a1a97bc56ed",
+    "capturedAt": "2026-10-24T21:54:54.493Z"
   },
   {
     "eventId": "EV-BG-012",
@@ -139,8 +139,8 @@
     "historicalLocator": "184b463b5b9be09bb6954e50329540f69c106c8d",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "a0388d0eacf159e7c22da2b36590c28a45f143232287885433857e9d40cb238e",
-    "capturedAt": "2026-10-24T17:44:27.313Z"
+    "integrityEvidenceValue": "1494eeb9401dfaa02f9e6653dd39aa1309786081c0d5d5e1690816821acff3b0",
+    "capturedAt": "2026-10-24T21:54:54.916Z"
   },
   {
     "eventId": "EV-BG-014",
@@ -150,7 +150,7 @@
     "historicalLocator": "184b463b5b9be09bb6954e50329540f69c106c8d",
     "localVerificationState": "AVAILABLE",
     "integrityEvidenceType": "sha256",
-    "integrityEvidenceValue": "0dc60e1cbcdce8c6be6044e328d7c4117aa876a39751e3d894a85406f010ed24",
-    "capturedAt": "2026-10-24T17:44:27.314Z"
+    "integrityEvidenceValue": "5516a9490b28171745195e3f14ac96627c0abc94282940cc2860a489c89c5e4b",
+    "capturedAt": "2026-10-24T21:54:55.114Z"
   }
 ]
