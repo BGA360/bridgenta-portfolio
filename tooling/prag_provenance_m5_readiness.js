@@ -390,7 +390,7 @@ function main() {
       const files = fs.readdirSync(reportsDir);
       for (const file of files) {
         if (file.endsWith(".json")) {
-          if (file !== "m5-enforcement-readiness.json" && file !== "provenance-readiness.json") {
+          if (file === "m5-ci-shadow-observation.json" || file.startsWith("m5-ci-shadow-observation")) {
             const filePath = path.join(reportsDir, file);
             const content = fs.readFileSync(filePath, "utf-8");
             try {
