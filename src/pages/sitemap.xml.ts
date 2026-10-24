@@ -1,13 +1,10 @@
-import { getCollection } from 'astro:content';
-
 import type { APIContext } from 'astro';
-
+import { getCollection } from 'astro:content';
 import { observeArticleEligibility, observeCategoryEligibility } from '../utils/m5_adapter';
+import { getSitemapProjectRoutes } from '../utils/project_registry';
 
 export async function GET(context: APIContext) {
-  const projects = await getCollection('projects');
   const siteUrl = context.site ? context.site.origin : 'https://bridgenta.de';
-  const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
 
   const staticPages = [
     '/',
@@ -18,9 +15,7 @@ export async function GET(context: APIContext) {
     '/datenschutz/'
   ];
 
-  const projectPages = projects
-    .filter(project => activeProjectSlugs.includes(project.slug))
-    .map(project => `/project-${project.slug}/`);
+  const projectPages = getSitemapProjectRoutes();
 
   // Fetch learning data dynamically
   const categories = await getCollection('learningCategories');

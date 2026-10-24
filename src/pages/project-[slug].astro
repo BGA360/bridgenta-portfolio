@@ -4,53 +4,37 @@ import Layout from '../layouts/Layout.astro';
 import PortfolioSidebar from '../components/portfolio/PortfolioSidebar.astro';
 import RelatedProjects from '../components/portfolio/RelatedProjects.astro';
 import ProjectCTA from '../components/portfolio/ProjectCTA.astro';
+import { getCaseStudyProjects, getLifecycleBadgeClass, getProjectBySlug } from '../utils/project_registry';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
-  const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
-  const activeProjects = projects.filter((entry) => activeProjectSlugs.includes(entry.slug));
-  return activeProjects.map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+  const caseStudyProjects = getCaseStudyProjects();
+  return caseStudyProjects
+    .map((reg) => {
+      const entry = projects.find((e) => e.slug === reg.slug);
+      return entry ? { params: { slug: reg.slug }, props: { entry, registry: reg } } : null;
+    })
+    .filter((p): p is { params: { slug: string }; props: { entry: typeof projects[0]; registry: typeof caseStudyProjects[0] } } => p !== null);
 }
 
-const { entry } = Astro.props;
+const { entry, registry: propRegistry } = Astro.props;
+const registry = propRegistry || getProjectBySlug(entry.slug)!;
 const { Content } = await entry.render();
 
-// Query projects collection to compute prev/next navigation links
-const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
-const projects = (await getCollection('projects'))
-  .filter((p) => activeProjectSlugs.includes(p.slug))
-  .sort((a, b) => activeProjectSlugs.indexOf(a.slug) - activeProjectSlugs.indexOf(b.slug));
-const currentIndex = projects.findIndex((p) => p.slug === entry.slug);
-const prevProject = projects[(currentIndex - 1 + projects.length) % projects.length];
-const nextProject = projects[(currentIndex + 1) % projects.length];
+// Query projects collection in canonical catalog order to compute prev/next navigation links
+const caseStudyProjects = getCaseStudyProjects();
+const allProjects = await getCollection('projects');
+const orderedProjects = caseStudyProjects
+  .map((reg) => allProjects.find((p) => p.slug === reg.slug))
+  .filter((p): p is typeof allProjects[0] => p !== undefined);
 
-// Get the corresponding badge class based on status
-const getBadgeClass = (status: string) => {
-  if (status === 'In Entwicklung') return 'badge--dev';
-  if (status === 'Private Beta') return 'badge--beta';
-  if (status === 'Konzept / Aufbau') return 'badge--concept';
-  if (status === 'Abgeschlossen') return 'badge--done';
-  return 'badge--dev';
-};
+const currentIndex = orderedProjects.findIndex((p) => p.slug === entry.slug);
+const prevProject = orderedProjects[(currentIndex - 1 + orderedProjects.length) % orderedProjects.length];
+const nextProject = orderedProjects[(currentIndex + 1) % orderedProjects.length];
 
-const badgeClass = getBadgeClass(entry.data.sidebar.status);
-
-// Set hero image for BridGenta, AEOcortex, Lumina Praxis, and Rooted Reality Gardens
-const heroImage = 
-  entry.slug === 'bridgenta' 
-    ? '/images/bga-portfolio/BG-PA01-Hero.webp' 
-    : entry.slug === 'aeocortex'
-      ? '/images/aeocortex-portfolio/AEO-HERO-01-Platform-Overview.webp'
-      : entry.slug === 'luminapraxisds'
-        ? '/images/lumina-portfolio/lumina-praxis-hero-card.webp'
-        : entry.slug === 'rootedrealitygarden'
-          ? '/images/rooted-reality-portfolio/rooted-reality-hero-card.webp'
-          : entry.slug === 'starcleaners'
-            ? '/images/starcleaners-portfolio/starcleaners-hero-card.webp'
-            : undefined;
+// Get badge class and hero image from canonical registry
+const badgeClass = getLifecycleBadgeClass(registry.lifecycleState);
+const heroImage = registry.heroImage || undefined;
 ---
 
 <Layout 

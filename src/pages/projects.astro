@@ -1,15 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { getPublicProjects, getLifecycleBadgeClass } from '../utils/project_registry';
 
-// Fetch all project markdown files
+// Fetch all project markdown files and join with canonical registry
 const projects = await getCollection('projects');
-const primarySlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+const registeredPublic = getPublicProjects();
 
-// Only show active portfolio projects, sorted in specified order
-const sortedProjects = projects
-  .filter((p) => primarySlugs.includes(p.slug))
-  .sort((a, b) => primarySlugs.indexOf(a.slug) - primarySlugs.indexOf(b.slug));
+// Only show active portfolio projects, sorted in specified canonical catalog order
+const sortedProjects = registeredPublic
+  .map((reg) => {
+    const entry = projects.find((p) => p.slug === reg.slug);
+    return entry ? { ...entry, registry: reg } : null;
+  })
+  .filter((p): p is (typeof projects[0] & { registry: typeof registeredPublic[0] }) => p !== null);
 
 // Generate 2-letter initials for each project card
 const getInitials = (title: string) => {
@@ -21,15 +25,6 @@ const getInitials = (title: string) => {
     return clean.slice(0, 2).toUpperCase();
   }
   return title.slice(0, 2).toUpperCase();
-};
-
-// Generate badge class matching status
-const getBadgeClass = (status: string) => {
-  if (status === 'In Entwicklung') return 'badge--dev';
-  if (status === 'Private Beta') return 'badge--beta';
-  if (status === 'Konzept / Aufbau') return 'badge--concept';
-  if (status === 'Abgeschlossen') return 'badge--done';
-  return 'badge--dev';
 };
 ---
 
@@ -56,7 +51,7 @@ const getBadgeClass = (status: string) => {
 
         {sortedProjects.map((project) => {
           const initials = getInitials(project.data.title);
-          const badgeClass = getBadgeClass(project.data.sidebar.status);
+          const badgeClass = getLifecycleBadgeClass(project.registry.lifecycleState);
           const techList = project.data.sidebar.technologies.split(',').map(t => t.trim());
 
           return (

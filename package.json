@@ -15,7 +15,9 @@
     "m5:retain": "node tooling/prag_provenance_m5_retain.js",
     "m5:assess": "node tooling/prag_provenance_m5_readiness.js",
     "learning:validate": "node tooling/validate_learning_article.js",
-    "learning:publish-check": "node tooling/publish_check_learning_article.js"
+    "learning:publish-check": "node tooling/publish_check_learning_article.js",
+    "projects:validate": "node tooling/validate_project_registry.js",
+    "test:projects": "node --test test/project_registry.test.js"
   },
   "dependencies": {
     "astro": "^4.11.3"

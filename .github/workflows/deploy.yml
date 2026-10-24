@@ -47,6 +47,12 @@ jobs:
       - name: 🎓 Validate Learning Articles
         run: npm run learning:validate
 
+      - name: 📁 Validate Project Registry
+        run: npm run projects:validate
+
+      - name: 🧪 Run Project Registry Tests
+        run: npm run test:projects
+
       - name: 🚀 Build Website
         run: npm run build
 
