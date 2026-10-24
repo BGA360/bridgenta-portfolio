@@ -1,11 +1,11 @@
-# BECC v2 — Production Operations Runbook (First-100-Testers Phase)
+# BECC v2 — Production Operations Runbook
 
 ## Document Metadata
 
 ```text
-WORKSTREAM_ID: BRIDGENTA-BECC-V2-BECC-NEXT-008E-PRODUCTION-OPERATIONS-BASELINE-FIRST100-READINESS-HANDOFF-01
+WORKSTREAM_ID: BRIDGENTA-BECC-V2-BECC-NEXT-008E-PRODUCTION-OPERATIONS-BASELINE-OPERATIONAL-READINESS-HANDOFF-01
 DOCUMENT_VERSION: 1.0.0
-CANONICAL_PATH: docs/engineering-communication/v2/engineering/BECC-NEXT-008E-PRODUCTION-OPERATIONS-FIRST100-RUNBOOK.md
+CANONICAL_PATH: docs/engineering-communication/v2/engineering/BECC-NEXT-008E-PRODUCTION-OPERATIONS-RUNBOOK.md
 TARGET_AUDIENCE: Operations, On-Call Engineers, Human Owner, Support Leads
 EFFECTIVE_DATE: 2026-10-24
 STATUS: APPROVED_OPERATIONAL_BASELINE
@@ -59,7 +59,7 @@ STATUS: APPROVED_OPERATIONAL_BASELINE
 
 | Route | HTTP Methods | Expected Status | Response Content | Human / Operational Purpose |
 |---|---|---|---|---|
-| `/` | `GET`, `HEAD` | `200 OK` | `{"service":"BECC Runtime","status":"ok","health":"/health","ready":"/ready","version":"/version"}` | Human-understandable service greeting & endpoint index for testers navigating directly |
+| `/` | `GET`, `HEAD` | `200 OK` | `{"service":"BECC Runtime","status":"ok","health":"/health","ready":"/ready","version":"/version"}` | Human-understandable service greeting & endpoint index for human visitors and operators navigating directly |
 | `/health` (alias `/healthz`) | `GET`, `HEAD` | `200 OK` / `503 Service Unavailable` | Structured JSON (`HealthReport`) | Process liveness and PostgreSQL audit ledger connectivity probe |
 | `/ready` (alias `/readyz`) | `GET`, `HEAD` | `200 OK` / `503 Service Unavailable` | Structured JSON (`HealthReport`) | Traffic readiness probe (verifies database write/read readiness) |
 | `/version` (alias `/meta`) | `GET`, `HEAD` | `200 OK` | Structured JSON (`releaseSha`, `version`, `status`) | Release provenance and git commit SHA verification |
@@ -89,7 +89,7 @@ All responses strictly apply security headers:
 ### 4.2 Alert Ownership & Escalation
 - **Primary Alert Owner:** Human System Owner (`ref@bridgenta.de`)
 - **Notification Channels:** Render alert webhooks / email notifications, GitHub Actions failure notifications.
-- **Escalation SLA for First 100 Testers:**
+- **Operational Escalation SLAs:**
   - P1 (Complete outage / HTTP 503 / TLS error): Acknowledgment < 1 hour, resolution < 4 hours.
   - P2 (Degraded latency / transient probe failure): Acknowledgment < 4 hours, resolution < 24 hours.
   - P3 (Informational / minor version mismatch): Next business day.
@@ -207,13 +207,13 @@ If database corruption or accidental data modification occurs:
 
 ---
 
-## 9. First-100-Testers Support & Handoff Boundary
+## 9. Operational Support & Handoff Boundary
 
-### 9.1 What Testers Should Expect
+### 9.1 What Operators & API Clients Should Expect
 - Direct browser access to `https://becc.bridgenta.de/` displays a clean, human-understandable JSON service greeting with operational links.
 - No public user authentication or interactive web UI is currently hosted at `becc.bridgenta.de` (API runtime baseline).
-- API client integration and testing should use the documented endpoints `/health`, `/ready`, `/version`.
+- API client integration and operational probing should use the documented endpoints `/health`, `/ready`, `/version`.
 
 ### 9.2 Support Escalation Path
-- Feedback and bug reports from the First 100 Testers should be submitted via BridGenta project issue tracking or directed to `ref@bridgenta.de`.
+- Operational issues, support requests, and bug reports should be submitted via BridGenta project issue tracking or directed to `ref@bridgenta.de`.
 - Known operational limitations (single-region Frankfurt, 0.5 vCPU compute ceiling, 1 GB storage ceiling) are documented and accepted.

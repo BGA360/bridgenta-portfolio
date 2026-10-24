@@ -1,33 +1,34 @@
-# BECC v2 — Production Operations Baseline & First-100-Testers Readiness Handoff
+# BECC v2 — Production Operations Baseline & Operational Readiness Handoff
 
 ## Document Metadata
 
 ```text
-WORKSTREAM_ID: BRIDGENTA-BECC-V2-BECC-NEXT-008E-PRODUCTION-OPERATIONS-BASELINE-FIRST100-READINESS-HANDOFF-01
+WORKSTREAM_ID: BRIDGENTA-BECC-V2-BECC-NEXT-008E-PRODUCTION-OPERATIONS-BASELINE-OPERATIONAL-READINESS-HANDOFF-01
 DOCUMENT_VERSION: 1.0.0
-CANONICAL_PATH: docs/engineering-communication/v2/engineering/BECC-NEXT-008E-PRODUCTION-OPERATIONS-BASELINE-FIRST100-HANDOFF.md
+CANONICAL_PATH: docs/engineering-communication/v2/engineering/BECC-NEXT-008E-PRODUCTION-OPERATIONS-BASELINE-OPERATIONAL-READINESS-HANDOFF.md
 STATUS: COMPLETE_AWAITING_INDEPENDENT_REVIEW
 EFFECTIVE_DATE: 2026-10-24
 PRECEDING_WORKSTREAM: BECC-NEXT-008D-R1 (Merged in PR #336, Commit 5a52715)
-FOLLOW_UP_WORKSTREAM: BECC-NEXT-008E-R1 (Independent Production Operations & First-100-Testers Review)
+FOLLOW_UP_WORKSTREAM: BECC-NEXT-008E-R1 (Independent Production Operations & Operational Readiness Review)
 ```
 
 ---
 
 ## 1. Executive Summary & Purpose
 
-Workstream **BECC-NEXT-008E** establishes the **production operations baseline** necessary to safely transition the BECC v2 platform into the **First 100 Testers** phase.
+Workstream **BECC-NEXT-008E** establishes the **production operations baseline** necessary to safely transition the BECC v2 platform into ongoing **operational readiness**.
 
 Following the successful certification and closure of all five production-readiness gaps (`GAP-PROD-001` through `GAP-PROD-005`) in `BECC-NEXT-008D-R1`, live usability testing revealed that navigating to the root URL `https://becc.bridgenta.de/` returned `{"error":"Not Found"}` (HTTP 404), even though the service endpoints `/health`, `/ready`, and `/version` were fully operational.
 
 This workstream:
 1. Reconciled and classified the root-route finding against the canonical API contract;
-2. Implemented a deterministic, minimal, secret-safe root route (`GET /` -> HTTP 200) for tester usability;
-3. Formulated the durable Production Operations Runbook (`BECC-NEXT-008E-PRODUCTION-OPERATIONS-FIRST100-RUNBOOK.md`);
+2. Implemented a deterministic, minimal, secret-safe root route (`GET /` -> HTTP 200) for human visitors and operators navigating directly;
+3. Formulated the durable Production Operations Runbook (`BECC-NEXT-008E-PRODUCTION-OPERATIONS-RUNBOOK.md`);
 4. Defined the operational monitoring, alerting, backup/recovery, and deployment/rollback baselines;
 5. Confirmed strict cost compliance within the authorized €15.00/month ceiling;
 6. Reconciled certification semantics and historical 006D blocker definitions without rewriting history;
-7. Completed the comprehensive First-100-Testers Operational Readiness Checklist.
+7. Enforced strict cross-project scope separation between `bridgenta.de` / BECC operational readiness and the separate BridGenta Reconstruction platform's program;
+8. Completed the comprehensive Operational Readiness Checklist.
 
 ---
 
@@ -40,7 +41,7 @@ Probing the live deployed production environment (`https://becc.bridgenta.de`) y
 - `GET /ready` -> HTTP 200 (`"readiness": true`)
 - `GET /version` -> HTTP 200 (`"version": "2.0.0-GA"`)
 
-The domain routing, ingress, and runtime were fully operational, but the unmapped root route presented an unfriendly experience to testers opening the hostname directly in a web browser.
+The domain routing, ingress, and runtime were fully operational, but the unmapped root route presented an unfriendly experience to human visitors and operators opening the hostname directly in a web browser.
 
 ### 2.2 SSoT Contract Audit
 An audit of `docs/engineering-communication/v2/engineering/BECC-NEXT-007-DEPLOYED-RUNTIME-INFRASTRUCTURE-FOUNDATION.md` (Section 4.1 & 4.2) and `becc-runtime/server/becc-http-server.ts` confirmed:
@@ -48,8 +49,8 @@ An audit of `docs/engineering-communication/v2/engineering/BECC-NEXT-007-DEPLOYE
 - **Unmapped Path Rule:** Section 4.2 explicitly mandated that any unmapped path return HTTP 404 Not Found.
 - **Classification:** `INTENTIONAL_API_ONLY_BEHAVIOR`. The 404 response was not an infrastructure defect or broken ingress, but the intended behavior of an API daemon without a defined root handler.
 
-### 2.3 Decision for First-100-Testers Readiness
-While intentionally designed as API-only, leaving `/` as 404 during tester onboarding creates unnecessary confusion for human testers navigating to the base domain.
+### 2.3 Decision for Operational Readiness
+While intentionally designed as API-only, leaving `/` as 404 creates unnecessary confusion for operators, visitors, and automated probes verifying the base domain.
 - **Decision:** `OPTION-A` — Serve a minimal, deterministic, secret-safe JSON service greeting and operational endpoint index on `GET /` and `HEAD /`.
 - **Scope Boundary:** No frontend or complex UI introduced. Response is strictly limited to service identity and endpoint pointers.
 
@@ -80,7 +81,7 @@ if (pathname === '/' || pathname === '') {
 
 ## 3. Production Operations Baseline Summary
 
-The operational baseline is codified in detail within [BECC-NEXT-008E-PRODUCTION-OPERATIONS-FIRST100-RUNBOOK.md](BECC-NEXT-008E-PRODUCTION-OPERATIONS-FIRST100-RUNBOOK.md).
+The operational baseline is codified in detail within [BECC-NEXT-008E-PRODUCTION-OPERATIONS-RUNBOOK.md](BECC-NEXT-008E-PRODUCTION-OPERATIONS-RUNBOOK.md).
 
 ### 3.1 Topology & Infrastructure Profile
 - **Provider & Region:** Render Frankfurt (`fra` / Germany, EU)
@@ -152,32 +153,41 @@ An audit of blocker IDs across `BECC-NEXT-007` through `BECC-NEXT-008D` evaluate
 
 ---
 
-## 8. First-100-Testers Operational Readiness Checklist
+## 8. Cross-Project Scope Separation Reconciliation
+
+A strict boundary is maintained between projects:
+- **`bridgenta.de` / BECC:** The owner's portfolio, professional-development, and learning-system environment. Its operational targets are governed exclusively by production stability, continuous compute availability, CA-verified TLS, persistence, automated backups, and operational readiness.
+- **BridGenta Reconstruction Platform:** An independent platform with its own scope, roadmap, and testing milestones.
+- **Reconciliation Rule:** No Reconstruction-specific programs or terminology govern `bridgenta.de` or BECC. All operational artifacts are framed strictly around **Production Operations Baseline & Operational Readiness Handoff**.
+
+---
+
+## 9. Operational Readiness Checklist
 
 ```text
-FIRST100_PRODUCTION_URL_READY:     YES (https://becc.bridgenta.de live)
-FIRST100_ROOT_ROUTE_READY:         YES (GET / returns 200 with service identity)
-FIRST100_HEALTH_READY:             YES (/health returns 200 HEALTHY)
-FIRST100_READINESS_READY:          YES (/ready returns 200 readiness: true)
-FIRST100_VERSION_READY:            YES (/version returns 200 2.0.0-GA)
-FIRST100_DATABASE_READY:           YES (basic_1gb persistent PostgreSQL live)
-FIRST100_RECOVERY_READY:           YES (7-day automated snapshots + verified drill)
-FIRST100_TLS_READY:                YES (OPTION-3A strict CA verification)
-FIRST100_RUNTIME_READY:            YES (0.5c-512mb Starter always-on)
-FIRST100_DOMAIN_READY:             YES (becc.bridgenta.de Strato CNAME verified)
-FIRST100_DEPLOYMENT_READY:         YES (Standard PR + exact-head merge defined)
-FIRST100_ROLLBACK_READY:           YES (Pinned SHA deploy rollback defined)
-FIRST100_INCIDENT_READY:           YES (Runbooks for outage, DB, TLS, cost defined)
-FIRST100_MONITORING_READY:         YES (Probes and alert ownership established)
-FIRST100_COST_GUARDRAIL_READY:     YES (€13.00/mo vs €15.00/mo ceiling)
-FIRST100_SUPPORT_HANDOFF_READY:    YES (First 100 Testers expectations documented)
+OPERATIONAL_PRODUCTION_URL_READY:        YES (https://becc.bridgenta.de live)
+OPERATIONAL_ROOT_ROUTE_READY:            YES (GET / returns 200 with service identity)
+OPERATIONAL_HEALTH_READY:                YES (/health returns 200 HEALTHY)
+OPERATIONAL_READINESS_ENDPOINT_READY:    YES (/ready returns 200 readiness: true)
+OPERATIONAL_VERSION_READY:               YES (/version returns 200 2.0.0-GA)
+OPERATIONAL_DATABASE_READY:              YES (basic_1gb persistent PostgreSQL live)
+OPERATIONAL_RECOVERY_READY:              YES (7-day automated snapshots + verified drill)
+OPERATIONAL_TLS_READY:                   YES (OPTION-3A strict CA verification)
+OPERATIONAL_RUNTIME_READY:               YES (0.5c-512mb Starter always-on)
+OPERATIONAL_DOMAIN_READY:                YES (becc.bridgenta.de Strato CNAME verified)
+OPERATIONAL_DEPLOYMENT_READY:            YES (Standard PR + exact-head merge defined)
+OPERATIONAL_ROLLBACK_READY:              YES (Pinned SHA deploy rollback defined)
+OPERATIONAL_INCIDENT_READY:              YES (Runbooks for outage, DB, TLS, cost defined)
+OPERATIONAL_MONITORING_READY:            YES (Probes and alert ownership established)
+OPERATIONAL_COST_GUARDRAIL_READY:        YES (€13.00/mo vs €15.00/mo ceiling)
+OPERATIONAL_SUPPORT_HANDOFF_READY:       YES (Operational expectations & escalation documented)
 ```
 
 ---
 
-## 9. Known Operational Limitations & Boundaries
+## 10. Known Operational Limitations & Boundaries
 
-The First 100 Testers phase operates under the following explicit boundaries:
+The BECC production operations baseline operates under the following explicit boundaries:
 1. **Single-Region:** Hosted strictly in Frankfurt (`fra`), without cross-region active-active redundancy.
 2. **Resource Boundaries:** Compute is constrained to 0.5 vCPU and 512MB RAM; database storage is constrained to 1 GB.
 3. **No Interactive Web UI:** `becc.bridgenta.de` serves as the runtime API entry point; no HTML application frontend is hosted on this subdomain.
