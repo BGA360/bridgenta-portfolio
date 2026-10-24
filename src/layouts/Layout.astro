@@ -1,7 +1,8 @@
 ---
 import Schema from '../components/Schema.astro';
 import CookieConsent from '../components/CookieConsent.astro';
-import { getCollection, getEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import { getPublicProjects } from '../utils/project_registry';
 
 interface Props {
   title: string;
@@ -42,11 +43,8 @@ const {
 const footerData = await getEntry('pages', 'footer');
 const { topTier, brand, newsletter, bottom } = footerData.data;
 
-// Fetch projects dynamically for footer listing (only active projects)
-const activeProjectSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
-const allProjects = (await getCollection('projects'))
-  .filter((proj) => activeProjectSlugs.includes(proj.slug))
-  .sort((a, b) => activeProjectSlugs.indexOf(a.slug) - activeProjectSlugs.indexOf(b.slug));
+// Fetch projects dynamically for footer listing from canonical registry
+const footerProjects = getPublicProjects();
 
 // Determine current path for navigation active states
 const pathname = Astro.url.pathname;
@@ -248,8 +246,8 @@ import '../styles/styles.css';
         <div class="footer-col">
           <h4>Projekte</h4>
           <ul>
-            {allProjects.map((proj) => (
-              <li><a href={`/project-${proj.slug}`}>{proj.data.title}</a></li>
+            {footerProjects.map((proj) => (
+              <li><a href={`/project-${proj.slug}`}>{proj.name}</a></li>
             ))}
           </ul>
         </div>

@@ -1,9 +1,40 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { getFeaturedProjects, getLifecycleBadgeClass, getLifecycleLabel } from '../utils/project_registry';
 
 const homeData = await getEntry('pages', 'home');
 const { hero, bridge, about, projectsHeader, qualificationsHeader, principlesHeader, skillsHeader } = homeData.data;
+
+const featuredProjects = getFeaturedProjects();
+
+const featuredSnippets: Record<string, { ziel: string; fokus: string; alt: string }> = {
+  bridgenta: {
+    ziel: 'Rekonstruktion und strukturierte Weiterentwicklung bestehender Websysteme.',
+    fokus: 'Analyse, Dokumentation und nachhaltige Softwareentwicklung.',
+    alt: 'BridGenta project overview showing the public presentation of the legacy application reconstruction platform.',
+  },
+  aeocortex: {
+    ziel: 'Strukturierung von Webinhalten für moderne Antwortmaschinen.',
+    fokus: 'Schema.org, AEO und GEO.',
+    alt: 'AEOcortex project overview showing the platform overview.',
+  },
+  luminapraxisds: {
+    ziel: 'Moderne Praxiswebsite als statische HTML-Lösung.',
+    fokus: 'Performance, Barrierefreiheit und Wartbarkeit.',
+    alt: 'Lumina Praxis Projektübersicht – Darstellung der Benutzeroberfläche und des Vitality-Score-Rechners.',
+  },
+  rootedrealitygarden: {
+    ziel: 'Professionelle Unternehmenswebsite als statische HTML-Lösung.',
+    fokus: 'Klares Design, schnelle Ladezeiten und einfache Pflege.',
+    alt: 'Rooted Reality Gardens Projektübersicht – Darstellung des Permakultur-Gartendesigns und des semantischen Schema-Konzepts.',
+  },
+  starcleaners: {
+    ziel: 'Premium-Webpräsenz mit Offline-Funktionalitäten.',
+    fokus: 'PWA, Performance und lokales SEO.',
+    alt: 'StarCleaners Portfolio-Visual mit einer rekonstruierten Premium-Reinigungswebsite für anspruchsvolle Wohnräume.',
+  },
+};
 ---
 
 <Layout title="KI-gestützte Softwareentwicklung, Web & SEO – Portfolio" description="Portfolio-Website von Frank Duru mit Fokus auf KI-gestützte Softwareentwicklung, Systemadministration, IT-Sicherheit und Suchmaschinenoptimierung.">
@@ -115,90 +146,37 @@ const { hero, bridge, about, projectsHeader, qualificationsHeader, principlesHea
       </div>
 
       <div class="grid grid--2">
-        <!-- BridGenta (Featured) -->
-        <article class="project-card project-card--featured">
-          <div class="project-card__media">
-            <img src="/images/bga-portfolio/BG-PA00-Card.webp" alt="BridGenta project overview showing the public presentation of the legacy application reconstruction platform." loading="lazy" width="1672" height="941" style="width: 100%; height: 100%; object-fit: cover;" />
-          </div>
-          <div class="project-card__top">
-            <span class="project-card__cat">Private Beta / IT-Rekonstruktion</span>
-            <span class="badge badge--beta">Private Beta</span>
-          </div>
-          <h3>BridGenta</h3>
-          <p><strong>Ziel:</strong> Rekonstruktion und strukturierte Weiterentwicklung bestehender Websysteme.</p>
-          <p><strong>Fokus:</strong> Analyse, Dokumentation und nachhaltige Softwareentwicklung.</p>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-bridgenta">Case Study ansehen</a>
-          </div>
-        </article>
+        {featuredProjects.map((project, index) => {
+          const snippet = featuredSnippets[project.slug] || { ziel: '', fokus: '', alt: project.name };
+          const badgeClass = getLifecycleBadgeClass(project.lifecycleState);
+          const badgeLabel = getLifecycleLabel(project.lifecycleState);
+          const isPrimaryFeatured = index === 0;
 
-        <!-- AEOcortex -->
-        <article class="project-card">
-          <div class="project-card__media">
-            <img src="/images/aeocortex-portfolio/AEO-HERO-01-Platform-Overview.webp" alt="AEOcortex project overview showing the platform overview." loading="lazy" width="1672" height="941" style="width: 100%; height: 100%; object-fit: cover;" />
-          </div>
-          <div class="project-card__top">
-            <span class="project-card__cat">AI-Suchmaschinen / AEO / GEO</span>
-            <span class="badge badge--dev">In Entwicklung</span>
-          </div>
-          <h3>AEOcortex</h3>
-          <p><strong>Ziel:</strong> Strukturierung von Webinhalten für moderne Antwortmaschinen.</p>
-          <p><strong>Fokus:</strong> Schema.org, AEO und GEO.</p>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-aeocortex">Case Study ansehen</a>
-          </div>
-        </article>
-
-        <!-- Lumina Praxis -->
-        <article class="project-card">
-          <div class="project-card__media">
-            <img src="/images/lumina-portfolio/lumina-praxis-hero-card.webp" alt="Lumina Praxis Projektübersicht – Darstellung der Benutzeroberfläche und des Vitality-Score-Rechners." loading="lazy" width="1672" height="941" style="width: 100%; height: 100%; object-fit: cover;" />
-          </div>
-          <div class="project-card__top">
-            <span class="project-card__cat">Praxis-Website / Web-App</span>
-            <span class="badge badge--done">Abgeschlossen</span>
-          </div>
-          <h3>Lumina Praxis</h3>
-          <p><strong>Ziel:</strong> Moderne Praxiswebsite als statische HTML-Lösung.</p>
-          <p><strong>Fokus:</strong> Performance, Barrierefreiheit und Wartbarkeit.</p>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-luminapraxisds">Case Study ansehen</a>
-          </div>
-        </article>
-
-        <!-- Rooted Reality Gardens -->
-        <article class="project-card">
-          <div class="project-card__media">
-            <img src="/images/rooted-reality-portfolio/rooted-reality-hero-card.webp" alt="Rooted Reality Gardens Projektübersicht – Darstellung des Permakultur-Gartendesigns und des semantischen Schema-Konzepts." loading="lazy" width="1672" height="941" style="width: 100%; height: 100%; object-fit: cover;" />
-          </div>
-          <div class="project-card__top">
-            <span class="project-card__cat">Unternehmens-Website / SEO</span>
-            <span class="badge badge--done">Abgeschlossen</span>
-          </div>
-          <h3>Rooted Reality Gardens</h3>
-          <p><strong>Ziel:</strong> Professionelle Unternehmenswebsite als statische HTML-Lösung.</p>
-          <p><strong>Fokus:</strong> Klares Design, schnelle Ladezeiten und einfache Pflege.</p>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-rootedrealitygarden">Case Study ansehen</a>
-          </div>
-        </article>
-
-        <!-- StarCleaners -->
-        <article class="project-card">
-          <div class="project-card__media">
-            <img src="/images/starcleaners-portfolio/starcleaners-hero-card.webp" alt="StarCleaners Portfolio-Visual mit einer rekonstruierten Premium-Reinigungswebsite für anspruchsvolle Wohnräume." loading="lazy" width="1672" height="941" style="width: 100%; height: 100%; object-fit: cover;" />
-          </div>
-          <div class="project-card__top">
-            <span class="project-card__cat">Luxury Cleaning Services Website & PWA</span>
-            <span class="badge badge--done">Abgeschlossen</span>
-          </div>
-          <h3>StarCleaners</h3>
-          <p><strong>Ziel:</strong> Premium-Webpräsenz mit Offline-Funktionalitäten.</p>
-          <p><strong>Fokus:</strong> PWA, Performance und lokales SEO.</p>
-          <div class="project-card__footer">
-            <a class="btn btn-secondary btn-block" href="/project-starcleaners">Case Study ansehen</a>
-          </div>
-        </article>
+          return (
+            <article class={`project-card ${isPrimaryFeatured ? 'project-card--featured' : ''}`}>
+              <div class="project-card__media">
+                <img
+                  src={project.cardImage}
+                  alt={snippet.alt}
+                  loading="lazy"
+                  width="1672"
+                  height="941"
+                  style="width: 100%; height: 100%; object-fit: cover;"
+                />
+              </div>
+              <div class="project-card__top">
+                <span class="project-card__cat">{project.category}</span>
+                <span class={`badge ${badgeClass}`}>{badgeLabel}</span>
+              </div>
+              <h3>{project.name}</h3>
+              <p><strong>Ziel:</strong> {snippet.ziel}</p>
+              <p><strong>Fokus:</strong> {snippet.fokus}</p>
+              <div class="project-card__footer">
+                <a class="btn btn-secondary btn-block" href={`/project-${project.slug}`}>Case Study ansehen</a>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
       <div class="text-center" style="margin-top:2.2rem;">
