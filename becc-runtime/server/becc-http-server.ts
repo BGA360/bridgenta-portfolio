@@ -365,6 +365,23 @@ export class BeccHttpServer {
         return;
       }
 
+      if (pathname === '/' || pathname === '') {
+        const rootPayload = {
+          service: 'BECC Runtime',
+          status: 'ok',
+          health: '/health',
+          ready: '/ready',
+          version: '/version'
+        };
+        res.writeHead(200);
+        if (req.method === 'HEAD') {
+          res.end();
+        } else {
+          res.end(JSON.stringify(rootPayload, null, 2));
+        }
+        return;
+      }
+
       // 404 for all other paths
       res.writeHead(404);
       if (req.method === 'HEAD') {
