@@ -11,7 +11,7 @@ claims:
   - id: "CLM-001"
     statement: "Verifizierbare Aussage oder Faktum aus dem Quellprojekt SSoT"
     sourceType: "GIT_COMMIT" # GIT_COMMIT | GIT_DIFF | GOVERNANCE_DOC | TEST_RECORD | LOG_OUTPUT | AUDIT_NOTE | CHAT_MEMORY | ABSENCE_STATE | STANDARD
-    sourceLocator: "bridgenta-workspace/validation/automation_controller.js"
+    sourceLocator: "stewardship/evidence/sources/bridgenta-core/validation/automation_controller.js"
     historicalLocator: "07aac848a4a48282c8b83169179308bdb17db0c6"
     evidenceClass: "DIRECT_EVIDENCE" # DIRECT_EVIDENCE | RECONSTRUCTED_EVIDENCE | CONVERSATIONAL_RECOLLECTION | INFERENCE | SPECIFICATION | OPEN | UNSUPPORTED
     publicWordingBoundary:
@@ -27,6 +27,6 @@ proposedProvenanceEvent:
   eventId: "EV-BG-007"
   sourceProject: "bridgenta-core"
   sourceSystem: "git"
-  sourceLocator: "bridgenta-workspace/validation/automation_controller.js"
+  sourceLocator: "stewardship/evidence/sources/bridgenta-core/validation/automation_controller.js"
   historicalLocatorState: "AVAILABLE"
   historicalLocator: "07aac848a4a48282c8b83169179308bdb17db0c6"

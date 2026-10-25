@@ -8,7 +8,7 @@ This document packages the verifiable source evidence for provenance event `EV-B
 - **sourceProject**: `bridgenta-core`
 - **sourceSystem**: `git`
 - **sourceRepositoryOrWorkspaceIdentity**: `bridgenta-workspace`
-- **sourceLocator**: `bridgenta-workspace/validation/automation_controller.js`
+- **sourceLocator**: `stewardship/evidence/sources/bridgenta-core/validation/automation_controller.js`
 - **historicalLocatorState**: `AVAILABLE`
 - **historicalLocator**: `07aac848a4a48282c8b83169179308bdb17db0c6`
 - **historicalRevisionVerified**: `07aac848a4a48282c8b83169179308bdb17db0c6`
