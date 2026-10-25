@@ -127,10 +127,22 @@ export function getM5Projection(articles: any[], options: { workspaceDir?: strin
   return projection;
 }
 
-// Shadow/Advisory API
+// Enforcement State Helper
+export function isEnforcementActive(): boolean {
+  // Operational Enforcement is enabled by default.
+  // Fail-safe rollback: set M5_ENFORCEMENT=disabled or M5_SHADOW_MODE=true in environment.
+  if (process.env.M5_ENFORCEMENT === 'disabled' || process.env.M5_SHADOW_MODE === 'true') {
+    return false;
+  }
+  return true;
+}
+
+// Operational M5 Publication Filtering & Diagnostics
 export function observeArticleEligibility(articles: any[]) {
-  try {
-    const projection = getM5Projection(articles);
+  const projection = getM5Projection(articles);
+  const eligibleSet = new Set(projection.eligibleSubjectIds);
+
+  if (!isEnforcementActive()) {
     console.log('[M5 SHADOW OBSERVATION] Publication eligibility diagnostics:');
     console.log(`  Eligible: ${projection.eligibleSubjectIds.length}`);
     console.log(`  Withheld: ${projection.withheldSubjectIds.length}`);
@@ -142,17 +154,38 @@ export function observeArticleEligibility(articles: any[]) {
         console.warn(`  [UNDECIDED] Article ${rec.subjectId} is undecided. Diagnostics: ${rec.projectionDiagnostics.join(', ')}`);
       }
     }
-  } catch (e) {
-    console.error('[M5 SHADOW ERROR] Failed to compute shadow projection:', e);
+    return articles;
   }
 
-  // Shadow Mode Rule: return all input articles unmodified
-  return articles;
+  console.log('[M5 ENFORCEMENT ACTIVE] Publication eligibility filtering:');
+  console.log(`  Eligible: ${projection.eligibleSubjectIds.length}`);
+  console.log(`  Withheld: ${projection.withheldSubjectIds.length}`);
+  console.log(`  Undecided: ${projection.undecidedSubjectIds.length}`);
+
+  for (const rec of projection.records) {
+    if (rec.publicationEligibility === 'PUBLICATION_WITHHELD') {
+      console.warn(`  [ENFORCED_WITHHELD] Article ${rec.subjectId} is withheld from publication due to readiness failure.`);
+    } else if (rec.publicationEligibility === 'PUBLICATION_UNDECIDED') {
+      console.warn(`  [ENFORCED_UNDECIDED] Article ${rec.subjectId} is undecided. Diagnostics: ${rec.projectionDiagnostics.join(', ')}`);
+    }
+  }
+
+  // Enforced Filtering: published articles must be in eligibleSet; draft articles are preserved for preview
+  return articles.filter((art) => {
+    if (art.data.publicationState !== 'published') {
+      return true;
+    }
+    return eligibleSet.has(`src/content/learning/${art.id}`);
+  });
 }
 
-export function observeCategoryEligibility(categories: any[], _articles: any[]) {
-  // Shadow Mode Rule: return all input categories unmodified
-  return categories;
+export function observeCategoryEligibility(categories: any[], publishedArticles: any[]) {
+  if (!isEnforcementActive()) {
+    return categories;
+  }
+  return categories.filter((cat) =>
+    publishedArticles.some((art) => art.data.category.id === cat.id)
+  );
 }
 
 // Simulation API (used in tests and verification)
