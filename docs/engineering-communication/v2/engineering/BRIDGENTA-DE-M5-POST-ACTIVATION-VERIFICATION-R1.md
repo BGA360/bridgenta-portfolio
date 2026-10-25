@@ -78,7 +78,7 @@ All 14 canonical public learning articles were audited on `https://bridgenta.de/
 
 ## 5. Foundations & Governance Preservation
 
-- **EV-BG-001 Governed Evidence**: Active and portable at `stewardship/evidence/sources/bridgenta-core/validation/automation_controller.js`, hash verified byte-for-byte.
+- **EV-BG-001 Governed Evidence**: Active and portable at `stewardship/evidence/sources/bridgenta-core/validation/automation_controller.js`, canonical SHA256 `60c3eeec08a279732b24d69ad331de2c960dc6a7711a1467713e80ec9f4ddaf8` verified byte-for-byte across working-tree, git blob, and integrity manifest.
 - **LF Line-Ending Canonicalization**: `.gitattributes` LF policy, binary protection, CRLF rejection generator guard, and all 5 cross-platform integrity tests passing (5/5).
 - **Resolver Semantics**: Strict raw SHA256 verification maintained; no runtime normalization or platform bypasses.
 - **Rollback Invariant**: `M5_ENFORCEMENT=disabled` or `M5_SHADOW_MODE=true` environment switches verified for instant zero-code deactivation.
@@ -88,9 +88,11 @@ All 14 canonical public learning articles were audited on `https://bridgenta.de/
 
 ## 6. GAP-PORT-001 Closure Confirmation
 
-`GAP-PORT-001` (M5 Shadow-to-Enforcement Transition) closure is confirmed durable and complete:
+- **GAP-PORT-001 Status**: `CLOSED`
+- **Closure State**: `LIVE_VERIFIED_AND_CERTIFIED`
+- **M5 Enforcement Baseline**: `FROZEN`
 - Operational enforcement is live by default in `src/utils/m5_adapter.ts`.
-- All 14 intended public articles are verified eligible, published, indexed, and reachable.
+- All 14 intended public articles are verified eligible, published, indexed, and reachable on `https://bridgenta.de/lernen/`.
 - Real Linux CI and Windows local environments achieve 100% readiness parity.
 - Instant environment-based rollback without code mutation is verified.
-- The M5 enforcement baseline is formally frozen.
+- The M5 enforcement baseline is formally frozen on canonical `main`.
