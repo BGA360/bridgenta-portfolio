@@ -111,7 +111,12 @@ describe('M5 Cross-Platform Integrity & Line-Ending Canonicalization Guard', () 
       } catch {}
 
       if (gitTracked) {
-        const gitBlob = execSync(`git cat-file -p HEAD:${relPath}`, { cwd: workspaceDir, encoding: 'buffer' });
+        let gitBlob;
+        try {
+          gitBlob = execSync(`git cat-file -p HEAD:${relPath}`, { cwd: workspaceDir, encoding: 'buffer', stdio: ['pipe', 'pipe', 'ignore'] });
+        } catch {
+          gitBlob = execSync(`git cat-file -p :${relPath}`, { cwd: workspaceDir, encoding: 'buffer' });
+        }
         const gitBlobHash = crypto.createHash('sha256').update(gitBlob).digest('hex');
 
         assert.equal(
