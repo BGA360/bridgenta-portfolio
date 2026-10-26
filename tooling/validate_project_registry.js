@@ -114,7 +114,7 @@ if (fs.existsSync(projectsContentDir)) {
 
 // Verify expected public projects
 const publicProjects = registry.filter(p => p.visibility === 'PUBLIC' && p.hasCaseStudy);
-const expectedPublicSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+const expectedPublicSlugs = ['bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners', 'becc'];
 const actualPublicSlugs = publicProjects.map(p => p.slug).sort();
 const expectedSorted = [...expectedPublicSlugs].sort();
 
