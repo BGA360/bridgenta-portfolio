@@ -85,6 +85,30 @@
     "learningRefs": []
   },
   {
+    "projectId": "PRJ-BECC",
+    "slug": "becc",
+    "name": "BECC v2",
+    "category": "Cloud-Infrastruktur / Backend-Architektur",
+    "lifecycleState": "COMPLETED",
+    "visibility": "PUBLIC",
+    "featured": true,
+    "featuredOrder": 6,
+    "catalogOrder": 6,
+    "hasCaseStudy": true,
+    "contentRef": "src/content/projects/becc.md",
+    "cardImage": "/images/bga-portfolio/BG-PA03-Audit.webp",
+    "heroImage": "/images/bga-portfolio/BG-PA04-Governance.webp",
+    "schemaType": "SoftwareApplication",
+    "learningRefs": [
+      "EV-BG-002",
+      "EV-BG-006",
+      "EV-BG-008",
+      "EV-BG-010",
+      "EV-BG-013",
+      "EV-BG-014"
+    ]
+  },
+  {
     "projectId": "PRJ-BUILDDADDY",
     "slug": "builddaddy",
     "name": "BuildDaddy",
@@ -92,7 +116,7 @@
     "lifecycleState": "CONCEPT",
     "visibility": "DRAFT",
     "featured": false,
-    "catalogOrder": 6,
+    "catalogOrder": 7,
     "hasCaseStudy": false,
     "contentRef": "src/content/projects/builddaddy.md",
     "cardImage": "",
@@ -108,7 +132,7 @@
     "lifecycleState": "IN_DEVELOPMENT",
     "visibility": "DRAFT",
     "featured": false,
-    "catalogOrder": 7,
+    "catalogOrder": 8,
     "hasCaseStudy": false,
     "contentRef": "src/content/projects/fdess.md",
     "cardImage": "",

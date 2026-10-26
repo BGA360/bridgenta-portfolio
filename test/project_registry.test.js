@@ -87,7 +87,7 @@ describe('Project Registry & Portfolio Metadata Consolidation', () => {
     }
   });
 
-  it('7. Public case-study projects generate exact expected 5 public routes', () => {
+  it('7. Public case-study projects generate exact expected 6 public routes', () => {
     const routes = getSitemapProjectRoutes();
     const expected = [
       '/project-bridgenta/',
@@ -95,6 +95,7 @@ describe('Project Registry & Portfolio Metadata Consolidation', () => {
       '/project-luminapraxisds/',
       '/project-rootedrealitygarden/',
       '/project-starcleaners/',
+      '/project-becc/',
     ];
     assert.deepEqual(routes, expected);
   });
@@ -168,13 +169,14 @@ describe('Project Registry & Portfolio Metadata Consolidation', () => {
     assert.equal(getLifecycleLabel('CONCEPT'), 'Konzept / Aufbau');
   });
 
-  it('12. Featured projects return exactly 5 active projects sorted by featuredOrder', () => {
+  it('12. Featured projects return exactly 6 active projects sorted by featuredOrder', () => {
     const featured = getFeaturedProjects();
-    assert.equal(featured.length, 5);
+    assert.equal(featured.length, 6);
     assert.equal(featured[0].slug, 'bridgenta');
     assert.equal(featured[1].slug, 'aeocortex');
     assert.equal(featured[2].slug, 'luminapraxisds');
     assert.equal(featured[3].slug, 'rootedrealitygarden');
     assert.equal(featured[4].slug, 'starcleaners');
+    assert.equal(featured[5].slug, 'becc');
   });
 });
