@@ -30,6 +30,7 @@ describe('BECC Case Study Public Disclosure Boundary Regression Guard', () => {
     { token: 'kryptografisch nachvollziehbar', desc: 'Overstated claim: unevidenced cryptographic ledger verification' },
     { token: 'kryptografisch abgesicherte', desc: 'Overstated claim: unevidenced cryptographic backend hardening' },
     { token: 'unveränderlich protokolliert', desc: 'Overstated claim: absolute immutability instead of append-only policy' },
+    { token: 'schützt vor anwendungsseitigen Fehlern und Injection-Angriffen', desc: 'Overstated claim: permissions prevent SQL injection rather than limit impact' },
   ];
 
   it('1. src/content/projects/becc.md does not contain any forbidden operational or overstated tokens', () => {
@@ -55,6 +56,8 @@ describe('BECC Case Study Public Disclosure Boundary Regression Guard', () => {
     assert.ok(content.includes('15,00 €'), 'Must mention budget discipline under 15,00 €');
     assert.ok(content.includes('Append-Only'), 'Must describe append-only ledger policy');
     assert.ok(content.includes('Keine kryptografische Signaturkette'), 'Must explicitly disclaim cryptographic signature chain');
+    assert.ok(content.includes('Sie verhindern SQL-Injection nicht selbst'), 'Must explicitly state that permissions do not prevent SQL injection itself');
+    assert.ok(content.includes('reduzieren die möglichen Auswirkungen'), 'Must frame permissions as impact reduction');
   });
 
   it('3. Project Registry decouples BECC from misleading governance imagery while preserving BridGenta references', () => {

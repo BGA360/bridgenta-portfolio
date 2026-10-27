@@ -81,7 +81,7 @@ Zur Durchsetzung des Prinzips der geringsten Rechte (*Least Privilege*) wurde ei
 | **Administrations- & Migrationsebene** | Superuser- / DDL-Rechte / Schemaberechtigung | Ausschließlich für kontrollierte Schema-Migrationen und Initialisierung |
 | **Laufzeitebene (Application)** | Streng limitiert: Nur lesende und anfügende Rechte (`SELECT`, `INSERT`) auf Ledger-Tabellen | Regulärer Anwendungsbetrieb / Append-Only Ledger |
 
-Versuche der regulären Anwendungsrolle, Schemata zu verändern (`CREATE TABLE`), neue Rollen anzulegen oder bestehende Audit-Einträge nachträglich zu modifizieren (`UPDATE`, `DELETE`), werden von der Datenbank-Engine strikt mit `permission denied` abgewiesen. Diese Barriere schützt vor anwendungsseitigen Fehlern und Injection-Angriffen; administrative Datenbankzugriffe auf Infrastrukturebene oder direkte Eingriffe mit Superuser-Rechten bleiben davon naturgemäß unberührt.
+Versuche der regulären Anwendungsrolle, Schemata zu verändern (`CREATE TABLE`), neue Rollen anzulegen oder bestehende Audit-Einträge nachträglich zu modifizieren (`UPDATE`, `DELETE`), werden von der Datenbank-Engine strikt mit `permission denied` abgewiesen. Diese Berechtigungsgrenzen reduzieren die möglichen Auswirkungen anwendungsseitiger Fehler und bestimmter Injection-Angriffe. Sie verhindern SQL-Injection nicht selbst. Administrative Datenbankzugriffe mit höheren Berechtigungen bleiben davon unberührt.
 
 ---
 
