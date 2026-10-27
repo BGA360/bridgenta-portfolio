@@ -96,8 +96,8 @@
     "catalogOrder": 6,
     "hasCaseStudy": true,
     "contentRef": "src/content/projects/becc.md",
-    "cardImage": "/images/bga-portfolio/BG-PA03-Audit.webp",
-    "heroImage": "/images/bga-portfolio/BG-PA04-Governance.webp",
+    "cardImage": "",
+    "heroImage": "",
     "schemaType": "SoftwareApplication",
     "learningRefs": [
       "EV-BG-002",
