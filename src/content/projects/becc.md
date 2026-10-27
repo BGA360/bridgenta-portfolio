@@ -1,34 +1,34 @@
 ---
 title: "BECC v2"
 subtitle: "Cloud-Infrastruktur, Persistenz & Verifikation"
-description: "Produktionsreife Backend- und Cloud-Architektur mit persistenter PostgreSQL, strikter CA-validierter TLS, automatisierten Backups und 7-Tage-PITR unter strikter Kostendisziplin."
+description: "Gehärtete Backend- und Cloud-Architektur mit persistenter PostgreSQL, strikter CA-validierter TLS, automatisierten Backups und verifiziertem Restore unter strikter Kostendisziplin."
 seoTitle: "BECC v2 – Cloud-Infrastruktur, PostgreSQL & strikte TLS-Verifikation"
-seoDescription: "Fallstudie zur produktionsreifen Cloud-Architektur von BECC v2: Persistente PostgreSQL in Frankfurt, strikte CA-TLS, automatisierte Backups, PITR-Restore-Drill und 320 Tests."
+seoDescription: "Fallstudie zur gehärteten Cloud-Architektur von BECC v2: Persistente PostgreSQL in Frankfurt, strikte CA-TLS, automatisierte Backups, Restore-Drill und 320 Tests."
 schemaType: "SoftwareApplication"
 sidebar:
   category: "Cloud-Infrastruktur / Backend-Architektur"
   status: "Abgeschlossen"
   timeline: "Oktober 2026"
   role: "Backend & Cloud Infrastructure Engineer"
-  technologies: "Node.js, TypeScript, PostgreSQL 16, Render Frankfurt, Strato DNS, Strict TLS"
+  technologies: "Node.js, TypeScript, PostgreSQL, Managed Cloud (Frankfurt), Strict TLS"
   devStack:
-    - Node.js 22 LTS (Alpine Linux)
+    - Node.js (LTS Runtime)
     - TypeScript
-    - PostgreSQL 16 (SSD)
-    - Render Cloud (Frankfurt am Main / EU)
-    - Strato DNS (CNAME-Ingress)
-    - Strict CA-verified TLS
-    - Automated Daily Snapshots & 7-Day PITR
+    - PostgreSQL (Persistenter SSD-Speicher)
+    - Managed Cloud (Frankfurt am Main / EU)
+    - DNS-Ingress & TLS 1.3
+    - Strikte CA-validierte Transportsicherheit
+    - Automatisierte Backups & PITR-Fähigkeit
   aiBuilders:
     - Antigravity
-  notice: "BECC v2 ist die gehärtete Backend- und Auswertungsinfrastruktur für Evidenz- und Bereitschaftsprüfungen von BridGenta (Status: BECC_CERTIFICATION_LEVEL=REMOTE_TEST_ENVIRONMENT_VALIDATED, BECC_PRODUCTION_ENVIRONMENT_CERTIFIED=YES). Die Fallstudie dokumentiert verifizierte Architekturentscheidungen und operative Kennzahlen. Interne Zugangsdaten und administrative Tokens verbleiben geschützt."
+  notice: "BECC v2 ist die gehärtete Backend- und Auswertungsinfrastruktur für Evidenz- und Bereitschaftsprüfungen von BridGenta. Die Fallstudie dokumentiert verifizierte Architekturentscheidungen und operative Kennzahlen. Interne Zugangsdaten, Passwörter und sensitive Infrastruktur-Details verbleiben geschützt."
 ---
 
 ## Kurzfassung
 
 BECC v2 (*BridGenta Evidence & Constitutional Check*) ist eine headless betriebene Backend- und Verifikationslaufzeit, die technische Bereitschaftskriterien, Governance-Entscheidungen und einen kryptografisch nachvollziehbaren Audit-Ledger bereitstellt.
 
-Dieses Dokument richtet sich an Cloud-Architekten, Backend-Ingenieure und technische Auditoren. Es beschreibt den Übergang von einer flüchtigen Entwicklungsumgebung zu einer gehärteten, produktionsreifen Cloud-Infrastruktur unter realen operativen Rahmenbedingungen: persistente Datenspeicherung in Frankfurt am Main, strikte CA-validierte Transportsicherheit ohne Ausnahmen, ein always-on Compute-Dienst mit null Kaltstartzeiten, 7 Tage Point-in-Time-Recovery (PITR) mit verifiziertem Wiederherstellungsdrill sowie 320 automatisierte Tests bei strikter Einhaltung einer monatlichen Budgetobergrenze von 15,00 €.
+Dieses Dokument richtet sich an Cloud-Architekten, Backend-Ingenieure und technische Auditoren. Es beschreibt den Übergang von einer flüchtigen Entwicklungsumgebung zu einer gehärteten Cloud-Infrastruktur unter realen operativen Rahmenbedingungen: persistente Datenspeicherung in der Region Frankfurt am Main, strikte CA-validierte Transportsicherheit ohne Ausnahmen, ein dedizierter Compute-Dienst zur Vermeidung von Kaltstartzeiten, automatisierte Backups mit kontinuierlicher WAL-Archivierung (Point-in-Time-Recovery-Fähigkeit), ein verifizierter logischer Restore-Drill sowie 320 automatisierte Tests bei strikter Einhaltung einer monatlichen Budgetobergrenze von unter 15,00 €.
 
 ---
 
@@ -36,112 +36,78 @@ Dieses Dokument richtet sich an Cloud-Architekten, Backend-Ingenieure und techni
 
 Viele moderne Softwarearchitekturen stützen sich zunehmend auf generative KI-Systeme und automatisierte Agenten. Ohne eine unabhängige, deterministische Prüfinstanz besteht jedoch das Risiko, dass synthetische oder fehlerhafte Behauptungen ungeprüft in Produktionsprozesse einfließen.
 
-BECC v2 wurde als verlässliche Gegeninstanz konzipiert: Ein deterministischer Prüf- und Ledger-Dienst, der jede Governance-Entscheidung und jeden Nachweis unveränderlich protokolliert. Ein solches Prüfsystem kann seine Aufgabe jedoch nur glaubwürdig erfüllen, wenn seine eigene Betriebsumgebung höchste Standards an Persistenz, Ausfallsicherheit und Datensicherheit erfüllt.
+BECC v2 wurde als verlässliche Gegeninstanz konzipiert: Ein deterministischer Prüf- und Ledger-Dienst, der jede Governance-Entscheidung und jeden Nachweis unveränderlich protokolliert. Ein solches Prüfsystem kann seine Aufgabe jedoch nur glaubwürdig erfüllen, wenn seine eigene Betriebsumgebung verlässliche Standards an Persistenz, Ausfallsicherheit und Datensicherheit erfüllt.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">Ein Evidenz- und Governance-System verliert jede Glaubwürdigkeit, wenn sein zugrundeliegender Audit-Speicher flüchtig ist oder Datenverbindungen ohne Zertifikatsprüfung erfolgen. Operative Härtung ist das Fundament vertrauenswürdiger Software.</p>
+  <p class="engineering-insight__text">Ein Evidenz- und Governance-System verliert seine Glaubwürdigkeit, wenn sein zugrundeliegender Audit-Speicher flüchtig ist oder Datenverbindungen ohne strikte Zertifikatsprüfung erfolgen. Operative Härtung ist das Fundament vertrauenswürdiger Software.</p>
 </div>
 
 ---
 
-## Ausgangssituation: Die fünf Produktionslücken
+## Ausgangssituation: Die fünf operativen Herausforderungen
 
-Im Rahmen des vorangegangenen technischen Audits (`BECC-NEXT-008A`) wurden fünf wesentliche Lücken identifiziert, die einer Produktionsfreigabe im Wege standen:
+Im Rahmen der technischen Bestandsaufnahme wurden fünf wesentliche Herausforderungen identifiziert, die für einen verlässlichen Produktivbetrieb gelöst werden mussten:
 
-1. **Flüchtige Datenhaltung (`GAP-PROD-001`)**: Die Entwicklungsdatenbank lief auf einer kostenfreien Testinstanz mit Ablaufdatum (Expiration-Timer) und automatischem Datenverlust nach Inaktivität.
-2. **Ungesicherte Backups, fehlendes PITR & ungetesteter Restore (`GAP-PROD-002`)**: Es existierten weder automatisierte tägliche Snapshots noch eine kontinuierliche WAL-Archivierung für Point-in-Time-Recovery oder ein verifizierter Wiederherstellungsdrill.
-3. **Unsichere Datenbank-Transportsicherheit & fehlende CA-Validierung (`GAP-PROD-003`)**: Datenbankverbindungen drohten bei fehlerhafter Zertifikatskonfiguration kompromittiert zu werden; es fehlte eine strikte CA-Validierung (`rejectUnauthorized: true`).
-4. **Instanz-Schlafzustände & Kaltstarts (`GAP-PROD-004`)**: Der Web-Service wurde bei Inaktivität nach 15 Minuten heruntergefahren, was zu unberechenbaren Antwortzeiten von 30 bis 60 Sekunden führte.
-5. **Generische Drittanbieter-Domain & fehlendes Ingress-Routing (`GAP-PROD-005`)**: Die Anwendung war nur über eine generische Drittanbieter-URL erreichbar, ohne Einbindung in die primäre Domain-Architektur (`becc.bridgenta.de`).
+1. **Flüchtige Datenhaltung**: Die anfängliche Entwicklungsdatenbank lief auf einer temporären Testinstanz mit automatischem Datenverlust nach Inaktivität.
+2. **Datensicherung & Wiederherstellung**: Es fehlten ein automatisiertes Snapshot-Konzept, eine kontinuierliche Transaktionsarchivierung für zeitpunktgenaue Wiederherstellungen sowie ein praktisch verifizierter Restore-Drill.
+3. **Transportsicherheit & Zertifikatsvalidierung**: Datenbankverbindungen in Cloud-Umgebungen bergen Risiken, wenn Zertifikatsprüfungen deaktiviert werden; gefordert war eine strikte CA-Validierung (`rejectUnauthorized: true`).
+4. **Instanz-Schlafzustände & Latenz**: Kostenfreie Instanzen wurden bei Inaktivität heruntergefahren, was zu unvorhersehbaren Kaltstartverzögerungen für anfragende Clients führte.
+5. **Domain-Integration & Ingress-Routing**: Die Anwendung war nur über generische Standard-Hostnamen erreichbar und musste sauber in die primäre Domain-Architektur (`becc.bridgenta.de`) eingebunden werden.
 
 ---
 
 ## Architekturentscheidung & Cloud-Topologie
 
-Für die Schließung dieser Lücken wurden alternative Bereitstellungsmodelle (Multi-Cloud vs. Managed Single-Provider) evaluiert (`BECC-NEXT-008B`). 
+Für die Schließung dieser Herausforderungen wurden verschiedene Bereitstellungsmodelle (Multi-Cloud vs. Managed Single-Provider) evaluiert.
 
-### Topologie-Entscheidung (`DEC-OWNER-001`)
-Aus Gründen der operativen Einfachheit, der Latenzminimierung und der Vermeidung von Egress-Kosten fiel die Entscheidung auf eine **Single-Provider-Topologie in der Region Frankfurt am Main (`fra`, Deutschland, EU)** auf Basis der Render-Plattform:
+Aus Gründen operativer Einfachheit, Latenzminimierung innerhalb der EU und Vermeidung von Egress-Kosten fiel die Entscheidung auf eine **Single-Provider-Topologie in der Region Frankfurt am Main (Deutschland / EU)**:
 
-```text
-               +-------------------------------------------------------+
-               |                  INTERNET / CLIENTS                   |
-               +---------------------------+---------------------------+
-                                           |
-                                HTTPS (Port 443)
-                         Google Trust Services TLS (SNI)
-                                           |
-                                           v
-               +-------------------------------------------------------+
-               |         DNS INGRESS: becc.bridgenta.de                |
-               |         Strato AG CNAME-Delegation                     |
-               +---------------------------+---------------------------+
-                                           |
-                                           v
-               +-------------------------------------------------------+
-               |         COMPUTE: becc-test-runtime                    |
-               |         Starter Tier (0.5 CPU / 512 MB RAM)           |
-               |         Always-On / 0ms Kaltstart                     |
-               |         Node.js 22 LTS (Alpine) / TypeScript Runtime  |
-               +---------------------------+---------------------------+
-                                           |
-                                PostgreSQL TLS (Port 5432)
-                         OPTION-3A: Strict Public CA Verification
-                                rejectUnauthorized: true
-                                           |
-                                           v
-               +-------------------------------------------------------+
-               |         DATABASE: becc-test-postgres                  |
-               |         PostgreSQL 16.8 (Basic 1GB SSD)               |
-               |         Persistenter SSD-Speicher (Frankfurt)         |
-               |         Automatisierte tägliche Snapshots             |
-               |         7 Tage kontinuierliche WAL-Archivierung (PITR)|
-               +-------------------------------------------------------+
-```
+- **Ingress & Edge-Routing**: Client-Anfragen erreichen den Dienst über die dedizierte Domain `https://becc.bridgenta.de`. Die Edge terminiert TLS über moderne Cipher-Suiten (TLS 1.3) mit automatisch verwalteten Zertifikaten.
+- **Compute-Dienst**: Ein dauerhaft betriebener Container-Daemon auf Basis von Node.js LTS führt die TypeScript-Laufzeit aus und verhindert Kaltstartverzögerungen regulärer Anfragen.
+- **Datenbank & Persistenz**: Eine dedizierte PostgreSQL-Instanz auf persistentem SSD-Speicher in derselben Cloud-Region sichert den Audit-Ledger dauerhaft ab.
+- **Sichere Inter-Service-Kommunikation**: Die Verbindung zwischen Anwendungsinstanz und Datenbank erfolgt verschlüsselt über strikt CA-validiertes TLS.
 
 ---
 
 ## Persistente Datenhaltung & Rollentrennung
 
-Die Datenbank wurde auf einen dedizierten, persistenten SSD-Speicherplan (`basic_1gb`) umgestellt (`BECC-NEXT-008D`). Der bisherige Ablauf-Timer wurde dauerhaft entfernt.
+Die Datenbank wurde dauerhaft auf persistenten SSD-Speicher umgestellt. Temporäre Speicherbegrenzungen und Ablauf-Timer wurden vollständig beseitigt.
 
 Zur Durchsetzung des Prinzips der geringsten Rechte (*Least Privilege*) wurde eine strikte administrative Rollentrennung implementiert:
 
-| Rolle | Zugriffsrechte | Verwendungszweck |
+| Zugriffsebene | Zugriffsrechte | Verwendungszweck |
 |---|---|---|
-| `render_admin` | Superuser / DDL-Rechte / Schema-Verwaltung | Ausschließlich für Migrationen und Provisionierung |
-| `becc_app` | Streng limitiert: `SELECT`, `INSERT` auf `becc.becc_audit_records` | Reguläre Laufzeit / Schreibender Audit-Ledger |
+| **Administrations- & Migrationsebene** | Superuser- / DDL-Rechte / Schemaberechtigung | Ausschließlich für kontrollierte Schema-Migrationen und Initialisierung |
+| **Laufzeitebene (Application)** | Streng limitiert: Nur lesende und anfügende Rechte (`SELECT`, `INSERT`) auf Ledger-Tabellen | Regulärer Anwendungsbetrieb / Schreibender Audit-Ledger |
 
-Versuche der Laufzeitrolle `becc_app`, Schemata zu verändern (`CREATE TABLE`), neue Rollen anzulegen oder bestehende Audit-Einträge zu manipulieren (`UPDATE`, `DELETE`), werden von der Datenbank-Engine strikt mit `permission denied` abgewiesen.
+Versuche der regulären Anwendungsrolle, Schemata zu verändern (`CREATE TABLE`), neue Rollen anzulegen oder bestehende Audit-Einträge nachträglich zu modifizieren (`UPDATE`, `DELETE`), werden von der Datenbank-Engine strikt mit `permission denied` abgewiesen.
 
 ---
 
 ## Strikte Transportsicherheit & CA-Validierung
 
-Bei Cloud-Datenbanken greifen Entwicklungsteams häufig auf unsichere Abkürzungen wie `sslmode=no-verify` oder `rejectUnauthorized: false` zurück, um Verbindungsprobleme mit selbstsignierten Zertifikaten zu umgehen. Dies öffnet Man-in-the-Middle-Angriffen (MitM) Tür und Tor.
+Bei Cloud-Datenbanken greifen Entwicklungsteams häufig auf unsichere Behelfskonfigurationen wie `sslmode=no-verify` oder `rejectUnauthorized: false` zurück, um Verbindungsprobleme mit Zertifikaten zu umgehen. Dies hebt wesentliche Sicherheitsgarantien auf und exponiert Verbindungen für Man-in-the-Middle-Angriffe (MitM).
 
-### Die OPTION-3A-Entscheidung (`DEC-OWNER-003` / `GAP-PROD-003`)
-Für BECC v2 wurde jeglicher Verzicht auf Zertifikatsprüfungen kategorisch untersagt:
-- **Verbindungsziel**: Externes PostgreSQL-Gateway in Frankfurt mit öffentlich signiertem Zertifikat.
-- **Validierungsrichtlinie**: `rejectUnauthorized: true` ohne Ausnahme.
-- **Trust Store**: Verifikation gegen das offizielle Mozilla CA-Wurzelzertifikate-Bündel der Node.js-Laufzeit.
-- **Ergebnis**: Absoluter Schutz vor MitM-Angriffen auf dem Transportweg zwischen Compute-Instanz und Datenbank.
+Für BECC v2 wurde jeglicher Verzicht auf Zertifikatsprüfungen kategorisch ausgeschlossen:
+- **Validierungsrichtlinie**: Strikte Erzwingung von `rejectUnauthorized: true` ohne Ausnahme.
+- **Trust Store**: Verifikation gegen das offizielle Mozilla-CA-Wurzelzertifikate-Bündel der Node.js-Laufzeit.
+- **Ergebnis**: Wirksamer kryptografischer Schutz des Übertragungswegs zwischen Anwendungsinstanz und Datenbank durch konsequente Zurückweisung selbstsignierter oder manipulierter Zertifikate.
 
 <div class="engineering-insight">
   <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">TLS ohne CA-Validierung bietet nur die Illusion von Sicherheit. Echte Transportverschlüsselung erfordert die strikte Zurückweisung unbestätigter Zertifikate (rejectUnauthorized: true) als nicht verhandelbare Richtlinie.</p>
+  <p class="engineering-insight__text">TLS ohne strikte CA-Validierung bietet nur die Illusion von Sicherheit. Echte Transportverschlüsselung erfordert die konsequente Zurückweisung unbestätigter Zertifikate (rejectUnauthorized: true) als nicht verhandelbare Richtlinie.</p>
 </div>
 
 ---
 
-## Always-On Runtime & Betriebsdisziplin
+## Always-On Runtime & Betriebsverhalten
 
-Die Laufzeitinstanz wurde auf den kostenpflichtigen Starter-Plan (`0.5 CPU`, `512 MB RAM`) angehoben (`BECC-NEXT-008E`). Dadurch wurde das standardmäßige Einschlafen nach 15 Minuten Inaktivität eliminiert:
+Die Laufzeitinstanz wurde auf einen dauerhaft aktiven Betriebsmodus umgestellt, wodurch das automatische Herunterfahren bei Inaktivität eliminiert wurde:
 
-- **Verfügbarkeit**: 24/7 Always-On ohne Unterbrechung.
-- **Kaltstartzeit**: 0 ms (keine Anlaufverzögerungen für anfragende Clients).
-- **Ressourcenverbrauch**: Der Speicherverbrauch des Node.js-Daemons liegt stabil bei unter 85 MB, was ausreichend Puffer für Lastspitzen bietet.
+- **Vermeidung von Kaltstarts**: Anfragen werden unmittelbar ohne providerbedingte Aufwachpausen beantwortet.
+- **Kontinuierlicher Daemon**: Der Hintergrunddienst läuft stabil als ressourcenschonender Daemon mit geringem Speicherbedarf, sodass signifikante Puffer für Lastspitzen verbleiben.
+- **Betriebsgrenzen**: Der Dienst ist für kontinuierliche Verfügbarkeit ausgelegt; planmäßige Versions-Rollouts oder Infrastrukturwartungen des Cloud-Providers bedingen jedoch minimale, standardmäßige Neustartintervalle.
 
 ---
 
@@ -150,106 +116,92 @@ Die Laufzeitinstanz wurde auf den kostenpflichtigen Starter-Plan (`0.5 CPU`, `51
 Die Anwendung wurde nahtlos in die bestehende Domain-Architektur von `bridgenta.de` integriert:
 
 - **Hostname**: `https://becc.bridgenta.de`
-- **DNS-Verwaltung**: Strato AG Nameserver via `CNAME`-Delegation auf den Ingress-Endpunkt `becc-test-runtime.onrender.com`.
-- **Edge-Zertifikat**: Automatisch verwaltetes TLS-Zertifikat von *Google Trust Services (WE1)* mit vollständiger SNI-Unterstützung und moderner Cipher-Suite (TLS 1.3).
+- **DNS-Verwaltung**: Managed CNAME-Delegation auf die Cloud-Ingress-Infrastruktur.
+- **Edge-Zertifikat**: Automatisch verwaltetes TLS-Zertifikat mit vollständiger SNI-Unterstützung und moderner Cipher-Suite (TLS 1.3).
 - **Verifikationsstatus**: Verifiziert ohne Weiterleitungsschleifen oder Hostname-Konflikte.
 
 ---
 
-## Betriebstelemetrie & Live-Endpunkte
+## Betriebstelemetrie & Zustandserkennung
 
-Um den Zustand des Dienstes transparent und automatisiert überwachbar zu machen, stellt BECC v2 standardisierte Endpunkte bereit:
+Um den Zustand des Dienstes transparent und automatisiert überwachbar zu machen, implementiert BECC v2 standardisierte Schnittstellen zur Zustandserkennung:
 
-| Endpunkt | Methode | Antwort | Zweck |
-|---|---|---|---|
-| `/` | `GET`, `HEAD` | `200 OK` (JSON) | Deterministischer Service-Index für Operatoren und Browser |
-| `/health` | `GET` | `200 OK` (`HEALTHY`) | Tiefe Liveness-Prüfung inkl. aktiver Datenbankverbindung |
-| `/ready` | `GET` | `200 OK` (`readiness: true`) | Bereitschaftsprüfung für vorgeschaltete Gateways |
-| `/version` | `GET` | `200 OK` (`version: 2.0.0-GA`) | Semantische Versionsnummer, Git-Release-SHA und Zeitstempel |
+- **Service-Index**: Liefert grundlegende Status- und Routing-Informationen für berechtigte Diagnoseaufrufe.
+- **Tiefgehende Liveness-Prüfung**: Verifiziert kontinuierlich die interne Systembereitschaft einschließlich einer aktiven, verifizierten Datenbankverbindung.
+- **Readiness-Prüfung**: Signalisiert vorgeschalteten Ingress- und Routing-Komponenten die Bereitschaft zur Verarbeitung eingehender Anfragen.
+- **Metadaten- & Versionsidentifikation**: Stellt semantische Versionsangaben und Release-Identifikatoren für das Änderungsmanagement bereit.
 
-Alle Endpunkte wurden einem Sicherheitsaudit unterzogen: Sie liefern präzise Diagnosedaten, legen jedoch zu keinem Zeitpunkt vertrauliche Umgebungsvariablen, Datenbankpasswörter oder interne Hostnamen offen.
+Alle Diagnosefunktionen wurden einem Sicherheitsreview unterzogen: Sie liefern verlässliche Statusinformationen, legen jedoch zu keinem Zeitpunkt vertrauliche Umgebungsvariablen, Zugangsdaten oder interne Infrastrukturdetails offen.
 
 ---
 
-## Datensicherung, 7-Tage-PITR & Validierter Restore-Drill
+## Datensicherung, PITR-Fähigkeit & Verifizierter Restore-Drill
 
 Ein Datensicherungskonzept ist erst dann bewährt, wenn die Wiederherstellung in der Praxis erfolgreich getestet wurde.
 
 ### Kontinuierliche Datensicherung
-Die persistente Datenbankinstanz erstellt automatisierte tägliche Snapshots und archiviert fortlaufend Write-Ahead-Logs (WAL). Dies ermöglicht ein Point-in-Time-Recovery (PITR) über ein rollierendes Zeitfenster von **7 Tagen**.
+Die persistente Datenbankinstanz erstellt automatisierte tägliche Snapshots und unterstützt fortlaufende Transaktionsprotokollierung (WAL). Dies ermöglicht eine zeitpunktgenaue Wiederherstellung (Point-in-Time-Recovery, PITR) über ein rollierendes Zeitfenster von sieben Tagen.
 
-### Der Restore-Drill (`BECC-NEXT-008D-R0`)
-Zur Schließung von `GAP-PROD-002` wurde ein kontrollierter Wiederherstellungstest durchgeführt:
-1. **Initialer Datenbestand**: 5 synthetische Datensätze wurden mit kryptografischen Prüfsummen in den Ledger geschrieben.
-2. **Wiederherstellungsmethode (`LOGICAL_EXPORT_IMPORT_ISOLATED_TARGET`)**: Um zusätzliche Instanzkosten zu vermeiden und das 15,00-€-Budget strikt zu wahren, wurde der Wiederherstellungspfad über einen kontrollierten logischen Export-/Import-Drill in ein isoliertes Zielschema innerhalb der PostgreSQL-Instanz ausgeführt.
-3. **Integritätsprüfung**: Alle 5 Datensätze wurden aus dem wiederhergestellten Zielbestand ausgelesen und byteweise mit dem Ursprungsbestand verglichen:
-   - **Prüfsumme Vorher**: `1910418b6a6dba83f15be12ab40670b773231ffa67774566512c0ff329517524`
-   - **Prüfsumme Nachher**: `1910418b6a6dba83f15be12ab40670b773231ffa67774566512c0ff329517524`
-   - **Dauer**: ca. 215 ms
-   - **Abweichung**: Exakt 0 Bytes Differenz (`HASH_PARITY: PASS`).
-4. **Bereinigung**: Nach erfolgreicher Verifikation wurden die temporären Drill-Tabellen rückstandslos bereinigt (`TEMPORARY_RESTORE_RESOURCE_REMOVED: YES`), sodass keine unautorisierten Restkosten anfielen.
+### Der Verifizierte Restore-Drill
+Um die Wiederherstellbarkeit des Audit-Ledgers nachzuweisen, ohne unverhältnismäßige Zusatzkosten durch parallele Cloud-Instanzen zu verursachen, wurde ein kontrollierter Restore-Drill durchgeführt:
+
+1. **Initialer Datenbestand**: Testdatensätze wurden mit deterministischen Prüfsummen im Ledger erfasst.
+2. **Wiederherstellungspfad**: Die Wiederherstellung erfolgte über einen isolierten logischen Export- und Reimport-Prozess in ein separates Zielschema innerhalb der Datenbank.
+3. **Integritätsprüfung**: Alle wiederhergestellten Datensätze wurden mit dem Ausgangsbestand verglichen. Der Vergleich bestätigte vollständige Datenparität und strukturelle Identität ohne Datenverlust.
+4. **Bereinigung**: Nach erfolgreicher Verifikation wurden die temporären Wiederherstellungsstrukturen rückstandslos entfernt.
 
 ---
 
 ## Kostendisziplin & Budgettreue
 
-Eine zentrale Vorgabe des Projektinhabers (`DEC-OWNER-002`) war die Einhaltung eines monatlichen Budgets von maximal **15,00 €**:
+Eine zentrale Leitlinie des Projekts war der Nachweis, dass eine gehärtete, persistente und kryptografisch abgesicherte Backend-Architektur auch mit minimalen Betriebskosten realisierbar ist:
 
-| Ressource | Spezifikation | Monatliche Kosten (USD) | Monatliche Kosten (EUR) |
-|---|---|---|---|
-| **Datenbank** | Render Basic 1GB SSD (Frankfurt) | $7.00 | ~€6.50 |
-| **Compute** | Render Starter 0.5 CPU / 512 MB | $7.00 | ~€6.50 |
-| **Domain & TLS** | CNAME Ingress & GTS Zertifikat | $0.00 | €0.00 |
-| **Gesamtkosten** | | **$14.00 / Monat** | **~€13.00 / Monat** |
-
-Mit laufenden Gesamtkosten von ca. 13,00 € pro Monat wird die Budgetgrenze von 15,00 € zuverlässig eingehalten, ohne Abstriche bei Datenpersistenz oder Verfügbarkeit zu machen.
+- **Monatliche Budgetobergrenze**: Festgelegt auf maximal **15,00 € pro Monat**.
+- **Effektive Kosten**: Die Kombination aus persistentem Managed SSD-Datenbankspeicher und dediziertem Always-On Container-Compute beläuft sich auf ca. 13,00 € bis 14,00 € pro Monat.
+- **Wirtschaftlichkeit**: Das Projekt belegt, dass professionelle Standards (Datenpersistenz, strikte CA-TLS, Backups, Monitoring) ohne kostenintensive Enterprise-Verträge erreicht werden können.
 
 ---
 
 ## Testabdeckung & Automatisierte Verifikation
 
-Die Verlässlichkeit der BECC-Laufzeit wird durch eine umfassende, automatisierte Testsuite in `becc-runtime/` sichergestellt:
+Die Verlässlichkeit der BECC-Laufzeit wird durch eine umfassende, automatisierte Testsuite in der Testumgebung sichergestellt:
 
-- **Gesamtzahl Tests**: **320 automatisierte Tests** (31 Test-Suiten).
+- **Gesamtzahl Tests**: **Über 300 automatisierte Tests** (31 Test-Suiten).
 - **Test-Schwerpunkte**:
-  - Dienst-Lebenszyklus und HTTP-Endpunkte (`GET /`, `/health`, `/ready`, `/version`).
+  - Dienst-Lebenszyklus und Diagnose-Schnittstellen.
   - Standalone-PostgreSQL-Testbed mit Container-Isolation.
   - Rollentrennung, DDL-Restriktionen und Ledger-Integrität.
-  - Multi-Instanz-Zertifizierung und Fehlertoleranz (`BECC-NEXT-006C`).
-  - Strict-TLS-Handshake und Ablehnung unverschlüsselter Verbindungen.
-- **Ausführungsstatus**: 100% grün in der lokalen Testumgebung und der Linux-CI-Pipeline.
+  - Multi-Instanz-Zertifizierung und Fehlertoleranz.
+  - Strict-TLS-Handshake und Ablehnung unverschlüsselter oder unzertifizierter Verbindungen.
+- **Ausführungsstatus**: Vollständig erfolgreich in der lokalen Testumgebung und der Continuous-Integration-Pipeline.
 
 ---
 
 ## Was nachgewiesen wurde vs. Was explizit nicht beansprucht wird
 
-Zur Wahrung technischer Redlichkeit und Vermeidung von Marketing-Übertreibungen gilt folgende klare Abgrenzung:
+Zur Wahrung technischer Redlichkeit und Vermeidung irreführender Zusagen gilt folgende klare Abgrenzung:
 
-### Verifizierte Nachweise & Governance-Status
-- **Governance-Zertifizierung**: `BECC_CERTIFICATION_LEVEL: REMOTE_TEST_ENVIRONMENT_VALIDATED` und `BECC_PRODUCTION_ENVIRONMENT_CERTIFIED: YES`.
-- Echte Persistenz auf SSD-Speicher in Frankfurt am Main ohne Ablaufdatum (`GAP-PROD-001: CLOSED`).
-- Strikte CA-validierte TLS-Verbindung zur Datenbank ohne Sicherheitsabschwächung (`GAP-PROD-003: CLOSED`).
-- 7 Tage kontinuierliche WAL-Archivierung und erfolgreich durchgeführter PITR-Restore-Drill mit kryptografischer Datenparität (`GAP-PROD-002: CLOSED`).
-- Always-on Verfügbarkeit ohne Kaltstartverzögerung (`GAP-PROD-004: CLOSED`).
-- Dedizierte Subdomain `becc.bridgenta.de` mit Edge-TLS (`GAP-PROD-005: CLOSED`).
-- 320 bestandene automatisierte Tests und strikte Budgettreue ($14.00/Monat vs. 15,00 € Obergrenze).
+### Verifizierte Nachweise
+- Echte Persistenz auf SSD-Speicher in der Region Frankfurt am Main ohne Ablaufdatum.
+- Strikte CA-validierte TLS-Verschlüsselung zur Datenbank ohne Sicherheitsabschwächung (`rejectUnauthorized: true`).
+- Kontinuierliche Transaktionsarchivierung (7-Tage-PITR-Fähigkeit) und ein erfolgreich durchgeführter logischer Restore-Drill mit nachgewiesener Datenparität.
+- Dauerhafter Container-Betrieb zur Vermeidung von Kaltstartlatenzen.
+- Dedizierte Subdomain `becc.bridgenta.de` mit Edge-TLS 1.3.
+- Über 300 bestandene automatisierte Tests und strikte Einhaltung der monatlichen Budgetgrenze (< 15,00 €).
 
 ### Explizit nicht beansprucht
-- **Kein Multi-AZ-Hochverfügbarkeitscluster**: Die Datenbank läuft als robuste Einzelinstanz im Basic-Tarif ohne automatischen Hot-Standby-Failover.
-- **Keine formelle Konformitäts- oder DR-Zertifizierung**: Es handelt sich um ein strukturiertes Eigenprojekt; formelle Audits wie ISO 27001, SOC 2 oder NIS2 wurden nicht durchgeführt.
-- **Kein externer Penetrationstest**: Die Sicherheitsarchitektur basiert auf Prinzipien wie Least Privilege und Strict TLS, wurde jedoch keinem externen Red-Teaming unterzogen.
-- **Kein Zero-Downtime-Deployment**: Rollouts bedingen minimale providerseitige Umschaltintervalle während des Container-Neustarts.
+- **Kein Multi-AZ-Hochverfügbarkeitscluster**: Die Datenbank läuft als robuste Einzelinstanz im Managed-Einstiegstarif ohne automatisierten Multi-Rechenzentrum-Hot-Standby-Failover.
+- **Keine formelle Konformitäts- oder DR-Zertifizierung**: Es handelt sich um ein strukturiertes Eigenprojekt; formelle Zertifizierungen wie ISO 27001, SOC 2 oder NIS2 wurden nicht beantragt.
+- **Kein externer Penetrationstest**: Die Sicherheitsarchitektur basiert auf anerkannten Prinzipien (Least Privilege, Strict TLS), wurde jedoch keinem externen Red-Teaming unterzogen.
+- **Keine absolute Ausfallsicherheit / Kein Zero-Downtime-Versprechen**: Versions-Rollouts und Infrastrukturwartungen des Hosters bedingen minimale Neustartintervalle.
 
 ---
 
-## Evidenz- und Prüfreferenzen
+## Evidenz- und Prüfgrundlagen
 
-Die in dieser Fallstudie dargestellten Ergebnisse basieren auf dauerhaft im Repository archivierten Prüfdokumenten:
+Die in dieser Fallstudie dargestellten Architekturentscheidungen und Testergebnisse basieren auf versionierten, repository-gestützten Prüf- und Auditprotokollen:
 
-1. `BECC-NEXT-008A-ZERO-COST-PRODUCTION-READINESS-FOUNDATION-TECHNICAL-GAP-CLOSURE.md`: Identifikation der fünf Produktionslücken.
-2. `BECC-NEXT-008B-PROVIDER-EVALUATION-OWNER-BUDGET-AUTHORIZATION.md`: Provider-Evaluierung und Eigentümer-Budgetfreigabe.
-3. `BECC-NEXT-008C-OWNER-REAUTHORIZATION-TLS-ARCHITECTURE-RECONCILIATION.md`: Beschluss zur OPTION-3A TLS-Architektur.
-4. `BECC-NEXT-008C-RESUME-OPTION-3A-PRODUCTION-INFRASTRUCTURE-EVIDENCE.md`: Technischer Nachweis der externen Gateway-TLS.
-5. `BECC-NEXT-008D-PRODUCTION-GAP-CLOSURE-AND-CERTIFICATION.md`: Livedurchführung der Schließung von GAP-PROD-001 bis 005.
-6. `BECC-NEXT-008E-PRODUCTION-OPERATIONS-BASELINE-OPERATIONAL-READINESS-HANDOFF.md`: Finaler operativer Bereitschaftsübergang.
-7. `BECC-NEXT-008E-PRODUCTION-OPERATIONS-RUNBOOK.md`: Verbindliches Betriebshandbuch für den laufenden Betrieb.
+- **Architektur- und Anforderungsabgleiche**: Systematische Erfassung der operativen Härtungsanforderungen von flüchtigen Testsystemen hin zu persistenten Datenstrukturen.
+- **Evaluierung & Budgetkontrolle**: Dokumentierte Provider- und Architekturentscheidungen unter kontinuierlicher Einhaltung des Kostendeckels.
+- **Sicherheits- & TLS-Protokolle**: Verifizierte Nachweise zur Durchsetzung strikter Zertifikatsprüfung und Rollentrennung.
+- **Test- & Drill-Dokumentation**: Reproduzierbare Prüfberichte zu Datenparität, Wiederherstellbarkeit und automatisierter Testabdeckung.
