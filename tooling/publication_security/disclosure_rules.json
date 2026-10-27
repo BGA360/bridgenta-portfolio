@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "name": "BridGenta Portfolio Public Disclosure & Secret Detection Rules",
+  "description": "Ruleset for screening public portfolio project case studies, frontmatter, and rendered HTML artifacts.",
+  "secret_patterns": [
+    {
+      "id": "SEC-PAT-URI-CREDS",
+      "regex": "(?:postgres|postgresql|mysql|mongodb|redis|amqp|http|https):\\/\\/[a-zA-Z0-9_\\-\\.~%!$&'*+;=]+:[a-zA-Z0-9_\\-\\.~%!$&'*+;=]+@[a-zA-Z0-9_\\-\\.]+",
+      "flags": "i",
+      "category": "CREDENTIAL_EMBEDDED_URI",
+      "severity": "CRITICAL",
+      "description": "Connection URI with embedded credentials (username:password@host)"
+    },
+    {
+      "id": "SEC-PAT-PEM-KEY",
+      "regex": "-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----",
+      "flags": "",
+      "category": "PRIVATE_KEY",
+      "severity": "CRITICAL",
+      "description": "PEM private cryptographic key header"
+    },
+    {
+      "id": "SEC-PAT-AWS-KEY",
+      "regex": "\\bAKIA[0-9A-Z]{16}\\b",
+      "flags": "",
+      "category": "AWS_ACCESS_KEY",
+      "severity": "CRITICAL",
+      "description": "AWS access key identifier"
+    },
+    {
+      "id": "SEC-PAT-GITHUB-PAT",
+      "regex": "\\bgh[pousr]_[A-Za-z0-9_]{36,255}\\b",
+      "flags": "",
+      "category": "GITHUB_TOKEN",
+      "severity": "CRITICAL",
+      "description": "GitHub Personal Access or OAuth token"
+    },
+    {
+      "id": "SEC-PAT-SLACK-TOKEN",
+      "regex": "\\bxox[baprs]-[0-9]{10,13}-[0-9]{10,13}[a-zA-Z0-9-]*\\b",
+      "flags": "",
+      "category": "SLACK_TOKEN",
+      "severity": "CRITICAL",
+      "description": "Slack API authentication token"
+    },
+    {
+      "id": "SEC-PAT-GENERIC-SECRET",
+      "regex": "(?:api_key|apikey|client_secret|db_password|database_password)\\s*[:=]\\s*['\"][a-zA-Z0-9_\\-\\.\\@\\#\\$\\!\\%\\^\\&\\*]{12,}['\"]",
+      "flags": "i",
+      "category": "HARDCODED_SECRET_VARIABLE",
+      "severity": "CRITICAL",
+      "description": "Explicit assignment of hardcoded password or API key"
+    }
+  ],
+  "prohibited_claims": [
+    {
+      "id": "CLM-PAT-ABSOLUTE-SECURITY",
+      "regex": "(?:absoluter Schutz|100% sicher|garantiert virenfrei|lückenloser Schutz|zero vulnerability|unangreifbar)",
+      "flags": "i",
+      "category": "OVERSTATED_SECURITY_WARRANTY",
+      "severity": "HIGH",
+      "description": "Absolute security guarantee or absence-of-vulnerability claim"
+    },
+    {
+      "id": "CLM-PAT-ABSOLUTE-AVAILABILITY",
+      "regex": "(?:24/7 Always-On ohne Unterbrechung|100% uptime|vollkommen ausfallsicher|garantiert ausfallfrei)",
+      "flags": "i",
+      "category": "OVERSTATED_AVAILABILITY_WARRANTY",
+      "severity": "HIGH",
+      "description": "Absolute zero-downtime availability claim without SLA boundary"
+    },
+    {
+      "id": "CLM-PAT-UNSUPPORTED-CRYPTO",
+      "regex": "(?:kryptografisch nachvollziehbar|kryptografisch abgesicherte|unveränderlich protokolliert)",
+      "flags": "i",
+      "category": "UNSUPPORTED_CRYPTOGRAPHIC_CLAIM",
+      "severity": "HIGH",
+      "description": "Unverified cryptographic ledger or immutability claim"
+    },
+    {
+      "id": "CLM-PAT-SQLI-PREVENTION",
+      "regex": "schützt vor anwendungsseitigen Fehlern und Injection-Angriffen",
+      "flags": "i",
+      "category": "INCORRECT_SECURITY_BOUNDARY",
+      "severity": "HIGH",
+      "description": "Incorrect claim that database permissions prevent SQL injection rather than limit impact"
+    }
+  ],
+  "operational_denylist": [
+    {
+      "id": "OPS-PAT-CLOUD-INTERNAL-FQDN",
+      "regex": "\\b[a-z0-9-]+\\.(?:onrender\\.com|frankfurt-postgres\\.render\\.com|internal)\\b",
+      "flags": "i",
+      "category": "INTERNAL_CLOUD_FQDN",
+      "severity": "HIGH",
+      "description": "Cloud provider default internal CNAME or database gateway FQDN"
+    },
+    {
+      "id": "OPS-PAT-INTERNAL-DB-ADMIN",
+      "regex": "\\b(?:render_admin|postgres_admin)\\b",
+      "flags": "",
+      "category": "INTERNAL_DATABASE_ADMIN_ROLE",
+      "severity": "HIGH",
+      "description": "Internal database superuser or platform administrator role name"
+    },
+    {
+      "id": "OPS-PAT-INTERNAL-DB-ROLE",
+      "regex": "\\bbecc_app\\b",
+      "flags": "",
+      "category": "INTERNAL_APPLICATION_ROLE",
+      "severity": "HIGH",
+      "description": "Internal database application role name"
+    },
+    {
+      "id": "OPS-PAT-INTERNAL-DB-TABLE",
+      "regex": "\\b(?:becc\\.becc_audit_records|becc_audit_records)\\b",
+      "flags": "",
+      "category": "INTERNAL_TABLE_SCHEMA",
+      "severity": "HIGH",
+      "description": "Internal database table or schema identifier"
+    },
+    {
+      "id": "OPS-PAT-INTERNAL-SERVICE-NAME",
+      "regex": "\\b(?:becc-test-runtime|becc-test-postgres)\\b",
+      "flags": "",
+      "category": "INTERNAL_SERVICE_NAME",
+      "severity": "HIGH",
+      "description": "Internal testbed service or container instance name"
+    },
+    {
+      "id": "OPS-PAT-INTERNAL-TICKET-ID",
+      "regex": "\\b(?:GAP-PROD-[0-9]+|DEC-OWNER-[0-9]+|BECC-NEXT-008|BECC_CERTIFICATION_LEVEL|BECC_PRODUCTION_ENVIRONMENT_CERTIFIED)\\b",
+      "flags": "",
+      "category": "INTERNAL_GOVERNANCE_TICKET",
+      "severity": "MEDIUM",
+      "description": "Internal engineering ticket, decision code, or enum identifier"
+    },
+    {
+      "id": "OPS-PAT-TEST-HASH",
+      "regex": "\\b1910418b6a6dba83f15be12ab40670b773231ffa67774566512c0ff329517524\\b",
+      "flags": "",
+      "category": "RAW_TEST_DRILL_HASH",
+      "severity": "MEDIUM",
+      "description": "Internal test drill SHA-256 hash"
+    },
+    {
+      "id": "OPS-PAT-STORAGE-PLAN",
+      "regex": "\\bbasic_1gb\\b",
+      "flags": "",
+      "category": "INTERNAL_STORAGE_PLAN_ID",
+      "severity": "LOW",
+      "description": "Internal cloud provider storage plan identifier"
+    },
+    {
+      "id": "OPS-PAT-LOCAL-PATH",
+      "regex": "(?:\\b[a-z]:[\\\\/](?:users|antigravity|tmp|home|var|usr)\\b|(?<![a-z0-9_\\-\\./])\\/(?:usr|home|tmp|var|root)\\/[a-z0-9_\\-]+)",
+      "flags": "i",
+      "category": "LOCAL_PATH_LEAKAGE",
+      "severity": "HIGH",
+      "description": "Internal absolute filesystem path leakage"
+    }
+  ],
+  "allowlist_rationale": {
+    "technologies": "Standard technology names such as Node.js, TypeScript, Astro, PostgreSQL 16.8, Docker, and Render (platform name) are permissible.",
+    "regions": "General geographical cloud region designations such as Frankfurt am Main or EU-Region Frankfurt are permissible.",
+    "security_principles": "Documented engineering security principles such as Least Privilege, rejectUnauthorized: true, TLS, Append-Only, and PITR are permissible."
+  }
+}
