@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { validateProjectDisclosure } from './validate_project_disclosure.js';
 
 const workspaceRoot = process.cwd();
 const registryPath = path.join(workspaceRoot, 'src', 'data', 'project_registry.json');
@@ -125,6 +126,18 @@ if (JSON.stringify(actualPublicSlugs) !== JSON.stringify(expectedSorted)) {
 console.log(`Registered projects count: ${registry.length}`);
 console.log(`Public case-study projects: ${publicProjects.length} (${publicProjects.map(p => p.slug).join(', ')})`);
 console.log(`Draft/unlisted projects:   ${registry.length - publicProjects.length} (${registry.filter(p => p.visibility !== 'PUBLIC').map(p => p.slug).join(', ')})`);
+
+// Run universal disclosure boundary and secret detection scan
+try {
+  const disclosureResult = validateProjectDisclosure({ workspaceRoot, scanBuildOutput: false });
+  if (!disclosureResult.pass) {
+    for (const f of disclosureResult.findings) {
+      errors.push(`[Disclosure Gate ${f.severity}] [${f.ruleId}] ${f.file}:${f.line}:${f.column} - ${f.description} (Matched: ${f.matchedText})`);
+    }
+  }
+} catch (discErr) {
+  errors.push(`Disclosure Gate Fatal Failure: ${discErr.message}`);
+}
 
 if (errors.length > 0) {
   console.error('\nVALIDATION FAILURES:');

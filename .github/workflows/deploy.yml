@@ -50,11 +50,17 @@ jobs:
       - name: 📁 Validate Project Registry
         run: npm run projects:validate
 
+      - name: 🛡️ Scan Project Public Disclosures & Secrets
+        run: npm run projects:security-scan
+
       - name: 🧪 Run Project Registry Tests
         run: npm run test:projects
 
       - name: 🚀 Build Website
         run: npm run build
+
+      - name: 🛡️ Verify Rendered Output Disclosures
+        run: npm run projects:security-scan
 
       - name: 🕵️ Audit HTML Links
         run: node tooling/audit_links.cjs
