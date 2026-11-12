@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { validateObservationReport } from "./prag_provenance_m5_readiness.js";
 
@@ -52,9 +53,10 @@ export function serializeEnvelope(envelope) {
  * Validates and persists a shadow observation working report into the durable history directory.
  * @param {string} workspaceRoot 
  * @param {string|null} [customReportPath] 
+ * @param {{ historyRoot?: string|null, allowExecutionMetadataDiff?: boolean }} [options]
  * @returns {{ status: "PERSISTED"|"IDEMPOTENT_NOOP", hash: string }}
  */
-export function runRetention(workspaceRoot, customReportPath = null) {
+export function runRetention(workspaceRoot, customReportPath = null, options = {}) {
   const reportPath = customReportPath || path.join(workspaceRoot, "stewardship", "reports", "m5-ci-shadow-observation.json");
   if (!fs.existsSync(reportPath)) {
     throw new Error(`Working report not found at: ${reportPath}`);
@@ -76,7 +78,8 @@ export function runRetention(workspaceRoot, customReportPath = null) {
     throw new Error("Missing required identity fields.");
   }
 
-  const historyDir = path.join(workspaceRoot, "stewardship", "reports", "history", "m5-shadow", obs.repositoryCommit);
+  const targetRoot = options.historyRoot || workspaceRoot;
+  const historyDir = path.join(targetRoot, "stewardship", "reports", "history", "m5-shadow", obs.repositoryCommit);
   const destPath = path.join(historyDir, `${obsHash}.json`);
 
   if (!fs.existsSync(historyDir)) {
@@ -111,14 +114,89 @@ export function runRetention(workspaceRoot, customReportPath = null) {
     // Check if semantically identical canonical envelope
     if (existingSerialized === incomingSerialized) {
       return { status: "IDEMPOTENT_NOOP", hash: obsHash };
-    } else {
-      throw new Error("HISTORICAL_EVIDENCE_CORRUPTION: Content mismatch between existing envelope and incoming envelope.");
     }
+
+    if (options.allowExecutionMetadataDiff) {
+      const existingObsOnly = JSON.stringify(
+        buildCanonicalEnvelope(valExisting.observation, valExisting.hash, null).observation
+      );
+      const incomingObsOnly = JSON.stringify(
+        buildCanonicalEnvelope(obs, obsHash, null).observation
+      );
+      if (valExisting.hash === obsHash && existingObsOnly === incomingObsOnly) {
+        return { status: "IDEMPOTENT_NOOP", hash: obsHash };
+      }
+    }
+
+    throw new Error("HISTORICAL_EVIDENCE_CORRUPTION: Content mismatch between existing envelope and incoming envelope.");
   }
 
   // Write new record deterministically
   fs.writeFileSync(destPath, incomingSerialized, "utf-8");
   return { status: "PERSISTED", hash: obsHash };
+}
+
+/**
+ * Verifies that HEAD in historyRoot is a strict append-only fast-forward of baseRef:
+ * - No commits missing from baseRef (fast-forward only)
+ * - No dirty/untracked files
+ * - Only newly added ('A') files under stewardship/reports/history/m5-shadow/<commit>/<hash>.json
+ * - Zero modifications, deletions, renames, or out-of-scope changes
+ * @param {string} historyRoot
+ * @param {string} [baseRef]
+ * @returns {{ verified: true, addedFiles: string[] }}
+ */
+export function verifyAppendOnlyHistoryDiff(historyRoot, baseRef = "origin/m5-history") {
+  const runGit = (args) => execFileSync("git", args, {
+    cwd: historyRoot,
+    encoding: "utf-8",
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+
+  const behindCount = Number.parseInt(runGit(["rev-list", "--count", `HEAD..${baseRef}`]).trim(), 10);
+  if (!Number.isFinite(behindCount) || behindCount !== 0) {
+    throw new Error(`HISTORICAL_INTEGRITY_VIOLATION: HEAD is not a fast-forward descendant of ${baseRef} (behind by ${behindCount}).`);
+  }
+
+  const porcelain = runGit(["status", "--porcelain"]).trim();
+  if (porcelain.length > 0) {
+    throw new Error(`HISTORICAL_INTEGRITY_VIOLATION: Uncommitted changes present in history workspace.`);
+  }
+
+  const diffOut = runGit(["diff", "--name-status", "--no-renames", `${baseRef}..HEAD`]).trim();
+  if (!diffOut) {
+    return { verified: true, addedFiles: [] };
+  }
+
+  const addedFiles = [];
+  const lines = diffOut.split(/\r?\n/);
+  for (const line of lines) {
+    const parts = line.split("\t");
+    const status = parts[0];
+    const relPath = parts[1];
+    if (status !== "A" || parts.length !== 2) {
+      throw new Error(`HISTORICAL_INTEGRITY_VIOLATION: Non-append-only git change detected (${line}).`);
+    }
+
+    const match = /^stewardship\/reports\/history\/m5-shadow\/([^/]+)\/([^/]+)\.json$/.exec(relPath);
+    if (!match) {
+      throw new Error(`HISTORICAL_INTEGRITY_VIOLATION: Added file outside m5-shadow history layout (${relPath}).`);
+    }
+
+    const [, dirCommit, fileHash] = match;
+    const absPath = path.join(historyRoot, relPath);
+    const parsed = JSON.parse(fs.readFileSync(absPath, "utf-8"));
+    const valRes = validateObservationReport(parsed);
+    if (!valRes.valid) {
+      throw new Error(`HISTORICAL_INTEGRITY_VIOLATION: Added file failed validation (${relPath}: ${valRes.reason}).`);
+    }
+    if (valRes.observation.repositoryCommit !== dirCommit || valRes.hash !== fileHash) {
+      throw new Error(`HISTORICAL_INTEGRITY_VIOLATION: Added file path does not match commit/hash (${relPath}).`);
+    }
+    addedFiles.push(relPath);
+  }
+
+  return { verified: true, addedFiles };
 }
 
 // CLI Entrypoint helper
@@ -129,10 +207,54 @@ function fileURLToPathLocal(url) {
   return url;
 }
 
+function parseCliArgs(argv) {
+  let historyRoot = null;
+  let reportPath = null;
+  let allowExecutionMetadataDiff = false;
+  let verifyAppendOnly = false;
+  let baseRef = "origin/m5-history";
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === "--ci-rerun-idempotent") {
+      allowExecutionMetadataDiff = true;
+    } else if (arg === "--verify-append-only") {
+      verifyAppendOnly = true;
+    } else if (arg === "--base-ref" && i + 1 < argv.length) {
+      baseRef = argv[++i];
+    } else if (arg === "--history-root" && i + 1 < argv.length) {
+      historyRoot = path.resolve(argv[++i]);
+    } else if (arg === "--report" && i + 1 < argv.length) {
+      reportPath = path.resolve(argv[++i]);
+    }
+  }
+
+  return { historyRoot, reportPath, allowExecutionMetadataDiff, verifyAppendOnly, baseRef };
+}
+
 function main() {
   try {
     const workspaceRoot = process.cwd();
-    const result = runRetention(workspaceRoot);
+    const {
+      historyRoot,
+      reportPath,
+      allowExecutionMetadataDiff,
+      verifyAppendOnly,
+      baseRef
+    } = parseCliArgs(process.argv.slice(2));
+
+    if (verifyAppendOnly) {
+      const targetRoot = historyRoot || workspaceRoot;
+      const check = verifyAppendOnlyHistoryDiff(targetRoot, baseRef);
+      console.log(`Append-only history diff verified (${check.addedFiles.length} added record(s)).`);
+      process.exitCode = 0;
+      return;
+    }
+
+    const result = runRetention(workspaceRoot, reportPath, {
+      historyRoot,
+      allowExecutionMetadataDiff
+    });
     if (result.status === "IDEMPOTENT_NOOP") {
       console.log(`IDEMPOTENT_NOOP: Observation ${result.hash} already preserved.`);
     } else {
