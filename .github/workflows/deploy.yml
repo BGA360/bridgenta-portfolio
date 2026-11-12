@@ -421,12 +421,17 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "chore: retain M5 shadow observation [skip ci]"
             for attempt in 1 2 3; do
+              node "$GITHUB_WORKSPACE/tooling/prag_provenance_m5_retain.js" --verify-append-only --history-root . --base-ref origin/m5-history
               if git push origin HEAD:m5-history; then
                 exit 0
               fi
-              echo "Push attempt $attempt failed; rebasing onto origin/m5-history..."
+              echo "Push attempt $attempt failed; fetching and rebasing onto origin/m5-history..."
               git fetch origin m5-history
-              git rebase origin/m5-history
+              if ! git rebase origin/m5-history; then
+                git rebase --abort || true
+                echo "Rebase onto origin/m5-history failed."
+                exit 1
+              fi
             done
             echo "Failed to push retained observation to m5-history after 3 attempts."
             exit 1

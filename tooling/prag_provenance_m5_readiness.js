@@ -381,6 +381,19 @@ function getJsonFilesRecursive(dir) {
   return results;
 }
 
+function validateShadowHistoryRelPath(relFromM5Shadow, observation, hash) {
+  const normalized = relFromM5Shadow.replace(/\\/g, "/");
+  const segments = normalized.split("/");
+  if (segments.length !== 2) {
+    return false;
+  }
+  const [dirCommit, fileName] = segments;
+  if (!dirCommit || !fileName.endsWith(".json")) {
+    return false;
+  }
+  return dirCommit === observation.repositoryCommit && fileName === `${hash}.json`;
+}
+
 function ingestLocalReports(reportsDir) {
   const recordsByHash = new Map();
   const hashMismatchFiles = [];
@@ -446,11 +459,11 @@ function ingestLocalReports(reportsDir) {
     const histFiles = getJsonFilesRecursive(m5ShadowHistoryDir);
     for (const filePath of histFiles) {
       const content = fs.readFileSync(filePath, "utf-8");
-      const relativeName = path.relative(m5ShadowHistoryDir, filePath);
+      const relativeName = path.relative(m5ShadowHistoryDir, filePath).replace(/\\/g, "/");
       try {
         const report = JSON.parse(content);
         const valRes = validateObservationReport(report);
-        if (valRes.valid) {
+        if (valRes.valid && validateShadowHistoryRelPath(relativeName, valRes.observation, valRes.hash)) {
           addRecord(valRes.observation, valRes.hash, relativeName);
         } else {
           hashMismatchFiles.push(relativeName);
@@ -528,11 +541,15 @@ export function resolveHistoryRecords(workspaceRoot, options = {}) {
   const remoteFiles = lsTreeOut ? lsTreeOut.split(/\r?\n/).filter(f => f.endsWith(".json")) : [];
 
   for (const relPath of remoteFiles) {
+    const normalizedRel = relPath.replace(/\\/g, "/");
+    const relFromM5Shadow = normalizedRel.startsWith(`${treePrefix}/`)
+      ? normalizedRel.slice(treePrefix.length + 1)
+      : normalizedRel;
     const content = runGit(["show", `${trackingRef}:${relPath}`]);
     try {
       const report = JSON.parse(content);
       const valRes = validateObservationReport(report);
-      if (valRes.valid) {
+      if (valRes.valid && validateShadowHistoryRelPath(relFromM5Shadow, valRes.observation, valRes.hash)) {
         const existing = recordsByHash.get(valRes.hash);
         if (existing) {
           if (JSON.stringify(existing) !== JSON.stringify(valRes.observation)) {
@@ -555,6 +572,30 @@ export function resolveHistoryRecords(workspaceRoot, options = {}) {
     hashMismatchFiles,
     warnings
   };
+}
+
+export function finalizeAssessmentForHistoryMode(assessment, mode, historyWarnings = [], hashMismatchFiles = []) {
+  if (historyWarnings.length > 0) {
+    assessment.warnings.push(...historyWarnings);
+    assessment.warnings = Array.from(new Set(assessment.warnings)).sort();
+  }
+
+  if (mode === "OFFLINE_LOCAL") {
+    assessment.blockingReasons.push("OFFLINE_LOCAL_NON_AUTHORITATIVE");
+    assessment.blockingReasons = Array.from(new Set(assessment.blockingReasons)).sort();
+    assessment.assessmentState = "ENFORCEMENT_NOT_READY";
+  }
+
+  if (hashMismatchFiles.length > 0) {
+    assessment.blockingReasons.push("HISTORICAL_EVIDENCE_CORRUPTION");
+    assessment.blockingReasons = Array.from(new Set(assessment.blockingReasons)).sort();
+    assessment.warnings.push("EVIDENCE_CORRUPTION_DETECTED");
+    assessment.warnings = Array.from(new Set(assessment.warnings)).sort();
+    assessment.assessmentState = "ENFORCEMENT_NOT_READY";
+  }
+
+  assessment.assessmentHash = computeReadinessAssessmentHash(assessment);
+  return assessment;
 }
 
 function main() {
@@ -592,21 +633,7 @@ function main() {
     };
 
     const assessment = evaluateEnforcementReadiness(ingestedReports, candidateInfo, workspaceRoot, initialPolicy);
-
-    if (historyWarnings.length > 0) {
-      assessment.warnings.push(...historyWarnings);
-      assessment.warnings = Array.from(new Set(assessment.warnings)).sort();
-    }
-
-    if (hashMismatchFiles.length > 0) {
-      assessment.blockingReasons.push("HISTORICAL_EVIDENCE_CORRUPTION");
-      assessment.blockingReasons.sort();
-      assessment.warnings.push("EVIDENCE_CORRUPTION_DETECTED");
-      assessment.warnings = Array.from(new Set(assessment.warnings)).sort();
-      assessment.assessmentState = "ENFORCEMENT_NOT_READY";
-    }
-
-    assessment.assessmentHash = computeReadinessAssessmentHash(assessment);
+    finalizeAssessmentForHistoryMode(assessment, mode, historyWarnings, hashMismatchFiles);
 
     const reportPath = path.join(reportsDir, "m5-enforcement-readiness.json");
     if (!fs.existsSync(reportsDir)) {
@@ -618,7 +645,7 @@ function main() {
     console.log("=========================================");
     console.log("   M5 ENFORCEMENT READINESS ASSESSMENT   ");
     console.log("=========================================");
-    console.log(`History Mode:           ${mode}`);
+    console.log(`History Mode:           ${mode === "OFFLINE_LOCAL" ? "OFFLINE_LOCAL (NON-AUTHORITATIVE)" : mode}`);
     console.log(`Candidate Policy:       ${candidateInfo.policyVersion}`);
     console.log(`Candidate Evaluator:    ${candidateInfo.evaluatorVersion}`);
     console.log(`Candidate Identity:     ${candidateInfo.implementationIdentity}`);
