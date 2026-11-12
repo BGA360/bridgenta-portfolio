@@ -416,26 +416,91 @@ Automatisierte PITR-Backups schützen vor Datenverlust.
     assert.ok(scanContent(crossSentenceClaim, 'src/pages/marketing.astro', rules).some(f => f.ruleId === 'CLM-PAT-ABSOLUTE-SECURITY'));
   });
 
-  it('20. Prebuilt admin vendor assets are explicitly excluded in coverage rather than silently ignored', () => {
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pubsec-vendor-coverage-'));
+  it('20. Admin JS vendor bundles are scanned (leaks fail, legitimate minified JS passes)', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pubsec-admin-bundle-'));
     try {
       createSyntheticWorkspace(tmp);
       fs.mkdirSync(path.join(tmp, 'public', 'admin', 'assets'), { recursive: true });
-      fs.writeFileSync(path.join(tmp, 'public', 'admin', 'assets', 'index-demo.js'), 'const x = "C:\\\\Users\\\\dev\\\\build";', 'utf8');
-      const srcRes = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'source' });
-      assert.equal(srcRes.pass, true);
-      assert.equal(srcRes.coverage.vendorAssetsExcluded, 1);
-      assert.deepEqual(srcRes.coverage.vendorAssetsExcludedPaths, ['public/admin/assets']);
+      fs.writeFileSync(
+        path.join(tmp, 'public', 'admin', 'assets', 'vendor-clean.js'),
+        'function DateHelper(){this.internal=new Date;return e.internal.toISOString();}\nconst grammar={begin:"^#!/usr/bin/env"};',
+        'utf8'
+      );
+      const cleanSrc = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'source' });
+      assert.equal(cleanSrc.pass, true);
 
+      fs.writeFileSync(
+        path.join(tmp, 'public', 'admin', 'assets', 'vendor-leak.js'),
+        'const cfg={fileName:"C:/Users/dev/secret/config.ts",token:"AKIA' + '1111222233334444"};',
+        'utf8'
+      );
+      const leakSrc = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'source' });
+      assert.equal(leakSrc.pass, false);
+      assert.ok(leakSrc.findings.some(f => f.file === 'public/admin/assets/vendor-leak.js' && f.category === 'AWS_ACCESS_KEY'));
+
+      fs.rmSync(path.join(tmp, 'public', 'admin', 'assets', 'vendor-leak.js'));
       populateSyntheticDist(tmp);
       fs.mkdirSync(path.join(tmp, 'dist', 'admin', 'assets'), { recursive: true });
-      fs.writeFileSync(path.join(tmp, 'dist', 'admin', 'assets', 'index-demo.js'), 'const x = "C:\\\\Users\\\\dev\\\\build";', 'utf8');
-      const distRes = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'rendered' });
-      assert.equal(distRes.pass, true);
-      assert.equal(distRes.coverage.vendorAssetsExcluded, 1);
-      assert.deepEqual(distRes.coverage.vendorAssetsExcludedPaths, ['dist/admin/assets']);
+      fs.writeFileSync(
+        path.join(tmp, 'dist', 'admin', 'assets', 'bundle-leak.js'),
+        'const db="postgres://admin:Pass123!@bad-host.onrender.com:5432/app";',
+        'utf8'
+      );
+      const leakDist = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'rendered' });
+      assert.equal(leakDist.pass, false);
+      assert.ok(leakDist.findings.some(f => f.file === 'dist/admin/assets/bundle-leak.js'));
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
+  });
+
+  it('21. Unknown text extensions are screened and reported in coverage', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pubsec-unknown-text-'));
+    try {
+      createSyntheticWorkspace(tmp);
+      populateSyntheticDist(tmp);
+      fs.writeFileSync(path.join(tmp, 'dist', 'CNAME'), 'bridgenta.de\n', 'utf8');
+      const cleanRes = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'rendered' });
+      assert.equal(cleanRes.pass, true);
+      assert.equal(cleanRes.coverage.unknownTextFilesScanned, 1);
+
+      fs.writeFileSync(path.join(tmp, 'dist', 'runtime.conf'), 'role=postgres_admin\n', 'utf8');
+      const leakRes = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'rendered' });
+      assert.equal(leakRes.pass, false);
+      assert.ok(leakRes.findings.some(f => f.file === 'dist/runtime.conf' && f.category === 'INTERNAL_DATABASE_ADMIN_ROLE'));
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it('22. Ambiguous binary files and disguised text in binary extensions fail closed without trusting extension', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pubsec-ambiguous-bin-'));
+    try {
+      createSyntheticWorkspace(tmp);
+      populateSyntheticDist(tmp);
+      // Disguised text file with .png extension
+      fs.writeFileSync(path.join(tmp, 'dist', 'fake.png'), 'AKIA' + '9999888877776666', 'utf8');
+      const disguisedRes = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'rendered' });
+      assert.equal(disguisedRes.pass, false);
+      assert.ok(disguisedRes.findings.some(f => f.file === 'dist/fake.png' && f.category === 'AWS_ACCESS_KEY'));
+
+      fs.rmSync(path.join(tmp, 'dist', 'fake.png'));
+      // Ambiguous binary bytes with no verified image/font/pdf magic
+      fs.writeFileSync(path.join(tmp, 'dist', 'mystery.bin'), Buffer.from([0xff, 0xfe, 0x00, 0x01, 0x80, 0x81]));
+      const ambigRes = validateProjectDisclosure({ workspaceRoot: tmp, mode: 'rendered' });
+      assert.equal(ambigRes.pass, false);
+      assert.ok(ambigRes.findings.some(f => f.file === 'dist/mystery.bin' && f.ruleId === 'PUBSEC-ERR-AMBIGUOUS-FILE'));
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it('23. Reaching MAX_MATCHES_PER_RULE produces an explicit blocking CRITICAL finding without hanging', () => {
+    const repeatedMatches = 'becc_app '.repeat(1005);
+    const start = Date.now();
+    const findings = scanContent(repeatedMatches, 'dist/repeated.txt', rules);
+    const elapsed = Date.now() - start;
+    assert.ok(elapsed < 2000, `Expected bounded scan under 2000ms, took ${elapsed}ms`);
+    assert.ok(findings.some(f => f.ruleId === 'PUBSEC-ERR-MATCH-LIMIT-EXHAUSTED' && f.severity === 'CRITICAL'));
   });
 });

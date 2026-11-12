@@ -90,7 +90,7 @@
   "operational_denylist": [
     {
       "id": "OPS-PAT-CLOUD-INTERNAL-FQDN",
-      "regex": "\\b[a-z0-9-]+\\.(?:onrender\\.com|frankfurt-postgres\\.render\\.com|internal)\\b",
+      "regex": "(?!this\\.)\\b[a-z0-9][a-z0-9-]+\\.(?:onrender\\.com|frankfurt-postgres\\.render\\.com|internal(?![\\s]*[=(\\[,]))\\b",
       "flags": "i",
       "category": "INTERNAL_CLOUD_FQDN",
       "severity": "HIGH",
@@ -154,7 +154,7 @@
     },
     {
       "id": "OPS-PAT-LOCAL-PATH",
-      "regex": "(?:\\b[a-z]:[\\\\/](?:users|antigravity|tmp|home|var|usr)\\b|(?<![a-z0-9_\\-\\./])\\/(?:usr|home|tmp|var|root)\\/[a-z0-9_\\-]+)",
+      "regex": "(?:\\b[a-z]:[\\\\/](?:users|antigravity|tmp|home|var|usr)\\b|(?<![a-z0-9_\\-\\./!])\\/(?:usr|home|tmp|var|root)\\/[a-z0-9_\\-]+)",
       "flags": "i",
       "category": "LOCAL_PATH_LEAKAGE",
       "severity": "HIGH",

@@ -191,12 +191,13 @@ function runRegexBounded(regex, text, onMatch) {
       regex.lastIndex += 1;
       continue;
     }
+    if (count >= MAX_MATCHES_PER_RULE) {
+      return { exhausted: true, matchCount: count };
+    }
     onMatch(match);
     count += 1;
-    if (count >= MAX_MATCHES_PER_RULE) {
-      break;
-    }
   }
+  return { exhausted: false, matchCount: count };
 }
 
 /**
@@ -243,7 +244,7 @@ export function scanContent(content, sourceIdentifier, rules) {
             const rawFlags = rule.flags || '';
             const flags = rawFlags.includes('g') ? rawFlags : `${rawFlags}g`;
             const regex = new RegExp(rule.regex, flags);
-            runRegexBounded(regex, line, (match) => {
+            const runResult = runRegexBounded(regex, line, (match) => {
               if (rule.id === 'CLM-PAT-ABSOLUTE-SECURITY' && isNegatedSecurityDisclaimer(line, match.index, match[0].length)) {
                 return;
               }
@@ -262,6 +263,23 @@ export function scanContent(content, sourceIdentifier, rules) {
                 matchedText: redactMatch(match[0], rule.category)
               });
             });
+            if (runResult.exhausted) {
+              const limitKey = `PUBSEC-ERR-MATCH-LIMIT-EXHAUSTED|${rule.id}|${lineNumber}`;
+              if (!seenKeys.has(limitKey)) {
+                seenKeys.add(limitKey);
+                findings.push({
+                  ruleId: 'PUBSEC-ERR-MATCH-LIMIT-EXHAUSTED',
+                  group: 'SCANNER_LIMITS',
+                  category: 'SCAN_INCOMPLETE_MATCH_LIMIT',
+                  severity: 'CRITICAL',
+                  description: `Regex match limit (${MAX_MATCHES_PER_RULE}) exhausted for rule ${rule.id}; scan incomplete`,
+                  file: sourceIdentifier,
+                  line: lineNumber,
+                  column: 1,
+                  matchedText: redactMatch(rule.id, 'SCAN_INCOMPLETE_MATCH_LIMIT')
+                });
+              }
+            }
           }
         }
       }
@@ -271,7 +289,7 @@ export function scanContent(content, sourceIdentifier, rules) {
           const rawFlags = rule.flags || '';
           const flags = rawFlags.includes('g') ? rawFlags : `${rawFlags}g`;
           const regex = new RegExp(rule.regex, flags);
-          runRegexBounded(regex, variant.text, (match) => {
+          const runResult = runRegexBounded(regex, variant.text, (match) => {
             if (rule.id === 'CLM-PAT-ABSOLUTE-SECURITY' && isNegatedSecurityDisclaimer(variant.text, match.index, match[0].length)) {
               return;
             }
@@ -292,12 +310,105 @@ export function scanContent(content, sourceIdentifier, rules) {
               matchedText: redactMatch(match[0], rule.category)
             });
           });
+          if (runResult.exhausted) {
+            const limitKey = `PUBSEC-ERR-MATCH-LIMIT-EXHAUSTED|${rule.id}|multiline`;
+            if (!seenKeys.has(limitKey)) {
+              seenKeys.add(limitKey);
+              findings.push({
+                ruleId: 'PUBSEC-ERR-MATCH-LIMIT-EXHAUSTED',
+                group: 'SCANNER_LIMITS',
+                category: 'SCAN_INCOMPLETE_MATCH_LIMIT',
+                severity: 'CRITICAL',
+                description: `Regex match limit (${MAX_MATCHES_PER_RULE}) exhausted for rule ${rule.id}; scan incomplete`,
+                file: sourceIdentifier,
+                line: 1,
+                column: 1,
+                matchedText: redactMatch(rule.id, 'SCAN_INCOMPLETE_MATCH_LIMIT')
+              });
+            }
+          }
         }
       }
     }
   }
 
   return findings;
+}
+
+function hasVerifiedBinaryMagic(buf) {
+  if (buf.length < 4) return false;
+  // PNG
+  if (buf.length >= 8 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47 &&
+      buf[4] === 0x0d && buf[5] === 0x0a && buf[6] === 0x1a && buf[7] === 0x0a) return true;
+  // JPEG
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return true;
+  // GIF
+  if (buf.length >= 6 && (buf.subarray(0, 6).toString('ascii') === 'GIF87a' || buf.subarray(0, 6).toString('ascii') === 'GIF89a')) return true;
+  // WebP (RIFF....WEBP)
+  if (buf.length >= 12 && buf.subarray(0, 4).toString('ascii') === 'RIFF' && buf.subarray(8, 12).toString('ascii') === 'WEBP') return true;
+  // WOFF / WOFF2
+  const sig4 = buf.subarray(0, 4).toString('ascii');
+  if (sig4 === 'wOFF' || sig4 === 'wOF2' || sig4 === 'OTTO' || sig4 === '%PDF') return true;
+  // ICO / TTF
+  if (buf[0] === 0x00 && buf[1] === 0x00 && buf[2] === 0x01 && buf[3] === 0x00) return true;
+  if (buf[0] === 0x00 && buf[1] === 0x01 && buf[2] === 0x00 && buf[3] === 0x00) return true;
+  // AVIF (ISO BMFF ftypavif / ftypavis)
+  if (buf.length >= 12 && buf.subarray(4, 8).toString('ascii') === 'ftyp') {
+    const brand = buf.subarray(8, 12).toString('ascii');
+    if (brand === 'avif' || brand === 'avis') return true;
+  }
+  return false;
+}
+
+function inspectAndClassifyFile(absPath, workspaceRoot) {
+  const safeRel = sanitizePathForLog(absPath, workspaceRoot);
+  const stat = fs.lstatSync(absPath);
+  if (stat.isSymbolicLink()) {
+    throw new Error(`PUBSEC-ERR-SYMLINK: Symbolic link prohibited in scanned path (${safeRel})`);
+  }
+  const canonicalRoot = fs.realpathSync(workspaceRoot);
+  const canonicalTarget = fs.realpathSync(absPath);
+  const rel = path.relative(canonicalRoot, canonicalTarget);
+  if (rel.startsWith('..') || path.isAbsolute(rel)) {
+    throw new Error(`PUBSEC-ERR-PATH-ESCAPE: Path resolves outside workspace root (${safeRel})`);
+  }
+  if (stat.size > MAX_FILE_BYTES) {
+    throw new Error(`PUBSEC-ERR-FILE-TOO-LARGE: File exceeds ${MAX_FILE_BYTES} bytes (${safeRel})`);
+  }
+
+  let buf;
+  try {
+    buf = fs.readFileSync(canonicalTarget);
+  } catch (err) {
+    return { kind: 'unreadable', safeRel, reason: err.code || 'READ_ERROR' };
+  }
+
+  if (buf.length === 0) {
+    return { kind: 'text', safeRel, content: '' };
+  }
+
+  if (hasVerifiedBinaryMagic(buf)) {
+    return { kind: 'binary', safeRel };
+  }
+
+  if (buf.includes(0x00)) {
+    return { kind: 'ambiguous', safeRel, reason: 'NUL_BYTES_WITHOUT_VERIFIED_BINARY_MAGIC' };
+  }
+
+  let decoded;
+  try {
+    decoded = new TextDecoder('utf-8', { fatal: true }).decode(buf);
+  } catch {
+    return { kind: 'ambiguous', safeRel, reason: 'INVALID_UTF8_WITHOUT_VERIFIED_BINARY_MAGIC' };
+  }
+
+  // Reject non-whitespace ASCII control characters in unknown/unverified text files
+  const ext = path.extname(absPath).toLowerCase();
+  if (!TEXT_ARTIFACT_EXTENSIONS.has(ext) && /[\x01-\x08\x0B\x0C\x0E-\x1F\x7F]/.test(decoded)) {
+    return { kind: 'ambiguous', safeRel, reason: 'UNEXPECTED_CONTROL_BYTES' };
+  }
+
+  return { kind: 'text', safeRel, content: decoded };
 }
 
 function readSafeTextFile(absPath, workspaceRoot) {
@@ -318,32 +429,11 @@ function readSafeTextFile(absPath, workspaceRoot) {
   return fs.readFileSync(canonicalTarget, 'utf8');
 }
 
-function countFilesNoSymlink(rootDir, workspaceRoot, depth = 0) {
-  if (depth > MAX_RECURSION_DEPTH) {
-    throw new Error(`PUBSEC-ERR-MAX-DEPTH: Recursion depth exceeded ${MAX_RECURSION_DEPTH} in ${sanitizePathForLog(rootDir, workspaceRoot)}`);
-  }
-  let count = 0;
-  for (const entry of fs.readdirSync(rootDir)) {
-    const fullPath = path.join(rootDir, entry);
-    const stat = fs.lstatSync(fullPath);
-    if (stat.isSymbolicLink()) {
-      throw new Error(`PUBSEC-ERR-SYMLINK: Symbolic link prohibited in scanned tree (${sanitizePathForLog(fullPath, workspaceRoot)})`);
-    }
-    if (stat.isDirectory()) {
-      count += countFilesNoSymlink(fullPath, workspaceRoot, depth + 1);
-    } else if (stat.isFile()) {
-      count += 1;
-    }
-  }
-  return count;
-}
-
 function collectFilesSafely(
   rootDir,
   workspaceRoot,
   depth = 0,
-  out = { textFiles: [], binaryFiles: [], unknownFiles: [], vendorAssetsExcluded: 0 },
-  options = {}
+  out = { allFiles: [], textFiles: [], binaryFiles: [], unknownFiles: [] }
 ) {
   if (depth > MAX_RECURSION_DEPTH) {
     throw new Error(`PUBSEC-ERR-MAX-DEPTH: Recursion depth exceeded ${MAX_RECURSION_DEPTH} in ${sanitizePathForLog(rootDir, workspaceRoot)}`);
@@ -356,13 +446,9 @@ function collectFilesSafely(
       throw new Error(`PUBSEC-ERR-SYMLINK: Symbolic link prohibited in scanned tree (${sanitizePathForLog(fullPath, workspaceRoot)})`);
     }
     if (stat.isDirectory()) {
-      const relPath = sanitizePathForLog(fullPath, workspaceRoot);
-      if (options.excludeRelativePrefixes && options.excludeRelativePrefixes.includes(relPath)) {
-        out.vendorAssetsExcluded += countFilesNoSymlink(fullPath, workspaceRoot, depth + 1);
-        continue;
-      }
-      collectFilesSafely(fullPath, workspaceRoot, depth + 1, out, options);
+      collectFilesSafely(fullPath, workspaceRoot, depth + 1, out);
     } else if (stat.isFile()) {
+      out.allFiles.push(fullPath);
       const ext = path.extname(entry).toLowerCase();
       if (TEXT_ARTIFACT_EXTENSIONS.has(ext)) {
         out.textFiles.push(fullPath);
@@ -374,6 +460,60 @@ function collectFilesSafely(
     }
   }
   return out;
+}
+
+function scanDeployableFiles(allFiles, workspaceRoot, rules, findings, counters, onTextFile = null) {
+  for (const filePath of allFiles) {
+    const ext = path.extname(filePath).toLowerCase();
+    const isKnownTextExt = TEXT_ARTIFACT_EXTENSIONS.has(ext);
+    const inspection = inspectAndClassifyFile(filePath, workspaceRoot);
+
+    if (inspection.kind === 'binary') {
+      counters.binaryFilesVerified += 1;
+      continue;
+    }
+
+    if (inspection.kind === 'ambiguous') {
+      counters.ambiguousFilesBlocked += 1;
+      findings.push({
+        ruleId: 'PUBSEC-ERR-AMBIGUOUS-FILE',
+        group: 'FILE_CLASSIFICATION',
+        category: 'UNVERIFIED_DEPLOYABLE_FILE',
+        severity: 'HIGH',
+        description: `Ambiguous deployable file cannot be verified as safe binary or valid UTF-8 text (${inspection.reason})`,
+        file: inspection.safeRel,
+        line: 1,
+        column: 1,
+        matchedText: redactMatch(inspection.safeRel, 'UNVERIFIED_DEPLOYABLE_FILE')
+      });
+      continue;
+    }
+
+    if (inspection.kind === 'unreadable') {
+      counters.unreadableFilesBlocked += 1;
+      findings.push({
+        ruleId: 'PUBSEC-ERR-UNREADABLE',
+        group: 'FILE_CLASSIFICATION',
+        category: 'UNREADABLE_DEPLOYABLE_FILE',
+        severity: 'CRITICAL',
+        description: `Deployable file could not be read for disclosure verification (${inspection.reason})`,
+        file: inspection.safeRel,
+        line: 1,
+        column: 1,
+        matchedText: redactMatch(inspection.safeRel, 'UNREADABLE_DEPLOYABLE_FILE')
+      });
+      continue;
+    }
+
+    counters.totalFilesScanned += 1;
+    if (!isKnownTextExt) {
+      counters.unknownTextFilesScanned += 1;
+    }
+    findings.push(...scanContent(inspection.content, inspection.safeRel, rules));
+    if (onTextFile) {
+      onTextFile(inspection.safeRel, inspection.content);
+    }
+  }
 }
 
 function parseMarkdownFrontmatter(content) {
@@ -519,24 +659,20 @@ function scanSourceMode(workspaceRoot, rules, registry, registryPath) {
     }
   }
 
-  // Public static textual assets under public/ (prebuilt TinaCMS SPA vendor bundle under public/admin/assets is explicitly excluded and reported)
-  let vendorAssetsExcluded = 0;
+  // Public static assets under public/ (content-inspected; no directory or extension bypass)
+  const deployableCounters = {
+    totalFilesScanned: 0,
+    unknownTextFilesScanned: 0,
+    binaryFilesVerified: 0,
+    ambiguousFilesBlocked: 0,
+    unreadableFilesBlocked: 0
+  };
   const publicDir = path.join(workspaceRoot, 'public');
   if (fs.existsSync(publicDir)) {
-    const collected = collectFilesSafely(
-      publicDir,
-      workspaceRoot,
-      0,
-      { textFiles: [], binaryFiles: [], unknownFiles: [], vendorAssetsExcluded: 0 },
-      { excludeRelativePrefixes: ['public/admin/assets'] }
-    );
-    binaryFilesSkipped += collected.binaryFiles.length;
-    vendorAssetsExcluded += collected.vendorAssetsExcluded;
-    for (const filePath of collected.textFiles) {
-      const content = readSafeTextFile(filePath, workspaceRoot);
-      totalFilesScanned += 1;
-      findings.push(...scanContent(content, sanitizePathForLog(filePath, workspaceRoot), rules));
-    }
+    const collected = collectFilesSafely(publicDir, workspaceRoot);
+    scanDeployableFiles(collected.allFiles, workspaceRoot, rules, findings, deployableCounters);
+    totalFilesScanned += deployableCounters.totalFilesScanned;
+    binaryFilesSkipped += deployableCounters.binaryFilesVerified;
   }
 
   void registryPath;
@@ -546,9 +682,11 @@ function scanSourceMode(workspaceRoot, rules, registry, registryPath) {
     coverage: {
       mode: 'source',
       textFilesScanned: totalFilesScanned,
+      unknownTextFilesScanned: deployableCounters.unknownTextFilesScanned,
+      binaryFilesVerified: binaryFilesSkipped,
       binaryFilesSkipped,
-      vendorAssetsExcluded,
-      vendorAssetsExcludedPaths: vendorAssetsExcluded > 0 ? ['public/admin/assets'] : [],
+      ambiguousFilesBlocked: deployableCounters.ambiguousFilesBlocked,
+      unreadableFilesBlocked: deployableCounters.unreadableFilesBlocked,
       externalContentExcluded: true
     }
   };
@@ -627,14 +765,8 @@ function scanRenderedMode(workspaceRoot, rules, registry) {
     }
   }
 
-  // Recursively scan all deployable text artifacts in dist/ (prebuilt TinaCMS SPA vendor bundle under dist/admin/assets is explicitly excluded and reported)
-  const collected = collectFilesSafely(
-    distDir,
-    workspaceRoot,
-    0,
-    { textFiles: [], binaryFiles: [], unknownFiles: [], vendorAssetsExcluded: 0 },
-    { excludeRelativePrefixes: ['dist/admin/assets'] }
-  );
+  // Recursively inspect and scan all deployable files in dist/ (no directory or extension bypass)
+  const collected = collectFilesSafely(distDir, workspaceRoot);
   const internalLeakIndicators = [
     'stewardship/reports',
     'becc-runtime/',
@@ -642,12 +774,15 @@ function scanRenderedMode(workspaceRoot, rules, registry) {
     'local_integrity_manifest.json'
   ];
 
-  for (const filePath of collected.textFiles) {
-    const safeRel = sanitizePathForLog(filePath, workspaceRoot);
-    const content = readSafeTextFile(filePath, workspaceRoot);
-    totalFilesScanned += 1;
-    findings.push(...scanContent(content, safeRel, rules));
+  const deployableCounters = {
+    totalFilesScanned: 0,
+    unknownTextFilesScanned: 0,
+    binaryFilesVerified: 0,
+    ambiguousFilesBlocked: 0,
+    unreadableFilesBlocked: 0
+  };
 
+  scanDeployableFiles(collected.allFiles, workspaceRoot, rules, findings, deployableCounters, (safeRel, content) => {
     for (const draft of nonPublicProjects) {
       if (safeRel === 'dist/projects/index.html' || safeRel === 'dist/sitemap.xml') {
         if (content.includes(`/project-${draft.slug}`)) {
@@ -681,7 +816,9 @@ function scanRenderedMode(workspaceRoot, rules, registry) {
         });
       }
     }
-  }
+  });
+
+  totalFilesScanned += deployableCounters.totalFilesScanned;
 
   return {
     findings,
@@ -689,10 +826,11 @@ function scanRenderedMode(workspaceRoot, rules, registry) {
     coverage: {
       mode: 'rendered',
       textFilesScanned: totalFilesScanned,
-      binaryFilesSkipped: collected.binaryFiles.length,
-      unknownFilesCount: collected.unknownFiles.length,
-      vendorAssetsExcluded: collected.vendorAssetsExcluded,
-      vendorAssetsExcludedPaths: collected.vendorAssetsExcluded > 0 ? ['dist/admin/assets'] : [],
+      unknownTextFilesScanned: deployableCounters.unknownTextFilesScanned,
+      binaryFilesVerified: deployableCounters.binaryFilesVerified,
+      binaryFilesSkipped: deployableCounters.binaryFilesVerified,
+      ambiguousFilesBlocked: deployableCounters.ambiguousFilesBlocked,
+      unreadableFilesBlocked: deployableCounters.unreadableFilesBlocked,
       externalContentExcluded: true
     }
   };
@@ -720,16 +858,18 @@ export function validateProjectDisclosure(options = {}) {
   const allFindings = [];
   let totalFilesScanned = 0;
   let binaryFilesSkipped = 0;
-  let vendorAssetsExcluded = 0;
-  const vendorAssetsExcludedPaths = [];
+  let unknownTextFilesScanned = 0;
+  let ambiguousFilesBlocked = 0;
+  let unreadableFilesBlocked = 0;
 
   if (mode === 'source' || mode === 'all') {
     const srcRes = scanSourceMode(workspaceRoot, rules, registry, registryPath);
     allFindings.push(...srcRes.findings);
     totalFilesScanned += srcRes.totalFilesScanned;
     binaryFilesSkipped += srcRes.coverage.binaryFilesSkipped;
-    vendorAssetsExcluded += srcRes.coverage.vendorAssetsExcluded;
-    vendorAssetsExcludedPaths.push(...srcRes.coverage.vendorAssetsExcludedPaths);
+    unknownTextFilesScanned += srcRes.coverage.unknownTextFilesScanned;
+    ambiguousFilesBlocked += srcRes.coverage.ambiguousFilesBlocked;
+    unreadableFilesBlocked += srcRes.coverage.unreadableFilesBlocked;
   }
 
   if (mode === 'rendered' || mode === 'all') {
@@ -737,8 +877,9 @@ export function validateProjectDisclosure(options = {}) {
     allFindings.push(...renRes.findings);
     totalFilesScanned += renRes.totalFilesScanned;
     binaryFilesSkipped += renRes.coverage.binaryFilesSkipped;
-    vendorAssetsExcluded += renRes.coverage.vendorAssetsExcluded;
-    vendorAssetsExcludedPaths.push(...renRes.coverage.vendorAssetsExcludedPaths);
+    unknownTextFilesScanned += renRes.coverage.unknownTextFilesScanned;
+    ambiguousFilesBlocked += renRes.coverage.ambiguousFilesBlocked;
+    unreadableFilesBlocked += renRes.coverage.unreadableFilesBlocked;
   }
 
   const pass = allFindings.length === 0;
@@ -756,9 +897,11 @@ export function validateProjectDisclosure(options = {}) {
     coverage: {
       mode,
       textFilesScanned: totalFilesScanned,
+      unknownTextFilesScanned,
+      binaryFilesVerified: binaryFilesSkipped,
       binaryFilesSkipped,
-      vendorAssetsExcluded,
-      vendorAssetsExcludedPaths,
+      ambiguousFilesBlocked,
+      unreadableFilesBlocked,
       externalContentExcluded: true
     }
   };
