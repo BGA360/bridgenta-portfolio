@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import {
   resolveRepositoryCommit,
@@ -364,10 +365,203 @@ function fileURLToPathLocal(url) {
   return url;
 }
 
+function getJsonFilesRecursive(dir) {
+  let results = [];
+  if (!fs.existsSync(dir)) return results;
+  const list = fs.readdirSync(dir);
+  for (const file of list) {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    if (stat && stat.isDirectory()) {
+      results = results.concat(getJsonFilesRecursive(filePath));
+    } else if (file.endsWith(".json")) {
+      results.push(filePath);
+    }
+  }
+  return results;
+}
+
+function ingestLocalReports(reportsDir) {
+  const recordsByHash = new Map();
+  const hashMismatchFiles = [];
+
+  if (!fs.existsSync(reportsDir)) {
+    return { recordsByHash, hashMismatchFiles };
+  }
+
+  const addRecord = (obs, hash, label) => {
+    const existing = recordsByHash.get(hash);
+    if (existing) {
+      if (JSON.stringify(existing) !== JSON.stringify(obs)) {
+        hashMismatchFiles.push(label);
+      }
+      return;
+    }
+    recordsByHash.set(hash, obs);
+  };
+
+  const files = fs.readdirSync(reportsDir);
+  for (const file of files) {
+    if (file.endsWith(".json") && (file === "m5-ci-shadow-observation.json" || file.startsWith("m5-ci-shadow-observation"))) {
+      const filePath = path.join(reportsDir, file);
+      const content = fs.readFileSync(filePath, "utf-8");
+      try {
+        const report = JSON.parse(content);
+        const valRes = validateObservationReport(report);
+        if (valRes.valid) {
+          addRecord(valRes.observation, valRes.hash, file);
+        } else {
+          hashMismatchFiles.push(file);
+        }
+      } catch (e) {
+        hashMismatchFiles.push(file);
+      }
+    }
+  }
+
+  const historyDir = path.join(reportsDir, "history");
+  if (fs.existsSync(historyDir)) {
+    const histFiles = fs.readdirSync(historyDir);
+    for (const file of histFiles) {
+      if (file.endsWith(".json")) {
+        const filePath = path.join(historyDir, file);
+        const content = fs.readFileSync(filePath, "utf-8");
+        try {
+          const report = JSON.parse(content);
+          const valRes = validateObservationReport(report);
+          if (valRes.valid) {
+            addRecord(valRes.observation, valRes.hash, file);
+          } else {
+            hashMismatchFiles.push(file);
+          }
+        } catch (e) {
+          hashMismatchFiles.push(file);
+        }
+      }
+    }
+  }
+
+  const m5ShadowHistoryDir = path.join(reportsDir, "history", "m5-shadow");
+  if (fs.existsSync(m5ShadowHistoryDir)) {
+    const histFiles = getJsonFilesRecursive(m5ShadowHistoryDir);
+    for (const filePath of histFiles) {
+      const content = fs.readFileSync(filePath, "utf-8");
+      const relativeName = path.relative(m5ShadowHistoryDir, filePath);
+      try {
+        const report = JSON.parse(content);
+        const valRes = validateObservationReport(report);
+        if (valRes.valid) {
+          addRecord(valRes.observation, valRes.hash, relativeName);
+        } else {
+          hashMismatchFiles.push(relativeName);
+        }
+      } catch (e) {
+        hashMismatchFiles.push(relativeName);
+      }
+    }
+  }
+
+  return { recordsByHash, hashMismatchFiles };
+}
+
+/**
+ * Resolves M5 history records from local workspace and (in authoritative mode) remote m5-history branch.
+ * Fails closed if authoritative mode cannot verify/fetch m5-history.
+ * @param {string} workspaceRoot
+ * @param {{ offlineLocal?: boolean, remoteName?: string, historyBranch?: string, skipRemoteFetch?: boolean }} [options]
+ * @returns {{ mode: "AUTHORITATIVE"|"OFFLINE_LOCAL", observations: any[], hashMismatchFiles: string[], warnings: string[] }}
+ */
+export function resolveHistoryRecords(workspaceRoot, options = {}) {
+  const offlineLocal = Boolean(options.offlineLocal);
+  const remoteName = options.remoteName || "origin";
+  const historyBranch = options.historyBranch || "m5-history";
+  const skipRemoteFetch = Boolean(options.skipRemoteFetch);
+
+  const reportsDir = path.join(workspaceRoot, "stewardship", "reports");
+  const { recordsByHash, hashMismatchFiles } = ingestLocalReports(reportsDir);
+  const warnings = [];
+
+  if (offlineLocal) {
+    warnings.push("OFFLINE_LOCAL_HISTORY_ONLY");
+    return {
+      mode: "OFFLINE_LOCAL",
+      observations: Array.from(recordsByHash.values()),
+      hashMismatchFiles,
+      warnings
+    };
+  }
+
+  const trackingRef = `refs/remotes/${remoteName}/${historyBranch}`;
+  const runGit = (args) => execFileSync("git", args, {
+    cwd: workspaceRoot,
+    encoding: "utf-8",
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+
+  if (!skipRemoteFetch) {
+    let lsRemoteOut;
+    try {
+      lsRemoteOut = runGit(["ls-remote", "--heads", remoteName, historyBranch]).trim();
+    } catch (err) {
+      throw new Error(`M5_HISTORY_FETCH_FAILED: Unable to query ${remoteName}/${historyBranch}: ${err.message}`);
+    }
+
+    if (!lsRemoteOut) {
+      throw new Error(`M5_HISTORY_BRANCH_MISSING: Remote branch ${remoteName}/${historyBranch} does not exist.`);
+    }
+
+    try {
+      runGit(["fetch", remoteName, `${historyBranch}:${trackingRef}`]);
+    } catch (err) {
+      throw new Error(`M5_HISTORY_FETCH_FAILED: Failed to fetch ${remoteName}/${historyBranch}: ${err.message}`);
+    }
+  }
+
+  try {
+    runGit(["rev-parse", "--verify", trackingRef]);
+  } catch (err) {
+    throw new Error(`M5_HISTORY_NOT_FETCHED: Tracking ref ${trackingRef} is not available locally.`);
+  }
+
+  const treePrefix = "stewardship/reports/history/m5-shadow";
+  const lsTreeOut = runGit(["ls-tree", "-r", "--name-only", trackingRef, "--", treePrefix]).trim();
+  const remoteFiles = lsTreeOut ? lsTreeOut.split(/\r?\n/).filter(f => f.endsWith(".json")) : [];
+
+  for (const relPath of remoteFiles) {
+    const content = runGit(["show", `${trackingRef}:${relPath}`]);
+    try {
+      const report = JSON.parse(content);
+      const valRes = validateObservationReport(report);
+      if (valRes.valid) {
+        const existing = recordsByHash.get(valRes.hash);
+        if (existing) {
+          if (JSON.stringify(existing) !== JSON.stringify(valRes.observation)) {
+            hashMismatchFiles.push(relPath);
+          }
+        } else {
+          recordsByHash.set(valRes.hash, valRes.observation);
+        }
+      } else {
+        hashMismatchFiles.push(relPath);
+      }
+    } catch (e) {
+      hashMismatchFiles.push(relPath);
+    }
+  }
+
+  return {
+    mode: "AUTHORITATIVE",
+    observations: Array.from(recordsByHash.values()),
+    hashMismatchFiles,
+    warnings
+  };
+}
+
 function main() {
   try {
     const workspaceRoot = process.cwd();
     const reportsDir = path.join(workspaceRoot, "stewardship", "reports");
+    const offlineLocal = process.argv.includes("--offline-local");
 
     const repoCommitRes = resolveRepositoryCommit(workspaceRoot);
     const evalIdentityRes = computeM5ImplementationIdentity(workspaceRoot);
@@ -383,90 +577,12 @@ function main() {
       currentRepositoryCommit
     };
 
-    const ingestedReports = [];
-    const hashMismatchFiles = [];
-
-    if (fs.existsSync(reportsDir)) {
-      const files = fs.readdirSync(reportsDir);
-      for (const file of files) {
-        if (file.endsWith(".json")) {
-          if (file === "m5-ci-shadow-observation.json" || file.startsWith("m5-ci-shadow-observation")) {
-            const filePath = path.join(reportsDir, file);
-            const content = fs.readFileSync(filePath, "utf-8");
-            try {
-              const report = JSON.parse(content);
-              const valRes = validateObservationReport(report);
-              if (valRes.valid) {
-                ingestedReports.push(valRes.observation);
-              } else {
-                hashMismatchFiles.push(file);
-              }
-            } catch (e) {
-              hashMismatchFiles.push(file);
-            }
-          }
-        }
-      }
-
-      const historyDir = path.join(reportsDir, "history");
-      if (fs.existsSync(historyDir)) {
-        const histFiles = fs.readdirSync(historyDir);
-        for (const file of histFiles) {
-          if (file.endsWith(".json")) {
-            const filePath = path.join(historyDir, file);
-            const content = fs.readFileSync(filePath, "utf-8");
-            try {
-              const report = JSON.parse(content);
-              const valRes = validateObservationReport(report);
-              if (valRes.valid) {
-                ingestedReports.push(valRes.observation);
-              } else {
-                hashMismatchFiles.push(file);
-              }
-            } catch (e) {
-              hashMismatchFiles.push(file);
-            }
-          }
-        }
-      }
-
-      // Recursively read all JSON files under stewardship/reports/history/m5-shadow/
-      const m5ShadowHistoryDir = path.join(reportsDir, "history", "m5-shadow");
-      function getJsonFilesRecursive(dir) {
-        let results = [];
-        if (!fs.existsSync(dir)) return results;
-        const list = fs.readdirSync(dir);
-        for (const file of list) {
-          const filePath = path.join(dir, file);
-          const stat = fs.statSync(filePath);
-          if (stat && stat.isDirectory()) {
-            results = results.concat(getJsonFilesRecursive(filePath));
-          } else if (file.endsWith(".json")) {
-            results.push(filePath);
-          }
-        }
-        return results;
-      }
-
-      if (fs.existsSync(m5ShadowHistoryDir)) {
-        const histFiles = getJsonFilesRecursive(m5ShadowHistoryDir);
-        for (const filePath of histFiles) {
-          const content = fs.readFileSync(filePath, "utf-8");
-          const relativeName = path.relative(m5ShadowHistoryDir, filePath);
-          try {
-            const report = JSON.parse(content);
-            const valRes = validateObservationReport(report);
-            if (valRes.valid) {
-              ingestedReports.push(valRes.observation);
-            } else {
-              hashMismatchFiles.push(relativeName);
-            }
-          } catch (e) {
-            hashMismatchFiles.push(relativeName);
-          }
-        }
-      }
-    }
+    const {
+      mode,
+      observations: ingestedReports,
+      hashMismatchFiles,
+      warnings: historyWarnings
+    } = resolveHistoryRecords(workspaceRoot, { offlineLocal });
 
     const initialPolicy = {
       requiredObservationCount: 10,
@@ -477,16 +593,20 @@ function main() {
 
     const assessment = evaluateEnforcementReadiness(ingestedReports, candidateInfo, workspaceRoot, initialPolicy);
 
+    if (historyWarnings.length > 0) {
+      assessment.warnings.push(...historyWarnings);
+      assessment.warnings = Array.from(new Set(assessment.warnings)).sort();
+    }
+
     if (hashMismatchFiles.length > 0) {
       assessment.blockingReasons.push("HISTORICAL_EVIDENCE_CORRUPTION");
       assessment.blockingReasons.sort();
       assessment.warnings.push("EVIDENCE_CORRUPTION_DETECTED");
-      assessment.warnings.sort();
+      assessment.warnings = Array.from(new Set(assessment.warnings)).sort();
       assessment.assessmentState = "ENFORCEMENT_NOT_READY";
-      
-      // Re-hash due to state update
-      assessment.assessmentHash = computeReadinessAssessmentHash(assessment);
     }
+
+    assessment.assessmentHash = computeReadinessAssessmentHash(assessment);
 
     const reportPath = path.join(reportsDir, "m5-enforcement-readiness.json");
     if (!fs.existsSync(reportsDir)) {
@@ -498,6 +618,7 @@ function main() {
     console.log("=========================================");
     console.log("   M5 ENFORCEMENT READINESS ASSESSMENT   ");
     console.log("=========================================");
+    console.log(`History Mode:           ${mode}`);
     console.log(`Candidate Policy:       ${candidateInfo.policyVersion}`);
     console.log(`Candidate Evaluator:    ${candidateInfo.evaluatorVersion}`);
     console.log(`Candidate Identity:     ${candidateInfo.implementationIdentity}`);

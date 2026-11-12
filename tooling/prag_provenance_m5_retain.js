@@ -52,9 +52,10 @@ export function serializeEnvelope(envelope) {
  * Validates and persists a shadow observation working report into the durable history directory.
  * @param {string} workspaceRoot 
  * @param {string|null} [customReportPath] 
+ * @param {{ historyRoot?: string|null, allowExecutionMetadataDiff?: boolean }} [options]
  * @returns {{ status: "PERSISTED"|"IDEMPOTENT_NOOP", hash: string }}
  */
-export function runRetention(workspaceRoot, customReportPath = null) {
+export function runRetention(workspaceRoot, customReportPath = null, options = {}) {
   const reportPath = customReportPath || path.join(workspaceRoot, "stewardship", "reports", "m5-ci-shadow-observation.json");
   if (!fs.existsSync(reportPath)) {
     throw new Error(`Working report not found at: ${reportPath}`);
@@ -76,7 +77,8 @@ export function runRetention(workspaceRoot, customReportPath = null) {
     throw new Error("Missing required identity fields.");
   }
 
-  const historyDir = path.join(workspaceRoot, "stewardship", "reports", "history", "m5-shadow", obs.repositoryCommit);
+  const targetRoot = options.historyRoot || workspaceRoot;
+  const historyDir = path.join(targetRoot, "stewardship", "reports", "history", "m5-shadow", obs.repositoryCommit);
   const destPath = path.join(historyDir, `${obsHash}.json`);
 
   if (!fs.existsSync(historyDir)) {
@@ -111,9 +113,21 @@ export function runRetention(workspaceRoot, customReportPath = null) {
     // Check if semantically identical canonical envelope
     if (existingSerialized === incomingSerialized) {
       return { status: "IDEMPOTENT_NOOP", hash: obsHash };
-    } else {
-      throw new Error("HISTORICAL_EVIDENCE_CORRUPTION: Content mismatch between existing envelope and incoming envelope.");
     }
+
+    if (options.allowExecutionMetadataDiff) {
+      const existingObsOnly = JSON.stringify(
+        buildCanonicalEnvelope(valExisting.observation, valExisting.hash, null).observation
+      );
+      const incomingObsOnly = JSON.stringify(
+        buildCanonicalEnvelope(obs, obsHash, null).observation
+      );
+      if (valExisting.hash === obsHash && existingObsOnly === incomingObsOnly) {
+        return { status: "IDEMPOTENT_NOOP", hash: obsHash };
+      }
+    }
+
+    throw new Error("HISTORICAL_EVIDENCE_CORRUPTION: Content mismatch between existing envelope and incoming envelope.");
   }
 
   // Write new record deterministically
@@ -129,10 +143,33 @@ function fileURLToPathLocal(url) {
   return url;
 }
 
+function parseCliArgs(argv) {
+  let historyRoot = null;
+  let reportPath = null;
+  let allowExecutionMetadataDiff = false;
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === "--ci-rerun-idempotent") {
+      allowExecutionMetadataDiff = true;
+    } else if (arg === "--history-root" && i + 1 < argv.length) {
+      historyRoot = path.resolve(argv[++i]);
+    } else if (arg === "--report" && i + 1 < argv.length) {
+      reportPath = path.resolve(argv[++i]);
+    }
+  }
+
+  return { historyRoot, reportPath, allowExecutionMetadataDiff };
+}
+
 function main() {
   try {
     const workspaceRoot = process.cwd();
-    const result = runRetention(workspaceRoot);
+    const { historyRoot, reportPath, allowExecutionMetadataDiff } = parseCliArgs(process.argv.slice(2));
+    const result = runRetention(workspaceRoot, reportPath, {
+      historyRoot,
+      allowExecutionMetadataDiff
+    });
     if (result.status === "IDEMPOTENT_NOOP") {
       console.log(`IDEMPOTENT_NOOP: Observation ${result.hash} already preserved.`);
     } else {
