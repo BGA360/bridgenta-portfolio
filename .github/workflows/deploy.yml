@@ -53,6 +53,9 @@ jobs:
       - name: 🧪 Run Project Registry Tests
         run: npm run test:projects
 
+      - name: 🧪 Run M5 History Retention Tests
+        run: node --test test/m5_history_retention.test.js
+
       - name: 🚀 Build Website
         run: npm run build
 
