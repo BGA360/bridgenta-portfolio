@@ -67,7 +67,28 @@ describe('BECC Case Study Public Disclosure Boundary Regression Guard', () => {
     const beccEntry = registry.find((p) => p.slug === 'becc');
     assert.ok(beccEntry, 'BECC entry must exist');
     assert.equal(beccEntry.heroImage, '', 'BECC heroImage must be cleared');
-    assert.equal(beccEntry.cardImage, '', 'BECC cardImage must be cleared');
+    assert.equal(
+      beccEntry.cardImage,
+      '/images/learning/becc-v2-backend-architektur-render-postgresql-tls.webp',
+      'BECC cardImage must reference the approved architecture visual'
+    );
+    assert.notEqual(
+      beccEntry.cardImage,
+      '/images/bga-portfolio/BG-PA04-Governance.webp',
+      'BECC cardImage must not reference misleading governance imagery'
+    );
+    assert.notEqual(
+      beccEntry.heroImage,
+      '/images/bga-portfolio/BG-PA04-Governance.webp',
+      'BECC heroImage must not reference misleading governance imagery'
+    );
+
+    // Verify the referenced cardImage exists on disk and is a valid WebP file
+    const assetDiskPath = path.join(workspaceDir, 'public', beccEntry.cardImage.replace(/^\//, ''));
+    assert.ok(fs.existsSync(assetDiskPath), `Approved cardImage asset must exist on disk: ${assetDiskPath}`);
+    const assetHeader = fs.readFileSync(assetDiskPath);
+    assert.equal(assetHeader.toString('ascii', 0, 4), 'RIFF', 'Asset must have RIFF container header');
+    assert.equal(assetHeader.toString('ascii', 8, 12), 'WEBP', 'Asset must be a valid WebP image');
 
     const bridgentaEntry = registry.find((p) => p.slug === 'bridgenta');
     assert.ok(bridgentaEntry, 'BridGenta entry must exist');
