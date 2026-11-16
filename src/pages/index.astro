@@ -34,6 +34,23 @@ const featuredSnippets: Record<string, { ziel: string; fokus: string; alt: strin
     fokus: 'PWA, Performance und lokales SEO.',
     alt: 'StarCleaners Portfolio-Visual mit einer rekonstruierten Premium-Reinigungswebsite für anspruchsvolle Wohnräume.',
   },
+  becc: {
+    ziel: 'Gehärtete Backend- und Verifikationsinfrastruktur für Evidenz- und Bereitschaftsprüfungen.',
+    fokus: 'PostgreSQL-Persistenz, strikte CA-TLS und automatisierte Backups unter Kostendisziplin.',
+    alt: 'BECC v2 Projektübersicht – Gehärtete Backend- und Cloud-Architektur.',
+  },
+};
+
+// Generate 2-letter initials for project cards without images
+const getInitials = (title: string) => {
+  if (title === 'FD-ESS') return 'FD';
+  const clean = title.replace(/[^a-zA-Z]/g, '');
+  if (clean.length >= 2) {
+    const uppers = clean.split('').filter((c: string) => c === c.toUpperCase() && c !== c.toLowerCase());
+    if (uppers.length >= 2) return uppers.slice(0, 2).join('');
+    return clean.slice(0, 2).toUpperCase();
+  }
+  return title.slice(0, 2).toUpperCase();
 };
 ---
 
@@ -155,14 +172,18 @@ const featuredSnippets: Record<string, { ziel: string; fokus: string; alt: strin
           return (
             <article class={`project-card ${isPrimaryFeatured ? 'project-card--featured' : ''}`}>
               <div class="project-card__media">
-                <img
-                  src={project.cardImage}
-                  alt={snippet.alt}
-                  loading="lazy"
-                  width="1672"
-                  height="941"
-                  style="width: 100%; height: 100%; object-fit: cover;"
-                />
+                {project.cardImage ? (
+                  <img
+                    src={project.cardImage}
+                    alt={snippet.alt}
+                    loading="lazy"
+                    width="1672"
+                    height="941"
+                    style="width: 100%; height: 100%; object-fit: cover;"
+                  />
+                ) : (
+                  <span>{getInitials(project.name)}</span>
+                )}
               </div>
               <div class="project-card__top">
                 <span class="project-card__cat">{project.category}</span>
