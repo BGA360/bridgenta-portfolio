@@ -96,7 +96,7 @@
     "catalogOrder": 6,
     "hasCaseStudy": true,
     "contentRef": "src/content/projects/becc.md",
-    "cardImage": "",
+    "cardImage": "/images/learning/becc-v2-backend-architektur-render-postgresql-tls.webp",
     "heroImage": "",
     "schemaType": "SoftwareApplication",
     "learningRefs": [
