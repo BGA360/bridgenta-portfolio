@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Seite nicht gefunden (404) – BridGenta"
+  description="Die angeforderte Seite existiert leider nicht. Hier finden Sie den Weg zurück zur Startseite oder zu den Projekten."
+  robots="noindex, follow"
+>
+  <section class="page-hero">
+    <div class="page-hero__inner">
+      <span class="eyebrow">Fehler 404</span>
+      <h1 style="margin-top:0.9rem;">Seite nicht gefunden</h1>
+      <p class="lede">Die von Ihnen aufgerufene Seite existiert nicht oder wurde verschoben.</p>
+    </div>
+  </section>
+
+  <div class="floating-card-overlap">
+    <div class="breadcrumb-card">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Startseite</a><span class="sep">/</span><span>404</span>
+      </nav>
+    </div>
+  </div>
+
+  <section class="section" data-reveal>
+    <div class="container" style="max-width: 680px; text-align: center; margin: 0 auto;">
+      <div class="card" style="padding: var(--space-5);">
+        <h2 style="font-size: 1.5rem; font-family: var(--font-display); color: var(--text-dark); margin-bottom: 1rem;">
+          Wie möchten Sie fortfahren?
+        </h2>
+        <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem;">
+          Möglicherweise hat sich die Internetadresse geändert oder der Link ist veraltet. Über die folgenden Links gelangen Sie direkt zu den wichtigsten Bereichen unserer Website:
+        </p>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+          <a href="/" class="btn btn-primary">Zur Startseite</a>
+          <a href="/projects" class="btn btn-secondary">Zu den Projekten</a>
+          <a href="/contact" class="btn btn-outline">Kontakt aufnehmen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
