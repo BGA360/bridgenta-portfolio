@@ -68,6 +68,9 @@ jobs:
       - name: 🕵️ Audit HTML Links
         run: node tooling/audit_links.cjs
 
+      - name: 🛡️ Verify Public Trust Remediation
+        run: npm run test:trust
+
       - name: 🧪 Verify Mermaid Local Bundling & Diagram Rendering
         run: npm run test:mermaid
 
