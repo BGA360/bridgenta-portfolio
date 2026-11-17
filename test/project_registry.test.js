@@ -179,4 +179,77 @@ describe('Project Registry & Portfolio Metadata Consolidation', () => {
     assert.equal(featured[4].slug, 'starcleaners');
     assert.equal(featured[5].slug, 'becc');
   });
+
+  it('13. Portfolio Notice Layout & Relocation Contract (BGDE-PORTFOLIO-NOTICE-LAYOUT-FIX-001)', () => {
+    const distDir = path.resolve(process.cwd(), 'dist');
+    if (!fs.existsSync(distDir)) {
+      return;
+    }
+
+    const publicSlugs = ['becc', 'bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
+
+    for (const slug of publicSlugs) {
+      const htmlPath = path.join(distDir, `project-${slug}`, 'index.html');
+      if (!fs.existsSync(htmlPath)) continue;
+
+      const html = fs.readFileSync(htmlPath, 'utf8');
+
+      // 1. Notices appear outside .portfolio-aside
+      const asideMatch = html.match(/<aside class="portfolio-aside"[\s\S]*?<\/aside>/);
+      assert.ok(asideMatch, `Sidebar must exist on /project-${slug}/`);
+      const asideHtml = asideMatch[0];
+      assert.equal(
+        asideHtml.includes('project-notice-banner'),
+        false,
+        `Sidebar must not contain project-notice-banner on /project-${slug}/`
+      );
+      assert.equal(
+        asideHtml.includes('class="notice"'),
+        false,
+        `Sidebar must not contain old .notice class on /project-${slug}/`
+      );
+
+      // Check whether project has a notice configured
+      const hasNotice = slug === 'becc' || slug === 'bridgenta';
+
+      if (hasNotice) {
+        // 2. Notices appear after .detail-grid and before related-projects
+        const detailGridIdx = html.indexOf('class="detail-grid"');
+        const detailGridEndIdx = html.indexOf('</div>', detailGridIdx);
+        const bannerIdx = html.indexOf('project-notice-banner');
+        const relatedIdx = html.indexOf('class="related-projects"');
+
+        assert.ok(bannerIdx > detailGridEndIdx, `Notice must appear after .detail-grid on /project-${slug}/`);
+        if (relatedIdx !== -1) {
+          assert.ok(bannerIdx < relatedIdx, `Notice must appear before related-projects on /project-${slug}/`);
+        }
+
+        // 3. Each notice appears exactly once
+        const bannerElements = html.match(/<aside[^>]*class="[^"]*project-notice-banner/g) || [];
+        assert.equal(bannerElements.length, 1, `Notice banner element must appear exactly once on /project-${slug}/`);
+
+        // 5 & 6. Heading and content preservation
+        if (slug === 'becc') {
+          assert.ok(html.includes('Aktueller Entwicklungsstand'), 'BECC must retain heading Aktueller Entwicklungsstand');
+          assert.ok(
+            html.includes('Die beschriebene Entwicklungsphase ist abgeschlossen.'),
+            'BECC must preserve exact notice text'
+          );
+        } else if (slug === 'bridgenta') {
+          assert.ok(html.includes('Hinweis zur privaten Beta'), 'BridGenta must retain heading Hinweis zur privaten Beta');
+          assert.ok(
+            html.includes('BridGenta befindet sich in einer privaten Beta-Phase.'),
+            'BridGenta must preserve exact notice text'
+          );
+        }
+      } else {
+        // 4. Empty notices render no notice section
+        assert.equal(
+          html.includes('project-notice-banner'),
+          false,
+          `Projects with no notice must not render notice banner (/project-${slug}/)`
+        );
+      }
+    }
+  });
 });

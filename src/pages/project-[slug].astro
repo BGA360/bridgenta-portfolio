@@ -35,6 +35,10 @@ const nextProject = orderedProjects[(currentIndex + 1) % orderedProjects.length]
 // Get badge class and hero image from canonical registry
 const badgeClass = getLifecycleBadgeClass(registry.lifecycleState);
 const heroImage = registry.heroImage || undefined;
+
+// Notice values for full-width post-content banner
+const notice = entry.data.sidebar.notice;
+const noticeTitle = entry.slug === 'becc' ? 'Aktueller Entwicklungsstand' : 'Hinweis zur privaten Beta';
 ---
 
 <Layout 
@@ -157,10 +161,18 @@ const heroImage = registry.heroImage || undefined;
           devStack={entry.data.sidebar.devStack}
           aiBuilders={entry.data.sidebar.aiBuilders}
           role={entry.data.sidebar.role}
-          notice={entry.data.sidebar.notice}
-          noticeTitle={entry.slug === 'becc' ? 'Aktueller Entwicklungsstand' : undefined}
         />
       </div>
+
+      <!-- Full-Width Project Notice Section (Document Flow) -->
+      {notice && (
+        <aside class="project-notice-banner" aria-label={noticeTitle} data-reveal>
+          <div class="project-notice-banner__content">
+            <h3 class="project-notice-banner__title">{noticeTitle}</h3>
+            <p class="project-notice-banner__text">{notice}</p>
+          </div>
+        </aside>
+      )}
 
       <!-- Prev/Next Navigation -->
       <RelatedProjects 
@@ -275,6 +287,13 @@ const heroImage = registry.heroImage || undefined;
     z-index: 15;
   }
 
+  .detail-grid {
+    min-width: 0;
+  }
+  .detail-grid > * {
+    min-width: 0;
+  }
+
   /* Premium framed showcase style for hero image */
   .project-showcase-frame {
     border: 1px solid var(--border);
@@ -372,6 +391,63 @@ const heroImage = registry.heroImage || undefined;
 
     .project-showcase-image--becc-glass {
       border-radius: 10px;
+    }
+  }
+
+  /* Full-width project notice section placed after .detail-grid */
+  .project-notice-banner {
+    width: 100%;
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-5);
+    background: linear-gradient(135deg, rgba(252, 228, 236, 0.45) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(194, 24, 91, 0.16);
+    border-left: 4px solid var(--magenta);
+    border-radius: var(--radius-m);
+    padding: var(--space-4) clamp(1.25rem, 3vw, 2.25rem);
+    box-shadow: 0 4px 20px rgba(123, 30, 87, 0.04);
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+  }
+
+  .project-notice-banner__content {
+    max-width: 100%;
+  }
+
+  .project-notice-banner__title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--magenta-deep);
+    margin: 0 0 0.65rem 0;
+    line-height: 1.25;
+  }
+
+  .project-notice-banner__text {
+    font-size: 0.96rem;
+    line-height: 1.65;
+    color: var(--text-dark);
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .project-notice-banner {
+      margin-top: var(--space-4);
+      margin-bottom: var(--space-4);
+      padding: var(--space-3);
+      border-radius: var(--radius-s);
+      border-left-width: 3px;
+    }
+
+    .project-notice-banner__title {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-notice-banner__text {
+      font-size: 0.92rem;
+      line-height: 1.55;
     }
   }
 
