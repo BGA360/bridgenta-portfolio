@@ -224,7 +224,7 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
       '--disable-dev-shm-usage',
       `--user-data-dir=${tmpDir}`,
       '--remote-debugging-port=0',
-      fixtureUrl
+      'about:blank'
     ]);
 
     let wsUrl = null;
@@ -288,8 +288,11 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
     await send('Runtime.enable');
     await send('Page.enable');
 
+    // Navigate to the test fixture now that Network.enable is active
+    await send('Page.navigate', { url: fixtureUrl });
+
     // Wait for dynamic module import, execution, and DOM transformation
-    await new Promise(r => setTimeout(r, 2500));
+    await new Promise(r => setTimeout(r, 3000));
 
     const evalRes = await send('Runtime.evaluate', {
       expression: `(() => {
