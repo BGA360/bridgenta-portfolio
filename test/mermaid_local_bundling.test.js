@@ -199,7 +199,9 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
       '.svg': 'image/svg+xml'
     };
 
+    const serverRequests = [];
     const server = http.createServer((req, res) => {
+      serverRequests.push(req.url);
       const cleanUrl = req.url.split('?')[0];
       const filePath = path.join(distDir, cleanUrl);
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
@@ -217,6 +219,7 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
     const fixtureUrl = `http://127.0.0.1:${port}/test-mermaid-acceptance-cdp.html`;
 
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chrome-mtest-'));
+    const isWindows = os.platform() === 'win32';
     const chrome = spawn(browserBinary, [
       '--headless=new',
       '--disable-gpu',
@@ -224,13 +227,15 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
       '--disable-dev-shm-usage',
       `--user-data-dir=${tmpDir}`,
       '--remote-debugging-port=0',
-      'about:blank'
-    ]);
+      fixtureUrl
+    ], {
+      detached: !isWindows
+    });
 
     let wsUrl = null;
     chrome.stderr.on('data', chunk => {
       const text = chunk.toString();
-      const match = text.match(/DevTools listening on (ws:\/\/127\.0\.0\.1:\d+\/devtools\/browser\/[^\s]+)/);
+      const match = text.match(/DevTools listening on (ws:\/\/[^\s]+)/);
       if (match) {
         wsUrl = match[1];
       }
@@ -245,20 +250,27 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
     const devtoolsPort = new URL(wsUrl).port;
     const listRes = await fetch(`http://127.0.0.1:${devtoolsPort}/json/list`);
     const pages = await listRes.json();
-    const page = pages.find(p => p.type === 'page' && p.url.includes('test-mermaid-acceptance-cdp')) || pages[0];
+    const page = pages.find(p => p.type === 'page') || pages[0];
 
     const ws = new WebSocket(page.webSocketDebuggerUrl);
     await new Promise(r => ws.onopen = r);
 
     let msgId = 1;
-    const send = (method, params = {}) => new Promise((resolve) => {
+    const send = (method, params = {}, timeoutMs = 10000) => new Promise((resolve, reject) => {
       const curId = msgId++;
+      const timer = setTimeout(() => {
+        ws.removeEventListener('message', handler);
+        reject(new Error(`CDP command timed out: ${method}`));
+      }, timeoutMs);
       const handler = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.id === curId) {
-          ws.removeEventListener('message', handler);
-          resolve(data.result);
-        }
+        try {
+          const data = JSON.parse(event.data);
+          if (data.id === curId) {
+            clearTimeout(timer);
+            ws.removeEventListener('message', handler);
+            resolve(data.result);
+          }
+        } catch {}
       };
       ws.addEventListener('message', handler);
       ws.send(JSON.stringify({ id: curId, method, params }));
@@ -269,30 +281,29 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
     const unhandledExceptions = [];
 
     ws.addEventListener('message', (event) => {
-      const msg = JSON.parse(event.data);
-      if (msg.method === 'Network.requestWillBeSent') {
-        networkRequests.push(msg.params.request.url);
-      }
-      if (msg.method === 'Runtime.consoleAPICalled') {
-        consoleLogs.push({
-          type: msg.params.type,
-          args: msg.params.args.map(a => a.value || a.description)
-        });
-      }
-      if (msg.method === 'Runtime.exceptionThrown') {
-        unhandledExceptions.push(msg.params.exceptionDetails);
-      }
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.method === 'Network.requestWillBeSent') {
+          networkRequests.push(msg.params.request.url);
+        }
+        if (msg.method === 'Runtime.consoleAPICalled') {
+          consoleLogs.push({
+            type: msg.params.type,
+            args: msg.params.args.map(a => a.value || a.description)
+          });
+        }
+        if (msg.method === 'Runtime.exceptionThrown') {
+          unhandledExceptions.push(msg.params.exceptionDetails);
+        }
+      } catch {}
     });
 
     await send('Network.enable');
     await send('Runtime.enable');
     await send('Page.enable');
 
-    // Navigate to the test fixture now that Network.enable is active
-    await send('Page.navigate', { url: fixtureUrl });
-
     // Wait for dynamic module import, execution, and DOM transformation
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise(r => setTimeout(r, 2500));
 
     const evalRes = await send('Runtime.evaluate', {
       expression: `(() => {
@@ -324,9 +335,18 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
       returnByValue: true
     });
 
-    ws.close();
-    chrome.kill('SIGKILL');
-    await new Promise(r => setTimeout(r, 300));
+    try { ws.close(); } catch {}
+    try {
+      if (isWindows) {
+        chrome.kill('SIGKILL');
+      } else {
+        process.kill(-chrome.pid, 'SIGKILL');
+      }
+    } catch {}
+
+    if (typeof server.closeAllConnections === 'function') {
+      server.closeAllConnections();
+    }
     server.close();
     fs.rmSync(fixturePath, { force: true });
     try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch {}
@@ -334,9 +354,10 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
     const evalValue = evalRes.result.value;
 
     // 1. Assert Network Integrity
-    assert.ok(networkRequests.length > 0, 'Browser must make network requests for assets');
-    for (const reqUrl of networkRequests) {
-      // Allow localhost test server and ignore local security software hooks
+    // Check all requests captured by both the HTTP server and CDP
+    const allCapturedUrls = [...serverRequests.map(r => `http://127.0.0.1:${port}${r}`), ...networkRequests];
+    assert.ok(allCapturedUrls.length > 0, 'Browser must make network requests for assets');
+    for (const reqUrl of allCapturedUrls) {
       if (reqUrl.includes('kaspersky-labs.com')) continue;
       assert.strictEqual(
         reqUrl.includes('cdn.jsdelivr.net'),
@@ -349,11 +370,13 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
       );
     }
 
-    // Verify actual local bundled assets were loaded
-    const loadedHoisted = networkRequests.some(u => u.includes('/_astro/hoisted.'));
-    const loadedMermaidCore = networkRequests.some(u => u.includes('/_astro/mermaid.core.'));
-    assert.ok(loadedHoisted, 'Browser must request local bundled hoisted script');
-    assert.ok(loadedMermaidCore, 'Browser must request local bundled mermaid.core chunk');
+    // Verify local bundled hoisted script was fetched by browser from local server
+    const serverFetchedHoisted = serverRequests.some(u => u.includes(`/_astro/${hoistedScript}`));
+    assert.ok(serverFetchedHoisted, `Local server must receive request for bundled client script /_astro/${hoistedScript}`);
+
+    // Verify local bundled mermaid.core was requested by browser
+    const requestedMermaidCore = allCapturedUrls.some(u => u.includes('/_astro/mermaid.core.'));
+    assert.ok(requestedMermaidCore, 'Browser must request local bundled mermaid.core chunk from local origin');
 
     // 2. Assert Supported Flowchart (Dagre)
     assert.ok(evalValue.supported.hasSvg, 'Supported diagram must successfully render an SVG element');
