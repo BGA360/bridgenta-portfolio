@@ -1,210 +1,149 @@
 ---
 title: "BECC v2"
-subtitle: "Cloud-Infrastruktur, Persistenz & Verifikation"
-description: "Gehärtete Backend- und Cloud-Architektur mit persistenter PostgreSQL, strikter CA-validierter TLS, automatisierten Backups und verifiziertem Restore unter strikter Kostendisziplin."
-seoTitle: "BECC v2 – Cloud-Infrastruktur, PostgreSQL & strikte TLS-Verifikation"
-seoDescription: "Fallstudie zur gehärteten Cloud-Architektur von BECC v2: Persistente PostgreSQL in Frankfurt, strikte CA-TLS, automatisierte Backups, Restore-Drill und über 300 Tests."
+subtitle: "Technische Prüfungen, sichere Datenverarbeitung und Cloud-Infrastruktur"
+description: "BECC v2 prüft technische Nachweise und bewertet Ergebnisse anhand festgelegter Regeln. Der Backend-Dienst speichert Entscheidungen und Prüfergebnisse in PostgreSQL. Verschlüsselte Verbindungen und begrenzte Zugriffsrechte schützen die Daten. Die Cloud-Infrastruktur unterstützt einen zuverlässigen Betrieb innerhalb der EU."
+seoTitle: "BECC v2 – Technische Prüfungen und sichere Cloud-Architektur"
+seoDescription: "BECC v2 im Praxisbericht: Prüfregeln, PostgreSQL, sichere Verbindungen und Cloud-Betrieb. Was umgesetzt und getestet wurde – und was noch offen ist."
 schemaType: "SoftwareApplication"
 sidebar:
-  category: "Cloud-Infrastruktur / Backend-Architektur"
+  category: "Backend-Entwicklung / Cloud-Infrastruktur"
   status: "Abgeschlossen"
   timeline: "Oktober 2026"
   role: "Backend & Cloud Infrastructure Engineer"
-  technologies: "Node.js, TypeScript, PostgreSQL, Managed Cloud (Frankfurt), Strict TLS"
+  technologies: "Node.js, TypeScript, PostgreSQL, Managed Cloud (EU), TLS"
   devStack:
-    - Node.js (LTS Runtime)
+    - Node.js
     - TypeScript
-    - PostgreSQL (Persistenter SSD-Speicher)
-    - Managed Cloud (Frankfurt am Main / EU)
-    - DNS-Ingress & TLS 1.3
-    - Strikte CA-validierte Transportsicherheit
-    - Provider-Backups & kontinuierliche WAL-Archivierung
+    - PostgreSQL
+    - Managed Cloud (EU)
+    - TLS mit Zertifikatsprüfung
+    - Datenbank-Zugriffsrechte
+    - Automatisierte Tests
   aiBuilders:
     - Antigravity
-  notice: "BECC v2 ist die gehärtete Backend- und Auswertungsinfrastruktur für Evidenz- und Bereitschaftsprüfungen von BridGenta. Die Fallstudie dokumentiert verifizierte Architekturentscheidungen und operative Kennzahlen. Interne Zugangsdaten, Passwörter und sensitive Infrastruktur-Details verbleiben geschützt."
+  notice: "Die beschriebene Entwicklungsphase ist abgeschlossen. Die Fallstudie unterscheidet getestete Funktionen von eingerichteten und noch offenen Prüfungen. Die BECC Operations Console ist ein Interface-Entwurf und kein Nachweis für Live-Monitoring. Interne Zugangsdaten und sicherheitskritische Einstellungen werden nicht veröffentlicht."
 ---
 
 ## Kurzfassung
 
-BECC v2 (*BridGenta Evidence & Constitutional Check*) ist eine headless betriebene Backend- und Verifikationslaufzeit, die technische Bereitschaftskriterien, Governance-Entscheidungen und einen strukturierten, integren Audit-Ledger mit validierten Zugriffskontrollen bereitstellt.
+BECC v2 (*BridGenta Evidence & Constitutional Check*) ist ein regelbasiertes Prüfsystem. Es bewertet technische Nachweise und Ergebnisse anhand festgelegter Regeln und Anforderungen. Die Entscheidungen und Prüfergebnisse werden gespeichert, damit sie später nachvollzogen werden können.
 
-Dieses Dokument richtet sich an Cloud-Architekten, Backend-Ingenieure und technische Auditoren. Es beschreibt den Übergang von einer flüchtigen Entwicklungsumgebung zu einer gehärteten Cloud-Infrastruktur unter realen operativen Rahmenbedingungen: persistente Datenspeicherung in der Region Frankfurt am Main, strikte CA-validierte Transportsicherheit ohne Ausnahme, ein dauerhaft betriebener Container-Dienst zur Minimierung leerlaufbedingter Kaltstarts, automatisierte Provider-Backups mit kontinuierlicher WAL-Archivierung (Point-in-Time-Recovery-Fähigkeit), ein praktisch verifizierter logischer Restore-Drill für Testbestände sowie über 300 automatisierte Tests unter Einhaltung eines monatlichen Budgets von unter 15,00 €.
+Im Mittelpunkt steht ein Backend-Dienst. Er verarbeitet Prüfungen und nutzt eine PostgreSQL-Datenbank. Für den Betrieb wurde eine Managed-Cloud-Umgebung innerhalb der EU eingerichtet. Dabei waren drei Fragen besonders wichtig: Bleiben die Daten erhalten? Sind die Verbindungen geschützt? Haben Anwendungen nur die Rechte, die sie benötigen?
 
----
+Für BECC wurde auch eine **Operations Console** entworfen. Sie zeigt, wie sich der Zustand des Dienstes und wichtige Prüfungen darstellen lassen. **Die bisher gezeigte Konsole ist ein Designkonzept.** Ihre Ansichten und Beispielwerte sind kein Nachweis für eine bereits laufende Bedienoberfläche.
 
-## Warum dieses Projekt entstand
+Automatisierte Tests prüfen Teile der Anwendung. Zusätzlich wurde ein logischer Export und Import von künstlich erstellten Testdaten erprobt. **Eine vollständige Wiederherstellung aus den Backups des Cloud-Anbieters wurde dagegen noch nicht getestet.** Auch die monatlichen Kosten sind bisher als Kalkulation zu verstehen.
 
-Viele moderne Softwarearchitekturen stützen sich zunehmend auf generative KI-Systeme und automatisierte Agenten. Ohne eine unabhängige, deterministische Prüfinstanz besteht jedoch das Risiko, dass synthetische oder fehlerhafte Behauptungen ungeprüft in Produktionsprozesse einfließen.
+## Warum BECC v2 entstand
 
-BECC v2 wurde als verlässliche Gegeninstanz konzipiert: Ein deterministischer Prüf- und Ledger-Dienst, der Governance-Entscheidungen und Nachweise fortlaufend in einem anfügebasierten Protokoll (Append-Only) erfasst. Ein solches Prüfsystem kann seine Aufgabe jedoch nur glaubwürdig erfüllen, wenn seine eigene Betriebsumgebung verlässliche Standards an Persistenz, Ausfallsicherheit und Datensicherheit erfüllt.
+Softwareprojekte müssen wichtige Entscheidungen häufig mit Nachweisen begründen. Besonders bei KI-gestützter Entwicklung darf ein überzeugend formulierter Text nicht mit einem geprüften Ergebnis verwechselt werden.
 
-<div class="engineering-insight">
-  <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">Ein Evidenz- und Governance-System verliert seine Glaubwürdigkeit, wenn sein zugrundeliegender Audit-Speicher flüchtig ist oder Datenverbindungen ohne strikte Zertifikatsprüfung erfolgen. Operative Härtung ist das Fundament vertrauenswürdiger Software.</p>
-</div>
+BECC soll technische Ergebnisse mit festgelegten Anforderungen vergleichen und wichtige Entscheidungen dokumentieren. Dabei bedeutet *Constitutional Check*, dass bestimmte Regeln für die Bewertung gelten. Welche konkreten Prüfregeln die aktuelle Version ausführt, muss in der technischen Dokumentation belegt werden.
 
----
+Die Prüfungen können nur zuverlässig genutzt werden, wenn auch ihre technische Grundlage funktioniert. Deshalb wurde die bisherige Entwicklungsumgebung für einen dauerhaften Betrieb überarbeitet.
 
-## Ausgangssituation: Die fünf operativen Herausforderungen
+## Die fünf Herausforderungen
 
-Im Rahmen der technischen Bestandsaufnahme wurden fünf wesentliche Herausforderungen identifiziert, die für einen verlässlichen Produktivbetrieb gelöst werden mussten:
+1. **Daten dauerhaft speichern:** In der früheren Testumgebung konnten Daten nach einer Zeit der Inaktivität verloren gehen.
+2. **Backups und Wiederherstellung:** Daten sollten gesichert werden. Zusätzlich musste geklärt werden, welche Wiederherstellung wirklich getestet wurde.
+3. **Verbindungen absichern:** Die Anwendung sollte Zertifikate prüfen, bevor sie eine Datenbankverbindung akzeptiert.
+4. **Leerlauf vermeiden:** Der Dienst sollte nicht allein wegen längerer Inaktivität automatisch abgeschaltet werden.
+5. **Eigene Adresse einrichten:** Der Backend-Dienst sollte unter `becc.bridgenta.de` erreichbar sein.
 
-1. **Flüchtige Datenhaltung**: Die anfängliche Entwicklungsdatenbank lief auf einer temporären Testinstanz mit automatischem Datenverlust nach Inaktivität.
-2. **Datensicherung & Wiederherstellung**: Es fehlten ein automatisiertes Snapshot-Konzept, eine kontinuierliche Transaktionsarchivierung für zeitpunktgenaue Wiederherstellungen sowie ein praktisch verifizierter Restore-Drill.
-3. **Transportsicherheit & Zertifikatsvalidierung**: Datenbankverbindungen in Cloud-Umgebungen bergen Risiken, wenn Zertifikatsprüfungen deaktiviert werden; gefordert war eine strikte CA-Validierung (`rejectUnauthorized: true`).
-4. **Instanz-Schlafzustände & Latenz**: Kostenfreie Instanzen wurden bei Inaktivität heruntergefahren, was zu unvorhersehbaren Kaltstartverzögerungen für anfragende Clients führte.
-5. **Domain-Integration & Ingress-Routing**: Die Anwendung war nur über generische Standard-Hostnamen erreichbar und musste sauber in die primäre Domain-Architektur (`becc.bridgenta.de`) eingebunden werden.
+## Wie die Architektur aufgebaut ist
 
----
+Für BECC v2 wurde eine Managed-Cloud-Lösung innerhalb der EU gewählt. Sie reduziert den Aufwand, der beim eigenen Betrieb von Servern und Datenbanken entstehen würde. Die Lösung nutzt einen Cloud-Anbieter. Das vereinfacht die Verwaltung, schafft aber auch eine Abhängigkeit von diesem Anbieter.
 
-## Architekturentscheidung & Cloud-Topologie
+- **Backend-Dienst:** Führt die Anwendung aus und stellt technische Schnittstellen bereit.
+- **PostgreSQL:** Speichert Prüfergebnisse und andere benötigte Datensätze dauerhaft.
+- **TLS:** Verschlüsselt Verbindungen. Die Anwendung soll auch die Identität des Datenbankservers über ein gültiges Zertifikat prüfen.
+- **Zustandsprüfungen:** Schnittstellen liefern Informationen über den Dienst und seine Bereitschaft für Anfragen.
+- **Provider-Backups:** Die Cloud-Plattform stellt Sicherungs- und Wiederherstellungsfunktionen bereit. Ihre tatsächliche Konfiguration und ein vollständiger Wiederherstellungstest werden getrennt bewertet.
 
-Für die Schließung dieser Herausforderungen wurden verschiedene Bereitstellungsmodelle (Multi-Cloud vs. Managed Single-Provider) evaluiert.
+Die Architektur wurde bewusst einfach gehalten. Sie ist **kein** hochverfügbares System mit mehreren unabhängigen Rechenzentren.
 
-Aus Gründen operativer Einfachheit, Latenzminimierung innerhalb der EU und Vermeidung von Egress-Kosten fiel die Entscheidung auf eine **Single-Provider-Topologie in der Region Frankfurt am Main (Deutschland / EU)**:
+## Datenbankrechte und Schutz des Audit-Protokolls
 
-- **Ingress & Edge-Routing**: Client-Anfragen erreichen den Dienst über die dedizierte Domain `https://becc.bridgenta.de`. Die Edge terminiert TLS über moderne Cipher-Suiten (TLS 1.3) mit automatisch verwalteten Zertifikaten.
-- **Compute-Dienst**: Ein kontinuierlich betriebener Container-Daemon auf Basis von Node.js LTS führt die TypeScript-Laufzeit aus und verhindert das automatische Abschalten bei Leerlauf.
-- **Datenbank & Persistenz**: Eine dedizierte PostgreSQL-Instanz auf persistentem SSD-Speicher in derselben Cloud-Region sichert den Audit-Ledger dauerhaft ab.
-- **Sichere Inter-Service-Kommunikation**: Die Verbindung zwischen Anwendungsinstanz und Datenbank erfolgt verschlüsselt über strikt CA-validiertes TLS.
+BECC nutzt unterschiedliche Datenbankrollen. Die normale Anwendungsrolle erhält nur die Rechte, die sie für ihre Aufgaben benötigt.
 
----
+In den dokumentierten Rollentests wurden Zugriffe wie `UPDATE`, `DELETE` und `CREATE TABLE` für die eingeschränkte Rolle abgewiesen. Damit soll verhindert werden, dass diese Rolle frühere Einträge verändert oder Tabellen neu anlegt.
 
-## Persistente Datenhaltung & Rollentrennung
+Ein solches Audit-Protokoll wird oft *Append-Only* genannt: Neue Einträge werden ergänzt. Bereits gespeicherte Einträge sollen durch die normale Anwendung nicht geändert werden.
 
-Die Datenbank wurde dauerhaft auf persistenten SSD-Speicher umgestellt. Temporäre Speicherbegrenzungen und Ablauf-Timer wurden vollständig beseitigt.
+**Wichtig:** Diese Regeln machen die Datenbank nicht absolut manipulationssicher. Berechtigte Administratoren, übergeordnete Rollen und Wiederherstellungsprozesse können andere Möglichkeiten haben. BECC verwendet laut bisheriger Fallstudie keine kryptografische Signaturkette, mit der jede nachträgliche Änderung unabhängig erkannt werden könnte.
 
-Zur Durchsetzung des Prinzips der geringsten Rechte (*Least Privilege*) wurde eine strikte administrative Rollentrennung implementiert:
+## Sichere Verbindungen mit TLS
 
-| Zugriffsebene | Zugriffsrechte | Verwendungszweck |
+Eine TLS-Verbindung verschlüsselt Daten während der Übertragung. Zusätzlich muss die Anwendung kontrollieren, ob sie wirklich mit dem vorgesehenen Server spricht.
+
+Die BECC-Konfiguration sieht eine strenge Zertifikatsprüfung vor. Der Parameter `rejectUnauthorized: true` ist dabei ein technischer Bestandteil. Ob die vollständige Zertifikatskette des produktiven Cloud-Anbieters geprüft wurde, muss aus den tatsächlichen Verbindungs- und Testnachweisen hervorgehen.
+
+**Technische Erkenntnis:** Verschlüsselung und die Prüfung der Server-Identität sind zwei verschiedene Schutzmaßnahmen. Beides ist wichtig.
+
+## Betrieb und Diagnose
+
+BECC v2 wurde für einen dauerhaft aktiven Betrieb konfiguriert. Das soll Kaltstarts nach längerer Inaktivität vermeiden. Wartung, Neustarts oder neue Versionen können trotzdem zu Unterbrechungen führen.
+
+Unter `becc.bridgenta.de` stellt der Dienst technische Schnittstellen bereit. Dazu gehören `/health`, `/ready` und `/version`.
+
+- **Health:** Gibt Auskunft über den Zustand des Dienstes.
+- **Readiness:** Soll zeigen, ob der Dienst Anfragen bearbeiten kann.
+- **Version:** Liefert Informationen zur eingesetzten Softwareversion.
+
+Welche Abhängigkeiten die einzelnen Prüfungen tatsächlich testen und wie sie vom Cloud-Anbieter verwendet werden, muss anhand der aktuellen Implementierung bestätigt werden.
+
+## Backups: Was geprüft wurde und was offen ist
+
+Eine vorhandene Backup-Funktion ist noch kein Beweis dafür, dass sich ein verlorenes System vollständig wiederherstellen lässt.
+
+Für BECC wurde nach den vorhandenen Projektberichten ein **logischer Export und Import mit künstlich erstellten Testdaten** durchgeführt. Die Daten wurden innerhalb der vorhandenen Datenbank in einem getrennten Zielschema wieder eingespielt und mit dem Ausgangsbestand verglichen. Die genaue Vergleichsmethode muss noch anhand des Prüfprotokolls bestätigt werden.
+
+Dieser Test zeigt nur die Wiederherstellung über den getesteten Export- und Import-Weg. **Er bestätigt weder eine Wiederherstellung aus Provider-Backups noch eine Point-in-Time-Recovery auf einer neuen Instanz.** Ebenso wurden keine belastbaren Wiederherstellungszeiten (RTO) oder maximalen Datenverluste (RPO) nachgewiesen.
+
+Die vom Anbieter angebotene Wiederherstellung auf einen früheren Zeitpunkt heißt *Point-in-Time-Recovery (PITR)*. Ihr tatsächliches Zeitfenster hängt von Tarif und Konfiguration ab und wird hier bewusst nicht als bereits geprüfter Wert angegeben.
+
+Der offene Nachweis wird als `GAP-PROD-002` geführt.
+
+## Automatisierte Tests
+
+In den bisherigen technischen Projektunterlagen werden **mehr als 300 automatisierte Tests in 31 Testsuiten** genannt. Sie betreffen unter anderem Dienststart, Datenbankrechte, TLS-Verbindungen und das Verhalten bei mehreren Dienstinstanzen.
+
+Ein Teil dieser Tests nutzt eine eigenständige PostgreSQL-Testumgebung. Ergebnisse aus einer solchen Umgebung dürfen nicht automatisch als Produktionsnachweis gelten.
+
+Die genaue Zahl der bestandenen, fehlgeschlagenen und übersprungenen Tests sowie der geprüfte Stand der Software müssen aus einem zugeordneten Testbericht übernommen werden. **Die Anzahl von Tests ist nicht dasselbe wie Testabdeckung.**
+
+## Was ist umgesetzt, getestet oder noch offen?
+
+| Bereich | Status | Aussage und Grenze |
 |---|---|---|
-| **Administrations- & Migrationsebene** | Superuser- / DDL-Rechte / Schemaberechtigung | Ausschließlich für kontrollierte Schema-Migrationen und Initialisierung |
-| **Laufzeitebene (Application)** | Streng limitiert: Nur lesende und anfügende Rechte (`SELECT`, `INSERT`) auf Ledger-Tabellen | Regulärer Anwendungsbetrieb / Append-Only Ledger |
+| Managed-Cloud-Betrieb innerhalb der EU | Umgesetzt | Hosting-Konfiguration laut Projektunterlagen; keine Zusage ohne Unterbrechungen |
+| Dauerhafte PostgreSQL-Datenbank | Umgesetzt und betriebsgeprüft | Persistenz im untersuchten Betrieb; kein Beweis für Wiederherstellung nach vollständigem Ausfall |
+| Eingeschränkte Datenbankrolle | Lokal getestet | Bestimmte Änderungs- und Verwaltungsbefehle wurden abgewiesen; keine absolute Manipulationssicherheit |
+| TLS mit Zertifikatsprüfung | Konfiguriert und teilweise getestet | Lokale Testumgebung und produktive Zertifikatskette getrennt nachweisen |
+| Logischer Export und Import | Begrenzt getestet | Künstliche Testdaten innerhalb derselben Datenbank; Vergleichsmethode noch zu belegen |
+| Backups des Cloud-Anbieters | Konfiguration zu verifizieren | Vollständige Wiederherstellung nicht getestet |
+| Point-in-Time-Recovery | Offen | Tarif, Wiederherstellungsfenster und vollständiger Restore-Test noch zu belegen |
+| Mehr als 300 automatisierte Tests | Berichtet | Exakte Ergebnisse und Softwarestand noch mit Prüfbericht verknüpfen |
+| Monatliche Betriebskosten | Kalkuliert | Frühere Schätzung: etwa 13–14 €; inklusive Steuern, Speicher und Datenverkehr nicht abschließend geprüft |
+| BECC Operations Console | Entwurf | Darstellung eines möglichen Betriebs-Dashboards; angezeigte Beispielwerte sind keine Live-Messungen |
 
-Versuche der regulären Anwendungsrolle, Schemata zu verändern (`CREATE TABLE`), neue Rollen anzulegen oder bestehende Audit-Einträge nachträglich zu modifizieren (`UPDATE`, `DELETE`), werden von der Datenbank-Engine strikt mit `permission denied` abgewiesen. Diese Berechtigungsgrenzen reduzieren die möglichen Auswirkungen anwendungsseitiger Fehler und bestimmter Injection-Angriffe. Sie verhindern SQL-Injection nicht selbst. Administrative Datenbankzugriffe mit höheren Berechtigungen bleiben davon unberührt.
+## Welche Grenzen bleiben bestehen?
 
----
+- **Keine vollständige Wiederherstellungsprüfung:** Ein echter Restore aus einem Provider-Backup auf eine neue Instanz steht aus.
+- **Keine garantierte Hochverfügbarkeit:** Der Betrieb umfasst kein belegtes System mit mehreren unabhängigen Rechenzentren und automatischer Umschaltung.
+- **Keine externe Sicherheitsprüfung:** Ein externer Penetrationstest ist nicht dokumentiert.
+- **Keine formelle Zertifizierung:** Es wird keine ISO-27001-, SOC-2- oder vergleichbare Zertifizierung beansprucht.
+- **Kein kryptografisch manipulationssicheres Ledger:** Die vorhandenen Rollenregeln ersetzen keine unabhängige Signatur- oder Hash-Kette.
+- **Keine bestätigte Kostenobergrenze:** Die Zahlen sind bisher Schätzungen, keine geprüfte Jahres- oder Monatsabrechnung.
 
-## Strikte Transportsicherheit & CA-Validierung
+## Was wir aus diesem Projekt gelernt haben
 
-Bei Cloud-Datenbanken greifen Entwicklungsteams häufig auf unsichere Behelfskonfigurationen wie `sslmode=no-verify` oder `rejectUnauthorized: false` zurück, um Verbindungsprobleme mit Zertifikaten zu umgehen. Dies hebt wesentliche Sicherheitsgarantien auf und exponiert Verbindungen für Man-in-the-Middle-Angriffe (MitM).
+BECC v2 zeigt, dass technische Zuverlässigkeit aus mehreren Teilen besteht: dauerhafte Speicherung, begrenzte Zugriffsrechte, sichere Verbindungen, verständliche Zustandsprüfungen und nachvollziehbare Testergebnisse.
 
-Für BECC v2 wurde jeglicher Verzicht auf Zertifikatsprüfungen kategorisch ausgeschlossen:
-- **Validierungsrichtlinie**: Strikte Erzwingung von `rejectUnauthorized: true` ohne Ausnahme.
-- **Trust Store**: Verifikation gegen das offizielle Mozilla-CA-Wurzelzertifikate-Bündel der Node.js-Laufzeit.
-- **Ergebnis**: Robuster Schutz des Transportwegs zwischen Anwendungsinstanz und Datenbank gegen Abhören und unbemerkte Manipulation durch konsequente Zurückweisung nicht vertrauenswürdiger Zertifikate.
+Die wichtigste Erkenntnis lautet: **Eingerichtet bedeutet nicht automatisch getestet. Und ein bestandener Test beweist nur das, was tatsächlich geprüft wurde.**
 
-<div class="engineering-insight">
-  <div class="engineering-insight__title">Technische Erkenntnis</div>
-  <p class="engineering-insight__text">TLS ohne strikte CA-Validierung bietet nur die Illusion von Sicherheit. Echte Transportverschlüsselung erfordert die konsequente Zurückweisung unbestätigter Zertifikate (rejectUnauthorized: true) als nicht verhandelbare Richtlinie.</p>
-</div>
+## Grundlage und Stand der Fallstudie
 
----
+Diese Fallstudie beschreibt ein echtes Softwareprojekt. Sie beruht auf Entwicklungs- und Testberichten, die während der Arbeit an BECC v2 entstanden sind. Aus Sicherheitsgründen werden interne Zugangsdaten und kritische Infrastrukturdetails nicht veröffentlicht.
 
-## Always-On Runtime & Betriebsverhalten
-
-Die Laufzeitinstanz wurde auf einen dauerhaft aktiven Betriebsmodus umgestellt, wodurch das automatische Herunterfahren bei Inaktivität eliminiert wurde:
-
-- **Reduzierung von Kaltstarts**: Der Dienst vermeidet das lastunabhängige Herunterfahren bei Leerlauf, wie es bei kostenfreien Tarifen üblich ist.
-- **Kontinuierlicher Daemon**: Der Hintergrunddienst läuft stabil als ressourcenschonender Daemon mit geringem Speicherbedarf, sodass ausreichender Puffer für Lastspitzen verbleibt.
-- **Betriebsgrenzen**: Die Konfiguration zielt auf kontinuierliche Erreichbarkeit ab; planmäßige Versions-Rollouts, Container-Neustarts oder providerseitige Plattformwartungen bedingen jedoch kurze, betriebsübliche Unterbrechungsintervalle.
-
----
-
-## Produktiv-Domain & DNS-Ingress
-
-Die Anwendung wurde nahtlos in die bestehende Domain-Architektur von `bridgenta.de` integriert:
-
-- **Hostname**: `https://becc.bridgenta.de`
-- **DNS-Verwaltung**: Managed CNAME-Delegation auf die Cloud-Ingress-Infrastruktur.
-- **Edge-Zertifikat**: Automatisch verwaltetes TLS-Zertifikat mit vollständiger SNI-Unterstützung und moderner Cipher-Suite (TLS 1.3).
-- **Verifikationsstatus**: Verifiziert ohne Weiterleitungsschleifen oder Hostname-Konflikte.
-
----
-
-## Betriebstelemetrie & Zustandserkennung
-
-Um den Zustand des Dienstes transparent und automatisiert überwachbar zu machen, implementiert BECC v2 standardisierte Schnittstellen zur Zustandserkennung:
-
-- **Service-Index**: Liefert grundlegende Status- und Routing-Informationen für berechtigte Diagnoseaufrufe.
-- **Tiefgehende Liveness-Prüfung**: Verifiziert kontinuierlich die interne Systembereitschaft einschließlich einer aktiven, verifizierten Datenbankverbindung.
-- **Readiness-Prüfung**: Signalisiert vorgeschalteten Ingress- und Routing-Komponenten die Bereitschaft zur Verarbeitung eingehender Anfragen.
-- **Metadaten- & Versionsidentifikation**: Stellt semantische Versionsangaben und Release-Identifikatoren für das Änderungsmanagement bereit.
-
-Die Diagnosefunktionen wurden auf minimale Informationspreisgabe ausgelegt: Sie stellen betriebliche Statusinformationen für Monitoring und vorgeschaltete Gateways bereit, ohne interne Zugangsdaten oder sensitive Konfigurationsparameter zu exponieren.
-
----
-
-## Datensicherung, PITR-Fähigkeit & Verifizierter Restore-Drill
-
-Ein Datensicherungskonzept ist erst dann bewährt, wenn die Wiederherstellung in der Praxis erfolgreich getestet wurde.
-
-### Providerseitige Datensicherung & PITR-Fähigkeit
-Die persistente PostgreSQL-Instanz wird durch automatisierte tägliche Snapshots des Cloud-Providers und kontinuierliche Transaktionsarchivierung (Write-Ahead-Logs, WAL) gesichert. Dies stellt die technische Grundlage für ein Point-in-Time-Recovery (PITR) über ein rollierendes Zeitfenster von sieben Tagen auf Plattformebene bereit.
-
-### Der Verifizierte Restore-Drill (Logischer Export/Import)
-Um die logische Wiederherstellbarkeit und Strukturintegrität des Audit-Ledgers nachzuweisen, ohne zusätzliche Kosten für parallele Cloud-Instanzen zu verursachen, wurde ein zielgerichteter Restore-Drill durchgeführt:
-
-1. **Testbestand**: Ein synthetischer Testdatenbestand wurde im Ledger hinterlegt.
-2. **Isolierter Wiederherstellungspfad**: Die Wiederherstellung erfolgte über einen kontrollierten logischen Export- und Reimport-Prozess in ein isoliertes Zielschema innerhalb der Datenbank.
-3. **Integritätsprüfung**: Alle wiederhergestellten Datensätze wurden mit dem Ausgangsbestand verglichen. Für den synthetisch erprobten Testdatenbestand wurde vollständige Datenparität und strukturelle Identität nachgewiesen.
-4. **Bereinigung**: Nach Abschluss der Prüfung wurden die temporären Wiederherstellungsstrukturen rückstandslos bereinigt.
-
-*Hinweis zur Abgrenzung:* Dieser Test verifizierte den logischen Wiederherstellungsprozess und die Schemakonsistenz. Eine vollständige physische Point-in-Time-Wiederherstellung auf eine neue Provider-Instanz war nicht Gegenstand dieses isolierten Drills.
-
----
-
-## Kostendisziplin & Budgettreue
-
-Eine zentrale Leitlinie des Projekts war der Nachweis, dass eine gehärtete, persistente und abgesicherte Backend-Architektur auch mit minimalen Betriebskosten realisierbar ist:
-
-- **Budgetrahmen**: Ausgelegt auf eine Obergrenze von maximal **15,00 € pro Monat**.
-- **Kalkulierte Laufzeitkosten**: Die Kombination aus managed SSD-Datenbankspeicher und Always-On Container-Compute bewegt sich im Rahmen von ca. 13,00 € bis 14,00 € monatlich.
-- **Wirtschaftlichkeit**: Das Projekt belegt, dass fundamentale Zuverlässigkeitskriterien (Persistenz, strikte TLS-Prüfung, Backups, Health-Monitoring) auch mit kostenbewussten Basistarifen strukturiert umsetzbar sind.
-
----
-
-## Testabdeckung & Automatisierte Verifikation
-
-Die Verlässlichkeit der BECC-Laufzeit wird durch eine umfassende, automatisierte Testsuite in der Testumgebung sichergestellt:
-
-- **Gesamtzahl Tests**: **Über 300 automatisierte Tests** (31 Test-Suiten).
-- **Test-Schwerpunkte**:
-  - Dienst-Lebenszyklus und Diagnose-Schnittstellen.
-  - Standalone-PostgreSQL-Testbed mit Container-Isolation.
-  - Rollentrennung, DDL-Restriktionen und Ledger-Integrität.
-  - Multi-Instanz-Zertifizierung und Fehlertoleranz.
-  - Strict-TLS-Handshake und Ablehnung unverschlüsselter oder unzertifizierter Verbindungen.
-- **Ausführungsstatus**: Vollständig erfolgreich in der lokalen Testumgebung und der Continuous-Integration-Pipeline.
-
----
-
-## Was nachgewiesen wurde vs. Was explizit nicht beansprucht wird
-
-Zur Wahrung technischer Redlichkeit und Vermeidung irreführender Zusagen gilt folgende klare Abgrenzung:
-
-### Verifizierte Nachweise
-- Echte Persistenz auf SSD-Speicher in der Region Frankfurt am Main ohne Ablaufdatum.
-- Strikte CA-validierte TLS-Verschlüsselung zur Datenbank ohne Ausnahme (`rejectUnauthorized: true`).
-- Kontinuierliche Transaktionsarchivierung (7-Tage-PITR-Fähigkeit auf Provider-Ebene) und ein erfolgreich durchgeführter logischer Restore-Drill für Testdatenbestände.
-- Dauerhafter Container-Betrieb zur Minimierung lastunabhängiger Kaltstarts.
-- Dedizierte Subdomain `becc.bridgenta.de` mit Edge-TLS 1.3.
-- Über 300 bestandene automatisierte Tests unter Einhaltung des Budgetrahmens (< 15,00 €/Monat).
-
-### Explizit nicht beansprucht
-- **Kein Multi-AZ-Hochverfügbarkeitscluster**: Robuste Einzelinstanz im Managed-Einstiegstarif ohne automatisierten Multi-Rechenzentrum-Hot-Standby-Failover.
-- **Keine formelle Konformitäts- oder DR-Zertifizierung**: Eigenprojekt ohne ISO 27001, SOC 2 oder NIS2 Zertifizierung.
-- **Kein externer Penetrationstest**: Sicherheitsarchitektur basiert auf anerkannten Prinzipien (Least Privilege, Strict TLS), wurde jedoch keinem externen Red-Teaming unterzogen.
-- **Keine absolute Ausfallsicherheit / Kein Zero-Downtime-Versprechen**: Versions-Rollouts und providerseitige Plattformwartungen bedingen minimale, betriebsübliche Neustartintervalle.
-- **Keine kryptografische Signaturkette / Kein manipulationssicheres Hardware-Ledger**: Das System erzwingt rollenbasierte Append-Only-Zugriffsregeln in der Datenbank, beinhaltet jedoch kein HSM, keine asymmetrischen Signaturen und keine Blockchain-artige Verkettung.
-
----
-
-## Evidenz- und Prüfgrundlagen
-
-Die in dieser Fallstudie dargestellten Architekturentscheidungen und Testergebnisse basieren auf versionierten, repository-gestützten Prüf- und Auditprotokollen:
-
-- **Architektur- und Anforderungsabgleiche**: Systematische Erfassung der operativen Härtungsanforderungen von flüchtigen Testsystemen hin zu persistenten Datenstrukturen.
-- **Evaluierung & Budgetkontrolle**: Dokumentierte Provider- und Architekturentscheidungen unter kontinuierlicher Einhaltung des Kostendeckels.
-- **Sicherheits- & TLS-Protokolle**: Verifizierte Nachweise zur Durchsetzung strikter Zertifikatsprüfung und Rollentrennung.
-- **Test- & Drill-Dokumentation**: Reproduzierbare Prüfberichte zu Datenparität, Wiederherstellbarkeit und automatisierter Testabdeckung.
+Die genaue Zuordnung einzelner Aussagen zu Testläufen, Commits und Prüfprotokollen wird vor der Freigabe dieser Textfassung noch abgeschlossen. Bis dahin ist dieses Dokument ein **redaktioneller Entwurf, keine zur Veröffentlichung freigegebene Fallstudie**.
