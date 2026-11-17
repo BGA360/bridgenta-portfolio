@@ -219,7 +219,6 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
     const fixtureUrl = `http://127.0.0.1:${port}/test-mermaid-acceptance-cdp.html`;
 
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chrome-mtest-'));
-    const isWindows = os.platform() === 'win32';
     const chrome = spawn(browserBinary, [
       '--headless=new',
       '--disable-gpu',
@@ -228,9 +227,7 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
       `--user-data-dir=${tmpDir}`,
       '--remote-debugging-port=0',
       fixtureUrl
-    ], {
-      detached: !isWindows
-    });
+    ]);
 
     let wsUrl = null;
     chrome.stderr.on('data', chunk => {
@@ -246,6 +243,7 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
       await new Promise(r => setTimeout(r, 100));
     }
     assert.ok(wsUrl, 'Chrome DevTools WebSocket endpoint must be established');
+    try { chrome.stderr.destroy(); } catch {}
 
     const devtoolsPort = new URL(wsUrl).port;
     const listRes = await fetch(`http://127.0.0.1:${devtoolsPort}/json/list`);
@@ -335,14 +333,22 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
       returnByValue: true
     });
 
-    try { ws.close(); } catch {}
+    // Teardown browser via CDP Browser.close and process kill
     try {
-      if (isWindows) {
-        chrome.kill('SIGKILL');
-      } else {
-        process.kill(-chrome.pid, 'SIGKILL');
-      }
+      const browserWs = new WebSocket(wsUrl);
+      await new Promise((r) => {
+        browserWs.onopen = () => {
+          browserWs.send(JSON.stringify({ id: 999, method: 'Browser.close' }));
+          setTimeout(r, 200);
+        };
+        browserWs.onerror = r;
+      });
+      browserWs.close();
     } catch {}
+
+    try { ws.close(); } catch {}
+    try { chrome.kill('SIGKILL'); } catch {}
+    try { chrome.unref(); } catch {}
 
     if (typeof server.closeAllConnections === 'function') {
       server.closeAllConnections();
