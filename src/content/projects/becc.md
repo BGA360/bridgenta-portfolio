@@ -7,7 +7,7 @@ seoDescription: "BECC v2 im Praxisbericht: Prüfregeln, PostgreSQL, sichere Verb
 schemaType: "SoftwareApplication"
 sidebar:
   category: "Backend-Entwicklung / Cloud-Infrastruktur"
-  status: "Abgeschlossen"
+  status: "In Entwicklung"
   timeline: "Oktober 2026"
   role: "Backend & Cloud Infrastructure Engineer"
   technologies: "Node.js, TypeScript, PostgreSQL, Managed Cloud (EU), TLS"

@@ -117,15 +117,17 @@ const heroImage = registry.heroImage || undefined;
             <img 
               src={heroImage} 
               alt={
-                entry.slug === 'aeocortex' 
-                  ? "AEOcortex-Plattformübersicht mit Dashboard-Ansicht" 
-                  : entry.slug === 'luminapraxisds'
-                    ? "Lumina Praxis Plattformübersicht und Website-Mockup"
-                    : entry.slug === 'rootedrealitygarden'
-                      ? "Rooted Reality Gardens – Konzept-Visualisierung zur Verknüpfung von regenerativem Landschaftsdesign und Entity-SEO-Schema."
-                      : entry.slug === 'starcleaners'
-                        ? "StarCleaners Portfolio-Visual mit einer rekonstruierten Premium-Reinigungswebsite für anspruchsvolle Wohnräume."
-                        : `${entry.data.title} Product Showcase Dashboard`
+                entry.slug === 'becc'
+                  ? "BECC v2 – Konzeptillustration der Backend-Architektur mit Cloud-Dienst, PostgreSQL, TLS und technischen Prüfungen."
+                  : entry.slug === 'aeocortex' 
+                    ? "AEOcortex-Plattformübersicht mit Dashboard-Ansicht" 
+                    : entry.slug === 'luminapraxisds'
+                      ? "Lumina Praxis Plattformübersicht und Website-Mockup"
+                      : entry.slug === 'rootedrealitygarden'
+                        ? "Rooted Reality Gardens – Konzept-Visualisierung zur Verknüpfung von regenerativem Landschaftsdesign und Entity-SEO-Schema."
+                        : entry.slug === 'starcleaners'
+                          ? "StarCleaners Portfolio-Visual mit einer rekonstruierten Premium-Reinigungswebsite für anspruchsvolle Wohnräume."
+                          : `${entry.data.title} Product Showcase Dashboard`
               }
               class="project-showcase-image"
               loading="eager"
@@ -156,6 +158,7 @@ const heroImage = registry.heroImage || undefined;
           aiBuilders={entry.data.sidebar.aiBuilders}
           role={entry.data.sidebar.role}
           notice={entry.data.sidebar.notice}
+          noticeTitle={entry.slug === 'becc' ? 'Aktueller Entwicklungsstand' : undefined}
         />
       </div>
 
