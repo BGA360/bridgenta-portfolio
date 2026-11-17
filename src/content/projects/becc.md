@@ -7,7 +7,7 @@ seoDescription: "BECC v2 im Praxisbericht: Prüfregeln, PostgreSQL, sichere Verb
 schemaType: "SoftwareApplication"
 sidebar:
   category: "Backend-Entwicklung / Cloud-Infrastruktur"
-  status: "Abgeschlossen"
+  status: "In Entwicklung"
   timeline: "Oktober 2026"
   role: "Backend & Cloud Infrastructure Engineer"
   technologies: "Node.js, TypeScript, PostgreSQL, Managed Cloud (EU), TLS"
@@ -144,6 +144,9 @@ Die wichtigste Erkenntnis lautet: **Eingerichtet bedeutet nicht automatisch gete
 
 ## Grundlage und Stand der Fallstudie
 
-Diese Fallstudie beschreibt ein echtes Softwareprojekt. Sie beruht auf Entwicklungs- und Testberichten, die während der Arbeit an BECC v2 entstanden sind. Aus Sicherheitsgründen werden interne Zugangsdaten und kritische Infrastrukturdetails nicht veröffentlicht.
+Diese Fallstudie beschreibt den dokumentierten Entwicklungsstand von BECC v2. Sie basiert auf echten Projektarbeiten und technischen Prüfberichten.
 
-Die genaue Zuordnung einzelner Aussagen zu Testläufen, Commits und Prüfprotokollen wird vor der Freigabe dieser Textfassung noch abgeschlossen. Bis dahin ist dieses Dokument ein **redaktioneller Entwurf, keine zur Veröffentlichung freigegebene Fallstudie**.
+Nicht alle technischen Funktionen sind bereits vollständig geprüft. Offene Nachweise werden im Artikel klar gekennzeichnet. Die Zuordnung einzelner Aussagen zu Testberichten und technischen Versionen wird weiter ergänzt.
+
+Interne Zugangsdaten und sicherheitskritische Informationen werden nicht veröffentlicht.
+

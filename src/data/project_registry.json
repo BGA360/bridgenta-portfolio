@@ -89,7 +89,7 @@
     "slug": "becc",
     "name": "BECC v2",
     "category": "Cloud-Infrastruktur / Backend-Architektur",
-    "lifecycleState": "COMPLETED",
+    "lifecycleState": "IN_DEVELOPMENT",
     "visibility": "PUBLIC",
     "featured": true,
     "featuredOrder": 6,
@@ -97,7 +97,7 @@
     "hasCaseStudy": true,
     "contentRef": "src/content/projects/becc.md",
     "cardImage": "/images/learning/becc-v2-backend-architektur-render-postgresql-tls.webp",
-    "heroImage": "",
+    "heroImage": "/images/learning/becc-v2-backend-architektur-render-postgresql-tls.webp",
     "schemaType": "SoftwareApplication",
     "learningRefs": [
       "EV-BG-002",

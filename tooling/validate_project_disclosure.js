@@ -599,17 +599,31 @@ function scanSourceMode(workspaceRoot, rules, registry, registryPath) {
     findings.push(...scanContent(projectMetaText, `src/data/project_registry.json#${project.slug}`, rules));
 
     if (project.slug === 'becc') {
-      if (project.heroImage && project.heroImage !== '') {
+      const approvedAsset = '/images/learning/becc-v2-backend-architektur-render-postgresql-tls.webp';
+      if (project.heroImage && project.heroImage !== '' && project.heroImage !== approvedAsset) {
         findings.push({
           ruleId: 'PUBSEC-ERR-ASSET-MISMATCH',
           group: 'ASSET_POLICY',
           category: 'MISLEADING_IMAGERY',
           severity: 'HIGH',
-          description: 'BECC project registry heroImage must remain cleared',
+          description: 'BECC project registry heroImage must reference the approved architecture visual or remain cleared',
           file: 'src/data/project_registry.json',
           line: 1,
           column: 1,
           matchedText: redactMatch(project.heroImage, 'MISLEADING_IMAGERY')
+        });
+      }
+      if (project.heroImage === '/images/bga-portfolio/BG-PA04-Governance.webp' || project.cardImage === '/images/bga-portfolio/BG-PA04-Governance.webp') {
+        findings.push({
+          ruleId: 'PUBSEC-ERR-ASSET-MISMATCH',
+          group: 'ASSET_POLICY',
+          category: 'MISLEADING_IMAGERY',
+          severity: 'HIGH',
+          description: 'BECC must not reference misleading governance imagery (BG-PA04-Governance.webp)',
+          file: 'src/data/project_registry.json',
+          line: 1,
+          column: 1,
+          matchedText: redactMatch('BG-PA04-Governance.webp', 'MISLEADING_IMAGERY')
         });
       }
       if (content.includes('BG-PA04-Governance.webp')) {

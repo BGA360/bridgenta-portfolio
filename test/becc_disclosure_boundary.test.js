@@ -109,7 +109,11 @@ describe('BECC Case Study Public Disclosure Boundary Regression Guard', () => {
 
     const beccEntry = registry.find((p) => p.slug === 'becc');
     assert.ok(beccEntry, 'BECC entry must exist');
-    assert.equal(beccEntry.heroImage, '', 'BECC heroImage must be cleared');
+    assert.equal(
+      beccEntry.heroImage,
+      '/images/learning/becc-v2-backend-architektur-render-postgresql-tls.webp',
+      'BECC heroImage must reference the approved architecture visual'
+    );
     assert.equal(
       beccEntry.cardImage,
       '/images/learning/becc-v2-backend-architektur-render-postgresql-tls.webp',
@@ -125,6 +129,13 @@ describe('BECC Case Study Public Disclosure Boundary Regression Guard', () => {
       '/images/bga-portfolio/BG-PA04-Governance.webp',
       'BECC heroImage must not reference misleading governance imagery'
     );
+
+    // Verify the referenced heroImage exists on disk and is a valid WebP file
+    const heroDiskPath = path.join(workspaceDir, 'public', beccEntry.heroImage.replace(/^\//, ''));
+    assert.ok(fs.existsSync(heroDiskPath), `Approved heroImage asset must exist on disk: ${heroDiskPath}`);
+    const heroHeader = fs.readFileSync(heroDiskPath);
+    assert.equal(heroHeader.toString('ascii', 0, 4), 'RIFF', 'Hero asset must have RIFF container header');
+    assert.equal(heroHeader.toString('ascii', 8, 12), 'WEBP', 'Hero asset must be a valid WebP image');
 
     // Verify the referenced cardImage exists on disk and is a valid WebP file
     const assetDiskPath = path.join(workspaceDir, 'public', beccEntry.cardImage.replace(/^\//, ''));
@@ -168,6 +179,16 @@ describe('BECC Case Study Public Disclosure Boundary Regression Guard', () => {
       html.includes('BG-PA03-Audit.webp'),
       false,
       'Built dist/project-becc/index.html must not attribute BG-PA03-Audit.webp to BECC'
+    );
+
+    // Verify approved architecture illustration is rendered with the exact approved alt text
+    assert.ok(
+      html.includes('/images/learning/becc-v2-backend-architektur-render-postgresql-tls.webp'),
+      'Built dist/project-becc/index.html must render the approved architecture visual'
+    );
+    assert.ok(
+      html.includes('BECC v2 – Konzeptillustration der Backend-Architektur mit Cloud-Dienst, PostgreSQL, TLS und technischen Prüfungen.'),
+      'Built dist/project-becc/index.html must use the approved architecture illustration alt text'
     );
   });
 
