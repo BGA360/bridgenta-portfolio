@@ -112,8 +112,8 @@ const heroImage = registry.heroImage || undefined;
 
       <!-- Framed Product Hero Image / Showcase Dashboard -->
       {heroImage && (
-        <div class="project-showcase-frame" data-reveal>
-          <div class="project-showcase-image-wrapper">
+        <div class={`project-showcase-frame ${entry.slug === 'becc' ? 'project-showcase-frame--becc-glass' : ''}`} data-reveal>
+          <div class={`project-showcase-image-wrapper ${entry.slug === 'becc' ? 'project-showcase-image-wrapper--becc-glass' : ''}`}>
             <img 
               src={heroImage} 
               alt={
@@ -129,7 +129,7 @@ const heroImage = registry.heroImage || undefined;
                           ? "StarCleaners Portfolio-Visual mit einer rekonstruierten Premium-Reinigungswebsite für anspruchsvolle Wohnräume."
                           : `${entry.data.title} Product Showcase Dashboard`
               }
-              class="project-showcase-image"
+              class={`project-showcase-image ${entry.slug === 'becc' ? 'project-showcase-image--becc-glass' : ''}`}
               loading="eager"
               width="1672"
               height="941"
@@ -285,6 +285,21 @@ const heroImage = registry.heroImage || undefined;
     background: #ffffff;
   }
 
+  /* BECC-specific premium glass-like showcase presentation */
+  .project-showcase-frame--becc-glass {
+    border: 1px solid rgba(236, 231, 234, 0.9);
+    border-color: rgba(194, 24, 91, 0.12);
+    border-radius: var(--radius-l);
+    padding: clamp(1.25rem, 2.4vw, 2rem);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.94) 0%, rgba(253, 246, 249, 0.88) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 
+      0 24px 48px -12px rgba(17, 24, 39, 0.08),
+      0 8px 24px rgba(194, 24, 91, 0.05),
+      inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    overflow: hidden;
+  }
   
   .project-showcase-image-wrapper {
     position: relative;
@@ -292,6 +307,16 @@ const heroImage = registry.heroImage || undefined;
     overflow: hidden;
     background: #ffffff;
   }
+
+  .project-showcase-image-wrapper--becc-glass {
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 
+      0 4px 16px rgba(17, 24, 39, 0.04),
+      0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+
   .project-showcase-image {
     width: 100%;
     height: auto;
@@ -300,14 +325,53 @@ const heroImage = registry.heroImage || undefined;
     object-position: center top;
   }
 
+  .project-showcase-image--becc-glass {
+    border-radius: var(--radius-m);
+    object-fit: contain;
+    width: 100%;
+    height: auto;
+  }
+
   @media (max-width: 768px) {
     .project-showcase-frame {
       border-radius: var(--radius-m);
       margin-bottom: var(--space-4);
     }
 
+    .project-showcase-frame--becc-glass {
+      border-radius: var(--radius-m);
+      padding: 0.75rem;
+      margin-bottom: var(--space-4);
+      box-shadow: 
+        0 12px 28px -6px rgba(17, 24, 39, 0.08),
+        0 4px 12px rgba(194, 24, 91, 0.04);
+    }
+
     .project-showcase-image-wrapper {
       /* max-height: 300px; */
+    }
+
+    .project-showcase-image-wrapper--becc-glass {
+      border-radius: var(--radius-s);
+    }
+
+    .project-showcase-image--becc-glass {
+      border-radius: var(--radius-s);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .project-showcase-frame--becc-glass {
+      border-radius: 16px;
+      padding: 0.5rem;
+    }
+
+    .project-showcase-image-wrapper--becc-glass {
+      border-radius: 10px;
+    }
+
+    .project-showcase-image--becc-glass {
+      border-radius: 10px;
     }
   }
 
