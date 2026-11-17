@@ -19,7 +19,8 @@
     "projects:validate": "node tooling/validate_project_registry.js",
     "projects:security-scan": "node tooling/validate_project_disclosure.js",
     "test:projects": "node --test test/project_registry.test.js test/becc_disclosure_boundary.test.js test/project_disclosure_boundary.test.js",
-    "test:integrity": "node --test test/cross_platform_integrity.test.js"
+    "test:integrity": "node --test test/cross_platform_integrity.test.js",
+    "test:mermaid": "node --test test/mermaid_local_bundling.test.js"
   },
   "dependencies": {
     "astro": "^4.11.3",
