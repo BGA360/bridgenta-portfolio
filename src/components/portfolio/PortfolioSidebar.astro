@@ -86,18 +86,12 @@ const tags = devStack || (technologies ? technologies.split(',').map(t => t.trim
       {primaryCtaText}
     </a>
   </div>
-
-  {notice && (
-    <div class="notice" style="margin-top: 1.5rem; margin-bottom: 0;">
-      <h4>{noticeTitle}</h4>
-      <p>{notice}</p>
-    </div>
-  )}
 </aside>
 
 <style>
   .portfolio-aside {
     width: 100%;
+    min-width: 0;
   }
   .sidebar-section {
     margin-top: 1.5rem;
