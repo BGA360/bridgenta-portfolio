@@ -934,29 +934,37 @@ const noticeTitle = entry.slug === 'becc' ? 'Aktueller Entwicklungsstand' : 'Hin
   }
 </style>
 
-<script is:inline>
-  document.addEventListener("DOMContentLoaded", () => {
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
     const mermaidBlocks = document.querySelectorAll(".language-mermaid");
     if (mermaidBlocks.length > 0) {
-      const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js";
-      script.onload = () => {
-        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
-        
-        mermaidBlocks.forEach((block, index) => {
-          const rawCode = block.textContent;
-          const diagramContainer = document.createElement("div");
-          diagramContainer.className = "mermaid";
-          diagramContainer.id = `mermaid-${index}`;
-          diagramContainer.textContent = rawCode;
-          
-          const preElement = block.closest("pre") || block;
+      const { default: mermaid } = await import("mermaid");
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "neutral",
+        securityLevel: "strict"
+      });
+
+      mermaidBlocks.forEach((block, index) => {
+        const rawCode = block.textContent || "";
+        const diagramContainer = document.createElement("div");
+        diagramContainer.className = "mermaid";
+        diagramContainer.id = `mermaid-${index}`;
+        diagramContainer.textContent = rawCode;
+
+        const preElement = block.closest("pre") || block;
+        if (preElement && preElement.parentNode) {
           preElement.parentNode.replaceChild(diagramContainer, preElement);
+        }
+      });
+
+      if (typeof mermaid.run === "function") {
+        await mermaid.run({
+          querySelector: ".mermaid"
         });
-        
+      } else if (typeof mermaid.init === "function") {
         mermaid.init(undefined, document.querySelectorAll(".mermaid"));
-      };
-      document.head.appendChild(script);
+      }
     }
   });
 </script>
