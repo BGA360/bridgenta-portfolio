@@ -48,16 +48,59 @@ describe('BECC Case Study Public Disclosure Boundary Regression Guard', () => {
 
   it('2. src/content/projects/becc.md maintains truthful engineering principles and measured claims', () => {
     const content = fs.readFileSync(beccMarkdownPath, 'utf8');
+    // Transportsicherheit & Datenbank
     assert.ok(content.includes('rejectUnauthorized: true'), 'Must mention strict rejectUnauthorized: true');
-    assert.ok(content.includes('Frankfurt am Main'), 'Must mention Frankfurt am Main / EU region');
     assert.ok(content.includes('PostgreSQL'), 'Must mention PostgreSQL');
-    assert.ok(content.includes('Least Privilege'), 'Must mention Least Privilege principle');
     assert.ok(content.includes('Point-in-Time-Recovery') || content.includes('PITR'), 'Must mention PITR capability');
-    assert.ok(content.includes('15,00 €'), 'Must mention budget discipline under 15,00 €');
+
+    // Hosting geography follows approved public disclosure level (EU region)
+    assert.ok(
+      content.includes('innerhalb der EU') || content.includes('Managed Cloud (EU)'),
+      'Hosting geography must follow the approved public EU regional disclosure level'
+    );
+
+    // Restricted database access rights described without overstated claims
+    assert.ok(
+      content.includes('nur die Rechte, die sie für ihre Aufgaben benötigt') || content.includes('Eingeschränkte Datenbankrolle'),
+      'Must describe restricted database access rights / least privilege principle'
+    );
+    assert.ok(
+      content.includes('UPDATE') && content.includes('DELETE') && content.includes('CREATE TABLE'),
+      'Must clearly document rejected permissions (UPDATE, DELETE, CREATE TABLE) for the restricted role'
+    );
+    assert.ok(
+      !content.includes('schützt vor anwendungsseitigen Fehlern und Injection-Angriffen'),
+      'SQL injection protection must not be overstated'
+    );
+
+    // Append-only policy and disclaimer of absolute ledger integrity
     assert.ok(content.includes('Append-Only'), 'Must describe append-only ledger policy');
-    assert.ok(content.includes('Keine kryptografische Signaturkette'), 'Must explicitly disclaim cryptographic signature chain');
-    assert.ok(content.includes('Sie verhindern SQL-Injection nicht selbst'), 'Must explicitly state that permissions do not prevent SQL injection itself');
-    assert.ok(content.includes('reduzieren die möglichen Auswirkungen'), 'Must frame permissions as impact reduction');
+    assert.ok(
+      content.includes('keine kryptografische Signaturkette') || content.includes('Kein kryptografisch manipulationssicheres Ledger'),
+      'Must explicitly disclaim unverified absolute ledger integrity / cryptographic signature chain'
+    );
+    assert.ok(
+      content.includes('nicht absolut manipulationssicher'),
+      'Must explicitly acknowledge that database rules do not provide absolute tamper immunity'
+    );
+
+    // Cloud backup recovery status: explicitly unverified / open check
+    assert.ok(
+      content.includes('vollständige Wiederherstellung aus den Backups des Cloud-Anbieters wurde bisher nicht praktisch getestet') ||
+      content.includes('Vollständige Wiederherstellung nicht getestet') ||
+      content.includes('Keine vollständige Wiederherstellungsprüfung'),
+      'Must contain no misleading claims of fully verified cloud backup recovery'
+    );
+
+    // Costs explicitly identified as estimates
+    assert.ok(
+      content.includes('Kalkulation') || content.includes('Schätzung') || content.includes('Kalkuliert'),
+      'Costs must remain explicitly identified as estimates / calculations'
+    );
+    assert.ok(
+      content.includes('13–14 €') || content.includes('13-14 €') || content.includes('15,00 €'),
+      'Must document estimated cost envelope'
+    );
   });
 
   it('3. Project Registry decouples BECC from misleading governance imagery while preserving BridGenta references', () => {
