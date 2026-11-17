@@ -326,12 +326,12 @@ export default defineConfig({
               },
               {
                 type: "object",
-                name: "newsletter",
-                label: "Newsletter",
+                name: "contact",
+                label: "Kontaktbereich",
                 fields: [
                   { type: "string", name: "title", label: "Titel" },
-                  { type: "string", name: "text", label: "Newsletter Text" },
-                  { type: "string", name: "placeholder", label: "E-Mail Platzhalter" }
+                  { type: "string", name: "text", label: "Beschreibungstext", ui: { component: "textarea" } },
+                  { type: "string", name: "actionText", label: "Button-Text" }
                 ]
               },
               {
