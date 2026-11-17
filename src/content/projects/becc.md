@@ -102,7 +102,7 @@ Dieser Test zeigt nur die Wiederherstellung über den getesteten Export- und Imp
 
 Die vom Anbieter angebotene Wiederherstellung auf einen früheren Zeitpunkt heißt *Point-in-Time-Recovery (PITR)*. Ihr tatsächliches Zeitfenster hängt von Tarif und Konfiguration ab und wird hier bewusst nicht als bereits geprüfter Wert angegeben.
 
-Der offene Nachweis wird als `GAP-PROD-002` geführt.
+Die vollständige Wiederherstellung aus den Backups des Cloud-Anbieters wurde bisher nicht praktisch getestet. Diese Prüfung bleibt offen und ist in der internen Projektdokumentation festgehalten.
 
 ## Automatisierte Tests
 
