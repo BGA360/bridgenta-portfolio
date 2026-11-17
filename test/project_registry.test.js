@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import * as parse5 from 'parse5';
 
 import {
   projectRegistry,
@@ -186,6 +187,42 @@ describe('Project Registry & Portfolio Metadata Consolidation', () => {
       return;
     }
 
+    // Helper functions for DOM hierarchy inspection
+    function findNodeByClass(node, className) {
+      if (node.attrs) {
+        const classAttr = node.attrs.find(a => a.name === 'class');
+        if (classAttr && classAttr.value.split(/\s+/).includes(className)) {
+          return node;
+        }
+      }
+      if (node.childNodes) {
+        for (const child of node.childNodes) {
+          const found = findNodeByClass(child, className);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    function findParent(root, target) {
+      if (!root.childNodes) return null;
+      for (const child of root.childNodes) {
+        if (child === target) return root;
+        const found = findParent(child, target);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function isDescendant(parent, target) {
+      if (!parent || !parent.childNodes) return false;
+      for (const child of parent.childNodes) {
+        if (child === target) return true;
+        if (isDescendant(child, target)) return true;
+      }
+      return false;
+    }
+
     const publicSlugs = ['becc', 'bridgenta', 'aeocortex', 'luminapraxisds', 'rootedrealitygarden', 'starcleaners'];
 
     for (const slug of publicSlugs) {
@@ -193,61 +230,91 @@ describe('Project Registry & Portfolio Metadata Consolidation', () => {
       if (!fs.existsSync(htmlPath)) continue;
 
       const html = fs.readFileSync(htmlPath, 'utf8');
+      const document = parse5.parse(html);
 
-      // 1. Notices appear outside .portfolio-aside
+      const detailGrid = findNodeByClass(document, 'detail-grid');
+      const portfolioAside = findNodeByClass(document, 'portfolio-aside');
+      const noticeBanner = findNodeByClass(document, 'project-notice-banner');
+
+      assert.ok(detailGrid, `detailGrid must exist on /project-${slug}/`);
+      assert.ok(portfolioAside, `portfolioAside must exist on /project-${slug}/`);
+
+      // 1. Sidebar cleanliness: notices never exist inside .portfolio-aside
+      assert.equal(
+        isDescendant(portfolioAside, noticeBanner),
+        false,
+        `.project-notice-banner must not be a descendant of .portfolio-aside on /project-${slug}/`
+      );
       const asideMatch = html.match(/<aside class="portfolio-aside"[\s\S]*?<\/aside>/);
       assert.ok(asideMatch, `Sidebar must exist on /project-${slug}/`);
-      const asideHtml = asideMatch[0];
       assert.equal(
-        asideHtml.includes('project-notice-banner'),
-        false,
-        `Sidebar must not contain project-notice-banner on /project-${slug}/`
-      );
-      assert.equal(
-        asideHtml.includes('class="notice"'),
+        asideMatch[0].includes('class="notice"'),
         false,
         `Sidebar must not contain old .notice class on /project-${slug}/`
       );
 
-      // Check whether project has a notice configured
       const hasNotice = slug === 'becc' || slug === 'bridgenta';
 
       if (hasNotice) {
-        // 2. Notices appear after .detail-grid and before related-projects
-        const detailGridIdx = html.indexOf('class="detail-grid"');
-        const detailGridEndIdx = html.indexOf('</div>', detailGridIdx);
-        const bannerIdx = html.indexOf('project-notice-banner');
-        const relatedIdx = html.indexOf('class="related-projects"');
+        assert.ok(noticeBanner, `project-notice-banner must exist on /project-${slug}/`);
 
-        assert.ok(bannerIdx > detailGridEndIdx, `Notice must appear after .detail-grid on /project-${slug}/`);
-        if (relatedIdx !== -1) {
-          assert.ok(bannerIdx < relatedIdx, `Notice must appear before related-projects on /project-${slug}/`);
-        }
+        // 2. DOM hierarchy validation:
+        // .project-notice-banner must NOT be a descendant of .detail-grid
+        assert.equal(
+          isDescendant(detailGrid, noticeBanner),
+          false,
+          `.project-notice-banner must NOT be a descendant of .detail-grid on /project-${slug}/`
+        );
 
-        // 3. Each notice appears exactly once
+        // .project-notice-banner must NOT be a descendant of .portfolio-aside
+        assert.equal(
+          isDescendant(portfolioAside, noticeBanner),
+          false,
+          `.project-notice-banner must NOT be a descendant of .portfolio-aside on /project-${slug}/`
+        );
+
+        // .project-notice-banner must be a sibling of .detail-grid sharing the same parent container
+        const parentOfGrid = findParent(document, detailGrid);
+        const parentOfBanner = findParent(document, noticeBanner);
+        assert.ok(parentOfGrid, `detailGrid must have a parent container on /project-${slug}/`);
+        assert.equal(
+          parentOfBanner,
+          parentOfGrid,
+          `.project-notice-banner must be a sibling of .detail-grid sharing the same parent on /project-${slug}/`
+        );
+
+        // Sibling order: .project-notice-banner must follow .detail-grid
+        const gridIndex = parentOfGrid.childNodes.indexOf(detailGrid);
+        const bannerIndex = parentOfBanner.childNodes.indexOf(noticeBanner);
+        assert.ok(
+          bannerIndex > gridIndex,
+          `.project-notice-banner must follow .detail-grid as a sibling in DOM order on /project-${slug}/`
+        );
+
+        // 3. Each notice banner appears exactly once
         const bannerElements = html.match(/<aside[^>]*class="[^"]*project-notice-banner/g) || [];
         assert.equal(bannerElements.length, 1, `Notice banner element must appear exactly once on /project-${slug}/`);
 
-        // 5 & 6. Heading and content preservation
+        // 4. Exact heading and frontmatter content preservation
         if (slug === 'becc') {
           assert.ok(html.includes('Aktueller Entwicklungsstand'), 'BECC must retain heading Aktueller Entwicklungsstand');
           assert.ok(
-            html.includes('Die beschriebene Entwicklungsphase ist abgeschlossen.'),
-            'BECC must preserve exact notice text'
+            html.includes('Die beschriebene Entwicklungsphase ist abgeschlossen. Die Fallstudie unterscheidet getestete Funktionen von eingerichteten und noch offenen Prüfungen. Die BECC Operations Console ist ein Interface-Entwurf und kein Nachweis für Live-Monitoring. Interne Zugangsdaten und sicherheitskritische Einstellungen werden nicht veröffentlicht.'),
+            'BECC must preserve exact frontmatter notice text'
           );
         } else if (slug === 'bridgenta') {
           assert.ok(html.includes('Hinweis zur privaten Beta'), 'BridGenta must retain heading Hinweis zur privaten Beta');
           assert.ok(
-            html.includes('BridGenta befindet sich in einer privaten Beta-Phase.'),
-            'BridGenta must preserve exact notice text'
+            html.includes('BridGenta befindet sich in einer privaten Beta-Phase. Die öffentlich gezeigten Abbildungen dokumentieren ausgewählte, freigegebene Einblicke in die Methodik und Benutzeroberfläche. Nicht veröffentlichte Produktfunktionen, interne Abläufe und Implementierungsdetails bleiben vertraulich.'),
+            'BridGenta must preserve exact frontmatter notice text'
           );
         }
       } else {
-        // 4. Empty notices render no notice section
+        // 5. Empty notices render no notice section
         assert.equal(
-          html.includes('project-notice-banner'),
-          false,
-          `Projects with no notice must not render notice banner (/project-${slug}/)`
+          noticeBanner,
+          null,
+          `Projects with no notice must not render .project-notice-banner (/project-${slug}/)`
         );
       }
     }
