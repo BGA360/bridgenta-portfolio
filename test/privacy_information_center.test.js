@@ -238,6 +238,12 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
       componentSource.includes('overflow-y: auto'),
       'Panel must define overflow-y: auto for responsive & 200% zoom accessibility'
     );
+
+    // 4.6 Escape hierarchy protection against mobile navigation drawer interference
+    assert.ok(
+      componentSource.includes('nav.classList.contains("is-open")'),
+      'Script must prevent Escape dismissal when mobile navigation drawer is open'
+    );
   });
 
   await t.test('5. Presence Across All 6 Public Project Routes', () => {
@@ -366,6 +372,13 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
         if (btnDetails) btnDetails.click();
         const detailsAfterSecondClick = details ? window.getComputedStyle(details).display : 'none';
 
+        // Test Escape key protection when mobile navigation drawer is open
+        const nav = document.querySelector('.nav');
+        if (nav) nav.classList.add('is-open');
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        const displayAfterEscapeNavOpen = panel ? window.getComputedStyle(panel).display : 'none';
+        if (nav) nav.classList.remove('is-open');
+
         // Test dismissal via "Verstanden"
         const btnDismiss = document.getElementById('btn-privacy-dismiss');
         if (btnDismiss) btnDismiss.click();
@@ -379,7 +392,12 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
         const displayAfterReopen = panel ? window.getComputedStyle(panel).display : 'none';
         const activeAfterReopen = document.activeElement ? document.activeElement.id : null;
 
-        // Test close button and focus return to reopen link
+        // Test dismissal via Escape when mobile navigation drawer is closed
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        const displayAfterEscapeNavClosed = panel ? window.getComputedStyle(panel).display : 'none';
+
+        // Reopen again to test close button and focus return to reopen link
+        if (btnReopen) btnReopen.click();
         const btnClose = document.getElementById('btn-privacy-close');
         if (btnClose) btnClose.click();
         const displayAfterClose = panel ? window.getComputedStyle(panel).display : 'none';
@@ -392,11 +410,13 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
           detailsBefore,
           detailsAfterClick,
           detailsAfterSecondClick,
+          displayAfterEscapeNavOpen,
           displayAfterDismiss,
           sessionAfterDismiss,
           localAfterDismiss,
           displayAfterReopen,
           activeAfterReopen,
+          displayAfterEscapeNavClosed,
           displayAfterClose,
           activeAfterClose
         };
@@ -437,12 +457,25 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
     assert.strictEqual(v.detailsAfterClick, 'block', 'Details must expand when clicking "Details anzeigen"');
     assert.strictEqual(v.detailsAfterSecondClick, 'none', 'Details must collapse when clicking again');
 
+    assert.strictEqual(
+      v.displayAfterEscapeNavOpen,
+      'block',
+      'Panel must NOT be dismissed by Escape when mobile navigation drawer is open'
+    );
+
     assert.strictEqual(v.displayAfterDismiss, 'none', 'Panel must be hidden after clicking "Verstanden"');
     assert.strictEqual(v.sessionAfterDismiss, '1', 'sessionStorage must record "1" after dismissal');
     assert.strictEqual(v.localAfterDismiss, null, 'localStorage must remain completely empty after dismissal');
 
     assert.strictEqual(v.displayAfterReopen, 'block', 'Panel must reopen when clicking footer "Datenschutzinformationen"');
     assert.strictEqual(v.activeAfterReopen, 'btn-privacy-dismiss', 'Focus must move to dismiss button when reopened');
+
+    assert.strictEqual(
+      v.displayAfterEscapeNavClosed,
+      'none',
+      'Panel must be dismissed by Escape when mobile navigation drawer is closed'
+    );
+
     assert.strictEqual(v.displayAfterClose, 'none', 'Panel must close when clicking close button');
     assert.strictEqual(v.activeAfterClose, 'btn-reopen-privacy', 'Focus must return to footer reopen button when dismissed');
   });

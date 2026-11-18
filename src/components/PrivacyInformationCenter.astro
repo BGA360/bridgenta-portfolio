@@ -157,14 +157,20 @@
       btnClose.addEventListener("click", dismissPanel);
     }
 
-    // Dismiss with Escape key for keyboard accessibility (only when panel is visible)
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && panel && panel.style.display !== "none") {
-        if (e.defaultPrevented) return;
-        dismissPanel();
-        e.stopPropagation();
-      }
-    });
+    // Dismiss with Escape key for keyboard accessibility (only when panel is visible and mobile nav is not open)
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key === "Escape" && panel && panel.style.display !== "none") {
+          if (e.defaultPrevented) return;
+          const nav = document.querySelector(".nav");
+          if (nav && nav.classList.contains("is-open")) return;
+          dismissPanel();
+          e.stopPropagation();
+        }
+      },
+      true
+    );
 
     // Reopen from persistent footer link
     if (btnReopen) {
