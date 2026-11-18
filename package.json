@@ -22,7 +22,8 @@
     "test:integrity": "node --test test/cross_platform_integrity.test.js",
     "test:trust": "node --test test/public_trust_remediation.test.js",
     "test:privacy-info": "node --test test/privacy_information_center.test.js",
-    "test:mermaid": "node --test test/mermaid_local_bundling.test.js"
+    "test:mermaid": "node --test test/mermaid_local_bundling.test.js",
+    "test:hero-overlap": "node --test test/project_hero_overlap.test.js"
   },
   "dependencies": {
     "astro": "^4.11.3",
