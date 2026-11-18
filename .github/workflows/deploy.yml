@@ -71,6 +71,9 @@ jobs:
       - name: 🛡️ Verify Public Trust Remediation
         run: npm run test:trust
 
+      - name: ℹ️ Verify Privacy Information Center
+        run: npm run test:privacy-info
+
       - name: 🧪 Verify Mermaid Local Bundling & Diagram Rendering
         run: npm run test:mermaid
 
