@@ -21,6 +21,7 @@
     "test:projects": "node --test test/project_registry.test.js test/becc_disclosure_boundary.test.js test/project_disclosure_boundary.test.js",
     "test:integrity": "node --test test/cross_platform_integrity.test.js",
     "test:trust": "node --test test/public_trust_remediation.test.js",
+    "test:privacy-info": "node --test test/privacy_information_center.test.js",
     "test:mermaid": "node --test test/mermaid_local_bundling.test.js"
   },
   "dependencies": {

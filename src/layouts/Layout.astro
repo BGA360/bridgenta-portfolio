@@ -1,5 +1,6 @@
 ---
 import Schema from '../components/Schema.astro';
+import PrivacyInformationCenter from '../components/PrivacyInformationCenter.astro';
 import { getEntry } from 'astro:content';
 import { getPublicProjects } from '../utils/project_registry';
 
@@ -239,6 +240,7 @@ import '../styles/styles.css';
             <li><a href="/contact">Kontakt</a></li>
             <li><a href="/impressum">Impressum</a></li>
             <li><a href="/datenschutz">Datenschutz</a></li>
+            <li><button id="btn-reopen-privacy" class="footer-btn-link">Datenschutzinformationen</button></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -269,6 +271,8 @@ import '../styles/styles.css';
       </div>
     </div>
   </footer>
+
+  <PrivacyInformationCenter />
 
   <script src="../scripts/script.js"></script>
 
