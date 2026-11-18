@@ -104,6 +104,7 @@
     const btnReopen = document.getElementById("btn-reopen-privacy");
 
     const SESSION_KEY = "privacy-info-dismissed";
+    let triggerElement = null;
 
     const showPanel = () => {
       if (!panel) return;
@@ -124,9 +125,10 @@
         // Fallback if sessionStorage is restricted by browser policy
       }
       hidePanel();
-      if (btnReopen) {
-        btnReopen.focus();
+      if (triggerElement && typeof triggerElement.focus === "function" && document.body.contains(triggerElement)) {
+        triggerElement.focus();
       }
+      triggerElement = null;
     };
 
     // Toggle Details View
@@ -155,10 +157,12 @@
       btnClose.addEventListener("click", dismissPanel);
     }
 
-    // Dismiss with Escape key for keyboard accessibility
+    // Dismiss with Escape key for keyboard accessibility (only when panel is visible)
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && panel && panel.style.display !== "none") {
+        if (e.defaultPrevented) return;
         dismissPanel();
+        e.stopPropagation();
       }
     });
 
@@ -166,6 +170,7 @@
     if (btnReopen) {
       btnReopen.addEventListener("click", (e) => {
         e.preventDefault();
+        triggerElement = btnReopen;
         showPanel();
         if (btnDismiss) {
           btnDismiss.focus();
@@ -195,12 +200,26 @@
     right: var(--space-4, 1.5rem);
     max-width: 580px;
     width: calc(100% - 2rem);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: var(--card-bg, #ffffff);
     border-radius: var(--radius-l, 16px);
     border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.06);
     z-index: 1000;
     animation: slideUpPrivacy 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .privacy-info-panel {
+      animation: none;
+    }
+    .privacy-close-btn,
+    .btn-privacy-verstanden {
+      transition: none;
+      transform: none;
+    }
   }
 
   @keyframes slideUpPrivacy {

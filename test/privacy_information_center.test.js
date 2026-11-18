@@ -228,6 +228,16 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
       componentSource.includes('key === "Escape"'),
       'Script must handle Escape key for accessible dismissal'
     );
+
+    // 4.5 Reduced motion media query and scrollable container for 200% zoom
+    assert.ok(
+      componentSource.includes('prefers-reduced-motion: reduce'),
+      'Component must support prefers-reduced-motion: reduce'
+    );
+    assert.ok(
+      componentSource.includes('overflow-y: auto'),
+      'Panel must define overflow-y: auto for responsive & 200% zoom accessibility'
+    );
   });
 
   await t.test('5. Presence Across All 6 Public Project Routes', () => {
@@ -306,30 +316,13 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
 
     assert.ok(wsUrl, 'Chrome CDP WebSocket URL must be available');
 
-    const ws = new WebSocket(wsUrl);
-    await new Promise((r) => { ws.onopen = r; });
+    // Retrieve active page target from /json/list
+    const listRes = await fetch(`http://127.0.0.1:${cdpPort}/json/list`);
+    const pages = await listRes.json();
+    const page = pages.find((p) => p.type === 'page') || pages[0];
+    assert.ok(page && page.webSocketDebuggerUrl, 'Active browser page target must exist');
 
-    let msgId = 1;
-    function sendCommand(method, params = {}) {
-      return new Promise((resolve, reject) => {
-        const id = msgId++;
-        const handler = (evt) => {
-          const msg = JSON.parse(evt.data);
-          if (msg.id === id) {
-            ws.removeEventListener('message', handler);
-            if (msg.error) reject(msg.error);
-            else resolve(msg.result);
-          }
-        };
-        ws.addEventListener('message', handler);
-        ws.send(JSON.stringify({ id, method, params }));
-      });
-    }
-
-    const target = await sendCommand('Target.createTarget', { url: 'about:blank' });
-    const targetWsUrl = `ws://127.0.0.1:${cdpPort}/devtools/page/${target.targetId}`;
-
-    const pageWs = new WebSocket(targetWsUrl);
+    const pageWs = new WebSocket(page.webSocketDebuggerUrl);
     await new Promise((r) => { pageWs.onopen = r; });
 
     let pageMsgId = 1;
@@ -352,9 +345,9 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
     await sendPageCommand('Page.enable');
     await sendPageCommand('Runtime.enable');
 
-    // Navigate to local index.html
+    // Navigate to local index.html and wait for DOM readiness
     await sendPageCommand('Page.navigate', { url: `http://127.0.0.1:${port}/` });
-    await new Promise((r) => setTimeout(r, 600));
+    await new Promise((r) => setTimeout(r, 1200));
 
     // Evaluate live DOM behavior
     const evalResult = await sendPageCommand('Runtime.evaluate', {
@@ -368,27 +361,29 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
         const btnDetails = document.getElementById('btn-privacy-details');
         const details = document.getElementById('privacy-info-details');
         const detailsBefore = details ? window.getComputedStyle(details).display : 'none';
-        btnDetails.click();
+        if (btnDetails) btnDetails.click();
         const detailsAfterClick = details ? window.getComputedStyle(details).display : 'none';
-        btnDetails.click();
+        if (btnDetails) btnDetails.click();
         const detailsAfterSecondClick = details ? window.getComputedStyle(details).display : 'none';
 
-        // Test dismissal
+        // Test dismissal via "Verstanden"
         const btnDismiss = document.getElementById('btn-privacy-dismiss');
-        btnDismiss.click();
+        if (btnDismiss) btnDismiss.click();
         const displayAfterDismiss = panel ? window.getComputedStyle(panel).display : 'none';
         const sessionAfterDismiss = sessionStorage.getItem('privacy-info-dismissed');
         const localAfterDismiss = localStorage.getItem('cookie-consent-status');
 
-        // Test footer reopening
+        // Test footer reopening and focus placement
         const btnReopen = document.getElementById('btn-reopen-privacy');
-        btnReopen.click();
+        if (btnReopen) btnReopen.click();
         const displayAfterReopen = panel ? window.getComputedStyle(panel).display : 'none';
+        const activeAfterReopen = document.activeElement ? document.activeElement.id : null;
 
-        // Test close button
+        // Test close button and focus return to reopen link
         const btnClose = document.getElementById('btn-privacy-close');
-        btnClose.click();
+        if (btnClose) btnClose.click();
         const displayAfterClose = panel ? window.getComputedStyle(panel).display : 'none';
+        const activeAfterClose = document.activeElement ? document.activeElement.id : null;
 
         return {
           initialDisplay,
@@ -401,7 +396,9 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
           sessionAfterDismiss,
           localAfterDismiss,
           displayAfterReopen,
-          displayAfterClose
+          activeAfterReopen,
+          displayAfterClose,
+          activeAfterClose
         };
       })()`,
       returnByValue: true
@@ -421,8 +418,8 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
     } catch {}
 
     try { pageWs.close(); } catch {}
-    try { ws.close(); } catch {}
     try { chrome.kill('SIGKILL'); } catch {}
+    try { chrome.unref(); } catch {}
     if (typeof server.closeAllConnections === 'function') {
       server.closeAllConnections();
     }
@@ -445,6 +442,8 @@ test('Privacy Information Center Acceptance Suite (BGDE-PRIVACY-INFORMATION-CENT
     assert.strictEqual(v.localAfterDismiss, null, 'localStorage must remain completely empty after dismissal');
 
     assert.strictEqual(v.displayAfterReopen, 'block', 'Panel must reopen when clicking footer "Datenschutzinformationen"');
+    assert.strictEqual(v.activeAfterReopen, 'btn-privacy-dismiss', 'Focus must move to dismiss button when reopened');
     assert.strictEqual(v.displayAfterClose, 'none', 'Panel must close when clicking close button');
+    assert.strictEqual(v.activeAfterClose, 'btn-reopen-privacy', 'Focus must return to footer reopen button when dismissed');
   });
 });
