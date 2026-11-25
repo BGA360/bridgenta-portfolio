@@ -114,7 +114,7 @@
   });
 
   // ---------- Service worker registration ----------
-  if ("serviceWorker" in navigator) {
+  if (import.meta.env.PUBLIC_DISABLE_SW !== "true" && "serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("/service-worker.js").catch(() => {});
     }, { passive: true });

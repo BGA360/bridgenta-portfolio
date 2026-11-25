@@ -3,6 +3,7 @@ import Schema from '../components/Schema.astro';
 import PrivacyInformationCenter from '../components/PrivacyInformationCenter.astro';
 import { getEntry } from 'astro:content';
 import { getPublicProjects } from '../utils/project_registry';
+import '../styles/styles.css';
 
 interface Props {
   title: string;
@@ -39,6 +40,11 @@ const {
   learningArticle
 } = Astro.props;
 
+// Build-time staging overrides (production defaults preserve existing behavior)
+const effectiveRobots =
+  import.meta.env.PUBLIC_ROBOTS_NOINDEX === 'true' ? 'noindex, nofollow' : robots;
+const excludeSitemapLink = import.meta.env.PUBLIC_EXCLUDE_SITEMAP === 'true';
+
 // Fetch footer content dynamically
 const footerData = await getEntry('pages', 'footer');
 const { topTier, brand, contact, bottom } = footerData.data;
@@ -62,8 +68,6 @@ const canonical = cleanPathname === ""
   : isFile
     ? `${siteUrl}${cleanPathname}`
     : `${siteUrl}${cleanPathname}/`;
-
-import '../styles/styles.css';
 ---
 
 <!DOCTYPE html>
@@ -83,7 +87,7 @@ import '../styles/styles.css';
   {!suppressPublicUrlMetadata && <link rel="canonical" href={canonical} />}
 
   <!-- Crawler Indexing Directives -->
-  <meta name="robots" content={robots} />
+  <meta name="robots" content={effectiveRobots} />
 
   <!-- Regional & Language Targeting (hreflang) -->
   {!suppressPublicUrlMetadata && <link rel="alternate" hreflang="de" href={canonical} />}
@@ -121,7 +125,7 @@ import '../styles/styles.css';
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
   <!-- Sitemap Link for Search Console Discovery -->
-  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+  {!excludeSitemapLink && <link rel="sitemap" type="application/xml" href="/sitemap.xml" />}
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
