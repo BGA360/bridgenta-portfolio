@@ -1,7 +1,7 @@
 ---
 // PrivacyInformationCenter.astro
-// Informational Privacy Panel (Non-Consent Information Center)
-// Replaces obsolete cookie consent banner with transparent, factual notices.
+// Storage-free, footer-activated Informational Privacy Panel (DEC-02)
+// Purely informational (no consent mechanism, no cookies, no browser storage writes).
 ---
 
 <div
@@ -10,6 +10,7 @@
   role="region"
   aria-labelledby="privacy-info-title"
   aria-describedby="privacy-info-desc"
+  aria-hidden="true"
   style="display: none;"
 >
   <div class="privacy-info-content">
@@ -20,7 +21,7 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
         </span>
-        <h3 id="privacy-info-title">Datenschutz &amp; Privatsphäre</h3>
+        <h3 id="privacy-info-title">Datenschutzhinweis</h3>
       </div>
       <button
         type="button"
@@ -36,33 +37,30 @@
     </div>
 
     <p id="privacy-info-desc">
-      Wir informieren Sie transparent darüber, wie diese Website funktioniert und welche Daten dabei verarbeitet werden.
+      Dies ist ein allgemeiner Hinweis zum Datenschutz – keine Einwilligungsabfrage.
     </p>
 
     <p class="privacy-info-subtext">
-      Wir verwenden keine Analyse- oder Werbetracker. Für die Bereitstellung der Website können technische Verbindungsdaten verarbeitet und Inhalte für die Offline-Nutzung lokal zwischengespeichert werden.
+      Diese Website verwendet keine HTTP-Cookies, keinen eigenen Browser-Speicher, kein Tracking und keinen Service Worker. Beim Aufruf verarbeitet unser Hosting-Anbieter (STRATO) technisch bedingte Verbindungsdaten; das reguläre HTTP-Caching Ihres Browsers bleibt unberührt.
     </p>
 
     <!-- Collapsible Factual Details Section -->
     <div id="privacy-info-details" class="privacy-info-details" style="display: none;" aria-hidden="true">
       <ul class="privacy-details-list">
         <li>
-          <strong>Verbindungsdaten:</strong> Beim Aufruf der Seiten erfasst der Webhosting-Dienst unvermeidbare technische Zugriffsdaten (z. B. IP-Adresse, Browsertyp) zur Gewährleistung der Netzsicherheit und Ausfallsicherheit.
+          <strong>Server-Logfiles (STRATO Hosting):</strong> Beim Aufruf der Website erfasst unser Hosting-Anbieter (STRATO GmbH) technische Zugriffsdaten (u. a. IP-Adresse, Zeitpunkt, aufgerufene Seite). Website-Besucher-Logs werden vertraglich maximal 7 Tage gespeichert.
         </li>
         <li>
-          <strong>Offline-Cache (Service Worker):</strong> Ein browserinterner Service Worker speichert statische Inhalte (HTML, CSS, JavaScript, Schriften) im lokalen Cache Storage, um schnelle Ladezeiten und eine Offline-Nutzung zu ermöglichen.
+          <strong>Keine Cookies, kein Browser-Speicher, kein Service Worker:</strong> Diese Website setzt keine HTTP-Cookies, schreibt weder in localStorage, sessionStorage noch IndexedDB, nutzt kein Tracking und registriert keinen Service Worker. Reguläres HTTP-Browser-Caching wird weiterhin von Ihrem Browser gesteuert.
         </li>
         <li>
-          <strong>Keine Tracking-Cookies:</strong> Diese Website setzt weder Analyse-Tools noch Werbe- oder Marketing-Cookies ein.
-        </li>
-        <li>
-          <strong>Lokale Ressourcen:</strong> Web-Fonts und technische Diagramme (Mermaid.js) werden vollständig als First-Party-Dateien ohne externe CDN-Dienste ausgeliefert.
+          <strong>Lokale Ressourcen:</strong> Schriftarten (Inter, Fraunces) und technische Diagramme (Mermaid.js) werden vollständig lokal über unseren Webserver ausgeliefert – ohne externe CDNs.
         </li>
       </ul>
     </div>
 
     <p class="privacy-info-more">
-      Weitere Informationen finden Sie in unserer <a href="/datenschutz">Datenschutzerklärung</a>.
+      Alle Einzelheiten finden Sie in unserer <a href="/datenschutz">Datenschutzerklärung</a>.
     </p>
 
     <div class="privacy-info-footer">
@@ -87,7 +85,7 @@
           class="btn btn-primary btn-sm btn-privacy-verstanden"
           id="btn-privacy-dismiss"
         >
-          Verstanden
+          Schließen
         </button>
       </div>
     </div>
@@ -103,7 +101,6 @@
     const details = document.getElementById("privacy-info-details");
     const btnReopen = document.getElementById("btn-reopen-privacy");
 
-    const SESSION_KEY = "privacy-info-dismissed";
     let triggerElement = null;
 
     const showPanel = () => {
@@ -118,12 +115,7 @@
       panel.setAttribute("aria-hidden", "true");
     };
 
-    const dismissPanel = () => {
-      try {
-        sessionStorage.setItem(SESSION_KEY, "1");
-      } catch (e) {
-        // Fallback if sessionStorage is restricted by browser policy
-      }
+    const closePanel = () => {
       hidePanel();
       if (triggerElement && typeof triggerElement.focus === "function" && document.body.contains(triggerElement)) {
         triggerElement.focus();
@@ -150,14 +142,14 @@
     }
 
     if (btnDismiss) {
-      btnDismiss.addEventListener("click", dismissPanel);
+      btnDismiss.addEventListener("click", closePanel);
     }
 
     if (btnClose) {
-      btnClose.addEventListener("click", dismissPanel);
+      btnClose.addEventListener("click", closePanel);
     }
 
-    // Dismiss with Escape key for keyboard accessibility (only when panel is visible and mobile nav is not open)
+    // Close with Escape key for keyboard accessibility (only when panel is visible and mobile nav is not open)
     document.addEventListener(
       "keydown",
       (e) => {
@@ -165,14 +157,14 @@
           if (e.defaultPrevented) return;
           const nav = document.querySelector(".nav");
           if (nav && nav.classList.contains("is-open")) return;
-          dismissPanel();
+          closePanel();
           e.stopPropagation();
         }
       },
       true
     );
 
-    // Reopen from persistent footer link
+    // Open exclusively via accessible footer control (no automatic display, no browser storage writes)
     if (btnReopen) {
       btnReopen.addEventListener("click", (e) => {
         e.preventDefault();
@@ -182,18 +174,6 @@
           btnDismiss.focus();
         }
       });
-    }
-
-    // Determine initial visibility based on current browser session only
-    let isDismissed = false;
-    try {
-      isDismissed = sessionStorage.getItem(SESSION_KEY) === "1";
-    } catch (e) {
-      isDismissed = false;
-    }
-
-    if (!isDismissed) {
-      showPanel();
     }
   });
 </script>

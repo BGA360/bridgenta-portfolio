@@ -68,18 +68,13 @@ const organizationSchema = {
   'founder': { '@id': personId },
   'address': {
     '@type': 'PostalAddress',
-    'addressLocality': 'Frankfurt am Main',
-    'addressRegion': 'Hessen',
+    'addressLocality': 'Leverkusen',
+    'addressRegion': 'Nordrhein-Westfalen',
     'addressCountry': 'DE'
   },
-  'geo': {
-    '@type': 'GeoCoordinates',
-    'latitude': '50.1109',
-    'longitude': '8.6821'
-  },
   'serviceArea': [
-    { '@type': 'AdministrativeArea', 'name': 'Frankfurt am Main' },
-    { '@type': 'AdministrativeArea', 'name': 'Hessen' },
+    { '@type': 'AdministrativeArea', 'name': 'Leverkusen' },
+    { '@type': 'AdministrativeArea', 'name': 'Nordrhein-Westfalen' },
     { '@type': 'AdministrativeArea', 'name': 'Deutschland' },
     { '@type': 'AdministrativeArea', 'name': 'Remote' }
   ]

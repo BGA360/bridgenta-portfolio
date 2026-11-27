@@ -403,35 +403,29 @@ test('Mermaid Local Bundling Acceptance Suite (BGDE-MERMAID-LOCAL-BUNDLING-001 &
     assert.ok(evalValue.unsupported.didNotRenderFlowchart, 'Unsupported layout must NOT render a flowchart');
   });
 
-  await t.test('6. Service Worker Compatibility Analysis', () => {
+  await t.test('6. Service Worker Compatibility Analysis (DEC-01 Option B — No Active Caching)', () => {
     const swPath = path.join(workspaceRoot, 'public', 'service-worker.js');
-    assert.ok(fs.existsSync(swPath), 'public/service-worker.js must exist');
+    assert.ok(fs.existsSync(swPath), 'public/service-worker.js retirement transition script must exist');
     const swContent = fs.readFileSync(swPath, 'utf8');
 
-    // (a) Local Asset Fetch Compatibility: GET requests are intercepted
-    assert.ok(
-      swContent.includes('event.request.method !== "GET"') || swContent.includes("event.request.method !== 'GET'"),
-      'Service worker only intercepts GET requests'
+    // Under DEC-01 Option B, the retirement worker must NOT intercept fetch requests or cache Mermaid chunks
+    assert.strictEqual(
+      /addEventListener\s*\(\s*['"]fetch['"]/i.test(swContent),
+      false,
+      'Retirement service worker must NOT attach a fetch handler'
     );
-
-    // (b) Cache Eligibility: Successful 200 OK responses are cached
-    assert.ok(
-      swContent.includes('response.status === 200'),
-      'Service worker validates response status is 200 before caching'
-    );
-    assert.ok(
-      swContent.includes('caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));'),
-      'Service worker caches successful local runtime assets under CACHE_NAME'
-    );
-
-    // (c) Cache-Version Update Behavior: cache key versioning and cleanup
-    assert.ok(
-      swContent.includes('const CACHE_NAME = "bridgenta-portfolio-v21";') || swContent.includes("const CACHE_NAME = 'bridgenta-portfolio-v21';"),
-      'Service worker declares explicit versioned cache name'
+    assert.strictEqual(
+      /caches\.open\s*\(/i.test(swContent),
+      false,
+      'Retirement service worker must NOT open or populate Cache Storage'
     );
     assert.ok(
-      swContent.includes('caches.delete(key)'),
-      'Service worker purges outdated caches during activation'
+      swContent.includes('bridgenta-portfolio-'),
+      'Retirement service worker must scope cache deletion strictly to bridgenta-portfolio-*'
+    );
+    assert.ok(
+      swContent.includes('unregister()'),
+      'Retirement service worker must unregister itself on activation'
     );
   });
 });
