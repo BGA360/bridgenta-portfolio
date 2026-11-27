@@ -234,7 +234,7 @@ test('Service Worker Retirement Verification Suite (DEC-01 Option B)', async (t)
     let freshImpressum = null;
 
     try {
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 100; i++) {
         await new Promise((r) => setTimeout(r, 100));
         try {
           const res = await fetch(`http://127.0.0.1:${cdpPort}/json/version`);

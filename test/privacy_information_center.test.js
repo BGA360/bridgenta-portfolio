@@ -194,7 +194,7 @@ test('Privacy Information Center Acceptance Suite (DEC-02 Storage-Free Footer-Ac
     const externalRequests = [];
 
     try {
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 100; i++) {
         await new Promise((r) => setTimeout(r, 100));
         try {
           const res = await fetch(`http://127.0.0.1:${cdpPort}/json/version`);
