@@ -20,6 +20,11 @@ import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const SCHEMA_PATH = path.resolve(__dirname, '..', 'stewardship', 'releases', 'schema', 'release-record.v1.json');
+const RELEASE_RECORD_SCHEMA = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
+
 export const EXPECTED_SCHEMA_VERSION = 'bgde-release-record/1.0';
 
 export const LIFECYCLE_STATES = new Set([
@@ -179,13 +184,47 @@ function scanPublicStrings(value, currentPath, findings) {
   }
 }
 
+function checkAdditionalProperties(value, schemaNode, currentPath, addError) {
+  if (!schemaNode || value === null || value === undefined) return;
+  if (Array.isArray(value)) {
+    if (schemaNode.items) {
+      value.forEach((item, idx) =>
+        checkAdditionalProperties(item, schemaNode.items, `${currentPath}[${idx}]`, addError)
+      );
+    }
+    return;
+  }
+  if (isPlainObject(value) && isPlainObject(schemaNode.properties)) {
+    const allowedKeys = new Set(Object.keys(schemaNode.properties));
+    for (const [key, childVal] of Object.entries(value)) {
+      const childPath = currentPath === '$' ? key : `${currentPath}.${key}`;
+      if (schemaNode.additionalProperties === false && !allowedKeys.has(key)) {
+        addError(
+          'ERR_UNKNOWN_PROPERTY',
+          childPath,
+          `Unknown property "${key}" is forbidden by release-record.v1.json (additionalProperties: false).`
+        );
+        continue;
+      }
+      if (allowedKeys.has(key)) {
+        checkAdditionalProperties(childVal, schemaNode.properties[key], childPath, addError);
+      }
+    }
+  }
+}
+
 function readGitTree(gitDir, commitSha) {
   try {
-    const out = execFileSync('git', ['rev-parse', `${commitSha}^{tree}`], {
-      cwd: gitDir,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'pipe'],
-    }).trim();
+    const resolvedDir = path.resolve(gitDir);
+    const out = execFileSync(
+      'git',
+      ['-c', `safe.directory=${resolvedDir}`, 'rev-parse', `${commitSha}^{tree}`],
+      {
+        cwd: resolvedDir,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'pipe'],
+      }
+    ).trim();
     return GIT_SHA_RE.test(out) ? out : null;
   } catch {
     return null;
@@ -221,6 +260,9 @@ export function verifyReleaseRecord(record, options = {}) {
       warnings,
     };
   }
+
+  // 0. Schema additionalProperties: false parity check (derived directly from release-record.v1.json)
+  checkAdditionalProperties(record, RELEASE_RECORD_SCHEMA, '$', addError);
 
   // 1. Core schema & version checks
   if (record.schemaVersion !== EXPECTED_SCHEMA_VERSION) {

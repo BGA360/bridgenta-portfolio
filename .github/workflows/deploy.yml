@@ -92,6 +92,9 @@ jobs:
       - name: 📦 Verify Release Readiness & STRATO Production Packaging
         run: npm run test:release-readiness
 
+      - name: 📋 Verify Canonical Release Record Contract
+        run: npm run test:release-record
+
       - name: 📤 Upload Artifacts for Pages
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
