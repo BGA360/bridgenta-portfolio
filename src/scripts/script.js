@@ -113,10 +113,5 @@
     });
   });
 
-  // ---------- Service worker registration ----------
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/service-worker.js").catch(() => {});
-    }, { passive: true });
-  }
+  // DEC-01 Option B: Future production intentionally does not register a Service Worker.
 })();

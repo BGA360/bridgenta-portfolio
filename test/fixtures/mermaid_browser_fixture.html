@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Mermaid Local Bundling Test Fixture</title>
+</head>
+<body>
+  <h1>Mermaid Local Rendering Test</h1>
+  <pre class="language-mermaid">
+    graph TD
+      A[Client Request] --> B[Astro Local Bundle]
+      B --> C[Mermaid SVG Rendered Locally]
+  </pre>
+
+  <script type="module">
+    import mermaid from '/node_modules/mermaid/dist/mermaid.esm.mjs';
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const mermaidBlocks = document.querySelectorAll(".language-mermaid");
+        if (mermaidBlocks.length > 0) {
+          mermaid.initialize({
+            startOnLoad: false,
+            theme: "neutral",
+            securityLevel: "strict"
+          });
+
+          for (let i = 0; i < mermaidBlocks.length; i++) {
+            const block = mermaidBlocks[i];
+            const rawCode = block.textContent.trim();
+            const { svg } = await mermaid.render(`mermaid-rendered-${i}`, rawCode);
+            const container = document.createElement("div");
+            container.className = "mermaid-output";
+            container.innerHTML = svg;
+            block.parentNode.replaceChild(container, block);
+          }
+          document.body.setAttribute("data-mermaid-status", "RENDER_COMPLETE");
+        }
+      } catch (err) {
+        document.body.setAttribute("data-mermaid-status", "RENDER_ERROR: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

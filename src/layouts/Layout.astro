@@ -1,8 +1,9 @@
 ---
 import Schema from '../components/Schema.astro';
-import CookieConsent from '../components/CookieConsent.astro';
+import PrivacyInformationCenter from '../components/PrivacyInformationCenter.astro';
 import { getEntry } from 'astro:content';
 import { getPublicProjects } from '../utils/project_registry';
+import '../styles/styles.css';
 
 interface Props {
   title: string;
@@ -39,9 +40,14 @@ const {
   learningArticle
 } = Astro.props;
 
+// Build-time staging overrides (production defaults preserve existing behavior)
+const effectiveRobots =
+  import.meta.env.PUBLIC_ROBOTS_NOINDEX === 'true' ? 'noindex, nofollow' : robots;
+const excludeSitemapLink = import.meta.env.PUBLIC_EXCLUDE_SITEMAP === 'true';
+
 // Fetch footer content dynamically
 const footerData = await getEntry('pages', 'footer');
-const { topTier, brand, newsletter, bottom } = footerData.data;
+const { topTier, brand, contact, bottom } = footerData.data;
 
 // Fetch projects dynamically for footer listing from canonical registry
 const footerProjects = getPublicProjects();
@@ -62,8 +68,6 @@ const canonical = cleanPathname === ""
   : isFile
     ? `${siteUrl}${cleanPathname}`
     : `${siteUrl}${cleanPathname}/`;
-
-import '../styles/styles.css';
 ---
 
 <!DOCTYPE html>
@@ -83,7 +87,7 @@ import '../styles/styles.css';
   {!suppressPublicUrlMetadata && <link rel="canonical" href={canonical} />}
 
   <!-- Crawler Indexing Directives -->
-  <meta name="robots" content={robots} />
+  <meta name="robots" content={effectiveRobots} />
 
   <!-- Regional & Language Targeting (hreflang) -->
   {!suppressPublicUrlMetadata && <link rel="alternate" hreflang="de" href={canonical} />}
@@ -101,10 +105,8 @@ import '../styles/styles.css';
   <meta name="twitter:image" content={`${siteUrl}/images/og-featured.jpg`} />
 
   <!-- GEO Metadata Tags -->
-  <meta name="geo.region" content="DE-HE" />
-  <meta name="geo.position" content="50.1109;8.6821" />
-  <meta name="ICBM" content="50.1109, 8.6821" />
-  <meta name="geo.placename" content="Frankfurt am Main, Hessen, Deutschland" />
+  <meta name="geo.region" content="DE-NW" />
+  <meta name="geo.placename" content="Leverkusen, Nordrhein-Westfalen, Deutschland" />
 
   <!-- JSON-LD Schema Graph -->
   <Schema
@@ -121,7 +123,7 @@ import '../styles/styles.css';
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
   <!-- Sitemap Link for Search Console Discovery -->
-  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+  {!excludeSitemapLink && <link rel="sitemap" type="application/xml" href="/sitemap.xml" />}
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -240,7 +242,7 @@ import '../styles/styles.css';
             <li><a href="/contact">Kontakt</a></li>
             <li><a href="/impressum">Impressum</a></li>
             <li><a href="/datenschutz">Datenschutz</a></li>
-            <li><button id="btn-reopen-cookies" class="footer-btn-link">Cookie-Einstellungen</button></li>
+            <li><button type="button" id="btn-reopen-privacy" class="footer-btn-link">Datenschutzinformationen</button></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -252,14 +254,15 @@ import '../styles/styles.css';
           </ul>
         </div>
         <div class="footer-col">
-          <h4>{newsletter.title}</h4>
-          <p style="font-size:0.88rem; margin-bottom: 0.5rem; color: rgba(255,255,255,0.5);">{newsletter.text}</p>
-          <form class="newsletter-form" aria-label="Newsletter-Anmeldung (Demo)">
-            <input type="email" placeholder={newsletter.placeholder} required>
-            <button type="submit" aria-label="Senden">
-              <svg viewBox="0 0 24 24" width="12" height="12"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </button>
-          </form>
+          <h4>{contact.title}</h4>
+          <p style="font-size:0.88rem; margin-bottom: 0.75rem; color: rgba(255,255,255,0.6); line-height: 1.5;">{contact.text}</p>
+          <a class="footer-contact-btn" href={`mailto:${bottom.email}`} aria-label={`${contact.actionText} an ${bottom.email}`}>
+            <span>{contact.actionText}</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -271,8 +274,43 @@ import '../styles/styles.css';
     </div>
   </footer>
 
-  <CookieConsent />
+  <PrivacyInformationCenter />
 
   <script src="../scripts/script.js"></script>
+
+  <style>
+    /* Footer Direct Contact Action Button */
+    .footer-contact-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      background: var(--magenta-gradient);
+      color: #fff !important;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      width: fit-content;
+    }
+    .footer-contact-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(194, 24, 91, 0.35);
+      color: #fff !important;
+    }
+    .footer-contact-btn:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 3px;
+    }
+    .footer-contact-btn svg {
+      stroke: #fff;
+      transition: transform 0.2s ease;
+    }
+    .footer-contact-btn:hover svg {
+      transform: translateX(2px);
+    }
+  </style>
 </body>
 </html>

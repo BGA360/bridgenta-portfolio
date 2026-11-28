@@ -1,64 +1,85 @@
-// BridGenta Portfolio — Service Worker
-const CACHE_NAME = "bridgenta-portfolio-v21";
-const OFFLINE_URL = "offline.html";
+// BridGenta Portfolio — Scoped Service Worker Retirement (DEC-01 Option B)
+// Transition-only worker for existing GitHub Pages clients.
+// Deletes ONLY BridGenta-owned caches matching OWNED_CACHE_PREFIX,
+// reports any cache-deletion failures observably, and unregisters itself.
+// Intentionally registers NO fetch handler so all requests go directly to network.
 
-const PRECACHE_ASSETS = [
-  "/",
-  "/offline.html",
-  "/manifest.json",
-];
+const OWNED_CACHE_PREFIX = "bridgenta-portfolio-";
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_ASSETS))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => key !== CACHE_NAME)
-            .map((key) => caches.delete(key))
-        )
-      )
-      .then(() => self.clients.claim())
-  );
-});
+    (async () => {
+      const deletedCaches = [];
+      const failedCaches = [];
+      let enumerationError = null;
 
-self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
+      try {
+        const keys = await caches.keys();
+        const ownedKeys = keys.filter(
+          (key) => typeof key === "string" && key.startsWith(OWNED_CACHE_PREFIX)
+        );
 
-  // Bypass service worker for TinaCMS admin dashboard and local APIs
-  const url = new URL(event.request.url);
-  if (url.pathname.startsWith("/admin") || url.port === "4001") {
-    return;
-  }
+        const results = await Promise.allSettled(
+          ownedKeys.map(async (key) => {
+            const removed = await caches.delete(key);
+            if (removed) {
+              deletedCaches.push(key);
+            } else {
+              failedCaches.push({ key, reason: "caches.delete returned false" });
+            }
+          })
+        );
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const network = fetch(event.request)
-        .then((response) => {
-          if (response && response.status === 200) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        results.forEach((result, idx) => {
+          if (result.status === "rejected") {
+            failedCaches.push({
+              key: ownedKeys[idx],
+              reason: result.reason ? String(result.reason) : "caches.delete rejected",
+            });
           }
-          return response;
-        })
-        .catch(() => {
-          if (event.request.mode === "navigate") {
-            return caches.match(OFFLINE_URL);
-          }
-          return cached;
         });
+      } catch (err) {
+        enumerationError = err ? String(err) : "caches.keys failed";
+      }
 
-      return cached || network;
-    })
+      let unregistered = false;
+      let unregisterError = null;
+      try {
+        unregistered = await self.registration.unregister();
+      } catch (err) {
+        unregisterError = err ? String(err) : "registration.unregister failed";
+      }
+
+      const report = {
+        type: "BGDE_SW_RETIREMENT_RESULT",
+        unregistered,
+        unregisterError,
+        enumerationError,
+        deletedCaches,
+        failedCaches,
+        cacheCleanupSucceeded:
+          enumerationError === null && failedCaches.length === 0,
+      };
+
+      if (!report.cacheCleanupSucceeded || !unregistered) {
+        console.error("[bgde-sw-retirement] Partial or failed retirement:", report);
+      }
+
+      try {
+        const windowClients = await self.clients.matchAll({
+          type: "window",
+          includeUncontrolled: true,
+        });
+        for (const client of windowClients) {
+          client.postMessage(report);
+        }
+      } catch {
+        // Ignore client notification errors when no clients are attached
+      }
+    })()
   );
 });

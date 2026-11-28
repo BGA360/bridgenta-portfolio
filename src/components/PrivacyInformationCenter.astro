@@ -1,0 +1,423 @@
+---
+// PrivacyInformationCenter.astro
+// Storage-free, footer-activated Informational Privacy Panel (DEC-02)
+// Purely informational (no consent mechanism, no cookies, no browser storage writes).
+---
+
+<div
+  id="privacy-info-center"
+  class="privacy-info-panel"
+  role="region"
+  aria-labelledby="privacy-info-title"
+  aria-describedby="privacy-info-desc"
+  aria-hidden="true"
+  style="display: none;"
+>
+  <div class="privacy-info-content">
+    <div class="privacy-info-header">
+      <div class="privacy-info-title-group">
+        <span class="privacy-info-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </span>
+        <h3 id="privacy-info-title">Datenschutzhinweis</h3>
+      </div>
+      <button
+        type="button"
+        id="btn-privacy-close"
+        class="privacy-close-btn"
+        aria-label="Hinweis schließen"
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <p id="privacy-info-desc">
+      Dies ist ein allgemeiner Hinweis zum Datenschutz – keine Einwilligungsabfrage.
+    </p>
+
+    <p class="privacy-info-subtext">
+      Diese Website verwendet keine HTTP-Cookies, keinen eigenen Browser-Speicher, kein Tracking und keinen Service Worker. Beim Aufruf verarbeitet unser Hosting-Anbieter (STRATO) technisch bedingte Verbindungsdaten; das reguläre HTTP-Caching Ihres Browsers bleibt unberührt.
+    </p>
+
+    <!-- Collapsible Factual Details Section -->
+    <div id="privacy-info-details" class="privacy-info-details" style="display: none;" aria-hidden="true">
+      <ul class="privacy-details-list">
+        <li>
+          <strong>Server-Logfiles (STRATO Hosting):</strong> Beim Aufruf der Website erfasst unser Hosting-Anbieter (STRATO GmbH) technische Zugriffsdaten (u. a. IP-Adresse, Zeitpunkt, aufgerufene Seite). Website-Besucher-Logs werden vertraglich maximal 7 Tage gespeichert.
+        </li>
+        <li>
+          <strong>Keine Cookies, kein Browser-Speicher, kein Service Worker:</strong> Diese Website setzt keine HTTP-Cookies, schreibt weder in localStorage, sessionStorage noch IndexedDB, nutzt kein Tracking und registriert keinen Service Worker. Reguläres HTTP-Browser-Caching wird weiterhin von Ihrem Browser gesteuert.
+        </li>
+        <li>
+          <strong>Lokale Ressourcen:</strong> Schriftarten (Inter, Fraunces) und technische Diagramme (Mermaid.js) werden vollständig lokal über unseren Webserver ausgeliefert – ohne externe CDNs.
+        </li>
+      </ul>
+    </div>
+
+    <p class="privacy-info-more">
+      Alle Einzelheiten finden Sie in unserer <a href="/datenschutz">Datenschutzerklärung</a>.
+    </p>
+
+    <div class="privacy-info-footer">
+      <div class="privacy-info-links">
+        <a href="/datenschutz">Datenschutzerklärung</a>
+        <span class="sep" aria-hidden="true">·</span>
+        <a href="/impressum">Impressum</a>
+      </div>
+
+      <div class="privacy-info-actions">
+        <button
+          type="button"
+          class="btn btn-outline btn-sm"
+          id="btn-privacy-details"
+          aria-expanded="false"
+          aria-controls="privacy-info-details"
+        >
+          Details anzeigen
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm btn-privacy-verstanden"
+          id="btn-privacy-dismiss"
+        >
+          Schließen
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const panel = document.getElementById("privacy-info-center");
+    const btnDismiss = document.getElementById("btn-privacy-dismiss");
+    const btnClose = document.getElementById("btn-privacy-close");
+    const btnDetails = document.getElementById("btn-privacy-details");
+    const details = document.getElementById("privacy-info-details");
+    const btnReopen = document.getElementById("btn-reopen-privacy");
+
+    let triggerElement = null;
+
+    const showPanel = () => {
+      if (!panel) return;
+      panel.style.display = "block";
+      panel.setAttribute("aria-hidden", "false");
+    };
+
+    const hidePanel = () => {
+      if (!panel) return;
+      panel.style.display = "none";
+      panel.setAttribute("aria-hidden", "true");
+    };
+
+    const closePanel = () => {
+      hidePanel();
+      if (triggerElement && typeof triggerElement.focus === "function" && document.body.contains(triggerElement)) {
+        triggerElement.focus();
+      }
+      triggerElement = null;
+    };
+
+    // Toggle Details View
+    if (btnDetails && details) {
+      btnDetails.addEventListener("click", () => {
+        const isExpanded = btnDetails.getAttribute("aria-expanded") === "true";
+        if (isExpanded) {
+          details.style.display = "none";
+          details.setAttribute("aria-hidden", "true");
+          btnDetails.setAttribute("aria-expanded", "false");
+          btnDetails.textContent = "Details anzeigen";
+        } else {
+          details.style.display = "block";
+          details.setAttribute("aria-hidden", "false");
+          btnDetails.setAttribute("aria-expanded", "true");
+          btnDetails.textContent = "Details ausblenden";
+        }
+      });
+    }
+
+    if (btnDismiss) {
+      btnDismiss.addEventListener("click", closePanel);
+    }
+
+    if (btnClose) {
+      btnClose.addEventListener("click", closePanel);
+    }
+
+    // Close with Escape key for keyboard accessibility (only when panel is visible and mobile nav is not open)
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key === "Escape" && panel && panel.style.display !== "none") {
+          if (e.defaultPrevented) return;
+          const nav = document.querySelector(".nav");
+          if (nav && nav.classList.contains("is-open")) return;
+          closePanel();
+          e.stopPropagation();
+        }
+      },
+      true
+    );
+
+    // Open exclusively via accessible footer control (no automatic display, no browser storage writes)
+    if (btnReopen) {
+      btnReopen.addEventListener("click", (e) => {
+        e.preventDefault();
+        triggerElement = btnReopen;
+        showPanel();
+        if (btnDismiss) {
+          btnDismiss.focus();
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Privacy Information Center Styling */
+  .privacy-info-panel {
+    position: fixed;
+    bottom: var(--space-4, 1.5rem);
+    right: var(--space-4, 1.5rem);
+    max-width: 580px;
+    width: calc(100% - 2rem);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--card-bg, #ffffff);
+    border-radius: var(--radius-l, 16px);
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.06);
+    z-index: 1000;
+    animation: slideUpPrivacy 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .privacy-info-panel {
+      animation: none;
+    }
+    .privacy-close-btn,
+    .btn-privacy-verstanden {
+      transition: none;
+      transform: none;
+    }
+  }
+
+  @keyframes slideUpPrivacy {
+    from {
+      transform: translateY(24px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .privacy-info-content {
+    padding: var(--space-4, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .privacy-info-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .privacy-info-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .privacy-info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--magenta, #c2185b);
+    flex-shrink: 0;
+  }
+
+  .privacy-info-header h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-dark, #111827);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .privacy-close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted, #6b7280);
+    border-radius: var(--radius-full, 9999px);
+    transition: color 0.15s ease, background 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .privacy-close-btn:hover {
+    color: var(--text-dark, #111827);
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .privacy-close-btn:focus-visible {
+    outline: 2px solid var(--focus, #c2185b);
+    outline-offset: 2px;
+  }
+
+  .privacy-info-content p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--text-dark, #374151);
+    margin: 0;
+  }
+
+  .privacy-info-subtext {
+    font-size: 0.88rem !important;
+    color: var(--text-muted, #4b5563) !important;
+  }
+
+  .privacy-info-details {
+    background: rgba(194, 24, 91, 0.03);
+    border-radius: var(--radius-m, 10px);
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(194, 24, 91, 0.12);
+    margin-top: 0.25rem;
+  }
+
+  .privacy-details-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.84rem;
+    color: var(--text-dark, #374151);
+    line-height: 1.45;
+  }
+
+  .privacy-details-list li strong {
+    color: var(--magenta, #c2185b);
+  }
+
+  .privacy-info-more {
+    font-size: 0.85rem !important;
+    color: var(--text-muted, #6b7280) !important;
+  }
+
+  .privacy-info-more a {
+    color: var(--magenta, #c2185b);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  .privacy-info-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border, rgba(0, 0, 0, 0.06));
+  }
+
+  .privacy-info-links {
+    font-size: 0.82rem;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .privacy-info-links a {
+    color: var(--magenta, #c2185b);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .privacy-info-links a:hover {
+    text-decoration: underline;
+  }
+
+  .privacy-info-links .sep {
+    color: var(--text-muted, #9ca3af);
+    opacity: 0.7;
+  }
+
+  .privacy-info-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .privacy-info-actions button {
+    min-width: 105px;
+  }
+
+  .btn-privacy-verstanden {
+    background: var(--magenta-gradient, linear-gradient(135deg, #c2185b, #7b1e57)) !important;
+    color: #ffffff !important;
+    border: none !important;
+  }
+
+  .btn-privacy-verstanden:hover {
+    box-shadow: 0 4px 12px rgba(194, 24, 91, 0.35);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 640px) {
+    .privacy-info-panel {
+      bottom: var(--space-3, 1rem);
+      right: 50%;
+      transform: translateX(50%);
+      width: calc(100% - 1.5rem);
+      max-width: none;
+    }
+
+    @keyframes slideUpPrivacy {
+      from {
+        transform: translate(50%, 24px);
+        opacity: 0;
+      }
+      to {
+        transform: translate(50%, 0);
+        opacity: 1;
+      }
+    }
+
+    .privacy-info-footer {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .privacy-info-links {
+      justify-content: center;
+    }
+
+    .privacy-info-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .privacy-info-actions button {
+      width: 100%;
+    }
+  }
+</style>

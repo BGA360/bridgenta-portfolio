@@ -2,15 +2,15 @@
   "topTier": {
     "availability": "Offen für neue berufliche Chancen",
     "email": "ref@bridgenta.de",
-    "location": "Deutschland (Remote / Leverkusen-nah)"
+    "location": "Leverkusen, Nordrhein-Westfalen, Deutschland (Remote)"
   },
   "brand": {
     "description": "Portfolio von Frank Duru – Web-Entwicklung, IT-Sicherheit, Systemadministration und Suchmaschinenoptimierung."
   },
-  "newsletter": {
+  "contact": {
     "title": "In Kontakt bleiben",
-    "text": "Bleiben Sie über neue Projekte und fachliche Entwicklungen informiert.",
-    "placeholder": "Ihre E-Mail-Adresse"
+    "text": "Haben Sie Fragen zu meinen Projekten oder möchten Sie sich fachlich austauschen? Schreiben Sie mir gerne eine E-Mail.",
+    "actionText": "E-Mail schreiben"
   },
   "bottom": {
     "copyright": "BridGenta.de – Frank Duru",

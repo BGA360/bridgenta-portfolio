@@ -12,6 +12,12 @@ on:
     paths-ignore:
       - 'stewardship/reports/history/**'
   workflow_dispatch:
+    inputs:
+      deploy_github_pages:
+        description: 'Explicitly authorize manual GitHub Pages deployment from main'
+        required: false
+        default: false
+        type: boolean
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -67,6 +73,18 @@ jobs:
 
       - name: 🕵️ Audit HTML Links
         run: node tooling/audit_links.cjs
+
+      - name: 🛡️ Verify Public Trust Remediation
+        run: npm run test:trust
+
+      - name: ℹ️ Verify Privacy Information Center
+        run: npm run test:privacy-info
+
+      - name: 🧪 Verify Mermaid Local Bundling & Diagram Rendering
+        run: npm run test:mermaid
+
+      - name: 📐 Verify Responsive Project Hero Layout & Clearance
+        run: npm run test:hero-overlap
 
       - name: 📤 Upload Artifacts for Pages
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
@@ -458,7 +476,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.deploy_github_pages == true
     steps:
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
