@@ -86,6 +86,12 @@ jobs:
       - name: 📐 Verify Responsive Project Hero Layout & Clearance
         run: npm run test:hero-overlap
 
+      - name: 🧹 Verify Service Worker Retirement
+        run: npm run test:sw-retirement
+
+      - name: 📦 Verify Release Readiness & STRATO Production Packaging
+        run: npm run test:release-readiness
+
       - name: 📤 Upload Artifacts for Pages
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
