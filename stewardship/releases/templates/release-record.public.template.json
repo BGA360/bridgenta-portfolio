@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "bgde-release-record/1.0",
+  "recordTier": "PUBLIC_SAFE",
+  "releaseId": "BGDE-REL-2026-001",
+  "riskTier": "T2_STANDARD",
+  "releaseScope": "ORDINARY_ASTRO_WEBSITE",
+  "lifecycleState": "DRAFT",
+  "stateHistory": [
+    {
+      "state": "DRAFT",
+      "timestampUtc": "2026-11-28T12:00:00Z",
+      "actor": "Frank Duru",
+      "note": "Initial synthetic draft template for a BridGenta.de website release."
+    }
+  ],
+  "createdAtUtc": "2026-11-28T12:00:00Z",
+  "updatedAtUtc": null,
+  "source": {
+    "repository": "BGA360/bridgenta-portfolio",
+    "featureBranch": "feat/example-release-change",
+    "featureHeadSha": "0000000000000000000000000000000000000001",
+    "pullRequestNumber": null,
+    "mainSquashSha": null,
+    "featureTreeSha": null,
+    "mainTreeSha": null,
+    "sourceTreeEquivalent": null,
+    "reStagedAfterMerge": false
+  },
+  "governance": {
+    "applicableFrameworks": ["BGCF", "BECC", "PRAG", "M5"],
+    "requiresFormalBpgaRag": false,
+    "bpgaCertified": false,
+    "bpgaRefs": null,
+    "reviewSignOff": {
+      "author": "BGA360",
+      "approver": null,
+      "reviewIndependence": "PENDING",
+      "approvedCommitSha": null,
+      "protectMainBypassed": false
+    }
+  },
+  "ciVerification": {
+    "deployWorkflowRunUrl": null,
+    "requiredChecks": {
+      "build": "PENDING",
+      "pragValidationGate": "PENDING",
+      "postgresCi": "PENDING",
+      "failureRecoveryCi": "PENDING"
+    },
+    "auxiliaryChecks": {
+      "m5Shadow": "PENDING",
+      "m5Retain": "PENDING",
+      "githubPagesDeploy": "SKIPPED"
+    }
+  },
+  "staging": null,
+  "productionArtifact": null,
+  "ownerAuthorization": null,
+  "productionDeployment": null,
+  "postDeploymentVerification": null,
+  "rollback": {
+    "previousReleaseId": "BGDE-005C-PROD-017",
+    "previousPackageRootSha256": "0878e8fb212c413e8230cc0a7a4bcb62172fd27b146895fc7bc05db2295ff2eb",
+    "archiveReferenceId": "ARCHIVE-BGDE-005C-PROD-017",
+    "preDeploySnapshotVerified": false
+  },
+  "rollbackExecution": null,
+  "residualRisksAndLimitations": [],
+  "finalDisposition": null
+}

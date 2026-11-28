@@ -1,0 +1,500 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bridgenta.de/schemas/bgde-release-record/1.0",
+  "title": "BridGenta Canonical Website Release Record (bgde-release-record/1.0)",
+  "description": "Additive BPGA v1.x-compatible release evidence contract for BridGenta.de website releases. Preserves BPGA v1.0.1 EPPS/ERR/RAG contracts unchanged.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "recordTier",
+    "releaseId",
+    "riskTier",
+    "releaseScope",
+    "lifecycleState",
+    "stateHistory",
+    "createdAtUtc",
+    "source",
+    "governance",
+    "ciVerification",
+    "rollback",
+    "residualRisksAndLimitations",
+    "finalDisposition"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "bgde-release-record/1.0"
+    },
+    "recordTier": {
+      "type": "string",
+      "enum": ["PUBLIC_SAFE", "PROTECTED_INTERNAL"]
+    },
+    "releaseId": {
+      "type": "string",
+      "pattern": "^BGDE-REL-[0-9]{4}-[0-9]{3}(?:-[A-Z0-9]+)?$"
+    },
+    "riskTier": {
+      "type": "string",
+      "enum": ["T1_EDITORIAL", "T2_STANDARD", "T3_HIGH_RISK"]
+    },
+    "releaseScope": {
+      "type": "string",
+      "enum": [
+        "ORDINARY_ASTRO_WEBSITE",
+        "EPPS_INCLUDED_WEBSITE",
+        "BPGA_FORMAL_EPPS_RELEASE"
+      ]
+    },
+    "lifecycleState": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "VALIDATED",
+        "STAGING_ACCEPTED",
+        "AUTHORIZED",
+        "DEPLOYED_PENDING_VERIFICATION",
+        "RELEASE_ACCEPTED",
+        "RELEASE_ACCEPTED_WITH_LIMITATIONS",
+        "REJECTED",
+        "ROLLED_BACK"
+      ]
+    },
+    "stateHistory": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["state", "timestampUtc", "actor"],
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "VALIDATED",
+              "STAGING_ACCEPTED",
+              "AUTHORIZED",
+              "DEPLOYED_PENDING_VERIFICATION",
+              "RELEASE_ACCEPTED",
+              "RELEASE_ACCEPTED_WITH_LIMITATIONS",
+              "REJECTED",
+              "ROLLED_BACK"
+            ]
+          },
+          "timestampUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actor": {
+            "type": "string",
+            "minLength": 1
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "createdAtUtc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAtUtc": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "featureBranch",
+        "featureHeadSha",
+        "pullRequestNumber",
+        "mainSquashSha",
+        "featureTreeSha",
+        "mainTreeSha",
+        "sourceTreeEquivalent",
+        "reStagedAfterMerge"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "const": "BGA360/bridgenta-portfolio"
+        },
+        "featureBranch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "featureHeadSha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "pullRequestNumber": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "mainSquashSha": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "featureTreeSha": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "mainTreeSha": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "sourceTreeEquivalent": {
+          "type": ["boolean", "null"]
+        },
+        "reStagedAfterMerge": {
+          "type": "boolean"
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "applicableFrameworks",
+        "requiresFormalBpgaRag",
+        "bpgaCertified",
+        "bpgaRefs",
+        "reviewSignOff"
+      ],
+      "properties": {
+        "applicableFrameworks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": ["CEF", "CEP", "RKF", "BGCF", "BECC", "BPGA", "PRAG", "M5"]
+          }
+        },
+        "requiresFormalBpgaRag": {
+          "type": "boolean"
+        },
+        "bpgaCertified": {
+          "type": "boolean"
+        },
+        "bpgaRefs": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "pragWorkflowRunUrl": {
+              "type": ["string", "null"]
+            },
+            "errId": {
+              "type": ["string", "null"],
+              "pattern": "^ERR-[0-9]{4}-[0-9]{3,}$"
+            },
+            "ragId": {
+              "type": ["string", "null"],
+              "pattern": "^RAG-[0-9]{4}-[0-9]{3,}$"
+            },
+            "ragDecision": {
+              "type": ["string", "null"],
+              "enum": [
+                "AUTHORIZED",
+                "AUTHORIZED WITH OBSERVATIONS",
+                "DEFERRED",
+                "REJECTED",
+                null
+              ]
+            },
+            "bundleId": {
+              "type": ["string", "null"],
+              "pattern": "^BND-[0-9]{4}-[0-9]{3,}$"
+            }
+          }
+        },
+        "reviewSignOff": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": [
+            "author",
+            "approver",
+            "reviewIndependence",
+            "approvedCommitSha",
+            "protectMainBypassed"
+          ],
+          "properties": {
+            "author": { "type": "string", "minLength": 1 },
+            "approver": { "type": ["string", "null"] },
+            "reviewIndependence": {
+              "type": "string",
+              "enum": [
+                "NON_INDEPENDENT_OWNER_SIGNOFF",
+                "INDEPENDENT_PEER_REVIEW",
+                "PENDING"
+              ]
+            },
+            "approvedCommitSha": {
+              "type": ["string", "null"],
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "protectMainBypassed": {
+              "type": "boolean",
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "ciVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deployWorkflowRunUrl", "requiredChecks", "auxiliaryChecks"],
+      "properties": {
+        "deployWorkflowRunUrl": {
+          "type": ["string", "null"]
+        },
+        "requiredChecks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "build",
+            "pragValidationGate",
+            "postgresCi",
+            "failureRecoveryCi"
+          ],
+          "properties": {
+            "build": { "type": "string", "enum": ["PASS", "FAIL", "PENDING"] },
+            "pragValidationGate": { "type": "string", "enum": ["PASS", "FAIL", "PENDING"] },
+            "postgresCi": { "type": "string", "enum": ["PASS", "FAIL", "PENDING"] },
+            "failureRecoveryCi": { "type": "string", "enum": ["PASS", "FAIL", "PENDING"] }
+          }
+        },
+        "auxiliaryChecks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["m5Shadow", "m5Retain", "githubPagesDeploy"],
+          "properties": {
+            "m5Shadow": { "type": "string", "enum": ["PASS", "FAIL", "PENDING", "SKIPPED"] },
+            "m5Retain": { "type": "string", "enum": ["PASS", "FAIL", "PENDING", "SKIPPED"] },
+            "githubPagesDeploy": { "type": "string", "enum": ["SKIPPED", "MANUAL_DISPATCH_PASS", "PENDING"] }
+          }
+        }
+      }
+    },
+    "staging": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "targetUrl",
+        "stratoDirectory",
+        "basicAuthPreserved",
+        "stagingManifestSha256",
+        "stagingPackageRootSha256",
+        "postUploadSnapshotVerified",
+        "acceptedBy",
+        "acceptedAtUtc"
+      ],
+      "properties": {
+        "targetUrl": { "type": "string", "const": "https://bridgenta.com" },
+        "stratoDirectory": { "type": "string", "const": "/bga/staging" },
+        "basicAuthPreserved": { "type": "boolean" },
+        "stagingManifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "stagingPackageRootSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "postUploadSnapshotVerified": { "type": "boolean" },
+        "acceptedBy": { "type": "string", "minLength": 1 },
+        "acceptedAtUtc": { "type": "string", "format": "date-time" }
+      }
+    },
+    "productionArtifact": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "targetUrl",
+        "stratoDirectory",
+        "packagerScript",
+        "swRetirementProfile",
+        "fileCount",
+        "totalBytes",
+        "integrityProofType",
+        "manifestSha256",
+        "packageRootSha256",
+        "verifyOnlyPassed",
+        "cryptographicSignature"
+      ],
+      "properties": {
+        "targetUrl": { "type": "string", "const": "https://bridgenta.de" },
+        "stratoDirectory": { "type": "string", "const": "/bga/production_de" },
+        "packagerScript": { "type": "string", "const": "tooling/package_strato_production.mjs" },
+        "swRetirementProfile": {
+          "type": "string",
+          "enum": ["transition-retirement-enabled", "retired"]
+        },
+        "fileCount": { "type": "integer", "minimum": 1 },
+        "totalBytes": { "type": "integer", "minimum": 1 },
+        "integrityProofType": {
+          "type": "string",
+          "const": "SHA256_HASH_MANIFEST"
+        },
+        "manifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "packageRootSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "verifyOnlyPassed": { "type": "boolean" },
+        "cryptographicSignature": {
+          "type": "null",
+          "description": "Explicitly unimplemented under DEC-OPS-04. Non-null values are rejected until asymmetric signing is formally implemented and authorized."
+        }
+      }
+    },
+    "ownerAuthorization": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "authorizedBy",
+        "authorizedAtUtc",
+        "approvedPackageRootSha256",
+        "dnsSslEmailChangesAuthorized",
+        "satisfiesFormalBpgaRag",
+        "conditions"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": ["AUTHORIZED", "AUTHORIZED_WITH_OBSERVATIONS", "DEFERRED", "REJECTED"]
+        },
+        "authorizedBy": { "type": "string", "minLength": 1 },
+        "authorizedAtUtc": { "type": "string", "format": "date-time" },
+        "approvedPackageRootSha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "dnsSslEmailChangesAuthorized": { "type": "boolean" },
+        "satisfiesFormalBpgaRag": {
+          "type": "boolean",
+          "const": false,
+          "description": "Procedural owner authorization must never be classified as formal BPGA RAG authorization."
+        },
+        "conditions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "productionDeployment": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "transferMethod",
+        "deployedAtUtc",
+        "postUploadSnapshotVerified",
+        "matchedFiles",
+        "missingOrUnexpectedFiles"
+      ],
+      "properties": {
+        "transferMethod": {
+          "type": "string",
+          "const": "OWNER_MANUAL_SFTP_CHROOTED"
+        },
+        "deployedAtUtc": { "type": "string", "format": "date-time" },
+        "postUploadSnapshotVerified": { "type": "boolean" },
+        "matchedFiles": { "type": "integer", "minimum": 1 },
+        "missingOrUnexpectedFiles": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "postDeploymentVerification": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "verificationScope",
+        "canonicalRedirectsVerified",
+        "privacyZeroStorageVerified",
+        "legalPagesVerified",
+        "consoleErrors",
+        "verifiedAtUtc"
+      ],
+      "properties": {
+        "verificationScope": {
+          "type": "string",
+          "enum": ["FOCUSED_T1", "STANDARD_T2", "FULL_T3"]
+        },
+        "canonicalRedirectsVerified": { "type": "boolean" },
+        "privacyZeroStorageVerified": { "type": "boolean" },
+        "legalPagesVerified": { "type": "boolean" },
+        "consoleErrors": { "type": "integer", "minimum": 0 },
+        "verifiedAtUtc": { "type": "string", "format": "date-time" }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "previousReleaseId",
+        "previousPackageRootSha256",
+        "archiveReferenceId",
+        "preDeploySnapshotVerified"
+      ],
+      "properties": {
+        "previousReleaseId": { "type": "string", "minLength": 1 },
+        "previousPackageRootSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "archiveReferenceId": {
+          "type": "string",
+          "pattern": "^ARCHIVE-[A-Z0-9-]+$",
+          "description": "Opaque public-safe reference to owner's private offline archive. Must never contain local workstation paths."
+        },
+        "preDeploySnapshotVerified": { "type": "boolean" }
+      }
+    },
+    "rollbackExecution": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "rollbackMode",
+        "ownerAuthorized",
+        "authorizedBy",
+        "executedAtUtc",
+        "postRollbackVerified",
+        "restoredPackageRootSha256",
+        "sourceCodeDisposition",
+        "autoGitRevertTriggered",
+        "followUpPrUrl"
+      ],
+      "properties": {
+        "rollbackMode": {
+          "type": "string",
+          "enum": ["FILE_LEVEL", "FULL_RELEASE"]
+        },
+        "ownerAuthorized": { "type": "boolean" },
+        "authorizedBy": { "type": "string", "minLength": 1 },
+        "executedAtUtc": { "type": "string", "format": "date-time" },
+        "postRollbackVerified": { "type": "boolean" },
+        "restoredPackageRootSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "sourceCodeDisposition": {
+          "type": "string",
+          "enum": [
+            "NO_CODE_CHANGE_DEPLOYMENT_FAILURE",
+            "REVERT_PR_REQUIRED_CODE_DEFECT",
+            "FORWARD_FIX_PR_REQUIRED"
+          ]
+        },
+        "autoGitRevertTriggered": {
+          "type": "boolean",
+          "const": false
+        },
+        "followUpPrUrl": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "residualRisksAndLimitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "finalDisposition": {
+      "type": ["string", "null"],
+      "enum": [
+        "RELEASE_ACCEPTED",
+        "RELEASE_ACCEPTED_WITH_LIMITATIONS",
+        "REJECTED",
+        "ROLLED_BACK",
+        null
+      ]
+    }
+  }
+}
