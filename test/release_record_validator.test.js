@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { verifyReleaseRecord } from '../tooling/verify_release_record.mjs';
 
@@ -392,5 +393,213 @@ test('BGDE-OPS-001C Canonical Release Record Validator Suite', async (t) => {
     const resAuto = verifyReleaseRecord(rec);
     assert.strictEqual(resAuto.structuralValidity, 'FAIL');
     assert.ok(resAuto.errors.some((e) => e.code === 'ERR_ROLLBACK_GOVERNANCE'));
+  });
+
+  await t.test('16. PROTECTED_INTERNAL record rejected in default public mode and accepted with allowProtected', () => {
+    const rec = makeDraftRecord();
+    rec.recordTier = 'PROTECTED_INTERNAL';
+    const resDefault = verifyReleaseRecord(rec);
+    assert.strictEqual(resDefault.structuralValidity, 'FAIL');
+    assert.ok(resDefault.errors.some((e) => e.code === 'ERR_PROTECTED_RECORD_IN_PUBLIC_MODE'));
+
+    const resAllowed = verifyReleaseRecord(rec, { allowProtected: true });
+    assert.strictEqual(resAllowed.structuralValidity, 'PASS', JSON.stringify(resAllowed.errors));
+  });
+
+  await t.test('17. BPGA_FORMAL_EPPS_RELEASE missing mandatory bundleId fails', () => {
+    const rec = makeAuthorizedRecord();
+    rec.releaseScope = 'BPGA_FORMAL_EPPS_RELEASE';
+    rec.governance.requiresFormalBpgaRag = true;
+    rec.governance.bpgaRefs = {
+      pragWorkflowRunUrl: 'https://github.com/BGA360/bridgenta-portfolio/actions/runs/999999999',
+      errId: 'ERR-2026-001',
+      ragId: 'RAG-2026-001',
+      ragDecision: 'AUTHORIZED',
+      bundleId: null,
+    };
+    const resMissing = verifyReleaseRecord(rec);
+    assert.strictEqual(resMissing.structuralValidity, 'FAIL');
+    assert.ok(resMissing.errors.some((e) => e.code === 'ERR_MISSING_BPGA_REFS' && e.field === 'governance.bpgaRefs.bundleId'));
+
+    rec.governance.bpgaRefs.bundleId = 'BND-2026-001';
+    const resPresent = verifyReleaseRecord(rec);
+    assert.strictEqual(resPresent.structuralValidity, 'PASS', JSON.stringify(resPresent.errors));
+  });
+
+  await t.test('18. Unsupported BPGA certification claim on ORDINARY_ASTRO_WEBSITE fails', () => {
+    const rec = makeAuthorizedRecord();
+    rec.releaseScope = 'ORDINARY_ASTRO_WEBSITE';
+    rec.governance.bpgaCertified = true;
+    const res = verifyReleaseRecord(rec);
+    assert.strictEqual(res.structuralValidity, 'FAIL');
+    assert.ok(res.errors.some((e) => e.code === 'ERR_UNSUPPORTED_CERTIFICATION'));
+  });
+
+  await t.test('19. Empty residualRisksAndLimitations fails for RELEASE_ACCEPTED_WITH_LIMITATIONS', () => {
+    const rec = makeAcceptedRecord({ withLimitations: true });
+    rec.residualRisksAndLimitations = [];
+    const res = verifyReleaseRecord(rec);
+    assert.strictEqual(res.structuralValidity, 'FAIL');
+    assert.ok(res.errors.some((e) => e.code === 'ERR_RESIDUAL_RISKS'));
+  });
+
+  await t.test('20. --git-dir verifies matching Git trees (VERIFIED) and detects mismatch (MISMATCH) using synthetic repo', () => {
+    const tmpRepo = fs.mkdtempSync(path.join(os.tmpdir(), 'bgde-rel-git-'));
+    try {
+      const gitEnv = {
+        ...process.env,
+        GIT_AUTHOR_NAME: 'Synthetic Test',
+        GIT_AUTHOR_EMAIL: 'synthetic@example.invalid',
+        GIT_COMMITTER_NAME: 'Synthetic Test',
+        GIT_COMMITTER_EMAIL: 'synthetic@example.invalid',
+      };
+      const runGit = (args) =>
+        execFileSync('git', ['-c', `safe.directory=${tmpRepo}`, ...args], {
+          cwd: tmpRepo,
+          env: gitEnv,
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'pipe'],
+        }).trim();
+
+      runGit(['init']);
+      fs.writeFileSync(path.join(tmpRepo, 'index.txt'), 'v1\n', 'utf8');
+      runGit(['add', 'index.txt']);
+      runGit(['commit', '-m', 'feature commit']);
+      const featSha = runGit(['rev-parse', 'HEAD']);
+      const featTree = runGit(['rev-parse', `${featSha}^{tree}`]);
+
+      // Empty commit produces a different commit SHA with the exact same tree SHA (modeling squash equivalence)
+      runGit(['commit', '--allow-empty', '-m', 'squash commit with identical tree']);
+      const mainSha = runGit(['rev-parse', 'HEAD']);
+      const mainTree = runGit(['rev-parse', `${mainSha}^{tree}`]);
+      assert.strictEqual(featTree, mainTree);
+
+      const recMatch = makeAuthorizedRecord();
+      recMatch.source.featureHeadSha = featSha;
+      recMatch.source.mainSquashSha = mainSha;
+      recMatch.source.featureTreeSha = featTree;
+      recMatch.source.mainTreeSha = mainTree;
+      recMatch.source.sourceTreeEquivalent = true;
+      const resVerified = verifyReleaseRecord(recMatch, { gitDir: tmpRepo });
+      assert.strictEqual(resVerified.structuralValidity, 'PASS', JSON.stringify(resVerified.errors));
+      assert.strictEqual(resVerified.externalEvidence.gitTreeCheck, 'VERIFIED');
+
+      // Now create a commit with a different tree and claim it matches the old tree
+      fs.writeFileSync(path.join(tmpRepo, 'index.txt'), 'v2-diverged\n', 'utf8');
+      runGit(['add', 'index.txt']);
+      runGit(['commit', '-m', 'diverged tree commit']);
+      const divergedSha = runGit(['rev-parse', 'HEAD']);
+
+      const recMismatch = makeAuthorizedRecord();
+      recMismatch.source.featureHeadSha = featSha;
+      recMismatch.source.mainSquashSha = divergedSha;
+      recMismatch.source.featureTreeSha = featTree;
+      recMismatch.source.mainTreeSha = featTree; // Falsely claims unchanged tree
+      recMismatch.source.sourceTreeEquivalent = true;
+      const resMismatch = verifyReleaseRecord(recMismatch, { gitDir: tmpRepo });
+      assert.strictEqual(resMismatch.structuralValidity, 'FAIL');
+      assert.strictEqual(resMismatch.externalEvidence.gitTreeCheck, 'MISMATCH');
+      assert.ok(resMismatch.errors.some((e) => e.code === 'ERR_GIT_TREE_MISMATCH'));
+    } finally {
+      fs.rmSync(tmpRepo, { recursive: true, force: true });
+    }
+  });
+
+  await t.test('21. CLI exit-code behavior (0=PASS, 1=FAIL, 2=usage/parse error)', () => {
+    const cliPath = path.join(workspaceRoot, 'tooling', 'verify_release_record.mjs');
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bgde-rel-cli-'));
+    try {
+      const validFile = path.join(tmpDir, 'valid.json');
+      const invalidFile = path.join(tmpDir, 'invalid.json');
+      const malformedFile = path.join(tmpDir, 'malformed.json');
+
+      fs.writeFileSync(validFile, JSON.stringify(makeDraftRecord(), null, 2), 'utf8');
+      const badRec = makeAuthorizedRecord();
+      badRec.ownerAuthorization = null;
+      fs.writeFileSync(invalidFile, JSON.stringify(badRec, null, 2), 'utf8');
+      fs.writeFileSync(malformedFile, '{not valid json', 'utf8');
+
+      const r0 = spawnSync(process.execPath, [cliPath, validFile, '--json'], { encoding: 'utf8' });
+      assert.strictEqual(r0.status, 0, r0.stderr);
+      const parsedOut = JSON.parse(r0.stdout);
+      assert.strictEqual(parsedOut.structuralValidity, 'PASS');
+      assert.strictEqual(parsedOut.externalEvidence.ciEvidenceCheck, 'UNVERIFIED');
+
+      const r1 = spawnSync(process.execPath, [cliPath, invalidFile, '--json'], { encoding: 'utf8' });
+      assert.strictEqual(r1.status, 1);
+
+      const r2Usage = spawnSync(process.execPath, [cliPath], { encoding: 'utf8' });
+      assert.strictEqual(r2Usage.status, 2);
+
+      const r2Parse = spawnSync(process.execPath, [cliPath, malformedFile], { encoding: 'utf8' });
+      assert.strictEqual(r2Parse.status, 2);
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  await t.test('22. Premature productionDeployment or postDeploymentVerification fails in DRAFT/AUTHORIZED states', () => {
+    const recPrematureDeploy = makeAuthorizedRecord();
+    recPrematureDeploy.productionDeployment = {
+      transferMethod: 'OWNER_MANUAL_SFTP_CHROOTED',
+      deployedAtUtc: '2026-11-28T12:40:00Z',
+      postUploadSnapshotVerified: true,
+      matchedFiles: 115,
+      missingOrUnexpectedFiles: 0,
+    };
+    const resDeploy = verifyReleaseRecord(recPrematureDeploy);
+    assert.strictEqual(resDeploy.structuralValidity, 'FAIL');
+    assert.ok(resDeploy.errors.some((e) => e.code === 'ERR_PREMATURE_DEPLOYMENT_CLAIM'));
+
+    const recPrematureVerify = makeDraftRecord();
+    recPrematureVerify.postDeploymentVerification = {
+      verificationScope: 'FOCUSED_T1',
+      canonicalRedirectsVerified: true,
+      privacyZeroStorageVerified: true,
+      legalPagesVerified: true,
+      consoleErrors: 0,
+      verifiedAtUtc: '2026-11-28T12:50:00Z',
+    };
+    const resVerify = verifyReleaseRecord(recPrematureVerify);
+    assert.strictEqual(resVerify.structuralValidity, 'FAIL');
+    assert.ok(resVerify.errors.some((e) => e.code === 'ERR_PREMATURE_VERIFICATION_CLAIM'));
+  });
+
+  await t.test('23. Invalid REJECTED release disposition fails and valid REJECTED passes', () => {
+    const rec = makeDraftRecord();
+    rec.lifecycleState = 'REJECTED';
+    rec.stateHistory.push({
+      state: 'REJECTED',
+      timestampUtc: '2026-11-28T12:15:00Z',
+      actor: 'Frank Duru',
+    });
+    rec.finalDisposition = 'RELEASE_ACCEPTED'; // Invalid mismatch
+    const resBad = verifyReleaseRecord(rec);
+    assert.strictEqual(resBad.structuralValidity, 'FAIL');
+    assert.ok(resBad.errors.some((e) => e.code === 'ERR_FINAL_DISPOSITION'));
+
+    rec.finalDisposition = 'REJECTED';
+    const resGood = verifyReleaseRecord(rec);
+    assert.strictEqual(resGood.structuralValidity, 'PASS', JSON.stringify(resGood.errors));
+  });
+
+  await t.test('24. Unknown properties rejected at top level, nested objects, and array items (FND-L1 parity)', () => {
+    const recTop = makeDraftRecord();
+    recTop.undocumentedExtraField = 'should-fail';
+    const resTop = verifyReleaseRecord(recTop);
+    assert.strictEqual(resTop.structuralValidity, 'FAIL');
+    assert.ok(resTop.errors.some((e) => e.code === 'ERR_UNKNOWN_PROPERTY' && e.field === 'undocumentedExtraField'));
+
+    const recNested = makeAuthorizedRecord();
+    recNested.ownerAuthorization.extraBypassFlag = true;
+    const resNested = verifyReleaseRecord(recNested);
+    assert.strictEqual(resNested.structuralValidity, 'FAIL');
+    assert.ok(resNested.errors.some((e) => e.code === 'ERR_UNKNOWN_PROPERTY' && e.field === 'ownerAuthorization.extraBypassFlag'));
+
+    const recItem = makeDraftRecord();
+    recItem.stateHistory[0].unexpectedKey = 123;
+    const resItem = verifyReleaseRecord(recItem);
+    assert.strictEqual(resItem.structuralValidity, 'FAIL');
+    assert.ok(resItem.errors.some((e) => e.code === 'ERR_UNKNOWN_PROPERTY' && e.field === 'stateHistory[0].unexpectedKey'));
   });
 });
