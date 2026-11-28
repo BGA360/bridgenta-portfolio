@@ -25,7 +25,9 @@
     "test:mermaid": "node --test test/mermaid_local_bundling.test.js",
     "test:hero-overlap": "node --test test/project_hero_overlap.test.js",
     "test:sw-retirement": "node --test test/service_worker_retirement.test.js",
-    "test:release-readiness": "node --test test/release_readiness_remediation.test.js"
+    "test:release-readiness": "node --test test/release_readiness_remediation.test.js",
+    "test:release-record": "node --test test/release_record_validator.test.js",
+    "release:verify": "node tooling/verify_release_record.mjs"
   },
   "dependencies": {
     "astro": "^4.11.3",
